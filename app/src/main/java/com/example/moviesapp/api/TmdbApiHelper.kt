@@ -1,0 +1,49 @@
+package com.example.moviesapp.api
+
+import com.example.moviesapp.model.*
+
+interface TmdbApiHelper {
+
+    suspend fun getConfig(): Config
+
+    suspend fun discoverMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
+
+    suspend fun getUpcomingMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
+
+    suspend fun getTopRatedMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
+
+    suspend fun getNowPlayingMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
+
+    suspend fun getTopRatedTvSeries(page: Int, isoCode: String = "pl-PL"): TvSeriesResponse
+
+    suspend fun getOnTheAirTvSeries(page: Int, isoCode: String = "pl-PL"): TvSeriesResponse
+
+    suspend fun getPopularTvSeries(page: Int, isoCode: String = "pl-PL"): TvSeriesResponse
+
+    suspend fun getAiringTodayTvSeries(page: Int, isoCode: String = "pl-PL"): TvSeriesResponse
+
+    suspend fun getMovieDetails(movieId: Int, isoCode: String = "pl-PL"): MovieDetails
+
+    suspend fun getMovieCredits(movieId: Int, isoCode: String = "pl-PL"): Credits
+
+    suspend fun getSimilarMovies(movieId: Int, page: Int, isoCode: String = "pl-PL"): MoviesResponse
+
+    suspend fun getMoviesRecommendations(
+        movieId: Int,
+        page: Int,
+        isoCode: String = "pl-PL"
+    ): MoviesResponse
+
+    suspend fun getSimilarTvSeries(
+        tvSeriesId: Int,
+        page: Int,
+        isoCode: String = "pl-PL"
+    ): TvSeriesResponse
+
+    suspend fun getTvSeriesRecommendations(
+        tvSeriesId: Int,
+        page: Int,
+        isoCode: String = "pl-PL"
+    ): TvSeriesResponse
+
+}

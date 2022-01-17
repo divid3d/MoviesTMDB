@@ -1,0 +1,186 @@
+package com.example.moviesapp.ui.screens.movies
+
+import android.app.Activity
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.moviesapp.R
+import com.example.moviesapp.model.MovieType
+import com.example.moviesapp.ui.components.ExitDialog
+import com.example.moviesapp.ui.components.PresentableSection
+import com.example.moviesapp.ui.components.PresentableTopSection
+import com.example.moviesapp.ui.components.SectionDivider
+import com.example.moviesapp.ui.destinations.AllMoviesScreenDestination
+import com.example.moviesapp.ui.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.theme.spacing
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+
+@Destination(start = true)
+@Composable
+fun MoviesScreen(
+    navigator: DestinationsNavigator
+) {
+    val viewModel: MoviesViewModel = hiltViewModel()
+    val context = LocalContext.current
+
+    var showExitDialog by remember { mutableStateOf(false) }
+
+    val dismissDialog = {
+        showExitDialog = false
+    }
+
+    val discoverMoviesState = viewModel.discoverMoviesPagingDataFlow.collectAsLazyPagingItems()
+    val upcomingMoviesState = viewModel.upcomingMoviesPagingDataFlow.collectAsLazyPagingItems()
+    val topRatedMoviesState = viewModel.topRatedMoviesPagingDataFlow.collectAsLazyPagingItems()
+    val nowPlayingMoviesState = viewModel.nowPlayingMoviesPagingDataFlow.collectAsLazyPagingItems()
+    val favouritesMoviesState = viewModel.favouriteMoviesPagingDataFlow.collectAsLazyPagingItems()
+
+    BackHandler {
+        showExitDialog = true
+    }
+
+    if (showExitDialog) {
+        ExitDialog(
+            onDismissRequest = dismissDialog,
+            onCancelClick = dismissDialog,
+            onConfirmClick = {
+                val activity = (context as? Activity)
+                activity?.finish()
+            }
+        )
+    }
+
+    val isRefreshing by derivedStateOf {
+        listOf(
+            discoverMoviesState,
+            upcomingMoviesState,
+            topRatedMoviesState,
+            nowPlayingMoviesState
+        ).any { lazyPagingItems -> lazyPagingItems.itemCount > 0 && lazyPagingItems.loadState.refresh is LoadState.Loading }
+    }
+
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing)
+
+    val refreshAllPagingData = {
+        listOf(
+            discoverMoviesState,
+            upcomingMoviesState,
+            topRatedMoviesState,
+            nowPlayingMoviesState
+        ).forEach { lazyPagingItems -> lazyPagingItems.refresh() }
+    }
+
+    val navigateToMovieDetails: (Int) -> Unit = { movieId ->
+        navigator.navigate(MovieDetailsScreenDestination(movieId))
+    }
+
+    SwipeRefresh(
+        state = swipeRefreshState,
+        onRefresh = refreshAllPagingData
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+        ) {
+            PresentableTopSection(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                title = stringResource(R.string.now_playing_movies),
+                state = nowPlayingMoviesState,
+                onPresentableClick = navigateToMovieDetails
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            PresentableSection(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                title = stringResource(R.string.popular_movies),
+                state = discoverMoviesState,
+                onPresentableClick = navigateToMovieDetails,
+                onMoreClick = {
+                    navigator.navigate(
+                        AllMoviesScreenDestination(MovieType.Popular)
+                    )
+                }
+            )
+            SectionDivider(
+                modifier = Modifier.padding(
+                    start = MaterialTheme.spacing.medium,
+                    top = MaterialTheme.spacing.medium,
+                    end = MaterialTheme.spacing.medium,
+                    bottom = MaterialTheme.spacing.small
+                )
+            )
+            PresentableSection(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                title = stringResource(R.string.upcoming_movies),
+                state = upcomingMoviesState,
+                onPresentableClick = navigateToMovieDetails,
+                onMoreClick = {
+                    navigator.navigate(
+                        AllMoviesScreenDestination(MovieType.Upcoming)
+                    )
+                }
+            )
+            SectionDivider(
+                modifier = Modifier.padding(
+                    start = MaterialTheme.spacing.medium,
+                    top = MaterialTheme.spacing.medium,
+                    end = MaterialTheme.spacing.medium,
+                    bottom = MaterialTheme.spacing.small
+                )
+            )
+            PresentableSection(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                title = stringResource(R.string.top_rated_movies),
+                state = topRatedMoviesState,
+                onPresentableClick = navigateToMovieDetails,
+                onMoreClick = {
+                    navigator.navigate(
+                        AllMoviesScreenDestination(MovieType.TopRated)
+                    )
+                }
+            )
+            SectionDivider(
+                modifier = Modifier.padding(
+                    start = MaterialTheme.spacing.medium,
+                    top = MaterialTheme.spacing.medium,
+                    end = MaterialTheme.spacing.medium,
+                    bottom = MaterialTheme.spacing.small
+                )
+            )
+            PresentableSection(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                title = "Ulubione",
+                state = favouritesMoviesState,
+                onPresentableClick = navigateToMovieDetails,
+                onMoreClick = {
+                    navigator.navigate(
+                        AllMoviesScreenDestination(MovieType.Favourite)
+                    )
+                }
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+        }
+    }
+}

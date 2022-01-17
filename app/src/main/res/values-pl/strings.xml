@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Movies TMDB</string>
+
+    <string name="movies_label">Filmy</string>
+    <string name="tv_series_label">Seriale</string>
+    <string name="search_label">Szukaj</string>
+
+    <string name="now_playing_movies">Teraz grane</string>
+    <string name="popular_movies">Popularne</string>
+    <string name="upcoming_movies">Nadchodzące</string>
+    <string name="top_rated_movies">Najwyżej oceniane</string>
+    <string name="movies_more">więcej</string>
+
+    <string name="now_airing_tv_series">Na antenie</string>
+    <string name="top_rated_tv_series">Najwyżej oceniane</string>
+    <string name="today_airing_tv_series">Dzisiaj</string>
+    <string name="popular_tv_series">Popularne</string>
+
+    <string name="read_more">Czytaj więcej</string>
+    <string name="read_less">Czytaj mniej</string>
+</resources>
