@@ -116,7 +116,10 @@ fun PresentableTopSection(
             )
             HorizontalPager(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .defaultMinSize(
+                        minHeight = MaterialTheme.sizes.presentableItemBig.height + MaterialTheme.spacing.medium + MaterialTheme.spacing.medium
+                    ),
                 count = state.itemCount,
                 state = pagerState
             ) { page ->
