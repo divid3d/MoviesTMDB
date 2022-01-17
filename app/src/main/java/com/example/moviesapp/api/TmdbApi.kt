@@ -64,6 +64,11 @@ interface TmdbApi {
         @Query("language") isoCode: String
     ): MovieDetails
 
+    @GET("tv/{tv_id}")
+    suspend fun getTvSeriesDetails(
+        @Path("tv_id") tvSeriesId: Int,
+        @Query("language") isoCode: String
+    ): TvSeriesDetails
 
     @GET("movie/{movie_id}/credits")
     suspend fun getMovieCredits(

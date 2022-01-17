@@ -24,6 +24,8 @@ interface TmdbApiHelper {
 
     suspend fun getMovieDetails(movieId: Int, isoCode: String = "pl-PL"): MovieDetails
 
+    suspend fun getTvSeriesDetails(tvSeriesId: Int, isoCode: String = "pl-PL"): TvSeriesDetails
+
     suspend fun getMovieCredits(movieId: Int, isoCode: String = "pl-PL"): Credits
 
     suspend fun getSimilarMovies(movieId: Int, page: Int, isoCode: String = "pl-PL"): MoviesResponse

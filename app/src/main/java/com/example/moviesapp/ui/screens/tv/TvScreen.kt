@@ -17,6 +17,7 @@ import com.example.moviesapp.R
 import com.example.moviesapp.ui.components.PresentableSection
 import com.example.moviesapp.ui.components.PresentableTopSection
 import com.example.moviesapp.ui.components.SectionDivider
+import com.example.moviesapp.ui.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -56,7 +57,7 @@ fun TvScreen(
             airingTodayTvSeriesState
         ).forEach { lazyPagingItems -> lazyPagingItems.refresh() }
     }
-    
+
     SwipeRefresh(
         state = swipeRefreshState,
         onRefresh = refreshAllPagingData
@@ -71,7 +72,11 @@ fun TvScreen(
                     .fillMaxWidth(),
                 title = stringResource(R.string.now_airing_tv_series),
                 state = onTheAirTvSeriesState
-            )
+            ) { tvSeriesId ->
+                navigator.navigate(
+                    TvSeriesDetailsScreenDestination(tvSeriesId)
+                )
+            }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             PresentableSection(
                 modifier = Modifier
@@ -79,7 +84,11 @@ fun TvScreen(
                     .animateContentSize(),
                 title = stringResource(R.string.top_rated_tv_series),
                 state = topRatedTvSeriesState
-            )
+            ) { tvSeriesId ->
+                navigator.navigate(
+                    TvSeriesDetailsScreenDestination(tvSeriesId)
+                )
+            }
             SectionDivider(
                 modifier = Modifier.padding(
                     start = MaterialTheme.spacing.medium,
@@ -94,7 +103,11 @@ fun TvScreen(
                     .animateContentSize(),
                 title = stringResource(R.string.today_airing_tv_series),
                 state = airingTodayTvSeriesState
-            )
+            ) { tvSeriesId ->
+                navigator.navigate(
+                    TvSeriesDetailsScreenDestination(tvSeriesId)
+                )
+            }
             SectionDivider(
                 modifier = Modifier.padding(
                     start = MaterialTheme.spacing.medium,
@@ -109,7 +122,11 @@ fun TvScreen(
                     .animateContentSize(),
                 title = stringResource(R.string.popular_tv_series),
                 state = popularTvSeriesState
-            )
+            ) { tvSeriesId ->
+                navigator.navigate(
+                    TvSeriesDetailsScreenDestination(tvSeriesId)
+                )
+            }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         }
     }

@@ -35,6 +35,9 @@ class TmdbApiHelperImpl @Inject constructor(
     override suspend fun getMovieDetails(movieId: Int, isoCode: String): MovieDetails =
         tmdbApi.getMovieDetails(movieId, isoCode)
 
+    override suspend fun getTvSeriesDetails(tvSeriesId: Int, isoCode: String): TvSeriesDetails =
+        tmdbApi.getTvSeriesDetails(tvSeriesId, isoCode)
+
     override suspend fun getMovieCredits(movieId: Int, isoCode: String): Credits =
         tmdbApi.getMovieCredits(movieId, isoCode)
 

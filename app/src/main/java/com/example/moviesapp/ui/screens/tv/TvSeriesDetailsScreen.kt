@@ -1,7 +1,6 @@
 package com.example.moviesapp.ui.screens.tv
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
@@ -24,15 +23,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.LikeButton
-import com.example.moviesapp.ui.components.PresentableSection
-import com.example.moviesapp.ui.destinations.MovieDetailsScreenDestination
-import com.example.moviesapp.ui.screens.movies.components.CastSection
-import com.example.moviesapp.ui.screens.movies.components.CrewSection
-import com.example.moviesapp.ui.screens.movies.components.MovieDetailsTopSection
 import com.example.moviesapp.ui.screens.movies.components.OverviewSection
+import com.example.moviesapp.ui.screens.tv.components.TvSeriesDetailsTopSection
 import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.LocalWindowInsets
@@ -51,20 +45,11 @@ fun TvSeriesDetailsScreen(
     val insets = LocalWindowInsets.current
     val density = LocalDensity.current
 
-    val movieDetails by viewModel.movieDetails.collectAsState()
-    val credits by viewModel.credits.collectAsState()
-
-    val similarMoviesState = viewModel.similarMoviesPagingDataFlow?.collectAsLazyPagingItems()
-    val moviesRecommendationState =
-        viewModel.moviesRecommendationPagingDataFlow?.collectAsLazyPagingItems()
-
-    val otherOriginalTitle: Boolean by derivedStateOf {
-        movieDetails?.run { originalTitle.isNotEmpty() && title != originalTitle } ?: false
-    }
+    val tvSeriesDetails by viewModel.tvSeriesDetails.collectAsState()
 
     val scrollState = rememberScrollState()
 
-    var topSectionHeight: Int? by remember(movieDetails) {
+    var topSectionHeight: Int? by remember(tvSeriesDetails) {
         mutableStateOf(null)
     }
 
@@ -80,20 +65,6 @@ fun TvSeriesDetailsScreen(
         }
     }
 
-//    val topAppbarBackgroundColor by animateColorAsState(targetValue = topSectionHeight?.let { height ->
-//        val ratio = scrollState.value.toFloat() / (height - statusBarHeight - appbarHeight)
-//        val alpha = 0.5f + ratio * 0.5f
-//        print("alpha: $alpha")
-//        Color.Black.copy(alpha = alpha.coerceAtMost(1f))
-//    } ?: Black500)
-
-//    val topAppbarBackgroundColor by animateColorAsState(targetValue = topSectionHeight?.let { height ->
-//
-//        val ratio = scrollState.value.toFloat() / (height - statusBarHeight - appbarHeight)
-//        if (ratio >= 1f) Color.Black else Black500
-//    } ?: Black500)
-
-
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -102,32 +73,26 @@ fun TvSeriesDetailsScreen(
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
-            MovieDetailsTopSection(
+            TvSeriesDetailsTopSection(
                 modifier = Modifier
                     .fillMaxWidth(),
-                movieDetails = movieDetails
+                tvSeriesDetails = tvSeriesDetails
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-            movieDetails?.let { details ->
+            tvSeriesDetails?.let { details ->
                 Column(
                     modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                 ) {
-                    details.title?.let { title ->
-                        Text(
-                            text = title,
-                            style = TextStyle(
-                                color = Color.White,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                    Text(
+                        text = details.name,
+                        style = TextStyle(
+                            color = Color.White,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
                         )
-                    }
-                    if (otherOriginalTitle) {
-                        Text(text = details.originalTitle)
-                    }
-
-                    details.tagline?.let { tagline ->
+                    )
+                    details.tagline.let { tagline ->
                         if (tagline.isNotEmpty()) {
                             Text(
                                 text = "\"$tagline\"",
@@ -140,51 +105,38 @@ fun TvSeriesDetailsScreen(
                     )
                 }
             }
-            credits?.cast?.let { members ->
-                CastSection(
-                    modifier = Modifier.animateContentSize(),
-                    cast = members,
-                    contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                )
-            }
-            credits?.crew?.let { members ->
-                CrewSection(
-                    modifier = Modifier.animateContentSize(),
-                    crew = members,
-                    contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                )
-            }
-            similarMoviesState?.let { lazyPagingItems ->
-                PresentableSection(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    title = "Podobne",
-                    state = lazyPagingItems
-                ) { movieId ->
-                    navigator.navigate(
-                        MovieDetailsScreenDestination(movieId)
-                    )
-                }
-            }
-            moviesRecommendationState?.let { lazyPagingItems ->
-                PresentableSection(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    title = "Polecane",
-                    state = lazyPagingItems
-                ) { movieId ->
-                    navigator.navigate(
-                        MovieDetailsScreenDestination(movieId)
-                    )
-                }
-            }
+
+//            similarMoviesState?.let { lazyPagingItems ->
+//                PresentableSection(
+//                    modifier = Modifier
+//                        .fillMaxWidth(),
+//                    title = "Podobne",
+//                    state = lazyPagingItems
+//                ) { movieId ->
+//                    navigator.navigate(
+//                        MovieDetailsScreenDestination(movieId)
+//                    )
+//                }
+//            }
+//            moviesRecommendationState?.let { lazyPagingItems ->
+//                PresentableSection(
+//                    modifier = Modifier
+//                        .fillMaxWidth(),
+//                    title = "Polecane",
+//                    state = lazyPagingItems
+//                ) { movieId ->
+//                    navigator.navigate(
+//                        MovieDetailsScreenDestination(movieId)
+//                    )
+//                }
+//            }
             Spacer(
                 modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.large)
             )
         }
         AppBar(
             modifier = Modifier.align(Alignment.TopCenter),
-            title = "Szczegóły filmu",
+            title = "Szczegóły serialu",
             backgroundColor = Black500,
             action = {
                 IconButton(onClick = { navigator.navigateUp() }) {
@@ -195,10 +147,10 @@ fun TvSeriesDetailsScreen(
                 }
             },
             trailing = {
-                val isFavourite = movieDetails?.isFavourite == true
+                val isFavourite = tvSeriesDetails?.isFavourite == true
 
                 AnimatedVisibility(
-                    visible = movieDetails != null,
+                    visible = tvSeriesDetails != null,
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {
@@ -206,7 +158,7 @@ fun TvSeriesDetailsScreen(
                         modifier = Modifier.padding(end = MaterialTheme.spacing.small),
                         isFavourite = isFavourite,
                         onClick = {
-                            movieDetails?.let { details ->
+                            tvSeriesDetails?.let { details ->
                                 if (isFavourite) {
                                     viewModel.onUnlikeClick(details)
                                 } else {

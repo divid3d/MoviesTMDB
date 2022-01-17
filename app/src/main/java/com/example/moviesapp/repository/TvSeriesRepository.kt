@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.data.TvSeriesResponseDataSource
 import com.example.moviesapp.model.TvSeries
+import com.example.moviesapp.model.TvSeriesDetails
 import com.example.moviesapp.model.TvSeriesResponse
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -42,6 +43,9 @@ class TvSeriesRepository @Inject constructor(
         ) {
             TvSeriesResponseDataSource(apiHelper::getAiringTodayTvSeries)
         }.flow
+
+    suspend fun getTvSeriesDetails(tvSeriesId: Int, isoCode: String = "pl-PL"): TvSeriesDetails =
+        apiHelper.getTvSeriesDetails(tvSeriesId, isoCode)
 
     suspend fun similarTvSeries(
         tvSeriesId: Int,
