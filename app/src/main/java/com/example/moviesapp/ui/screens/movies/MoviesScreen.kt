@@ -20,8 +20,8 @@ import com.example.moviesapp.ui.components.ExitDialog
 import com.example.moviesapp.ui.components.PresentableSection
 import com.example.moviesapp.ui.components.PresentableTopSection
 import com.example.moviesapp.ui.components.SectionDivider
-import com.example.moviesapp.ui.destinations.AllMoviesScreenDestination
-import com.example.moviesapp.ui.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.AllMoviesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -87,6 +87,10 @@ fun MoviesScreen(
         navigator.navigate(MovieDetailsScreenDestination(movieId))
     }
 
+    val navigateToAllMovies: (MovieType) -> Unit = { type ->
+        navigator.navigate(AllMoviesScreenDestination(type))
+    }
+
     SwipeRefresh(
         state = swipeRefreshState,
         onRefresh = refreshAllPagingData
@@ -111,11 +115,7 @@ fun MoviesScreen(
                 title = stringResource(R.string.popular_movies),
                 state = discover,
                 onPresentableClick = navigateToMovieDetails,
-                onMoreClick = {
-                    navigator.navigate(
-                        AllMoviesScreenDestination(MovieType.Popular)
-                    )
-                }
+                onMoreClick = { navigateToAllMovies(MovieType.Popular) }
             )
             SectionDivider(
                 modifier = Modifier.padding(
@@ -133,9 +133,7 @@ fun MoviesScreen(
                 state = upcoming,
                 onPresentableClick = navigateToMovieDetails,
                 onMoreClick = {
-                    navigator.navigate(
-                        AllMoviesScreenDestination(MovieType.Upcoming)
-                    )
+                    navigateToAllMovies(MovieType.Upcoming)
                 }
             )
             SectionDivider(
@@ -154,9 +152,7 @@ fun MoviesScreen(
                 state = topRated,
                 onPresentableClick = navigateToMovieDetails,
                 onMoreClick = {
-                    navigator.navigate(
-                        AllMoviesScreenDestination(MovieType.TopRated)
-                    )
+                    navigateToAllMovies(MovieType.TopRated)
                 }
             )
             SectionDivider(
@@ -175,9 +171,7 @@ fun MoviesScreen(
                 state = favourites,
                 onPresentableClick = navigateToMovieDetails,
                 onMoreClick = {
-                    navigator.navigate(
-                        AllMoviesScreenDestination(MovieType.Favourite)
-                    )
+                    navigateToAllMovies(MovieType.Favourite)
                 }
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))

@@ -1,5 +1,6 @@
 package com.example.moviesapp.di
 
+import android.content.Context
 import com.example.moviesapp.BuildConfig
 import com.example.moviesapp.api.Timeouts
 import com.example.moviesapp.api.TmdbApi
@@ -9,7 +10,9 @@ import com.example.moviesapp.other.ApiParams
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -23,6 +26,11 @@ import kotlin.time.toJavaDuration
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+
+    @Provides
+    @Singleton
+    fun provideCache(@ApplicationContext context: Context) =
+        Cache(context.cacheDir, ApiParams.cacheSize)
 
     @Provides
     @Singleton
@@ -44,6 +52,7 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideOkHttpClient(
+        cache: Cache,
         authenticationInterceptor: Interceptor
     ): OkHttpClient = OkHttpClient.Builder()
         .apply {
@@ -55,6 +64,7 @@ object NetworkModule {
             }
         }
         .addInterceptor(authenticationInterceptor)
+        .cache(cache)
         .connectTimeout(Timeouts.connect.toJavaDuration())
         .writeTimeout(Timeouts.write.toJavaDuration())
         .readTimeout(Timeouts.read.toJavaDuration())

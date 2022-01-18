@@ -14,10 +14,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
+import com.example.moviesapp.model.TvSeriesType
 import com.example.moviesapp.ui.components.PresentableSection
 import com.example.moviesapp.ui.components.PresentableTopSection
 import com.example.moviesapp.ui.components.SectionDivider
-import com.example.moviesapp.ui.destinations.TvSeriesDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.AllTvSeriesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -61,6 +63,10 @@ fun TvScreen(
         navigator.navigate(TvSeriesDetailsScreenDestination(tvSeriesId))
     }
 
+    val navigateToAllTvSeries: (TvSeriesType) -> Unit = { type ->
+        navigator.navigate(AllTvSeriesScreenDestination(type))
+    }
+
     SwipeRefresh(
         state = swipeRefreshState,
         onRefresh = refreshAllPagingData
@@ -84,7 +90,8 @@ fun TvScreen(
                     .animateContentSize(),
                 title = stringResource(R.string.top_rated_tv_series),
                 state = topRated,
-                onPresentableClick = navigateToTvSeriesDetails
+                onPresentableClick = navigateToTvSeriesDetails,
+                onMoreClick = { navigateToAllTvSeries(TvSeriesType.TopRated) }
             )
             SectionDivider(
                 modifier = Modifier.padding(
@@ -100,7 +107,8 @@ fun TvScreen(
                     .animateContentSize(),
                 title = stringResource(R.string.today_airing_tv_series),
                 state = airingToday,
-                onPresentableClick = navigateToTvSeriesDetails
+                onPresentableClick = navigateToTvSeriesDetails,
+                onMoreClick = { navigateToAllTvSeries(TvSeriesType.AiringToday) }
             )
             SectionDivider(
                 modifier = Modifier.padding(
@@ -116,7 +124,8 @@ fun TvScreen(
                     .animateContentSize(),
                 title = stringResource(R.string.popular_tv_series),
                 state = popular,
-                onPresentableClick = navigateToTvSeriesDetails
+                onPresentableClick = navigateToTvSeriesDetails,
+                onMoreClick = { navigateToAllTvSeries(TvSeriesType.Popular) }
             )
             SectionDivider(
                 modifier = Modifier.padding(
@@ -133,9 +142,7 @@ fun TvScreen(
                 title = "Ulubione",
                 state = favourites,
                 onPresentableClick = navigateToTvSeriesDetails,
-                onMoreClick = {
-
-                }
+                onMoreClick = { navigateToAllTvSeries(TvSeriesType.Favourite) }
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         }

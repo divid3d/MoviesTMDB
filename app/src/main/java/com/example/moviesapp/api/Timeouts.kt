@@ -5,7 +5,7 @@ import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
 object Timeouts {
-    val connect = Duration.seconds(60)
-    val write = Duration.seconds(60)
-    val read = Duration.seconds(60)
+    val connect = Duration.seconds(10)
+    val write = Duration.seconds(10)
+    val read = Duration.seconds(10)
 }

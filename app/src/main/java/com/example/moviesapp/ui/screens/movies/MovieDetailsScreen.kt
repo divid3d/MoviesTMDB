@@ -28,7 +28,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.LikeButton
 import com.example.moviesapp.ui.components.PresentableSection
-import com.example.moviesapp.ui.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.movies.components.CastSection
 import com.example.moviesapp.ui.screens.movies.components.CrewSection
 import com.example.moviesapp.ui.screens.movies.components.MovieDetailsTopSection

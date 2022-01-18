@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.allMovies
+package com.example.moviesapp.ui.screens.allTvSeries
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -19,12 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.moviesapp.model.MovieType
+import com.example.moviesapp.model.TvSeriesType
 import com.example.moviesapp.other.items
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.PresentableItem
 import com.example.moviesapp.ui.components.PresentableState
-import com.example.moviesapp.ui.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -32,19 +32,19 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @OptIn(ExperimentalFoundationApi::class, kotlinx.coroutines.FlowPreview::class)
 @Destination
 @Composable
-fun AllMoviesScreen(
-    movieType: MovieType,
+fun AllTvSeriesScreen(
+    tvSeriesType: TvSeriesType,
     navigator: DestinationsNavigator
 ) {
-    val viewModel: AllMoviesViewModel = hiltViewModel()
-    val moviesPageDataState = viewModel.moviesPagingDataFlow.collectAsLazyPagingItems()
+    val viewModel: AllTvSeriesViewModel = hiltViewModel()
+    val tvSeries = viewModel.tvSeries.collectAsLazyPagingItems()
 
     val appbarTitle by derivedStateOf {
-        when (movieType) {
-            MovieType.Popular -> "Popularne filmy"
-            MovieType.Upcoming -> "Nadchodzące filmy"
-            MovieType.TopRated -> "Najwyżej oceniane filmy"
-            MovieType.Favourite -> "Ulubione filmy"
+        when (tvSeriesType) {
+            TvSeriesType.TopRated -> "Najwyżej oceniane seriale"
+            TvSeriesType.AiringToday -> "Seriale emitowane dzisiaj"
+            TvSeriesType.Popular -> "Popularne seriale"
+            TvSeriesType.Favourite -> "Ulubione seriale"
         }
     }
     Column(modifier = Modifier.fillMaxSize()) {
@@ -63,9 +63,9 @@ fun AllMoviesScreen(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
         ) {
-            items(moviesPageDataState) { movie ->
-                movie?.let {
-                    PresentableItem(presentableState = PresentableState.Result(movie)) {
+            items(tvSeries) { tvSeries ->
+                tvSeries?.let {
+                    PresentableItem(presentableState = PresentableState.Result(tvSeries)) {
                         navigator.navigate(
                             MovieDetailsScreenDestination(it.id)
                         )
@@ -73,7 +73,7 @@ fun AllMoviesScreen(
                 }
             }
 
-            moviesPageDataState.apply {
+            tvSeries.apply {
                 when {
                     loadState.refresh is LoadState.Loading -> {
                         items(12) {

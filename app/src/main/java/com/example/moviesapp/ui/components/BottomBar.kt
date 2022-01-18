@@ -21,9 +21,9 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.navigation.NavController
 import com.example.moviesapp.R
 import com.example.moviesapp.other.safeNavigate
-import com.example.moviesapp.ui.destinations.MoviesScreenDestination
-import com.example.moviesapp.ui.destinations.SearchScreenDestination
-import com.example.moviesapp.ui.destinations.TvScreenDestination
+import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 
 
 @Composable

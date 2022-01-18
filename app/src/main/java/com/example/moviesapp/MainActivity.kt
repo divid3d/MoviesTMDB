@@ -12,8 +12,8 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
-import com.example.moviesapp.ui.NavGraphs
 import com.example.moviesapp.ui.components.BottomBar
+import com.example.moviesapp.ui.screens.NavGraphs
 import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.MoviesAppTheme
 import com.google.accompanist.insets.ProvideWindowInsets

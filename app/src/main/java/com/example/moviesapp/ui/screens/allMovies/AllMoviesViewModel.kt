@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.allMovies
+package com.example.moviesapp.ui.screens.allMovies
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
