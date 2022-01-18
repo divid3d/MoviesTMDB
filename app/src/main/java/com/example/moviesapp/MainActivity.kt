@@ -3,15 +3,15 @@ package com.example.moviesapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.runtime.SideEffect
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
+import com.example.moviesapp.model.SnackBarEvent
 import com.example.moviesapp.ui.components.BottomBar
 import com.example.moviesapp.ui.screens.NavGraphs
 import com.example.moviesapp.ui.theme.Black500
@@ -21,10 +21,14 @@ import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.InternalCoroutinesApi
 
 
 @AndroidEntryPoint
+@OptIn(InternalCoroutinesApi::class)
 class MainActivity : ComponentActivity() {
+
+    private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +36,34 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
+            val snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
+            val snackBarEvent: SnackBarEvent? by mainViewModel.networkSnackBarEvent.collectAsState()
+
+            LaunchedEffect(snackBarEvent) {
+                snackBarEvent?.let { event ->
+                    val result = snackBarHostState.showSnackbar(
+                        message = event.message
+                    )
+
+                    when (result) {
+                        SnackbarResult.ActionPerformed -> {
+                            /* action has been performed */
+                        }
+                        SnackbarResult.Dismissed -> {
+                            /* dismissed, no action needed */
+                        }
+                    }
+                }
+            }
+//            lifecycleScope.launchWhenStarted {
+//                mainViewModel.snackBarEventFlow
+//                    .collect { event ->
+//                        when(event){
+//                            is MainViewModel.SnackBarEvent.InternetConnectionLost -> {}
+//                            is MainViewModel.SnackBarEvent.InternetConnectionRegained -> {}
+//                        }
+//                    }
+//            }
             val systemUiController = rememberSystemUiController()
             val navController = rememberNavController()
 
@@ -50,6 +82,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 ProvideWindowInsets {
                     Scaffold(
+                        scaffoldState = rememberScaffoldState(snackbarHostState = snackBarHostState),
                         bottomBar = {
                             BottomBar(
                                 modifier = Modifier.navigationBarsPadding(),
