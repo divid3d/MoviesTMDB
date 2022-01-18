@@ -14,7 +14,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @FlowPreview
@@ -29,10 +28,8 @@ class AllMoviesViewModel @Inject constructor(
     private val config = configRepository.config
 
     private val movieType: Flow<MovieType> = savedStateHandle
-        .getLiveData("movieType", MovieType.Popular.name)
-        .asFlow().map { value ->
-            MovieType.valueOf(value)
-        }
+        .getLiveData("movieType", MovieType.Popular)
+        .asFlow()
 
     private val topRatedMoviesDataFlow: Flow<PagingData<Presentable>> =
         movieRepository.topRatedMovies()
@@ -66,6 +63,7 @@ class AllMoviesViewModel @Inject constructor(
             MovieType.Favourite -> favourites
         }
     }
+
 
     private fun Movie.appendUrls(
         config: Config?

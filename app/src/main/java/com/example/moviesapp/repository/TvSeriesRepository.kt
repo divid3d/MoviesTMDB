@@ -4,10 +4,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.moviesapp.api.TmdbApiHelper
+import com.example.moviesapp.data.TvSeriesDetailsResponseDataSource
 import com.example.moviesapp.data.TvSeriesResponseDataSource
 import com.example.moviesapp.model.TvSeries
 import com.example.moviesapp.model.TvSeriesDetails
-import com.example.moviesapp.model.TvSeriesResponse
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -44,21 +44,27 @@ class TvSeriesRepository @Inject constructor(
             TvSeriesResponseDataSource(apiHelper::getAiringTodayTvSeries)
         }.flow
 
+    fun similarTvSeries(tvSeriesId: Int): Flow<PagingData<TvSeries>> =
+        Pager(
+            PagingConfig(pageSize = 20)
+        ) {
+            TvSeriesDetailsResponseDataSource(
+                tvSeriesId = tvSeriesId,
+                apiHelperMethod = apiHelper::getSimilarTvSeries
+            )
+        }.flow
+
+    fun tvSeriesRecommendations(tvSeriesId: Int): Flow<PagingData<TvSeries>> =
+        Pager(
+            PagingConfig(pageSize = 20)
+        ) {
+            TvSeriesDetailsResponseDataSource(
+                tvSeriesId = tvSeriesId,
+                apiHelperMethod = apiHelper::getTvSeriesRecommendations
+            )
+        }.flow
+
     suspend fun getTvSeriesDetails(tvSeriesId: Int, isoCode: String = "pl-PL"): TvSeriesDetails =
         apiHelper.getTvSeriesDetails(tvSeriesId, isoCode)
-
-    suspend fun similarTvSeries(
-        tvSeriesId: Int,
-        page: Int = 1,
-        isoCode: String = "pl-PL"
-    ): TvSeriesResponse =
-        apiHelper.getSimilarTvSeries(tvSeriesId, page, isoCode)
-
-    suspend fun tvSeriesRecommendations(
-        tvSeriesId: Int,
-        page: Int = 1,
-        isoCode: String = "pl-PL"
-    ): TvSeriesResponse =
-        apiHelper.getTvSeriesRecommendations(tvSeriesId, page, isoCode)
 
 }

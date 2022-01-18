@@ -3,11 +3,8 @@ package com.example.moviesapp.ui.screens.movies
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.example.moviesapp.data.MovieDetailsResponseDataSource
 import com.example.moviesapp.model.*
 import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.other.getImageUrl
@@ -77,33 +74,20 @@ class MoviesDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             movieId.collectLatest { movieId ->
                 movieId?.let { id ->
-                    val similarMoviesLoader: suspend (Int, Int, String) -> MoviesResponse =
-                        movieRepository::similarMovies
-
-                    val moviesRecommendationLoader: suspend (Int, Int, String) -> MoviesResponse =
-                        movieRepository::moviesRecommendations
-
-                    similarMoviesPagingDataFlow = Pager(PagingConfig(pageSize = 20)) {
-                        MovieDetailsResponseDataSource(
-                            movieId = id,
-                            apiHelperMethod = similarMoviesLoader
-                        )
-                    }.flow.combine(config) { moviePagingData, config ->
-                        moviePagingData.map { movie ->
-                            movie.appendUrls(config)
+                    similarMoviesPagingDataFlow = movieRepository.similarMovies(id)
+                        .combine(config) { moviePagingData, config ->
+                            moviePagingData.map { movie ->
+                                movie.appendUrls(config)
+                            }
                         }
-                    }
 
-                    moviesRecommendationPagingDataFlow = Pager(PagingConfig(pageSize = 20)) {
-                        MovieDetailsResponseDataSource(
-                            movieId = id,
-                            apiHelperMethod = moviesRecommendationLoader
-                        )
-                    }.flow.combine(config) { moviePagingData, config ->
-                        moviePagingData.map { movie ->
-                            movie.appendUrls(config)
-                        }
-                    }
+                    moviesRecommendationPagingDataFlow =
+                        movieRepository.moviesRecommendations(movieId)
+                            .combine(config) { moviePagingData, config ->
+                                moviePagingData.map { movie ->
+                                    movie.appendUrls(config)
+                                }
+                            }
 
                     getMovieInfo(id)
                 }

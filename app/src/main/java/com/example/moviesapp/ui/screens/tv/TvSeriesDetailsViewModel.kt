@@ -3,11 +3,8 @@ package com.example.moviesapp.ui.screens.tv
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.example.moviesapp.data.TvSeriesDetailsResponseDataSource
 import com.example.moviesapp.model.*
 import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.other.getImageUrl
@@ -58,33 +55,19 @@ class TvSeriesDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             tvSeriesId.collectLatest { tvSeriesId ->
                 tvSeriesId?.let { id ->
-                    val similarTvSeriesLoader: suspend (Int, Int, String) -> TvSeriesResponse =
-                        tvSeriesRepository::similarTvSeries
-
-                    val tvSeriesRecommendationLoader: suspend (Int, Int, String) -> TvSeriesResponse =
-                        tvSeriesRepository::tvSeriesRecommendations
-
-                    similarTvSeries = Pager(PagingConfig(pageSize = 20)) {
-                        TvSeriesDetailsResponseDataSource(
-                            tvSeriesId = id,
-                            apiHelperMethod = similarTvSeriesLoader
-                        )
-                    }.flow.combine(config) { moviePagingData, config ->
-                        moviePagingData.map { tvSeries ->
-                            tvSeries.appendUrls(config)
+                    similarTvSeries = tvSeriesRepository.similarTvSeries(id)
+                        .combine(config) { moviePagingData, config ->
+                            moviePagingData.map { tvSeries ->
+                                tvSeries.appendUrls(config)
+                            }
                         }
-                    }
 
-                    tvSeriesRecommendations = Pager(PagingConfig(pageSize = 20)) {
-                        TvSeriesDetailsResponseDataSource(
-                            tvSeriesId = id,
-                            apiHelperMethod = tvSeriesRecommendationLoader
-                        )
-                    }.flow.combine(config) { moviePagingData, config ->
-                        moviePagingData.map { tvSeries ->
-                            tvSeries.appendUrls(config)
+                    tvSeriesRecommendations = tvSeriesRepository.tvSeriesRecommendations(id)
+                        .combine(config) { moviePagingData, config ->
+                            moviePagingData.map { tvSeries ->
+                                tvSeries.appendUrls(config)
+                            }
                         }
-                    }
 
                     getTvSeriesInfo(id)
                 }
