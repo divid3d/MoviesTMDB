@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.paging.compose.LazyPagingItems
 
 @Composable
-fun LazyListState.isScrollingLeft(): Boolean {
+fun LazyListState.isScrollingTowardsStart(): Boolean {
     var previousIndex by remember(this) { mutableStateOf(firstVisibleItemIndex) }
     var previousScrollOffset by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
     return remember(this) {

@@ -25,14 +25,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Presentable
-import com.example.moviesapp.other.isScrollingLeft
+import com.example.moviesapp.other.isScrollingTowardsStart
 import com.example.moviesapp.ui.screens.movies.components.ScrollToStartButton
 import com.example.moviesapp.ui.theme.spacing
 import kotlinx.coroutines.launch
@@ -50,7 +49,7 @@ fun PresentableSection(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
-    val isScrollingLeft = listState.isScrollingLeft()
+    val isScrollingLeft = listState.isScrollingTowardsStart()
 
     val showScrollToBeginningButton by derivedStateOf {
         val visibleMaxItem = listState.firstVisibleItemIndex > scrollToBeginningItemsStart
@@ -149,7 +148,7 @@ fun PresentableSection(
                 androidx.compose.animation.AnimatedVisibility(
                     modifier = Modifier
                         .align(Alignment.CenterStart)
-                        .padding(start = 8.dp),
+                        .padding(start = MaterialTheme.spacing.small),
                     visible = showScrollToBeginningButton,
                     enter = slideIn(
                         animationSpec = tween(),
