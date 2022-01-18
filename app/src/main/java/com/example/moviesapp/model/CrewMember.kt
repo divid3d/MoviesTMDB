@@ -7,7 +7,7 @@ data class CrewMember(
     val adult: Boolean,
     val gender: Int?,
     @SerializedName("known_for_department")
-    val knownForDepartment: String,
+    val knownForDepartment: String?,
     val name: String,
     @SerializedName("original_name")
     val originalName: String,

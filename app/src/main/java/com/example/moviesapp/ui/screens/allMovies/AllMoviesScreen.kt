@@ -37,7 +37,7 @@ fun AllMoviesScreen(
     navigator: DestinationsNavigator
 ) {
     val viewModel: AllMoviesViewModel = hiltViewModel()
-    val moviesPageDataState = viewModel.moviesPagingDataFlow.collectAsLazyPagingItems()
+    val movies = viewModel.movies.collectAsLazyPagingItems()
 
     val appbarTitle by derivedStateOf {
         when (movieType) {
@@ -63,7 +63,7 @@ fun AllMoviesScreen(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
         ) {
-            items(moviesPageDataState) { movie ->
+            items(movies) { movie ->
                 movie?.let {
                     PresentableItem(presentableState = PresentableState.Result(movie)) {
                         navigator.navigate(
@@ -73,7 +73,7 @@ fun AllMoviesScreen(
                 }
             }
 
-            moviesPageDataState.apply {
+            movies.apply {
                 when {
                     loadState.refresh is LoadState.Loading -> {
                         items(12) {

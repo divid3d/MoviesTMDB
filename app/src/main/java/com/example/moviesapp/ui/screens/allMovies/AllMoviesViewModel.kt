@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @FlowPreview
@@ -28,33 +29,35 @@ class AllMoviesViewModel @Inject constructor(
     private val config = configRepository.config
 
     private val movieType: Flow<MovieType> = savedStateHandle
-        .getLiveData("movieType", MovieType.Popular)
-        .asFlow()
+        .getLiveData("movieType", MovieType.Popular.name)
+        .asFlow().map { value ->
+            MovieType.valueOf(value)
+        }
 
-    private val topRatedMoviesDataFlow: Flow<PagingData<Presentable>> =
+    private val topRated: Flow<PagingData<Presentable>> =
         movieRepository.topRatedMovies()
             .combine(config) { pagingData, config ->
                 pagingData.map { movie -> movie.appendUrls(config) }
             }
-    private val upcomingMoviesDataFlow: Flow<PagingData<Presentable>> =
+    private val upcoming: Flow<PagingData<Presentable>> =
         movieRepository.upcomingMovies().combine(config) { pagingData, config ->
             pagingData.map { movie -> movie.appendUrls(config) }
         }
-    private val popularMoviesDataFlow: Flow<PagingData<Presentable>> =
+    private val popular: Flow<PagingData<Presentable>> =
         movieRepository.discoverMovies().combine(config) { pagingData, config ->
             pagingData.map { movie -> movie.appendUrls(config) }
         }
-    private val favouriteMoviesDataFlow: Flow<PagingData<Presentable>> =
+    private val favourites: Flow<PagingData<Presentable>> =
         favouritesRepository.favouriteMovies().combine(config) { pagingData, config ->
             pagingData.map { favouriteMovie -> favouriteMovie.appendUrls(config) }
         }
 
-    val moviesPagingDataFlow: Flow<PagingData<Presentable>> = combine(
+    val movies: Flow<PagingData<Presentable>> = combine(
         movieType,
-        topRatedMoviesDataFlow,
-        upcomingMoviesDataFlow,
-        popularMoviesDataFlow,
-        favouriteMoviesDataFlow
+        topRated,
+        upcoming,
+        popular,
+        favourites
     ) { type, topRated, upcoming, popular, favourites ->
         when (type) {
             MovieType.TopRated -> topRated
@@ -63,7 +66,6 @@ class AllMoviesViewModel @Inject constructor(
             MovieType.Favourite -> favourites
         }
     }
-
 
     private fun Movie.appendUrls(
         config: Config?

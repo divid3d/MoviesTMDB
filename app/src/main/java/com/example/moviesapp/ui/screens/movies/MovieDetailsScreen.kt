@@ -160,6 +160,7 @@ fun MovieDetailsScreen(
                     modifier = Modifier
                         .fillMaxWidth(),
                     title = "Podobne",
+                    showMoreButton = false,
                     state = lazyPagingItems
                 ) { movieId ->
                     navigator.navigate(
@@ -172,6 +173,7 @@ fun MovieDetailsScreen(
                     modifier = Modifier
                         .fillMaxWidth(),
                     title = "Polecane",
+                    showMoreButton = false,
                     state = lazyPagingItems
                 ) { movieId ->
                     navigator.navigate(
