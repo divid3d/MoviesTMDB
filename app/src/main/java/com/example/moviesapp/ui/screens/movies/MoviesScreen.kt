@@ -42,11 +42,11 @@ fun MoviesScreen(
         showExitDialog = false
     }
 
-    val discoverMoviesState = viewModel.discoverMoviesPagingDataFlow.collectAsLazyPagingItems()
-    val upcomingMoviesState = viewModel.upcomingMoviesPagingDataFlow.collectAsLazyPagingItems()
-    val topRatedMoviesState = viewModel.topRatedMoviesPagingDataFlow.collectAsLazyPagingItems()
-    val nowPlayingMoviesState = viewModel.nowPlayingMoviesPagingDataFlow.collectAsLazyPagingItems()
-    val favouritesMoviesState = viewModel.favouriteMoviesPagingDataFlow.collectAsLazyPagingItems()
+    val discover = viewModel.discover.collectAsLazyPagingItems()
+    val upcoming = viewModel.upcoming.collectAsLazyPagingItems()
+    val topRated = viewModel.topRated.collectAsLazyPagingItems()
+    val nowPlaying = viewModel.nowPlaying.collectAsLazyPagingItems()
+    val favourites = viewModel.favourites.collectAsLazyPagingItems()
 
     BackHandler {
         showExitDialog = true
@@ -65,10 +65,10 @@ fun MoviesScreen(
 
     val isRefreshing by derivedStateOf {
         listOf(
-            discoverMoviesState,
-            upcomingMoviesState,
-            topRatedMoviesState,
-            nowPlayingMoviesState
+            discover,
+            upcoming,
+            topRated,
+            nowPlaying
         ).any { lazyPagingItems -> lazyPagingItems.itemCount > 0 && lazyPagingItems.loadState.refresh is LoadState.Loading }
     }
 
@@ -76,10 +76,10 @@ fun MoviesScreen(
 
     val refreshAllPagingData = {
         listOf(
-            discoverMoviesState,
-            upcomingMoviesState,
-            topRatedMoviesState,
-            nowPlayingMoviesState
+            discover,
+            upcoming,
+            topRated,
+            nowPlaying
         ).forEach { lazyPagingItems -> lazyPagingItems.refresh() }
     }
 
@@ -100,7 +100,7 @@ fun MoviesScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 title = stringResource(R.string.now_playing_movies),
-                state = nowPlayingMoviesState,
+                state = nowPlaying,
                 onPresentableClick = navigateToMovieDetails
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -109,7 +109,7 @@ fun MoviesScreen(
                     .fillMaxWidth()
                     .animateContentSize(),
                 title = stringResource(R.string.popular_movies),
-                state = discoverMoviesState,
+                state = discover,
                 onPresentableClick = navigateToMovieDetails,
                 onMoreClick = {
                     navigator.navigate(
@@ -130,7 +130,7 @@ fun MoviesScreen(
                     .fillMaxWidth()
                     .animateContentSize(),
                 title = stringResource(R.string.upcoming_movies),
-                state = upcomingMoviesState,
+                state = upcoming,
                 onPresentableClick = navigateToMovieDetails,
                 onMoreClick = {
                     navigator.navigate(
@@ -151,7 +151,7 @@ fun MoviesScreen(
                     .fillMaxWidth()
                     .animateContentSize(),
                 title = stringResource(R.string.top_rated_movies),
-                state = topRatedMoviesState,
+                state = topRated,
                 onPresentableClick = navigateToMovieDetails,
                 onMoreClick = {
                     navigator.navigate(
@@ -172,7 +172,7 @@ fun MoviesScreen(
                     .fillMaxWidth()
                     .animateContentSize(),
                 title = "Ulubione",
-                state = favouritesMoviesState,
+                state = favourites,
                 onPresentableClick = navigateToMovieDetails,
                 onMoreClick = {
                     navigator.navigate(

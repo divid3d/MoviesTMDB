@@ -6,7 +6,7 @@ import java.util.*
 data class Season(
     val id: Int,
     @SerializedName("air_date")
-    val airDate: Date,
+    val airDate: Date?,
     val name: String,
     val overview: String,
     @SerializedName("episode_count")

@@ -83,6 +83,13 @@ interface TmdbApi {
         @Query("language") isoCode: String
     ): MoviesResponse
 
+    @GET("tv/{tv_id}/similar")
+    suspend fun getSimilarTvSeries(
+        @Path("tv_id") tvSeriesId: Int,
+        @Query("page") page: Int,
+        @Query("language") isoCode: String
+    ): TvSeriesResponse
+
     @GET("movie/{movie_id}/recommendations")
     suspend fun getMoviesRecommendations(
         @Path("movie_id") movieId: Int,
@@ -90,12 +97,6 @@ interface TmdbApi {
         @Query("language") isoCode: String
     ): MoviesResponse
 
-    @GET("movie/{tv_id}/similar")
-    suspend fun getSimilarTvSeries(
-        @Path("tv_id") tvSeriesId: Int,
-        @Query("page") page: Int,
-        @Query("language") isoCode: String
-    ): TvSeriesResponse
 
     @GET("movie/{tv_id}/recommendations")
     suspend fun getTvSeriesRecommendations(

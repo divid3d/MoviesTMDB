@@ -1,11 +1,10 @@
 package com.example.moviesapp.di
 
 import android.content.Context
-import androidx.paging.DataSource
 import androidx.room.Room
 import com.example.moviesapp.db.FavouritesDatabase
 import com.example.moviesapp.db.FavouritesMoviesDao
-import com.example.moviesapp.model.MovieFavourite
+import com.example.moviesapp.db.FavouritesTvSeriesDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,6 +30,7 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideFavouriteMoviesDataSource(dao: FavouritesMoviesDao): DataSource.Factory<Int, MovieFavourite> =
-        dao.favouriteMovies()
+    fun provideFavouriteTvSeriesDao(database: FavouritesDatabase): FavouritesTvSeriesDao =
+        database.favouritesTvSeriesDao()
+
 }

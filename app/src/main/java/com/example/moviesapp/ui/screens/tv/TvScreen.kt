@@ -31,19 +31,18 @@ fun TvScreen(
 ) {
     val viewModel: TvSeriesViewModel = hiltViewModel()
 
-    val topRatedTvSeriesState = viewModel.topRatedTvSeriesPagingDataFlow.collectAsLazyPagingItems()
-    val onTheAirTvSeriesState = viewModel.onTheAirTvSeriesPagingDataFlow.collectAsLazyPagingItems()
-    val popularTvSeriesState = viewModel.popularTvSeriesPagingDataFlow.collectAsLazyPagingItems()
-    val airingTodayTvSeriesState =
-        viewModel.airingTodayTvSeriesPagingDataFlow.collectAsLazyPagingItems()
-
+    val topRated = viewModel.topRated.collectAsLazyPagingItems()
+    val onTheAir = viewModel.onTheAir.collectAsLazyPagingItems()
+    val popular = viewModel.popular.collectAsLazyPagingItems()
+    val airingToday = viewModel.airingToday.collectAsLazyPagingItems()
+    val favourites = viewModel.favouritesTvSeriesSeriesPagingDataFlow.collectAsLazyPagingItems()
 
     val isRefreshing by derivedStateOf {
         listOf(
-            topRatedTvSeriesState,
-            onTheAirTvSeriesState,
-            popularTvSeriesState,
-            airingTodayTvSeriesState
+            topRated,
+            onTheAir,
+            popular,
+            airingToday
         ).any { lazyPagingItems -> lazyPagingItems.itemCount > 0 && lazyPagingItems.loadState.refresh is LoadState.Loading }
     }
 
@@ -51,11 +50,15 @@ fun TvScreen(
 
     val refreshAllPagingData = {
         listOf(
-            topRatedTvSeriesState,
-            onTheAirTvSeriesState,
-            popularTvSeriesState,
-            airingTodayTvSeriesState
+            topRated,
+            onTheAir,
+            popular,
+            airingToday
         ).forEach { lazyPagingItems -> lazyPagingItems.refresh() }
+    }
+
+    val navigateToTvSeriesDetails: (Int) -> Unit = { tvSeriesId ->
+        navigator.navigate(TvSeriesDetailsScreenDestination(tvSeriesId))
     }
 
     SwipeRefresh(
@@ -71,24 +74,18 @@ fun TvScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 title = stringResource(R.string.now_airing_tv_series),
-                state = onTheAirTvSeriesState
-            ) { tvSeriesId ->
-                navigator.navigate(
-                    TvSeriesDetailsScreenDestination(tvSeriesId)
-                )
-            }
+                state = onTheAir,
+                onPresentableClick = navigateToTvSeriesDetails
+            )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             PresentableSection(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
                 title = stringResource(R.string.top_rated_tv_series),
-                state = topRatedTvSeriesState
-            ) { tvSeriesId ->
-                navigator.navigate(
-                    TvSeriesDetailsScreenDestination(tvSeriesId)
-                )
-            }
+                state = topRated,
+                onPresentableClick = navigateToTvSeriesDetails
+            )
             SectionDivider(
                 modifier = Modifier.padding(
                     start = MaterialTheme.spacing.medium,
@@ -102,12 +99,9 @@ fun TvScreen(
                     .fillMaxWidth()
                     .animateContentSize(),
                 title = stringResource(R.string.today_airing_tv_series),
-                state = airingTodayTvSeriesState
-            ) { tvSeriesId ->
-                navigator.navigate(
-                    TvSeriesDetailsScreenDestination(tvSeriesId)
-                )
-            }
+                state = airingToday,
+                onPresentableClick = navigateToTvSeriesDetails
+            )
             SectionDivider(
                 modifier = Modifier.padding(
                     start = MaterialTheme.spacing.medium,
@@ -121,12 +115,28 @@ fun TvScreen(
                     .fillMaxWidth()
                     .animateContentSize(),
                 title = stringResource(R.string.popular_tv_series),
-                state = popularTvSeriesState
-            ) { tvSeriesId ->
-                navigator.navigate(
-                    TvSeriesDetailsScreenDestination(tvSeriesId)
+                state = popular,
+                onPresentableClick = navigateToTvSeriesDetails
+            )
+            SectionDivider(
+                modifier = Modifier.padding(
+                    start = MaterialTheme.spacing.medium,
+                    top = MaterialTheme.spacing.medium,
+                    end = MaterialTheme.spacing.medium,
+                    bottom = MaterialTheme.spacing.small
                 )
-            }
+            )
+            PresentableSection(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                title = "Ulubione",
+                state = favourites,
+                onPresentableClick = navigateToTvSeriesDetails,
+                onMoreClick = {
+
+                }
+            )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         }
     }

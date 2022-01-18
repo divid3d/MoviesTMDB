@@ -6,13 +6,13 @@ import com.example.moviesapp.model.TvSeries
 import com.example.moviesapp.model.TvSeriesResponse
 
 class TvSeriesDetailsResponseDataSource(
-    private val movieId: Int,
+    private val tvSeriesId: Int,
     private inline val apiHelperMethod: suspend (Int, Int, String) -> TvSeriesResponse
 ) : PagingSource<Int, TvSeries>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TvSeries> {
         return try {
             val nextPage = params.key ?: 1
-            val movieResponse = apiHelperMethod(movieId, nextPage, "pl-PL")
+            val movieResponse = apiHelperMethod(tvSeriesId, nextPage, "pl-PL")
 
             val currentPage = movieResponse.page
             val totalPages = movieResponse.totalPages

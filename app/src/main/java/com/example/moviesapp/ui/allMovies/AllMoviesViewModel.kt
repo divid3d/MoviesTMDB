@@ -48,7 +48,7 @@ class AllMoviesViewModel @Inject constructor(
             pagingData.map { movie -> movie.appendUrls(config) }
         }
     private val favouriteMoviesDataFlow: Flow<PagingData<Presentable>> =
-        favouritesRepository.getFavouritesMoviesDataSource().combine(config) { pagingData, config ->
+        favouritesRepository.favouriteMovies().combine(config) { pagingData, config ->
             pagingData.map { favouriteMovie -> favouriteMovie.appendUrls(config) }
         }
 

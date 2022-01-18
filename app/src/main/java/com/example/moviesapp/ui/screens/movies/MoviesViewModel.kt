@@ -25,22 +25,22 @@ class MoviesViewModel @Inject constructor(
 ) : ViewModel() {
     private val config = configRepository.config
 
-    val discoverMoviesPagingDataFlow: Flow<PagingData<Presentable>> =
+    val discover: Flow<PagingData<Presentable>> =
         movieRepository.discoverMovies().combine(config) { pagingData, config ->
             pagingData.map { movie -> movie.appendUrls(config) }
         }
 
-    val upcomingMoviesPagingDataFlow: Flow<PagingData<Presentable>> =
+    val upcoming: Flow<PagingData<Presentable>> =
         movieRepository.upcomingMovies().combine(config) { pagingData, config ->
             pagingData.map { movie -> movie.appendUrls(config) }
         }
 
-    val topRatedMoviesPagingDataFlow: Flow<PagingData<Presentable>> =
+    val topRated: Flow<PagingData<Presentable>> =
         movieRepository.topRatedMovies().combine(config) { pagingData, config ->
             pagingData.map { movie -> movie.appendUrls(config) }
         }
 
-    val nowPlayingMoviesPagingDataFlow: Flow<PagingData<Presentable>> =
+    val nowPlaying: Flow<PagingData<Presentable>> =
         movieRepository.nowPlayingMovies().combine(config) { pagingData, config ->
             pagingData
                 .filter { tvSeries ->
@@ -51,8 +51,8 @@ class MoviesViewModel @Inject constructor(
                 .map { movie -> movie.appendUrls(config) }
         }
 
-    val favouriteMoviesPagingDataFlow: Flow<PagingData<Presentable>> =
-        favouritesRepository.getFavouritesMoviesDataSource().combine(config) { pagingData, config ->
+    val favourites: Flow<PagingData<Presentable>> =
+        favouritesRepository.favouriteMovies().combine(config) { pagingData, config ->
             pagingData.map { movie -> movie.appendUrls(config) }
         }
 

@@ -20,8 +20,8 @@ interface FavouritesMoviesDao {
     @Query("DELETE FROM MovieFavourite WHERE id = :movieId")
     suspend fun unlikeMovie(movieId: Int)
 
-    @Query("SELECT EXISTS (SELECT 1 FROM MovieFavourite WHERE id = :id)")
-    suspend fun exists(id: Int): Boolean
+//    @Query("SELECT EXISTS (SELECT 1 FROM MovieFavourite WHERE id = :id)")
+//    suspend fun exists(id: Int): Boolean
 
     @Query("SELECT id FROM MovieFavourite")
     fun favouriteMoviesIds(): Flow<List<Int>>

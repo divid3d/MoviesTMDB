@@ -7,8 +7,10 @@ import androidx.paging.map
 import com.example.moviesapp.model.Config
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.TvSeries
+import com.example.moviesapp.model.TvSeriesFavourite
 import com.example.moviesapp.other.getImageUrl
 import com.example.moviesapp.repository.ConfigRepository
+import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.TvSeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -18,12 +20,13 @@ import javax.inject.Inject
 @HiltViewModel
 class TvSeriesViewModel @Inject constructor(
     private val configRepository: ConfigRepository,
-    private val tvSeriesRepository: TvSeriesRepository
+    private val tvSeriesRepository: TvSeriesRepository,
+    private val favouritesRepository: FavouritesRepository
 ) : ViewModel() {
 
     private val config = configRepository.config
 
-    val onTheAirTvSeriesPagingDataFlow: Flow<PagingData<Presentable>> =
+    val onTheAir: Flow<PagingData<Presentable>> =
         tvSeriesRepository.onTheAirTvSeries().combine(config) { pagingData, config ->
             pagingData
                 .filter { tvSeries ->
@@ -34,18 +37,23 @@ class TvSeriesViewModel @Inject constructor(
                 .map { tvSeries -> tvSeries.appendUrls(config) }
         }
 
-    val popularTvSeriesPagingDataFlow: Flow<PagingData<Presentable>> =
+    val popular: Flow<PagingData<Presentable>> =
         tvSeriesRepository.popularTvSeries().combine(config) { pagingData, config ->
             pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
         }
 
-    val topRatedTvSeriesPagingDataFlow: Flow<PagingData<Presentable>> =
+    val topRated: Flow<PagingData<Presentable>> =
         tvSeriesRepository.topRatedTvSeries().combine(config) { pagingData, config ->
             pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
         }
 
-    val airingTodayTvSeriesPagingDataFlow: Flow<PagingData<Presentable>> =
+    val airingToday: Flow<PagingData<Presentable>> =
         tvSeriesRepository.airingTodayTvSeries().combine(config) { pagingData, config ->
+            pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
+        }
+
+    val favouritesTvSeriesSeriesPagingDataFlow: Flow<PagingData<Presentable>> =
+        favouritesRepository.favouritesTvSeries().combine(config) { pagingData, config ->
             pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
         }
 
@@ -58,6 +66,18 @@ class TvSeriesViewModel @Inject constructor(
         return copy(
             posterUrl = tvSeriesPosterUrl,
             backdropUrl = tvSeriesBackdropUrl
+        )
+    }
+
+    private fun TvSeriesFavourite.appendUrls(
+        config: Config?
+    ): TvSeriesFavourite {
+        val posterUrl = config?.getImageUrl(posterPath)
+        val backdropPathUrl = config?.getImageUrl(backdropPath, size = "w300")
+
+        return copy(
+            posterUrl = posterUrl,
+            backdropUrl = backdropPathUrl
         )
     }
 
