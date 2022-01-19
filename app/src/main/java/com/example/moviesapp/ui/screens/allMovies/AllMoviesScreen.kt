@@ -8,6 +8,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -30,12 +31,14 @@ fun AllMoviesScreen(
     val viewModel: AllMoviesViewModel = hiltViewModel()
     val movies = viewModel.movies.collectAsLazyPagingItems()
 
+    val favouriteMoviesCount by viewModel.favouriteMoviesCount.collectAsState()
+
     val appbarTitle by derivedStateOf {
         when (movieType) {
             MovieType.Popular -> "Popularne filmy"
             MovieType.Upcoming -> "Nadchodzące filmy"
             MovieType.TopRated -> "Najwyżej oceniane filmy"
-            MovieType.Favourite -> "Ulubione filmy"
+            MovieType.Favourite -> "Ulubione filmy ($favouriteMoviesCount)"
         }
     }
     Column(modifier = Modifier.fillMaxSize()) {

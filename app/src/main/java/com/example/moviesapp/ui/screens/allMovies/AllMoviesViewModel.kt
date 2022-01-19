@@ -2,6 +2,7 @@ package com.example.moviesapp.ui.screens.allMovies
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.example.moviesapp.model.*
@@ -12,9 +13,7 @@ import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @FlowPreview
@@ -66,6 +65,9 @@ class AllMoviesViewModel @Inject constructor(
             MovieType.Favourite -> favourites
         }
     }
+
+    val favouriteMoviesCount: StateFlow<Int> = favouritesRepository.getFavouriteMoviesCount()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), 0)
 
     private fun Movie.appendUrls(
         config: Config?

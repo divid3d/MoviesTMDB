@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
+import coil.ImageLoader
+import coil.compose.LocalImageLoader
 import com.example.moviesapp.model.SnackBarEvent
 import com.example.moviesapp.ui.components.BottomBar
 import com.example.moviesapp.ui.screens.NavGraphs
@@ -36,6 +39,7 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
+            val context = LocalContext.current
             val snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
             val snackBarEvent: SnackBarEvent? by mainViewModel.networkSnackBarEvent.collectAsState()
 
@@ -78,28 +82,30 @@ class MainActivity : ComponentActivity() {
                 )
             }
 
-            MoviesAppTheme {
-                // A surface container using the 'background' color from the theme
-                ProvideWindowInsets {
-                    Scaffold(
-                        scaffoldState = rememberScaffoldState(snackbarHostState = snackBarHostState),
-                        bottomBar = {
-                            BottomBar(
-                                modifier = Modifier.navigationBarsPadding(),
-                                navController = navController
-                            )
-                        }
-                    ) { innerPadding ->
-                        Surface(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = innerPadding.calculateBottomPadding()),
-                            color = MaterialTheme.colors.background
-                        ) {
-                            DestinationsNavHost(
-                                navGraph = NavGraphs.root,
-                                navController = navController
-                            )
+            CompositionLocalProvider(LocalImageLoader provides ImageLoader(context)) {
+                MoviesAppTheme {
+                    // A surface container using the 'background' color from the theme
+                    ProvideWindowInsets {
+                        Scaffold(
+                            scaffoldState = rememberScaffoldState(snackbarHostState = snackBarHostState),
+                            bottomBar = {
+                                BottomBar(
+                                    modifier = Modifier.navigationBarsPadding(),
+                                    navController = navController
+                                )
+                            }
+                        ) { innerPadding ->
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(bottom = innerPadding.calculateBottomPadding()),
+                                color = MaterialTheme.colors.background
+                            ) {
+                                DestinationsNavHost(
+                                    navGraph = NavGraphs.root,
+                                    navController = navController
+                                )
+                            }
                         }
                     }
                 }

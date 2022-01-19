@@ -195,6 +195,7 @@ fun ResultPresentableItem(
         if (scoreItemVisible) {
             ScoreItem(
                 modifier = Modifier
+                    .size(56.dp)
                     .align(Alignment.TopEnd)
                     .padding(MaterialTheme.spacing.extraSmall),
                 score = presentable.voteAverage

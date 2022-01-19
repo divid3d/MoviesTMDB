@@ -14,12 +14,13 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
+import coil.transform.BlurTransformation
 import com.example.moviesapp.model.MovieDetails
 import com.example.moviesapp.ui.components.PosterPlaceholder
 import com.example.moviesapp.ui.theme.spacing
@@ -30,19 +31,26 @@ fun MovieDetailsTopSection(
     modifier: Modifier = Modifier,
     movieDetails: MovieDetails?
 ) {
+    val context = LocalContext.current
+
     val isLoading by derivedStateOf {
         movieDetails == null
     }
 
     Box(modifier = modifier) {
         Image(
-            modifier = Modifier
-                .matchParentSize()
-                .blur(16.dp),
+            modifier = Modifier.matchParentSize(),
             painter = rememberImagePainter(
                 data = movieDetails?.backdropUrl,
                 builder = {
                     fadeIn(animationSpec = spring())
+                    transformations(
+                        BlurTransformation(
+                            context = context,
+                            radius = 16f,
+                            sampling = 2f
+                        )
+                    )
                 }
             ),
             contentDescription = null,

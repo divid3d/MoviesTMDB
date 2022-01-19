@@ -3,8 +3,6 @@ package com.example.moviesapp.ui.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
@@ -12,10 +10,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.lerp
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.compose.LazyPagingItems
 import coil.compose.rememberImagePainter
+import coil.transform.BlurTransformation
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.ui.theme.Size
 import com.example.moviesapp.ui.theme.sizes
@@ -50,6 +52,8 @@ fun PresentableTopSection(
     state: LazyPagingItems<Presentable>,
     onPresentableClick: (Int) -> Unit = {}
 ) {
+    val context = LocalContext.current
+
     val pagerState = rememberPagerState()
     val density = LocalDensity.current
 
@@ -63,26 +67,33 @@ fun PresentableTopSection(
 
     val itemHeight = density.run { MaterialTheme.sizes.presentableItemBig.height.toPx() }
 
-    LaunchedEffect(selectedPresentable) {
-        backdropScale.animateTo(
-            targetValue = 1.3f,
-            animationSpec = tween(durationMillis = 10000, easing = LinearEasing)
-        )
-    }
+//    LaunchedEffect(selectedPresentable) {
+//        backdropScale.animateTo(
+//            targetValue = 1.3f,
+//            animationSpec = tween(durationMillis = 10000, easing = LinearEasing)
+//        )
+//    }
 
     Box(modifier = modifier) {
         Crossfade(
             modifier = Modifier
                 .matchParentSize()
-                .blur(16.dp),
+                .scale(backdropScale.value),
             targetState = selectedPresentable
         ) { movie ->
             Image(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .scale(backdropScale.value),
+                modifier = Modifier.fillMaxSize(),
                 painter = rememberImagePainter(
                     data = movie?.backdropUrl,
+                    builder = {
+                        transformations(
+                            BlurTransformation(
+                                context = context,
+                                radius = 16f,
+                                sampling = 2f
+                            )
+                        )
+                    }
                 ),
                 contentDescription = null,
                 contentScale = ContentScale.FillBounds

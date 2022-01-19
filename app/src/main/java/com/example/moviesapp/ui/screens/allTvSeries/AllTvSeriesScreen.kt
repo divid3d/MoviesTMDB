@@ -8,6 +8,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -30,12 +31,14 @@ fun AllTvSeriesScreen(
     val viewModel: AllTvSeriesViewModel = hiltViewModel()
     val tvSeries = viewModel.tvSeries.collectAsLazyPagingItems()
 
+    val favouriteTvSeriesCount by viewModel.favouriteTvSeriesCount.collectAsState()
+
     val appbarTitle by derivedStateOf {
         when (tvSeriesType) {
             TvSeriesType.TopRated -> "Najwyżej oceniane seriale"
             TvSeriesType.AiringToday -> "Seriale emitowane dzisiaj"
             TvSeriesType.Popular -> "Popularne seriale"
-            TvSeriesType.Favourite -> "Ulubione seriale"
+            TvSeriesType.Favourite -> "Ulubione seriale ($favouriteTvSeriesCount)"
         }
     }
     Column(modifier = Modifier.fillMaxSize()) {

@@ -78,8 +78,12 @@ class FavouritesRepository @Inject constructor(
         favouritesTvSeriesDao.favouriteTvSeries().asPagingSourceFactory()()
     }.flow
 
-    fun getFavouritesMoviesIds() = favouritesMoviesDao.favouriteMoviesIds()
+    fun getFavouritesMoviesIds(): Flow<List<Int>> = favouritesMoviesDao.favouriteMoviesIds()
 
-    fun getFavouriteTvSeriesIds() = favouritesTvSeriesDao.favouriteTvSeriesIds()
+    fun getFavouriteTvSeriesIds(): Flow<List<Int>> = favouritesTvSeriesDao.favouriteTvSeriesIds()
+
+    fun getFavouriteMoviesCount(): Flow<Int> = favouritesMoviesDao.favouriteMoviesCount()
+
+    fun getFavouriteTvSeriesCount(): Flow<Int> = favouritesTvSeriesDao.favouriteTvSeriesCount()
 
 }
