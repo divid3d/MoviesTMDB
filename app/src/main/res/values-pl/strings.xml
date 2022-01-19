@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Movies TMDB</string>
 
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
     <string name="movies_label">Filmy</string>
     <string name="tv_series_label">Seriale</string>
     <string name="search_label">Szukaj</string>
@@ -18,4 +21,31 @@
 
     <string name="read_more">Czytaj więcej</string>
     <string name="read_less">Czytaj mniej</string>
+
+    <string name="movie_details_label">Szczegóły filmu</string>
+    <string name="movie_details_budget">Budżet</string>
+    <string name="movie_details_status">Status</string>
+    <string name="movie_details_boxoffice">Boxoffice</string>
+    <string name="movie_details_genres">Gatunki</string>
+    <string name="movie_details_similar">Podobne</string>
+    <string name="movie_details_recommendations">Polecane</string>
+
+    <string name="tv_series_details_label">Szczegóły serialu</string>
+    <string name="tv_series_details_type">Typ</string>
+    <string name="tv_series_details_status">Status</string>
+    <string name="tv_series_details_in_production">W produkcji</string>
+    <string name="tv_series_details_genres">Gatunki</string>
+    <string name="tv_series_details_similar">Podobne</string>
+    <string name="tv_series_details_recommendations">Rekomendacje</string>
+
+    <string name="all_movies_top_rated_label">Najwyżej oceniane filmy</string>
+    <string name="all_movies_upcoming_label">Nachodzące filmy</string>
+    <string name="all_movies_popular_label">Popularne filmy</string>
+    <string name="all_movies_favourites_label" formatted="true">Ulubione filmy (%d)</string>
+
+    <string name="all_tv_series_top_rated_label">Najwyżej oceniane seriale</string>
+    <string name="all_tv_series_airing_today_label">Seriale emitowane dzisiaj</string>
+    <string name="all_tv_series_popular_label">Popularne seriale</string>
+    <string name="all_tv_series_favourites_label" formatted="true">Ulubione seriale (%d)</string>
+
 </resources>

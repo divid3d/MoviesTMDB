@@ -1,7 +1,6 @@
 package com.example.moviesapp.model
 
 import com.google.gson.annotations.SerializedName
-import java.util.*
 
 
 data class TvSeries(
@@ -10,16 +9,16 @@ data class TvSeries(
     override val posterPath: String?,
     override val overview: String,
     @SerializedName("first_air_date")
-    val firstAirDate: Date,
+    val firstAirDate: String?,
     @SerializedName("genre_ids")
     val genreIds: List<Int>,
     @SerializedName("original_name")
-    val originalName: String,
+    val originalName: String?,
     @SerializedName("original_language")
     val originalLanguage: String,
     @SerializedName("origin_country")
-    val originCountry: List<String>,
-    val name: String,
+    val originCountry: List<String>?,
+    val name: String?,
     @SerializedName("backdrop_path")
     override val backdropPath: String?,
     val popularity: Float,
@@ -33,5 +32,5 @@ data class TvSeries(
     override val backdropUrl: String?
 ) : Presentable {
     override val title: String
-        get() = name
+        get() = name.orEmpty()
 }

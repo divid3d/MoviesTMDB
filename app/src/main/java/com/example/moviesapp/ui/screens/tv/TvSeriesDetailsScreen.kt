@@ -17,15 +17,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.moviesapp.ui.components.AppBar
-import com.example.moviesapp.ui.components.LikeButton
-import com.example.moviesapp.ui.components.PresentableDetailsTopSection
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.moviesapp.R
+import com.example.moviesapp.ui.components.*
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.movies.components.GenresSection
 import com.example.moviesapp.ui.screens.movies.components.OverviewSection
 import com.example.moviesapp.ui.theme.Black500
@@ -47,6 +49,12 @@ fun TvSeriesDetailsScreen(
     val density = LocalDensity.current
 
     val tvSeriesDetails by viewModel.tvSeriesDetails.collectAsState()
+    val similar = viewModel.similarTvSeries?.collectAsLazyPagingItems()
+    val recommendations = viewModel.tvSeriesRecommendations?.collectAsLazyPagingItems()
+    val seasonNumbers by viewModel.seasonNumbers.collectAsState()
+
+    val selectedSeasonNumber by viewModel.selectedSeasonNumber.collectAsState()
+    val episodes by viewModel.episodes.collectAsState()
 
     val scrollState = rememberScrollState()
 
@@ -79,12 +87,26 @@ fun TvSeriesDetailsScreen(
                     .fillMaxWidth(),
                 presentable = tvSeriesDetails
             ) {
-                tvSeriesDetails?.let { details ->
-                    Text(details.status)
-                    Text(details.popularity.toString())
-                    Text(details.voteAverage.toString())
-                    Text(details.voteCount.toString())
-                    GenresSection(genres = details.genres)
+
+                Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
+                    tvSeriesDetails?.let { details ->
+                        LabeledText(
+                            label = stringResource(R.string.tv_series_details_type),
+                            text = details.type
+                        )
+                        LabeledText(
+                            label = stringResource(R.string.tv_series_details_status),
+                            text = details.status
+                        )
+                        LabeledText(
+                            label = stringResource(R.string.tv_series_details_in_production),
+                            text = stringResource(if (details.inProduction) R.string.yes else R.string.no)
+                        )
+                        Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
+                            Label(label = stringResource(R.string.tv_series_details_genres))
+                            GenresSection(genres = details.genres)
+                        }
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -114,38 +136,52 @@ fun TvSeriesDetailsScreen(
                     )
                 }
             }
-
-//            similarMoviesState?.let { lazyPagingItems ->
-//                PresentableSection(
-//                    modifier = Modifier
-//                        .fillMaxWidth(),
-//                    title = "Podobne",
-//                    state = lazyPagingItems
-//                ) { movieId ->
-//                    navigator.navigate(
-//                        MovieDetailsScreenDestination(movieId)
-//                    )
-//                }
-//            }
-//            moviesRecommendationState?.let { lazyPagingItems ->
-//                PresentableSection(
-//                    modifier = Modifier
-//                        .fillMaxWidth(),
-//                    title = "Polecane",
-//                    state = lazyPagingItems
-//                ) { movieId ->
-//                    navigator.navigate(
-//                        MovieDetailsScreenDestination(movieId)
-//                    )
-//                }
-//            }
+            SeasonsList(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = MaterialTheme.spacing.medium),
+                seasonNumbers = seasonNumbers,
+                selectedSeason = selectedSeasonNumber
+            ) { seasonNumber ->
+                viewModel.getTvSeason(seasonNumber)
+            }
+            EpisodesList(
+                modifier = Modifier.fillMaxWidth(),
+                episodes = episodes
+            )
+            similar?.let { lazyPagingItems ->
+                PresentableSection(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    title = stringResource(R.string.tv_series_details_similar),
+                    showMoreButton = false,
+                    state = lazyPagingItems
+                ) { tvSeriesId ->
+                    navigator.navigate(
+                        TvSeriesDetailsScreenDestination(tvSeriesId)
+                    )
+                }
+            }
+            recommendations?.let { lazyPagingItems ->
+                PresentableSection(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    title = stringResource(R.string.tv_series_details_recommendations),
+                    showMoreButton = false,
+                    state = lazyPagingItems
+                ) { tvSeriesId ->
+                    navigator.navigate(
+                        TvSeriesDetailsScreenDestination(tvSeriesId)
+                    )
+                }
+            }
             Spacer(
                 modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.large)
             )
         }
         AppBar(
             modifier = Modifier.align(Alignment.TopCenter),
-            title = "Szczegóły serialu",
+            title = stringResource(R.string.tv_series_details_label),
             backgroundColor = Black500,
             action = {
                 IconButton(onClick = { navigator.navigateUp() }) {

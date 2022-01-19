@@ -48,4 +48,10 @@ interface TmdbApiHelper {
         isoCode: String = "pl-PL"
     ): TvSeriesResponse
 
+    suspend fun getTvSeasons(
+        tvSeriesId: Int,
+        seasonNumber: Int,
+        isoCode: String = "pl-PL"
+    ): TvSeasonsResponse
+
 }

@@ -5,7 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.example.moviesapp.model.*
+import com.example.moviesapp.model.Config
+import com.example.moviesapp.model.Episode
+import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.model.TvSeriesDetails
+import com.example.moviesapp.other.appendUrl
+import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.other.getImageUrl
 import com.example.moviesapp.repository.ConfigRepository
@@ -51,6 +56,19 @@ class TvSeriesDetailsViewModel @Inject constructor(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
+    val seasonNumbers: StateFlow<List<Int>> = _tvSeriesDetails.map { details ->
+        details?.seasons?.map { season -> season.seasonNumber } ?: emptyList()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
+
+    private val _selectedSeasonNumber: MutableStateFlow<Int?> = MutableStateFlow(null)
+    val selectedSeasonNumber: StateFlow<Int?> = _selectedSeasonNumber.asStateFlow()
+
+    private val _episodes: MutableStateFlow<List<Episode>> =
+        MutableStateFlow(emptyList())
+    val episodes: StateFlow<List<Episode>> = _episodes.combine(config) { episodes, config ->
+        episodes.map { episode -> episode.appendUrls(config) }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
+
     init {
         viewModelScope.launch {
             tvSeriesId.collectLatest { tvSeriesId ->
@@ -94,47 +112,22 @@ class TvSeriesDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun TvSeries.appendUrls(
-        config: Config?
-    ): TvSeries {
-        val tvSeriesPosterUrl = config?.getImageUrl(posterPath)
-        val tvSeriesBackdropUrl = config?.getImageUrl(backdropPath, size = "w300")
+    fun getTvSeason(seasonNumber: Int) {
+        viewModelScope.launch {
+            tvSeriesId.collectLatest { id ->
+                id?.let {
+                    _selectedSeasonNumber.emit(seasonNumber)
 
-        return copy(
-            posterUrl = tvSeriesPosterUrl,
-            backdropUrl = tvSeriesBackdropUrl,
+                    val season = tvSeriesRepository.getTvSeasons(
+                        tvSeriesId = it,
+                        seasonNumber = seasonNumber
+                    )
 
-            )
-    }
-
-    private fun Creator.appendUrls(
-        config: Config?
-    ): Creator {
-        val profileUrl = config?.getImageUrl(profilePath, size = "w185")
-
-        return copy(
-            profileUrl = profileUrl
-        )
-    }
-
-    private fun Episode.appendUrls(
-        config: Config?
-    ): Episode {
-        val stillUrl = config?.getImageUrl(stillPath, size = "w300")
-
-        return copy(
-            stillUrl = stillUrl
-        )
-    }
-
-    private fun Season.appendUrl(
-        config: Config?
-    ): Season {
-        val posterUrl = config?.getImageUrl(posterPath)
-
-        return copy(
-            posterUrl = posterUrl
-        )
+                    val episodes = season.episodes
+                    _episodes.emit(episodes)
+                }
+            }
+        }
     }
 
 }

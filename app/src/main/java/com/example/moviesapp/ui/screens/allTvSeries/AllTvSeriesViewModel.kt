@@ -5,9 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.example.moviesapp.model.*
+import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.model.TvSeriesType
+import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.other.asFlow
-import com.example.moviesapp.other.getImageUrl
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.TvSeriesRepository
@@ -68,29 +69,5 @@ class AllTvSeriesViewModel @Inject constructor(
 
     val favouriteTvSeriesCount: StateFlow<Int> = favouritesRepository.getFavouriteTvSeriesCount()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), 0)
-
-    private fun TvSeries.appendUrls(
-        config: Config?
-    ): TvSeries {
-        val moviePosterUrl = config?.getImageUrl(posterPath)
-        val movieBackdropUrl = config?.getImageUrl(backdropPath, size = "w300")
-
-        return copy(
-            posterUrl = moviePosterUrl,
-            backdropUrl = movieBackdropUrl
-        )
-    }
-
-    private fun TvSeriesFavourite.appendUrls(
-        config: Config?
-    ): TvSeriesFavourite {
-        val moviePosterUrl = config?.getImageUrl(posterPath)
-        val movieBackdropUrl = config?.getImageUrl(backdropPath, size = "w300")
-
-        return copy(
-            posterUrl = moviePosterUrl,
-            backdropUrl = movieBackdropUrl
-        )
-    }
 
 }

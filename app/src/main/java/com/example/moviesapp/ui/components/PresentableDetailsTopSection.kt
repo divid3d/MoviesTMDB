@@ -77,11 +77,8 @@ fun PresentableDetailsTopSection(
                     .padding(MaterialTheme.spacing.medium)
             ) {
                 PresentableItem(
-                    modifier = Modifier
-                        .width(MaterialTheme.sizes.presentableItemBig.width)
-                        .height(MaterialTheme.sizes.presentableItemBig.height),
+                    size = MaterialTheme.sizes.presentableItemBig,
                     showTitle = false,
-                    showScore = false,
                     presentableState = presentableState
                 )
                 Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))

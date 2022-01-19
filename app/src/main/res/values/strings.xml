@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Movies TMDB</string>
 
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
     <string name="movies_label">Movies</string>
     <string name="tv_series_label">TV Series</string>
     <string name="search_label">Search</string>
@@ -18,4 +21,31 @@
 
     <string name="read_more">Read more</string>
     <string name="read_less">Read less</string>
+
+    <string name="movie_details_label">Movie details</string>
+    <string name="movie_details_budget">Budget</string>
+    <string name="movie_details_status">Status</string>
+    <string name="movie_details_boxoffice">Boxoffice</string>
+    <string name="movie_details_genres">Genres</string>
+    <string name="movie_details_similar">Similar</string>
+    <string name="movie_details_recommendations">Recommendations</string>
+
+    <string name="tv_series_details_label">Tv series details</string>
+    <string name="tv_series_details_type">Type</string>
+    <string name="tv_series_details_status">Status</string>
+    <string name="tv_series_details_in_production">In production</string>
+    <string name="tv_series_details_genres">Genres</string>
+    <string name="tv_series_details_similar">Similar</string>
+    <string name="tv_series_details_recommendations">Recommendations</string>
+
+    <string name="all_movies_top_rated_label">Top rated movies</string>
+    <string name="all_movies_upcoming_label">Upcoming movies</string>
+    <string name="all_movies_popular_label">Popular movies</string>
+    <string name="all_movies_favourites_label" formatted="true">Favourites movies (%d)</string>
+
+    <string name="all_tv_series_top_rated_label">Top rated tv series</string>
+    <string name="all_tv_series_airing_today_label">Airing today tv series</string>
+    <string name="all_tv_series_popular_label">Popular tv series</string>
+    <string name="all_tv_series_favourites_label" formatted="true">Favourites tv series (%d)</string>
+
 </resources>

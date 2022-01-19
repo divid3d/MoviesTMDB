@@ -10,7 +10,7 @@ data class CastMember(
     val knownForDepartment: String?,
     val name: String,
     @SerializedName("original_name")
-    val originalName: String,
+    val originalName: String?,
     val popularity: Float,
     @SerializedName("profile_path")
     val profilePath: String?,

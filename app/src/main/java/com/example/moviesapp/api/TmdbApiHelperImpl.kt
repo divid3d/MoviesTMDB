@@ -69,4 +69,11 @@ class TmdbApiHelperImpl @Inject constructor(
     ): TvSeriesResponse =
         tmdbApi.getTvSeriesRecommendations(tvSeriesId, page, isoCode)
 
+    override suspend fun getTvSeasons(
+        tvSeriesId: Int,
+        seasonNumber: Int,
+        isoCode: String
+    ): TvSeasonsResponse =
+        tmdbApi.getTvSeasons(tvSeriesId, seasonNumber, isoCode)
+
 }

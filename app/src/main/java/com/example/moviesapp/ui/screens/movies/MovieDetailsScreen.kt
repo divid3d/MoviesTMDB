@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -25,10 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.moviesapp.ui.components.AppBar
-import com.example.moviesapp.ui.components.LikeButton
-import com.example.moviesapp.ui.components.PresentableDetailsTopSection
-import com.example.moviesapp.ui.components.PresentableSection
+import com.example.moviesapp.R
+import com.example.moviesapp.other.formattedMoney
+import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.movies.components.CastSection
 import com.example.moviesapp.ui.screens.movies.components.CrewSection
@@ -110,13 +110,28 @@ fun MovieDetailsScreen(
                 presentable = movieDetails,
             ) {
                 movieDetails?.let { details ->
-                    Text(details.budget.toString())
-                    Text(details.status)
-                    Text(details.popularity.toString())
-                    Text(details.voteAverage.toString())
-                    Text(details.voteCount.toString())
-                    Text(details.revenue.toString())
-                    GenresSection(genres = details.genres)
+                    Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
+                        if (details.budget > 0) {
+                            LabeledText(
+                                label = stringResource(R.string.movie_details_budget),
+                                text = details.budget.formattedMoney()
+                            )
+                        }
+                        LabeledText(
+                            label = stringResource(R.string.movie_details_status),
+                            text = details.status
+                        )
+                        if (details.revenue > 0) {
+                            LabeledText(
+                                label = stringResource(R.string.movie_details_boxoffice),
+                                text = details.revenue.formattedMoney()
+                            )
+                        }
+                        Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
+                            Label(label = stringResource(R.string.movie_details_genres))
+                            GenresSection(genres = details.genres)
+                        }
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -168,7 +183,7 @@ fun MovieDetailsScreen(
                 PresentableSection(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    title = "Podobne",
+                    title = stringResource(R.string.movie_details_similar),
                     showMoreButton = false,
                     state = lazyPagingItems
                 ) { movieId ->
@@ -181,7 +196,7 @@ fun MovieDetailsScreen(
                 PresentableSection(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    title = "Polecane",
+                    title = stringResource(R.string.movie_details_recommendations),
                     showMoreButton = false,
                     state = lazyPagingItems
                 ) { movieId ->
@@ -196,7 +211,7 @@ fun MovieDetailsScreen(
         }
         AppBar(
             modifier = Modifier.align(Alignment.TopCenter),
-            title = "Szczegóły filmu",
+            title = stringResource(R.string.movie_details_label),
             backgroundColor = Black500,
             action = {
                 IconButton(onClick = { navigator.navigateUp() }) {
