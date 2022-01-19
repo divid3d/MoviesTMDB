@@ -25,8 +25,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.LikeButton
+import com.example.moviesapp.ui.components.PresentableDetailsTopSection
+import com.example.moviesapp.ui.screens.movies.components.GenresSection
 import com.example.moviesapp.ui.screens.movies.components.OverviewSection
-import com.example.moviesapp.ui.screens.tv.components.TvSeriesDetailsTopSection
 import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.LocalWindowInsets
@@ -73,11 +74,19 @@ fun TvSeriesDetailsScreen(
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
-            TvSeriesDetailsTopSection(
+            PresentableDetailsTopSection(
                 modifier = Modifier
                     .fillMaxWidth(),
-                tvSeriesDetails = tvSeriesDetails
-            )
+                presentable = tvSeriesDetails
+            ) {
+                tvSeriesDetails?.let { details ->
+                    Text(details.status)
+                    Text(details.popularity.toString())
+                    Text(details.voteAverage.toString())
+                    Text(details.voteCount.toString())
+                    GenresSection(genres = details.genres)
+                }
+            }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             tvSeriesDetails?.let { details ->
                 Column(

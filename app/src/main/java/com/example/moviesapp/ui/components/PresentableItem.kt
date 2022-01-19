@@ -44,6 +44,7 @@ fun PresentableItem(
     size: Size = MaterialTheme.sizes.presentableItemSmall,
     presentableState: PresentableState,
     showTitle: Boolean = true,
+    showScore: Boolean = true,
     transformations: GraphicsLayerScope.() -> Unit = {},
     onClick: () -> Unit = {}
 ) {
@@ -65,6 +66,7 @@ fun PresentableItem(
                     ResultPresentableItem(
                         presentableStateResult = state,
                         showTitle = showTitle,
+                        showScore = showScore,
                         onClick = onClick
                     )
                 }
@@ -133,8 +135,9 @@ fun LoadingPresentableItem(
 @Composable
 fun ResultPresentableItem(
     modifier: Modifier = Modifier,
-    showTitle: Boolean = true,
     presentableStateResult: PresentableState.Result,
+    showTitle: Boolean = true,
+    showScore: Boolean = true,
     onClick: () -> Unit = {}
 ) {
     val presentable by derivedStateOf {
@@ -192,7 +195,7 @@ fun ResultPresentableItem(
             }
         }
 
-        if (scoreItemVisible) {
+        if (scoreItemVisible && showScore) {
             ScoreItem(
                 modifier = Modifier
                     .size(56.dp)

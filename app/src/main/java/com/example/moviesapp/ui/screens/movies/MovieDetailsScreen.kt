@@ -27,11 +27,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.LikeButton
+import com.example.moviesapp.ui.components.PresentableDetailsTopSection
 import com.example.moviesapp.ui.components.PresentableSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.movies.components.CastSection
 import com.example.moviesapp.ui.screens.movies.components.CrewSection
-import com.example.moviesapp.ui.screens.movies.components.MovieDetailsTopSection
+import com.example.moviesapp.ui.screens.movies.components.GenresSection
 import com.example.moviesapp.ui.screens.movies.components.OverviewSection
 import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.spacing
@@ -103,27 +104,35 @@ fun MovieDetailsScreen(
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
-            MovieDetailsTopSection(
+            PresentableDetailsTopSection(
                 modifier = Modifier
                     .fillMaxWidth(),
-                movieDetails = movieDetails
-            )
+                presentable = movieDetails,
+            ) {
+                movieDetails?.let { details ->
+                    Text(details.budget.toString())
+                    Text(details.status)
+                    Text(details.popularity.toString())
+                    Text(details.voteAverage.toString())
+                    Text(details.voteCount.toString())
+                    Text(details.revenue.toString())
+                    GenresSection(genres = details.genres)
+                }
+            }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             movieDetails?.let { details ->
                 Column(
                     modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                 ) {
-                    details.title?.let { title ->
-                        Text(
-                            text = title,
-                            style = TextStyle(
-                                color = Color.White,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                    Text(
+                        text = details.title,
+                        style = TextStyle(
+                            color = Color.White,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
                         )
-                    }
+                    )
                     if (otherOriginalTitle) {
                         Text(text = details.originalTitle)
                     }

@@ -59,15 +59,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-//            lifecycleScope.launchWhenStarted {
-//                mainViewModel.snackBarEventFlow
-//                    .collect { event ->
-//                        when(event){
-//                            is MainViewModel.SnackBarEvent.InternetConnectionLost -> {}
-//                            is MainViewModel.SnackBarEvent.InternetConnectionRegained -> {}
-//                        }
-//                    }
-//            }
+
             val systemUiController = rememberSystemUiController()
             val navController = rememberNavController()
 

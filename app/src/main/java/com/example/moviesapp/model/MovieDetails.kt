@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 
 data class MovieDetails(
-    val id: Int,
+    override val id: Int,
     val adult: Boolean,
     @SerializedName("backdrop_path")
-    val backdropPath: String?,
+    override val backdropPath: String?,
     val budget: Int,
     val genres: List<Genre>,
     val homepage: String?,
@@ -17,10 +17,10 @@ data class MovieDetails(
     val originalLanguage: String,
     @SerializedName("original_title")
     val originalTitle: String,
-    val overview: String,
+    override val overview: String,
     val popularity: Float,
     @SerializedName("poster_path")
-    val posterPath: String?,
+    override val posterPath: String?,
     @SerializedName("production_companies")
     val productionCompanies: List<ProductionCompany>,
     @SerializedName("production_countries")
@@ -33,17 +33,17 @@ data class MovieDetails(
     val spokenLanguages: List<SpokenLanguage>,
     val status: String,
     val tagline: String?,
-    val title: String,
+    override val title: String,
     val video: Boolean,
     @SerializedName("vote_average")
-    val voteAverage: Float,
+    override val voteAverage: Float,
     @SerializedName("vote_count")
-    val voteCount: Int,
+    override val voteCount: Int,
     @Transient
-    val posterUrl: String?,
+    override val posterUrl: String?,
     @Transient
-    val backdropUrl: String?,
+    override val backdropUrl: String?,
     @Transient
     val isFavourite: Boolean?
-)
+) : Presentable
 

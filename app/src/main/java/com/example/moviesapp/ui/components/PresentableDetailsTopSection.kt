@@ -1,14 +1,11 @@
-package com.example.moviesapp.ui.screens.tv.components
+package com.example.moviesapp.ui.components
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -21,28 +18,28 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import coil.transform.BlurTransformation
-import com.example.moviesapp.model.TvSeriesDetails
-import com.example.moviesapp.ui.components.PosterPlaceholder
-import com.example.moviesapp.ui.screens.movies.components.GenresSection
+import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.ui.theme.sizes
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
 
 @Composable
-fun TvSeriesDetailsTopSection(
+fun PresentableDetailsTopSection(
     modifier: Modifier = Modifier,
-    tvSeriesDetails: TvSeriesDetails?
+    presentable: Presentable?,
+    content: @Composable ColumnScope.() -> Unit = {}
 ) {
     val context = LocalContext.current
 
-    val isLoading by derivedStateOf {
-        tvSeriesDetails == null
+    val presentableState by derivedStateOf {
+        presentable?.let { PresentableState.Result(it) } ?: PresentableState.Loading
     }
 
     Box(modifier = modifier) {
         Image(
             modifier = Modifier.matchParentSize(),
             painter = rememberImagePainter(
-                data = tvSeriesDetails?.backdropUrl,
+                data = presentable?.backdropUrl,
                 builder = {
                     fadeIn(animationSpec = spring())
                     transformations(
@@ -79,43 +76,17 @@ fun TvSeriesDetailsTopSection(
                     .fillMaxWidth()
                     .padding(MaterialTheme.spacing.medium)
             ) {
-                Crossfade(targetState = isLoading) { state ->
-                    if (state) {
-                        PosterPlaceholder(
-                            modifier = Modifier
-                                .width(160.dp)
-                                .height(250.dp)
-                        )
-                    } else {
-                        Card(
-                            modifier = Modifier
-                                .width(160.dp)
-                                .height(250.dp),
-                            shape = MaterialTheme.shapes.medium,
-                            backgroundColor = Color.LightGray
-                        ) {
-                            Image(
-                                painter = rememberImagePainter(
-                                    data = tvSeriesDetails?.posterUrl,
-                                    builder = {
-                                        fadeIn(animationSpec = spring())
-                                    }
-                                ),
-                                contentDescription = null,
-                                contentScale = ContentScale.FillBounds
-                            )
-                        }
-                    }
-                }
+                PresentableItem(
+                    modifier = Modifier
+                        .width(MaterialTheme.sizes.presentableItemBig.width)
+                        .height(MaterialTheme.sizes.presentableItemBig.height),
+                    showTitle = false,
+                    showScore = false,
+                    presentableState = presentableState
+                )
                 Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
                 Column(modifier = Modifier.weight(1f)) {
-                    tvSeriesDetails?.let { details ->
-                        Text(details.status)
-                        Text(details.popularity.toString())
-                        Text(details.voteAverage.toString())
-                        Text(details.voteCount.toString())
-                        GenresSection(genres = details.genres)
-                    }
+                    content()
                 }
             }
         }
