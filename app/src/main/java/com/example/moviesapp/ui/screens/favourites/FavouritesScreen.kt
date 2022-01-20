@@ -12,6 +12,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.model.FavouriteType
 import com.example.moviesapp.ui.components.FavouriteEmptyState
@@ -34,7 +35,9 @@ fun FavouritesScreen(
     val favourites = viewModel.favourites.collectAsLazyPagingItems()
 
     val notEmpty by derivedStateOf {
-        favourites.itemCount > 0
+        favourites.run {
+            loadState.refresh is LoadState.Loading || itemCount > 0
+        }
     }
 
     Column(

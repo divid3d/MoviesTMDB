@@ -4,6 +4,10 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
+    <string name="exit_dialog_info">Czy na pewno chcesz opóścić aplikację?</string>
+    <string name="exit_dialog_confirm_button_label">Potwierdź</string>
+    <string name="exit_dialog_cancel_button_label">Anuluj</string>
+
     <string name="favourite_type_movie_label">Filmy</string>
     <string name="favourite_type_tv_series_label">Seriale</string>
 

@@ -1,10 +1,16 @@
 package com.example.moviesapp.ui.components
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import com.example.moviesapp.R
 
 @Composable
 fun ExitDialog(
@@ -17,23 +23,28 @@ fun ExitDialog(
         modifier = modifier,
         onDismissRequest = onDismissRequest,
         title = {
-            Text(text = "Are u sure u want to quit?")
+            Image(
+                modifier = Modifier.fillMaxWidth(),
+                painter = painterResource(R.drawable.ic_tmdb_logo_long),
+                contentDescription = null,
+                contentScale = ContentScale.FillWidth
+            )
         },
         text = {
-            Text("Here is a text ")
+            Text(text = stringResource(R.string.exit_dialog_info))
         },
         confirmButton = {
-            Button(
+            OutlinedButton(
                 onClick = onConfirmClick
             ) {
-                Text("Exit")
+                Text(text = stringResource(R.string.exit_dialog_confirm_button_label))
             }
         },
         dismissButton = {
-            Button(
+            OutlinedButton(
                 onClick = onCancelClick
             ) {
-                Text("Cancel")
+                Text(text = stringResource(R.string.exit_dialog_cancel_button_label))
             }
         }
     )
