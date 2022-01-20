@@ -85,7 +85,7 @@ fun NoPhotoPresentableItem(
             .background(Color.Black)
             .border(
                 width = 1.dp,
-                color = Color.White,
+                color = Color.White.copy(0.5f),
                 shape = MaterialTheme.shapes.medium
             ),
         contentAlignment = Alignment.Center
@@ -93,7 +93,7 @@ fun NoPhotoPresentableItem(
         Image(
             painter = painterResource(R.drawable.ic_outline_no_photography_24),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(Color.White)
+            colorFilter = ColorFilter.tint(Color.White.copy(0.5f))
         )
     }
 }

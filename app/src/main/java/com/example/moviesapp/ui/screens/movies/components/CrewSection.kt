@@ -40,7 +40,7 @@ fun CrewSection(
     ) {
         items(crew, key = { member -> member.id to member.job }) { member ->
             CrewChip(
-                modifier = Modifier.width(60.dp),
+                modifier = Modifier.width(80.dp),
                 member = member
             )
         }
@@ -77,13 +77,13 @@ fun CrewChip(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
-                    .border(width = 1.dp, color = Color.White, shape = CircleShape),
+                    .border(width = 1.dp, color = Color.White.copy(0.5f), shape = CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(R.drawable.ic_outline_no_photography_24),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(Color.White)
+                    colorFilter = ColorFilter.tint(Color.White.copy(0.5f))
                 )
             }
         }
