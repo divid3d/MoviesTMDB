@@ -155,25 +155,27 @@ fun MoviesScreen(
                     navigateToAllMovies(MovieType.TopRated)
                 }
             )
-            SectionDivider(
-                modifier = Modifier.padding(
-                    start = MaterialTheme.spacing.medium,
-                    top = MaterialTheme.spacing.medium,
-                    end = MaterialTheme.spacing.medium,
-                    bottom = MaterialTheme.spacing.small
+            if (favourites.itemCount > 0) {
+                SectionDivider(
+                    modifier = Modifier.padding(
+                        start = MaterialTheme.spacing.medium,
+                        top = MaterialTheme.spacing.medium,
+                        end = MaterialTheme.spacing.medium,
+                        bottom = MaterialTheme.spacing.small
+                    )
                 )
-            )
-            PresentableSection(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                title = "Ulubione",
-                state = favourites,
-                onPresentableClick = navigateToMovieDetails,
-                onMoreClick = {
-                    navigateToAllMovies(MovieType.Favourite)
-                }
-            )
+                PresentableSection(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    title = "Ulubione",
+                    state = favourites,
+                    onPresentableClick = navigateToMovieDetails,
+                    onMoreClick = {
+                        navigateToAllMovies(MovieType.Favourite)
+                    }
+                )
+            }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         }
     }

@@ -176,7 +176,7 @@ fun TvSeriesDetailsScreen(
                             .padding(horizontal = MaterialTheme.spacing.medium)
                     ) {
                         Text(
-                            text = "Oglądaj na",
+                            text = stringResource(R.string.tv_series_details_networks),
                             style = TextStyle(
                                 color = Color.White,
                                 fontSize = 24.sp,

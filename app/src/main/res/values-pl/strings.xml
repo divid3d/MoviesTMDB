@@ -45,6 +45,7 @@
     <string name="tv_series_details_genres">Gatunki</string>
     <string name="tv_series_details_similar">Podobne</string>
     <string name="tv_series_details_recommendations">Rekomendacje</string>
+    <string name="tv_series_details_networks">Zobacz w</string>
 
     <string name="all_movies_top_rated_label">Najwyżej oceniane filmy</string>
     <string name="all_movies_upcoming_label">Nachodzące filmy</string>

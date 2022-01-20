@@ -127,23 +127,25 @@ fun TvScreen(
                 onPresentableClick = navigateToTvSeriesDetails,
                 onMoreClick = { navigateToAllTvSeries(TvSeriesType.Popular) }
             )
-            SectionDivider(
-                modifier = Modifier.padding(
-                    start = MaterialTheme.spacing.medium,
-                    top = MaterialTheme.spacing.medium,
-                    end = MaterialTheme.spacing.medium,
-                    bottom = MaterialTheme.spacing.small
+            if (favourites.itemCount > 0) {
+                SectionDivider(
+                    modifier = Modifier.padding(
+                        start = MaterialTheme.spacing.medium,
+                        top = MaterialTheme.spacing.medium,
+                        end = MaterialTheme.spacing.medium,
+                        bottom = MaterialTheme.spacing.small
+                    )
                 )
-            )
-            PresentableSection(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                title = "Ulubione",
-                state = favourites,
-                onPresentableClick = navigateToTvSeriesDetails,
-                onMoreClick = { navigateToAllTvSeries(TvSeriesType.Favourite) }
-            )
+                PresentableSection(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    title = "Ulubione",
+                    state = favourites,
+                    onPresentableClick = navigateToTvSeriesDetails,
+                    onMoreClick = { navigateToAllTvSeries(TvSeriesType.Favourite) }
+                )
+            }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         }
     }
