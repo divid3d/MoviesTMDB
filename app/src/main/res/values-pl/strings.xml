@@ -52,4 +52,9 @@
     <string name="all_tv_series_popular_label">Popularne seriale</string>
     <string name="all_tv_series_favourites_label" formatted="true">Ulubione seriale (%d)</string>
 
+    <string name="favourite_empty_movies_info_text">Obecnie nie posiadasz ulubionych filmów</string>
+    <string name="favourite_empty_tv_series_info_text">Obecnie nie posiadasz ulubionych seriali</string>
+    <string name="favourite_empty_navigate_to_movies_button_label">Przejdź do filmów</string>
+    <string name="favourite_empty_navigate_to_tv_series_button_label">Przejdź do seriali</string>
+
 </resources>

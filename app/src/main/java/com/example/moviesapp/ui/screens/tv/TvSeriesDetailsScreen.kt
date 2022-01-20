@@ -10,16 +10,16 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -31,7 +31,6 @@ import com.example.moviesapp.ui.screens.movies.components.GenresSection
 import com.example.moviesapp.ui.screens.movies.components.OverviewSection
 import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -40,12 +39,10 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun TvSeriesDetailsScreen(
     navigator: DestinationsNavigator,
-    tvSeriesId: Int
+    tvSeriesId: Int,
+    startRoute: String = TvScreenDestination.route
 ) {
     val viewModel: TvSeriesDetailsViewModel = hiltViewModel()
-
-    val insets = LocalWindowInsets.current
-    val density = LocalDensity.current
 
     val tvSeriesDetails by viewModel.tvSeriesDetails.collectAsState()
     val similar = viewModel.similarTvSeries?.collectAsLazyPagingItems()
@@ -56,23 +53,6 @@ fun TvSeriesDetailsScreen(
     val episodes by viewModel.episodes.collectAsState()
 
     val scrollState = rememberScrollState()
-
-    var topSectionHeight: Int? by remember(tvSeriesDetails) {
-        mutableStateOf(null)
-    }
-
-    val statusBarHeight by remember {
-        mutableStateOf(
-            insets.systemBars.layoutInsets.top
-        )
-    }
-
-    val appbarHeight by derivedStateOf {
-        density.run {
-            56.dp.roundToPx()
-        }
-    }
-
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -167,7 +147,10 @@ fun TvSeriesDetailsScreen(
                     state = lazyPagingItems
                 ) { tvSeriesId ->
                     navigator.navigate(
-                        TvSeriesDetailsScreenDestination(tvSeriesId)
+                        TvSeriesDetailsScreenDestination(
+                            tvSeriesId = tvSeriesId,
+                            startRoute = startRoute
+                        )
                     )
                 }
             }
@@ -180,7 +163,10 @@ fun TvSeriesDetailsScreen(
                     state = lazyPagingItems
                 ) { tvSeriesId ->
                     navigator.navigate(
-                        TvSeriesDetailsScreenDestination(tvSeriesId)
+                        TvSeriesDetailsScreenDestination(
+                            tvSeriesId = tvSeriesId,
+                            startRoute = startRoute
+                        )
                     )
                 }
             }
@@ -218,7 +204,7 @@ fun TvSeriesDetailsScreen(
                     )
                     IconButton(
                         onClick = {
-                            navigator.popBackStack(TvScreenDestination, inclusive = false)
+                            navigator.popBackStack(startRoute, inclusive = false)
                         }
                     ) {
                         Icon(

@@ -11,16 +11,17 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -35,7 +36,6 @@ import com.example.moviesapp.ui.screens.movies.components.GenresSection
 import com.example.moviesapp.ui.screens.movies.components.OverviewSection
 import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -44,12 +44,10 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun MovieDetailsScreen(
     navigator: DestinationsNavigator,
-    movieId: Int
+    movieId: Int,
+    startRoute: String = MoviesScreenDestination.route
 ) {
     val viewModel: MoviesDetailsViewModel = hiltViewModel()
-
-    val insets = LocalWindowInsets.current
-    val density = LocalDensity.current
 
     val movieDetails by viewModel.movieDetails.collectAsState()
     val credits by viewModel.credits.collectAsState()
@@ -63,37 +61,6 @@ fun MovieDetailsScreen(
     }
 
     val scrollState = rememberScrollState()
-
-    var topSectionHeight: Int? by remember(movieDetails) {
-        mutableStateOf(null)
-    }
-
-    val statusBarHeight by remember {
-        mutableStateOf(
-            insets.systemBars.layoutInsets.top
-        )
-    }
-
-    val appbarHeight by derivedStateOf {
-        density.run {
-            56.dp.roundToPx()
-        }
-    }
-
-//    val topAppbarBackgroundColor by animateColorAsState(targetValue = topSectionHeight?.let { height ->
-//
-//        val ratio = scrollState.value.toFloat() / (height - statusBarHeight - appbarHeight)
-//        val alpha = 0.5f + ratio * 0.5f
-//        print("alpha: $alpha")
-//        Color.Black.copy(alpha = alpha.coerceAtMost(1f))
-//    } ?: Black500)
-
-//    val topAppbarBackgroundColor by animateColorAsState(targetValue = topSectionHeight?.let { height ->
-//
-//        val ratio = scrollState.value.toFloat() / (height - statusBarHeight - appbarHeight)
-//        if (ratio >= 1f) Color.Black else Black500
-//    } ?: Black500)
-
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -187,7 +154,10 @@ fun MovieDetailsScreen(
                     state = lazyPagingItems
                 ) { movieId ->
                     navigator.navigate(
-                        MovieDetailsScreenDestination(movieId)
+                        MovieDetailsScreenDestination(
+                            movieId = movieId,
+                            startRoute = startRoute
+                        )
                     )
                 }
             }
@@ -200,7 +170,10 @@ fun MovieDetailsScreen(
                     state = lazyPagingItems
                 ) { movieId ->
                     navigator.navigate(
-                        MovieDetailsScreenDestination(movieId)
+                        MovieDetailsScreenDestination(
+                            movieId = movieId,
+                            startRoute = startRoute
+                        )
                     )
                 }
             }
@@ -238,7 +211,7 @@ fun MovieDetailsScreen(
                     )
                     IconButton(
                         onClick = {
-                            navigator.popBackStack(MoviesScreenDestination, inclusive = false)
+                            navigator.popBackStack(startRoute, inclusive = false)
                         }
                     ) {
                         Icon(
