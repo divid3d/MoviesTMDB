@@ -68,3 +68,13 @@ fun TvSeriesFavourite.appendUrls(
         backdropUrl = movieBackdropUrl
     )
 }
+
+fun Network.appendUrls(
+    config: Config?
+): Network {
+    val logoUrl = config?.getImageUrl(logoPath, size = "w154")
+
+    return copy(
+        logoUrl = logoUrl
+    )
+}

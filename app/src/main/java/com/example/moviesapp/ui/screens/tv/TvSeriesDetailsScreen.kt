@@ -149,6 +149,15 @@ fun TvSeriesDetailsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 episodes = episodes
             )
+            tvSeriesDetails?.networks?.let { networks ->
+                NetworksList(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = MaterialTheme.spacing.medium),
+                    networks = networks
+                )
+            }
+
             similar?.let { lazyPagingItems ->
                 PresentableSection(
                     modifier = Modifier

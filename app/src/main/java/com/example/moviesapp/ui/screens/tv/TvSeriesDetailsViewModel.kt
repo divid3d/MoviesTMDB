@@ -50,6 +50,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
             creators = details.creators.map { creator -> creator.appendUrls(config) },
             lastEpisodeToAir = details.lastEpisodeToAir.appendUrls(config),
             seasons = details.seasons.map { season -> season.appendUrl(config) },
+            networks = details.networks.map { network -> network.appendUrls(config) },
             posterUrl = posterUrl,
             backdropUrl = backdropUrl,
             isFavourite = details.id in favouriteIds
