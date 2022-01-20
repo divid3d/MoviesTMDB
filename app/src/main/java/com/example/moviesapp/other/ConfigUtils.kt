@@ -52,7 +52,7 @@ fun Creator.appendUrls(
 fun Episode.appendUrls(
     config: Config?
 ): Episode {
-    val stillUrl = config?.getImageUrl(stillPath, size = "w300")
+    val stillUrl = config?.getImageUrl(stillPath, size = "original")
 
     return copy(
         stillUrl = stillUrl
@@ -62,6 +62,16 @@ fun Episode.appendUrls(
 fun Season.appendUrl(
     config: Config?
 ): Season {
+    val posterUrl = config?.getImageUrl(posterPath)
+
+    return copy(
+        posterUrl = posterUrl
+    )
+}
+
+fun TvSeasonsResponse.appendUrl(
+    config: Config?
+): TvSeasonsResponse {
     val posterUrl = config?.getImageUrl(posterPath)
 
     return copy(
@@ -96,7 +106,7 @@ fun MovieFavourite.appendUrls(
 fun Network.appendUrls(
     config: Config?
 ): Network {
-    val logoUrl = config?.getImageUrl(logoPath, size = "w154")
+    val logoUrl = config?.getImageUrl(logoPath, size = "w300")
 
     return copy(
         logoUrl = logoUrl

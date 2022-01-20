@@ -7,8 +7,8 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.moviesapp.model.Config
-import com.example.moviesapp.model.Episode
 import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.model.TvSeasonsResponse
 import com.example.moviesapp.model.TvSeriesDetails
 import com.example.moviesapp.other.appendUrl
 import com.example.moviesapp.other.appendUrls
@@ -62,14 +62,14 @@ class TvSeriesDetailsViewModel @Inject constructor(
         details?.seasons?.map { season -> season.seasonNumber } ?: emptyList()
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
 
-    private val _selectedSeasonNumber: MutableStateFlow<Int?> = MutableStateFlow(null)
-    val selectedSeasonNumber: StateFlow<Int?> = _selectedSeasonNumber.asStateFlow()
 
-    private val _episodes: MutableStateFlow<List<Episode>> =
-        MutableStateFlow(emptyList())
-    val episodes: StateFlow<List<Episode>> = _episodes.combine(config) { episodes, config ->
-        episodes.map { episode -> episode.appendUrls(config) }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
+    private val _selectedSeason: MutableStateFlow<TvSeasonsResponse?> = MutableStateFlow(null)
+    val selectedSeason: StateFlow<TvSeasonsResponse?> =
+        _selectedSeason.combine(config) { season, config ->
+            season?.appendUrl(config)?.copy(
+                episodes = season.episodes.map { episode -> episode.appendUrls(config) }
+            )
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     init {
         viewModelScope.launch {
@@ -118,18 +118,21 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
     fun getTvSeason(seasonNumber: Int) {
         viewModelScope.launch {
-            tvSeriesId.collectLatest { id ->
-                id?.let {
-                    _selectedSeasonNumber.emit(seasonNumber)
+            val selectedSeasonNumber = _selectedSeason.value?.seasonNumber
 
-                    val season = tvSeriesRepository.getTvSeasons(
-                        tvSeriesId = it,
-                        seasonNumber = seasonNumber
-                    )
+            if (seasonNumber != selectedSeasonNumber) {
+                tvSeriesId.collectLatest { id ->
+                    id?.let {
 
-                    val episodes = season.episodes
-                    _episodes.emit(episodes)
+                        val season = tvSeriesRepository.getTvSeason(
+                            tvSeriesId = it,
+                            seasonNumber = seasonNumber
+                        )
+                        _selectedSeason.emit(season)
+                    }
                 }
+            } else {
+                _selectedSeason.emit(null)
             }
         }
     }

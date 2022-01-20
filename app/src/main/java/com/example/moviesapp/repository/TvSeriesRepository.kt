@@ -68,7 +68,7 @@ class TvSeriesRepository @Inject constructor(
     suspend fun getTvSeriesDetails(tvSeriesId: Int, isoCode: String = "pl-PL"): TvSeriesDetails =
         apiHelper.getTvSeriesDetails(tvSeriesId, isoCode)
 
-    suspend fun getTvSeasons(
+    suspend fun getTvSeason(
         tvSeriesId: Int,
         seasonNumber: Int,
         isoCode: String = "pl-PL"

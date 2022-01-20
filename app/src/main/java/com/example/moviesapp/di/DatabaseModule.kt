@@ -21,7 +21,9 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideDatabase(@ApplicationContext context: Context) =
-        Room.databaseBuilder(context, FavouritesDatabase::class.java, "favourites").build()
+        Room.databaseBuilder(context, FavouritesDatabase::class.java, "favourites")
+            .fallbackToDestructiveMigration()
+            .build()
 
     @Singleton
     @Provides

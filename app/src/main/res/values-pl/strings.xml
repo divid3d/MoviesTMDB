@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Movies TMDB</string>
 
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
 
     <string name="exit_dialog_info">Czy na pewno chcesz opóścić aplikację?</string>
     <string name="exit_dialog_confirm_button_label">Potwierdź</string>

@@ -7,7 +7,7 @@ import com.example.moviesapp.model.MovieFavourite
 import com.example.moviesapp.model.TvSeriesFavourite
 import com.example.moviesapp.other.Converters
 
-@Database(entities = [MovieFavourite::class, TvSeriesFavourite::class], version = 3)
+@Database(entities = [MovieFavourite::class, TvSeriesFavourite::class], version = 4)
 @TypeConverters(Converters::class)
 abstract class FavouritesDatabase : RoomDatabase() {
 

@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.tv
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -47,10 +50,16 @@ fun TvSeriesDetailsScreen(
     val tvSeriesDetails by viewModel.tvSeriesDetails.collectAsState()
     val similar = viewModel.similarTvSeries?.collectAsLazyPagingItems()
     val recommendations = viewModel.tvSeriesRecommendations?.collectAsLazyPagingItems()
-    val seasonNumbers by viewModel.seasonNumbers.collectAsState()
 
-    val selectedSeasonNumber by viewModel.selectedSeasonNumber.collectAsState()
-    val episodes by viewModel.episodes.collectAsState()
+    val selectedSeason by viewModel.selectedSeason.collectAsState()
+
+    val selectedSeasonId by derivedStateOf {
+        selectedSeason?.id
+    }
+
+    val selectedSeasonEpisodes by derivedStateOf {
+        selectedSeason?.episodes
+    }
 
     val scrollState = rememberScrollState()
 
@@ -116,26 +125,73 @@ fun TvSeriesDetailsScreen(
                     )
                 }
             }
-            SeasonsList(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = MaterialTheme.spacing.medium),
-                seasonNumbers = seasonNumbers,
-                selectedSeason = selectedSeasonNumber
-            ) { seasonNumber ->
-                viewModel.getTvSeason(seasonNumber)
+
+            tvSeriesDetails?.seasons?.let { seasons ->
+                if (seasons.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateContentSize()
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
+                            text = "Sezony",
+                            style = TextStyle(
+                                color = Color.White,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        SeasonsList(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                            seasons = seasons,
+                            selectedSeasonId = selectedSeasonId
+                        ) { seasonNumber ->
+                            viewModel.getTvSeason(seasonNumber)
+                        }
+//                    EpisodesList(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        episodes = episodes
+//                    )
+                        selectedSeason?.let { season ->
+                            SeasonDetails(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(MaterialTheme.spacing.medium),
+                                season = season
+                            )
+                        }
+                    }
+                }
             }
-            EpisodesList(
-                modifier = Modifier.fillMaxWidth(),
-                episodes = episodes
-            )
+
             tvSeriesDetails?.networks?.let { networks ->
-                NetworksList(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = MaterialTheme.spacing.medium),
-                    networks = networks
-                )
+                if (networks.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = MaterialTheme.spacing.medium)
+                    ) {
+                        Text(
+                            text = "Oglądaj na",
+                            style = TextStyle(
+                                color = Color.White,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                        NetworksList(
+                            modifier = Modifier.fillMaxWidth(),
+                            networks = networks
+                        )
+                    }
+                }
             }
 
             similar?.let { lazyPagingItems ->

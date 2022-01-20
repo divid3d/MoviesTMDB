@@ -6,14 +6,13 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.runtime.*
@@ -24,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.moviesapp.R
 import com.example.moviesapp.ui.theme.spacing
@@ -49,7 +47,7 @@ fun OverviewSection(
                 color = Color.White,
                 fontSize = 12.sp
             ),
-            maxLines = if (expanded) Int.MAX_VALUE else 10,
+            maxLines = if (expanded) Int.MAX_VALUE else 6,
             overflow = TextOverflow.Ellipsis,
             onTextLayout = { textLayoutResult ->
                 if (!expanded) {
@@ -88,10 +86,9 @@ fun ReadMoreButton(
         if (expanded) R.string.read_less else R.string.read_more
     }
 
-    OutlinedButton(
+    TextButton(
         modifier = modifier,
         shape = RoundedCornerShape(50),
-        border = BorderStroke(width = 1.dp, color = Color.White),
         onClick = onClick
     ) {
         Text(
