@@ -12,6 +12,7 @@ import com.example.moviesapp.model.TvSeriesFavourite
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -31,7 +32,8 @@ class FavouritesRepository @Inject constructor(
                 originalTitle = movieDetails.originalTitle,
                 overview = movieDetails.overview,
                 voteAverage = movieDetails.voteAverage,
-                voteCount = movieDetails.voteCount
+                voteCount = movieDetails.voteCount,
+                addedDate = Date()
             )
 
             favouritesMoviesDao.likeMovie(favouriteMovie)
@@ -47,7 +49,8 @@ class FavouritesRepository @Inject constructor(
                 name = tvSeriesDetails.name,
                 overview = tvSeriesDetails.overview,
                 voteAverage = tvSeriesDetails.voteAverage,
-                voteCount = tvSeriesDetails.voteCount
+                voteCount = tvSeriesDetails.voteCount,
+                addedDate = Date()
             )
 
             favouritesTvSeriesDao.likeTvSeries(favouriteTvSeries)

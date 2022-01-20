@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity
 data class TvSeriesFavourite(
@@ -26,6 +27,9 @@ data class TvSeriesFavourite(
     @ColumnInfo(name = "vote_count")
     override val voteCount: Int,
 
+    @ColumnInfo(name = "added_date")
+    val addedDate: Date?,
+
     @Ignore
     override val backdropUrl: String?,
 
@@ -39,7 +43,8 @@ data class TvSeriesFavourite(
         name: String,
         overview: String,
         voteAverage: Float,
-        voteCount: Int
+        voteCount: Int,
+        addedDate: Date,
     ) : this(
         id,
         backdropPath,
@@ -48,6 +53,7 @@ data class TvSeriesFavourite(
         overview,
         voteAverage,
         voteCount,
+        addedDate,
         null,
         null
     )

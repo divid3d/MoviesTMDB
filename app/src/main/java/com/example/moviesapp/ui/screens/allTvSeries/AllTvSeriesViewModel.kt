@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.TvSeriesType
@@ -35,22 +36,30 @@ class AllTvSeriesViewModel @Inject constructor(
         }
 
     private val topRated: Flow<PagingData<Presentable>> =
-        tvSeriesRepository.topRatedTvSeries().combine(config) { pagingData, config ->
-            pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
-        }
+        tvSeriesRepository.topRatedTvSeries()
+            .cachedIn(viewModelScope)
+            .combine(config) { pagingData, config ->
+                pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
+            }
 
     private val airingToday: Flow<PagingData<Presentable>> =
-        tvSeriesRepository.airingTodayTvSeries().combine(config) { pagingData, config ->
-            pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
-        }
+        tvSeriesRepository.airingTodayTvSeries()
+            .cachedIn(viewModelScope)
+            .combine(config) { pagingData, config ->
+                pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
+            }
     private val popular: Flow<PagingData<Presentable>> =
-        tvSeriesRepository.popularTvSeries().combine(config) { pagingData, config ->
-            pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
-        }
+        tvSeriesRepository.popularTvSeries()
+            .cachedIn(viewModelScope)
+            .combine(config) { pagingData, config ->
+                pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
+            }
     private val favourites: Flow<PagingData<Presentable>> =
-        favouritesRepository.favouritesTvSeries().combine(config) { pagingData, config ->
-            pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
-        }
+        favouritesRepository.favouritesTvSeries()
+            .cachedIn(viewModelScope)
+            .combine(config) { pagingData, config ->
+                pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
+            }
 
     val tvSeries: Flow<PagingData<Presentable>> = combine(
         tvSeriesType,

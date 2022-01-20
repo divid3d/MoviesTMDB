@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.moviesapp.model.Config
 import com.example.moviesapp.model.Episode
@@ -75,6 +76,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
             tvSeriesId.collectLatest { tvSeriesId ->
                 tvSeriesId?.let { id ->
                     similarTvSeries = tvSeriesRepository.similarTvSeries(id)
+                        .cachedIn(viewModelScope)
                         .combine(config) { moviePagingData, config ->
                             moviePagingData.map { tvSeries ->
                                 tvSeries.appendUrls(config)
@@ -82,6 +84,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
                         }
 
                     tvSeriesRecommendations = tvSeriesRepository.tvSeriesRecommendations(id)
+                        .cachedIn(viewModelScope)
                         .combine(config) { moviePagingData, config ->
                             moviePagingData.map { tvSeries ->
                                 tvSeries.appendUrls(config)

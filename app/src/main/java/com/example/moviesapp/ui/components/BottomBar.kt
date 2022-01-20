@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.navigation.NavController
 import com.example.moviesapp.R
 import com.example.moviesapp.other.safeNavigate
+import com.example.moviesapp.ui.screens.destinations.FavouritesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
@@ -45,6 +46,7 @@ fun BottomBar(
         currentRoute in setOf(
             MoviesScreenDestination.route,
             TvScreenDestination.route,
+            FavouritesScreenDestination.route,
             SearchScreenDestination.route
         )
     }
@@ -78,6 +80,14 @@ fun BottomBar(
                 },
                 label = stringResource(R.string.tv_series_label),
                 icon = R.drawable.ic_outline_tv_24
+            )
+            BottomBarNavigationItem(
+                selected = currentRoute == FavouritesScreenDestination.route,
+                onClick = {
+                    navController.safeNavigate(FavouritesScreenDestination.route)
+                },
+                label = stringResource(R.string.favourites_label),
+                icon = R.drawable.ic_heart_outline
             )
             BottomBarNavigationItem(
                 selected = currentRoute == SearchScreenDestination.route,

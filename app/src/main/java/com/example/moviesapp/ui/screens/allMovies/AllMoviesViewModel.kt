@@ -4,10 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.map
-import com.example.moviesapp.model.*
+import com.example.moviesapp.model.MovieType
+import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.other.asFlow
-import com.example.moviesapp.other.getImageUrl
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.MovieRepository
@@ -35,21 +37,28 @@ class AllMoviesViewModel @Inject constructor(
 
     private val topRated: Flow<PagingData<Presentable>> =
         movieRepository.topRatedMovies()
+            .cachedIn(viewModelScope)
             .combine(config) { pagingData, config ->
                 pagingData.map { movie -> movie.appendUrls(config) }
             }
     private val upcoming: Flow<PagingData<Presentable>> =
-        movieRepository.upcomingMovies().combine(config) { pagingData, config ->
-            pagingData.map { movie -> movie.appendUrls(config) }
-        }
+        movieRepository.upcomingMovies()
+            .cachedIn(viewModelScope)
+            .combine(config) { pagingData, config ->
+                pagingData.map { movie -> movie.appendUrls(config) }
+            }
     private val popular: Flow<PagingData<Presentable>> =
-        movieRepository.discoverMovies().combine(config) { pagingData, config ->
-            pagingData.map { movie -> movie.appendUrls(config) }
-        }
+        movieRepository.discoverMovies()
+            .cachedIn(viewModelScope)
+            .combine(config) { pagingData, config ->
+                pagingData.map { movie -> movie.appendUrls(config) }
+            }
     private val favourites: Flow<PagingData<Presentable>> =
-        favouritesRepository.favouriteMovies().combine(config) { pagingData, config ->
-            pagingData.map { favouriteMovie -> favouriteMovie.appendUrls(config) }
-        }
+        favouritesRepository.favouriteMovies()
+            .cachedIn(viewModelScope)
+            .combine(config) { pagingData, config ->
+                pagingData.map { favouriteMovie -> favouriteMovie.appendUrls(config) }
+            }
 
     val movies: Flow<PagingData<Presentable>> = combine(
         movieType,
@@ -69,28 +78,5 @@ class AllMoviesViewModel @Inject constructor(
     val favouriteMoviesCount: StateFlow<Int> = favouritesRepository.getFavouriteMoviesCount()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), 0)
 
-    private fun Movie.appendUrls(
-        config: Config?
-    ): Movie {
-        val moviePosterUrl = config?.getImageUrl(posterPath)
-        val movieBackdropUrl = config?.getImageUrl(backdropPath, size = "w300")
-
-        return copy(
-            posterUrl = moviePosterUrl,
-            backdropUrl = movieBackdropUrl
-        )
-    }
-
-    private fun MovieFavourite.appendUrls(
-        config: Config?
-    ): MovieFavourite {
-        val moviePosterUrl = config?.getImageUrl(posterPath)
-        val movieBackdropUrl = config?.getImageUrl(backdropPath, size = "w300")
-
-        return copy(
-            posterUrl = moviePosterUrl,
-            backdropUrl = movieBackdropUrl
-        )
-    }
 
 }

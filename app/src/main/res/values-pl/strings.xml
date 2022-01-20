@@ -4,8 +4,12 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
+    <string name="favourite_type_movie_label">Filmy</string>
+    <string name="favourite_type_tv_series_label">Seriale</string>
+
     <string name="movies_label">Filmy</string>
     <string name="tv_series_label">Seriale</string>
+    <string name="favourites_label">Ulubione</string>
     <string name="search_label">Szukaj</string>
 
     <string name="now_playing_movies">Teraz grane</string>

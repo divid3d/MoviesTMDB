@@ -4,8 +4,12 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
+    <string name="favourite_type_movie_label">Movies</string>
+    <string name="favourite_type_tv_series_label">Tv series</string>
+
     <string name="movies_label">Movies</string>
     <string name="tv_series_label">TV Series</string>
+    <string name="favourites_label">Favourites</string>
     <string name="search_label">Search</string>
 
     <string name="now_playing_movies">Now playing</string>

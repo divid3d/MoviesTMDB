@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FavouritesMoviesDao {
 
-    @Query("SELECT * FROM MovieFavourite")
+    @Query("SELECT * FROM MovieFavourite ORDER BY added_date DESC")
     fun favouriteMovies(): DataSource.Factory<Int, MovieFavourite>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

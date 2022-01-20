@@ -1,14 +1,13 @@
 package com.example.moviesapp.ui.screens.tv
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.filter
 import androidx.paging.map
-import com.example.moviesapp.model.Config
 import com.example.moviesapp.model.Presentable
-import com.example.moviesapp.model.TvSeries
-import com.example.moviesapp.model.TvSeriesFavourite
-import com.example.moviesapp.other.getImageUrl
+import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.TvSeriesRepository
@@ -27,58 +26,44 @@ class TvSeriesViewModel @Inject constructor(
     private val config = configRepository.config
 
     val onTheAir: Flow<PagingData<Presentable>> =
-        tvSeriesRepository.onTheAirTvSeries().combine(config) { pagingData, config ->
-            pagingData
-                .filter { tvSeries ->
-                    tvSeries.run {
-                        !backdropPath.isNullOrEmpty() && !posterPath.isNullOrEmpty() && title.isNotEmpty() && overview.isNotEmpty()
+        tvSeriesRepository.onTheAirTvSeries()
+            .cachedIn(viewModelScope)
+            .combine(config) { pagingData, config ->
+                pagingData
+                    .filter { tvSeries ->
+                        tvSeries.run {
+                            !backdropPath.isNullOrEmpty() && !posterPath.isNullOrEmpty() && title.isNotEmpty() && overview.isNotEmpty()
+                        }
                     }
-                }
-                .map { tvSeries -> tvSeries.appendUrls(config) }
-        }
+                    .map { tvSeries -> tvSeries.appendUrls(config) }
+            }
 
     val popular: Flow<PagingData<Presentable>> =
-        tvSeriesRepository.popularTvSeries().combine(config) { pagingData, config ->
-            pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
-        }
+        tvSeriesRepository.popularTvSeries()
+            .cachedIn(viewModelScope)
+            .combine(config) { pagingData, config ->
+                pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
+            }
 
     val topRated: Flow<PagingData<Presentable>> =
-        tvSeriesRepository.topRatedTvSeries().combine(config) { pagingData, config ->
-            pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
-        }
+        tvSeriesRepository.topRatedTvSeries()
+            .cachedIn(viewModelScope)
+            .combine(config) { pagingData, config ->
+                pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
+            }
 
     val airingToday: Flow<PagingData<Presentable>> =
-        tvSeriesRepository.airingTodayTvSeries().combine(config) { pagingData, config ->
-            pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
-        }
+        tvSeriesRepository.airingTodayTvSeries()
+            .cachedIn(viewModelScope)
+            .combine(config) { pagingData, config ->
+                pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
+            }
 
     val favouritesTvSeriesSeriesPagingDataFlow: Flow<PagingData<Presentable>> =
-        favouritesRepository.favouritesTvSeries().combine(config) { pagingData, config ->
-            pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
-        }
-
-    private fun TvSeries.appendUrls(
-        config: Config?
-    ): TvSeries {
-        val tvSeriesPosterUrl = config?.getImageUrl(posterPath)
-        val tvSeriesBackdropUrl = config?.getImageUrl(backdropPath, size = "w300")
-
-        return copy(
-            posterUrl = tvSeriesPosterUrl,
-            backdropUrl = tvSeriesBackdropUrl
-        )
-    }
-
-    private fun TvSeriesFavourite.appendUrls(
-        config: Config?
-    ): TvSeriesFavourite {
-        val posterUrl = config?.getImageUrl(posterPath)
-        val backdropPathUrl = config?.getImageUrl(backdropPath, size = "w300")
-
-        return copy(
-            posterUrl = posterUrl,
-            backdropUrl = backdropPathUrl
-        )
-    }
+        favouritesRepository.favouritesTvSeries()
+            .cachedIn(viewModelScope)
+            .combine(config) { pagingData, config ->
+                pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
+            }
 
 }

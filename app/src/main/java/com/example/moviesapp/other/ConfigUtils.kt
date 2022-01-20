@@ -14,6 +14,18 @@ fun Config.getImageUrl(
     }
 }
 
+fun Movie.appendUrls(
+    config: Config?
+): Movie {
+    val moviePosterUrl = config?.getImageUrl(posterPath)
+    val movieBackdropUrl = config?.getImageUrl(backdropPath, size = "w300")
+
+    return copy(
+        posterUrl = moviePosterUrl,
+        backdropUrl = movieBackdropUrl
+    )
+}
+
 fun TvSeries.appendUrls(
     config: Config?
 ): TvSeries {
@@ -60,6 +72,18 @@ fun Season.appendUrl(
 fun TvSeriesFavourite.appendUrls(
     config: Config?
 ): TvSeriesFavourite {
+    val moviePosterUrl = config?.getImageUrl(posterPath)
+    val movieBackdropUrl = config?.getImageUrl(backdropPath, size = "w300")
+
+    return copy(
+        posterUrl = moviePosterUrl,
+        backdropUrl = movieBackdropUrl
+    )
+}
+
+fun MovieFavourite.appendUrls(
+    config: Config?
+): MovieFavourite {
     val moviePosterUrl = config?.getImageUrl(posterPath)
     val movieBackdropUrl = config?.getImageUrl(backdropPath, size = "w300")
 

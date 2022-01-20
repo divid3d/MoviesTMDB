@@ -4,8 +4,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.map
-import com.example.moviesapp.model.*
+import com.example.moviesapp.model.Config
+import com.example.moviesapp.model.Credits
+import com.example.moviesapp.model.MovieDetails
+import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.other.getImageUrl
 import com.example.moviesapp.repository.ConfigRepository
@@ -75,6 +80,7 @@ class MoviesDetailsViewModel @Inject constructor(
             movieId.collectLatest { movieId ->
                 movieId?.let { id ->
                     similarMoviesPagingDataFlow = movieRepository.similarMovies(id)
+                        .cachedIn(viewModelScope)
                         .combine(config) { moviePagingData, config ->
                             moviePagingData.map { movie ->
                                 movie.appendUrls(config)
@@ -83,6 +89,7 @@ class MoviesDetailsViewModel @Inject constructor(
 
                     moviesRecommendationPagingDataFlow =
                         movieRepository.moviesRecommendations(movieId)
+                            .cachedIn(viewModelScope)
                             .combine(config) { moviePagingData, config ->
                                 moviePagingData.map { movie ->
                                     movie.appendUrls(config)
@@ -120,18 +127,6 @@ class MoviesDetailsViewModel @Inject constructor(
             val credits = movieRepository.movieCredits(movieId)
             _credits.emit(credits)
         }
-    }
-
-    private fun Movie.appendUrls(
-        config: Config?
-    ): Movie {
-        val moviePosterUrl = config?.getImageUrl(posterPath)
-        val movieBackdropUrl = config?.getImageUrl(backdropPath, size = "w300")
-
-        return copy(
-            posterUrl = moviePosterUrl,
-            backdropUrl = movieBackdropUrl
-        )
     }
 
 }
