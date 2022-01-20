@@ -1,9 +1,6 @@
 package com.example.moviesapp.ui.screens.movies
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,6 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +28,7 @@ import com.example.moviesapp.R
 import com.example.moviesapp.other.formattedMoney
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.movies.components.CastSection
 import com.example.moviesapp.ui.screens.movies.components.CrewSection
 import com.example.moviesapp.ui.screens.movies.components.GenresSection
@@ -224,13 +223,8 @@ fun MovieDetailsScreen(
             trailing = {
                 val isFavourite = movieDetails?.isFavourite == true
 
-                AnimatedVisibility(
-                    visible = movieDetails != null,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
+                Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
                     LikeButton(
-                        modifier = Modifier.padding(end = MaterialTheme.spacing.small),
                         isFavourite = isFavourite,
                         onClick = {
                             movieDetails?.let { details ->
@@ -242,6 +236,16 @@ fun MovieDetailsScreen(
                             }
                         }
                     )
+                    IconButton(
+                        onClick = {
+                            navigator.popBackStack(MoviesScreenDestination, inclusive = false)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Close,
+                            contentDescription = null
+                        )
+                    }
                 }
             }
         )

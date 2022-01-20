@@ -1,8 +1,5 @@
 package com.example.moviesapp.ui.screens.tv
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,6 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.ui.components.*
+import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.movies.components.GenresSection
 import com.example.moviesapp.ui.screens.movies.components.OverviewSection
@@ -73,6 +72,7 @@ fun TvSeriesDetailsScreen(
             56.dp.roundToPx()
         }
     }
+
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -203,13 +203,8 @@ fun TvSeriesDetailsScreen(
             trailing = {
                 val isFavourite = tvSeriesDetails?.isFavourite == true
 
-                AnimatedVisibility(
-                    visible = tvSeriesDetails != null,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
+                Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
                     LikeButton(
-                        modifier = Modifier.padding(end = MaterialTheme.spacing.small),
                         isFavourite = isFavourite,
                         onClick = {
                             tvSeriesDetails?.let { details ->
@@ -221,6 +216,16 @@ fun TvSeriesDetailsScreen(
                             }
                         }
                     )
+                    IconButton(
+                        onClick = {
+                            navigator.popBackStack(TvScreenDestination, inclusive = false)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Close,
+                            contentDescription = null
+                        )
+                    }
                 }
             }
         )
