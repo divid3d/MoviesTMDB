@@ -123,12 +123,10 @@ fun ErrorPresentableItem(
 
 @Composable
 fun LoadingPresentableItem(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     PosterPlaceholder(
-        modifier = modifier
-            .width(130.dp)
-            .height(200.dp)
+        modifier = modifier.fillMaxSize()
     )
 }
 

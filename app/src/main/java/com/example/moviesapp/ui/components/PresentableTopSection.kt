@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.GraphicsLayerScope
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.lerp
@@ -151,32 +152,37 @@ fun PresentableTopSection(
                             presentable?.let {
                                 onPresentableClick(it.id)
                             }
+                        },
+                        itemTransformations = {
+                            val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+
+                            lerp(
+                                start = ScaleFactor(0.7f, 0.7f),
+                                stop = ScaleFactor(1f, 1f),
+                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                            ).also { scale ->
+                                scaleX = scale.scaleX
+                                scaleY = scale.scaleY
+
+                                translationY = itemHeight * (1f - scale.scaleY) / 2
+                            }
+
+                            alpha = lerp(
+                                start = ScaleFactor(0.3f, 0.3f),
+                                stop = ScaleFactor(1f, 1f),
+                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                            ).scaleX
+                        },
+                        contentTransformations = {
+                            val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+
+                            alpha = lerp(
+                                start = ScaleFactor(0.1f, 0.1f),
+                                stop = ScaleFactor(1f, 1f),
+                                fraction = 1f - 2 * pageOffset.coerceIn(0f, 1f)
+                            ).scaleX
                         }
-                    ) {
-                        // Calculate the absolute offset for the current page from the
-                        // scroll position. We use the absolute value which allows us to mirror
-                        // any effects for both directions
-                        val pageOffset =
-                            calculateCurrentOffsetForPage(page).absoluteValue
-
-                        // We animate the scaleX + scaleY, between 85% and 100%
-                        lerp(
-                            start = ScaleFactor(0.7f, 0.7f),
-                            stop = ScaleFactor(1f, 1f),
-                            fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                        ).also { scale ->
-                            scaleX = scale.scaleX
-                            scaleY = scale.scaleY
-
-                            translationY = itemHeight * (1f - scale.scaleY) / 2
-                        }
-
-                        alpha = lerp(
-                            start = ScaleFactor(0.5f, 0.5f),
-                            stop = ScaleFactor(1f, 1f),
-                            fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                        ).scaleX
-                    }
+                    )
                 }
             }
         }
@@ -191,7 +197,8 @@ fun PresentableTopSectionItem(
     presentableSize: Size = MaterialTheme.sizes.presentableItemBig,
     onPresentableClick: () -> Unit = {},
     isSelected: Boolean,
-    transformations: GraphicsLayerScope.() -> Unit = {}
+    itemTransformations: GraphicsLayerScope.() -> Unit = {},
+    contentTransformations: GraphicsLayerScope.() -> Unit = {}
 ) {
 
     Row(
@@ -202,7 +209,7 @@ fun PresentableTopSectionItem(
             size = presentableSize,
             showTitle = false,
             onClick = onPresentableClick,
-            transformations = transformations
+            transformations = itemTransformations
         )
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
         AnimatedVisibility(
@@ -212,7 +219,11 @@ fun PresentableTopSectionItem(
             visible = isSelected
         ) {
             if (presentableState is PresentableState.Result) {
-                Column(modifier = modifier.fillMaxWidth()) {
+                Column(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .graphicsLayer { contentTransformations() }
+                ) {
                     Text(
                         text = presentableState.presentable.title,
                         style = TextStyle(
