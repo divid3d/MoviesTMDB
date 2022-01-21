@@ -63,6 +63,7 @@ fun PresentableGridSection(
                 presentable?.let {
                     PresentableItem(
                         presentableState = PresentableState.Result(it),
+                        showScore = false,
                         onClick = { onPresentableClick(it.id) }
                     )
                 }

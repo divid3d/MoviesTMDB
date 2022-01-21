@@ -117,6 +117,7 @@ fun PresentableSection(
                             PresentableItem(
                                 //modifier = Modifier.animateItemPlacement(),
                                 presentableState = PresentableState.Result(movie),
+                                showScore = false,
                                 onClick = { onPresentableClick(it.id) }
                             )
                         }

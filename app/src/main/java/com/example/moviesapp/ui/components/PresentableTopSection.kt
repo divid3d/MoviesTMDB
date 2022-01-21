@@ -208,6 +208,7 @@ fun PresentableTopSectionItem(
             presentableState = presentableState,
             size = presentableSize,
             showTitle = false,
+            showScore = false,
             onClick = onPresentableClick,
             transformations = itemTransformations
         )
