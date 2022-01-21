@@ -77,16 +77,16 @@ fun MovieDetailsScreen(
             ) {
                 movieDetails?.let { details ->
                     Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
+                        LabeledText(
+                            label = stringResource(R.string.movie_details_status),
+                            text = details.status
+                        )
                         if (details.budget > 0) {
                             LabeledText(
                                 label = stringResource(R.string.movie_details_budget),
                                 text = details.budget.formattedMoney()
                             )
                         }
-                        LabeledText(
-                            label = stringResource(R.string.movie_details_status),
-                            text = details.status
-                        )
                         if (details.revenue > 0) {
                             LabeledText(
                                 label = stringResource(R.string.movie_details_boxoffice),

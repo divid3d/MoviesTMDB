@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberImagePainter
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Presentable
@@ -48,29 +49,49 @@ fun PresentableItem(
     transformations: GraphicsLayerScope.() -> Unit = {},
     onClick: () -> Unit = {}
 ) {
-    Card(
-        modifier = modifier
-            .width(size.width)
-            .height(size.height)
-            .graphicsLayer {
-                transformations()
-            },
-        shape = MaterialTheme.shapes.medium,
-        backgroundColor = Color.Transparent
-    ) {
-        Crossfade(modifier = Modifier.fillMaxSize(), targetState = presentableState) { state ->
-            when (state) {
-                is PresentableState.Loading -> LoadingPresentableItem()
-                is PresentableState.Error -> ErrorPresentableItem()
-                is PresentableState.Result -> {
-                    ResultPresentableItem(
-                        presentableStateResult = state,
-                        showTitle = showTitle,
-                        showScore = showScore,
-                        onClick = onClick
-                    )
+    ConstraintLayout {
+        val (content, score) = createRefs()
+
+        Card(
+            modifier = modifier
+                .constrainAs(content) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+                .width(size.width)
+                .height(size.height)
+                .graphicsLayer {
+                    transformations()
+                },
+            shape = MaterialTheme.shapes.medium,
+            backgroundColor = Color.Transparent
+        ) {
+            Crossfade(modifier = Modifier.fillMaxSize(), targetState = presentableState) { state ->
+                when (state) {
+                    is PresentableState.Loading -> LoadingPresentableItem()
+                    is PresentableState.Error -> ErrorPresentableItem()
+                    is PresentableState.Result -> {
+                        ResultPresentableItem(
+                            presentableStateResult = state,
+                            showTitle = showTitle,
+                            onClick = onClick
+                        )
+                    }
                 }
             }
+        }
+
+        if (presentableState is PresentableState.Result && presentableState.presentable.voteCount > 0 && showScore) {
+            PresentableScoreItem(
+                modifier = Modifier
+                    .constrainAs(score) {
+                        top.linkTo(content.bottom)
+                        bottom.linkTo(content.bottom)
+                        end.linkTo(content.end)
+                    },
+                score = presentableState.presentable.voteAverage,
+            )
         }
     }
 }
@@ -135,15 +156,10 @@ fun ResultPresentableItem(
     modifier: Modifier = Modifier,
     presentableStateResult: PresentableState.Result,
     showTitle: Boolean = true,
-    showScore: Boolean = true,
     onClick: () -> Unit = {}
 ) {
     val presentable by derivedStateOf {
         presentableStateResult.presentable
-    }
-
-    val scoreItemVisible by derivedStateOf {
-        presentable.voteCount > 0
     }
 
     val hasPoster by derivedStateOf {
@@ -191,16 +207,6 @@ fun ResultPresentableItem(
                     )
                 )
             }
-        }
-
-        if (scoreItemVisible && showScore) {
-            ScoreItem(
-                modifier = Modifier
-                    .size(56.dp)
-                    .align(Alignment.TopEnd)
-                    .padding(MaterialTheme.spacing.extraSmall),
-                score = presentable.voteAverage
-            )
         }
     }
 }

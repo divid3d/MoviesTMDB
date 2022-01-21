@@ -74,7 +74,8 @@ fun PresentableDetailsTopSection(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(MaterialTheme.spacing.medium)
+                    .padding(MaterialTheme.spacing.medium),
+                verticalAlignment = Alignment.Top
             ) {
                 PresentableItem(
                     size = MaterialTheme.sizes.presentableItemBig,
