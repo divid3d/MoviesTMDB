@@ -108,7 +108,9 @@ fun PresentableSection(
             Box {
                 LazyRow(
                     state = listState,
-                    modifier = Modifier.padding(top = MaterialTheme.spacing.small),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = MaterialTheme.spacing.small),
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
                     contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
                 ) {

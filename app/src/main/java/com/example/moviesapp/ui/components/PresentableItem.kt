@@ -85,6 +85,7 @@ fun PresentableItem(
         if (presentableState is PresentableItemState.Result && presentableState.presentable.voteCount > 0 && showScore) {
             PresentableScoreItem(
                 modifier = Modifier
+                    .padding(end = MaterialTheme.spacing.small)
                     .constrainAs(score) {
                         top.linkTo(content.bottom)
                         bottom.linkTo(content.bottom)

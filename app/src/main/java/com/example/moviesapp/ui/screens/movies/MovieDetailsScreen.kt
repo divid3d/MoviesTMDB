@@ -98,7 +98,7 @@ fun MovieDetailsScreen(
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
             movieDetails?.let { details ->
                 Column(
                     modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
@@ -129,20 +129,29 @@ fun MovieDetailsScreen(
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+
             credits?.cast?.let { castMembers ->
                 MemberSection(
-                    modifier = Modifier.animateContentSize(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    title = "Obsada",
                     members = castMembers,
                     contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
                 )
             }
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
             credits?.crew?.let { crewMembers ->
                 MemberSection(
                     modifier = Modifier.animateContentSize(),
+                    title = "Ekipa filmowa",
                     members = crewMembers,
                     contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
                 )
             }
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+
             similarMoviesState?.let { lazyPagingItems ->
                 PresentableSection(
                     modifier = Modifier.fillMaxWidth(),
@@ -158,6 +167,7 @@ fun MovieDetailsScreen(
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             moviesRecommendationState?.let { lazyPagingItems ->
                 PresentableSection(
                     modifier = Modifier.fillMaxWidth(),
@@ -192,7 +202,7 @@ fun MovieDetailsScreen(
             trailing = {
                 val isFavourite = movieDetails?.isFavourite == true
 
-                Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
+                Row(modifier = Modifier.padding(end = MaterialTheme.spacing.medium)) {
                     LikeButton(
                         isFavourite = isFavourite,
                         onClick = {
