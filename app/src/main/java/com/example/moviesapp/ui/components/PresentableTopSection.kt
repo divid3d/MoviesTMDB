@@ -141,12 +141,12 @@ fun PresentableTopSection(
                         .padding(MaterialTheme.spacing.medium)
                 ) {
                     val presentable = state[page]
-                    val presentableState = presentable?.let { PresentableState.Result(it) }
-                        ?: PresentableState.Loading
+                    val presentableItemState = presentable?.let { PresentableItemState.Result(it) }
+                        ?: PresentableItemState.Loading
 
                     PresentableTopSectionItem(
                         modifier = Modifier.fillMaxWidth(),
-                        presentableState = presentableState,
+                        presentableItemState = presentableItemState,
                         isSelected = selectedPresentable == presentable,
                         onPresentableClick = {
                             presentable?.let {
@@ -193,7 +193,7 @@ fun PresentableTopSection(
 @Composable
 fun PresentableTopSectionItem(
     modifier: Modifier = Modifier,
-    presentableState: PresentableState,
+    presentableItemState: PresentableItemState,
     presentableSize: Size = MaterialTheme.sizes.presentableItemBig,
     onPresentableClick: () -> Unit = {},
     isSelected: Boolean,
@@ -205,7 +205,7 @@ fun PresentableTopSectionItem(
         modifier = modifier
     ) {
         PresentableItem(
-            presentableState = presentableState,
+            presentableState = presentableItemState,
             size = presentableSize,
             showTitle = false,
             showScore = false,
@@ -219,14 +219,14 @@ fun PresentableTopSectionItem(
             exit = fadeOut(),
             visible = isSelected
         ) {
-            if (presentableState is PresentableState.Result) {
+            if (presentableItemState is PresentableItemState.Result) {
                 Column(
                     modifier = modifier
                         .fillMaxWidth()
                         .graphicsLayer { contentTransformations() }
                 ) {
                     Text(
-                        text = presentableState.presentable.title,
+                        text = presentableItemState.presentable.title,
                         style = TextStyle(
                             fontSize = 16.sp,
                             color = Color.White,
@@ -234,7 +234,7 @@ fun PresentableTopSectionItem(
                         )
                     )
                     Text(
-                        text = presentableState.presentable.overview,
+                        text = presentableItemState.presentable.overview,
                         style = TextStyle(
                             fontSize = 12.sp,
                             color = Color.White

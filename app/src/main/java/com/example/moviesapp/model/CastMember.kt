@@ -13,7 +13,7 @@ data class CastMember(
     val originalName: String?,
     val popularity: Float,
     @SerializedName("profile_path")
-    val profilePath: String?,
+    override val profilePath: String?,
     @SerializedName("cast_id")
     val castId: Int,
     val character: String,
@@ -21,6 +21,11 @@ data class CastMember(
     val creditId: String,
     val order: Int,
     @Transient
-    val profileUrl: String?
-)
+    override val profileUrl: String?
+) : Member {
+    override val firstLine: String
+        get() = name
+    override val secondLine: String
+        get() = character
+}
 

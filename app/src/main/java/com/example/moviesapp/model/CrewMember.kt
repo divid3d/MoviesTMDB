@@ -13,10 +13,15 @@ data class CrewMember(
     val originalName: String?,
     val popularity: Float,
     @SerializedName("profile_path")
-    val profilePath: String?,
+    override val profilePath: String?,
     @SerializedName("credit_id")
     val creditId: String,
     val department: String,
     val job: String,
-    val profileUrl: String?
-)
+    override val profileUrl: String?
+) : Member {
+    override val firstLine: String
+        get() = name
+    override val secondLine: String
+        get() = job
+}

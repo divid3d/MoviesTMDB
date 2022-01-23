@@ -31,8 +31,8 @@ fun PresentableDetailsTopSection(
 ) {
     val context = LocalContext.current
 
-    val presentableState by derivedStateOf {
-        presentable?.let { PresentableState.Result(it) } ?: PresentableState.Loading
+    val presentableItemState by derivedStateOf {
+        presentable?.let { PresentableItemState.Result(it) } ?: PresentableItemState.Loading
     }
 
     Box(modifier = modifier) {
@@ -80,7 +80,7 @@ fun PresentableDetailsTopSection(
                 PresentableItem(
                     size = MaterialTheme.sizes.presentableItemBig,
                     showTitle = false,
-                    presentableState = presentableState
+                    presentableState = presentableItemState
                 )
                 Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
                 Column(modifier = Modifier.weight(1f)) {

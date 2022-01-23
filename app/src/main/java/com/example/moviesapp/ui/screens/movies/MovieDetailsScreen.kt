@@ -30,8 +30,6 @@ import com.example.moviesapp.other.formattedMoney
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
-import com.example.moviesapp.ui.screens.movies.components.CastSection
-import com.example.moviesapp.ui.screens.movies.components.CrewSection
 import com.example.moviesapp.ui.screens.movies.components.GenresSection
 import com.example.moviesapp.ui.screens.movies.components.OverviewSection
 import com.example.moviesapp.ui.theme.Black500
@@ -131,24 +129,23 @@ fun MovieDetailsScreen(
                     )
                 }
             }
-            credits?.cast?.let { members ->
-                CastSection(
+            credits?.cast?.let { castMembers ->
+                MemberSection(
                     modifier = Modifier.animateContentSize(),
-                    cast = members,
+                    members = castMembers,
                     contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
                 )
             }
-            credits?.crew?.let { members ->
-                CrewSection(
+            credits?.crew?.let { crewMembers ->
+                MemberSection(
                     modifier = Modifier.animateContentSize(),
-                    crew = members,
+                    members = crewMembers,
                     contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
                 )
             }
             similarMoviesState?.let { lazyPagingItems ->
                 PresentableSection(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     title = stringResource(R.string.movie_details_similar),
                     showMoreButton = false,
                     state = lazyPagingItems
@@ -163,8 +160,7 @@ fun MovieDetailsScreen(
             }
             moviesRecommendationState?.let { lazyPagingItems ->
                 PresentableSection(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     title = stringResource(R.string.movie_details_recommendations),
                     showMoreButton = false,
                     state = lazyPagingItems

@@ -116,7 +116,7 @@ fun PresentableSection(
                         movie?.let {
                             PresentableItem(
                                 //modifier = Modifier.animateItemPlacement(),
-                                presentableState = PresentableState.Result(movie),
+                                presentableState = PresentableItemState.Result(movie),
                                 showScore = false,
                                 onClick = { onPresentableClick(it.id) }
                             )
@@ -127,11 +127,11 @@ fun PresentableSection(
                         when {
                             loadState.refresh is LoadState.Loading -> {
                                 items(10) {
-                                    PresentableItem(presentableState = PresentableState.Loading)
+                                    PresentableItem(presentableState = PresentableItemState.Loading)
                                 }
                             }
                             loadState.append is LoadState.Loading -> {
-                                item { PresentableItem(presentableState = PresentableState.Loading) }
+                                item { PresentableItem(presentableState = PresentableItemState.Loading) }
                             }
 //                            loadState.refresh is LoadState.Error -> {
 //                                val e = state.loadState.refresh as LoadState.Error

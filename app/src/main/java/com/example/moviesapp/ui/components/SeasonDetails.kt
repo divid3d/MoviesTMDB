@@ -19,7 +19,7 @@ fun SeasonDetails(
     Box(modifier = modifier) {
         Row(modifier = Modifier.fillMaxWidth()) {
             PresentableItem(
-                presentableState = PresentableState.Result(season),
+                presentableState = PresentableItemState.Result(season),
                 showScore = false,
                 showTitle = false
             )

@@ -62,7 +62,7 @@ fun PresentableGridSection(
             items(state) { presentable ->
                 presentable?.let {
                     PresentableItem(
-                        presentableState = PresentableState.Result(it),
+                        presentableState = PresentableItemState.Result(it),
                         showScore = false,
                         onClick = { onPresentableClick(it.id) }
                     )
@@ -73,12 +73,12 @@ fun PresentableGridSection(
                 when {
                     loadState.refresh is LoadState.Loading -> {
                         items(12) {
-                            PresentableItem(presentableState = PresentableState.Loading)
+                            PresentableItem(presentableState = PresentableItemState.Loading)
                         }
                     }
                     loadState.append is LoadState.Loading -> {
                         items(3) {
-                            PresentableItem(presentableState = PresentableState.Loading)
+                            PresentableItem(presentableState = PresentableItemState.Loading)
                         }
                     }
 //                    loadState.refresh is LoadState.Error -> {

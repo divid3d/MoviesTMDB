@@ -43,7 +43,7 @@ import com.example.moviesapp.ui.theme.spacing
 fun PresentableItem(
     modifier: Modifier = Modifier,
     size: Size = MaterialTheme.sizes.presentableItemSmall,
-    presentableState: PresentableState,
+    presentableState: PresentableItemState,
     showTitle: Boolean = true,
     showScore: Boolean = true,
     transformations: GraphicsLayerScope.() -> Unit = {},
@@ -69,9 +69,9 @@ fun PresentableItem(
         ) {
             Crossfade(modifier = Modifier.fillMaxSize(), targetState = presentableState) { state ->
                 when (state) {
-                    is PresentableState.Loading -> LoadingPresentableItem()
-                    is PresentableState.Error -> ErrorPresentableItem()
-                    is PresentableState.Result -> {
+                    is PresentableItemState.Loading -> LoadingPresentableItem()
+                    is PresentableItemState.Error -> ErrorPresentableItem()
+                    is PresentableItemState.Result -> {
                         ResultPresentableItem(
                             presentableStateResult = state,
                             showTitle = showTitle,
@@ -82,7 +82,7 @@ fun PresentableItem(
             }
         }
 
-        if (presentableState is PresentableState.Result && presentableState.presentable.voteCount > 0 && showScore) {
+        if (presentableState is PresentableItemState.Result && presentableState.presentable.voteCount > 0 && showScore) {
             PresentableScoreItem(
                 modifier = Modifier
                     .constrainAs(score) {
@@ -154,7 +154,7 @@ fun LoadingPresentableItem(
 @Composable
 fun ResultPresentableItem(
     modifier: Modifier = Modifier,
-    presentableStateResult: PresentableState.Result,
+    presentableStateResult: PresentableItemState.Result,
     showTitle: Boolean = true,
     onClick: () -> Unit = {}
 ) {
@@ -211,9 +211,9 @@ fun ResultPresentableItem(
     }
 }
 
-sealed class PresentableState {
-    object Loading : PresentableState()
-    object Error : PresentableState()
-    data class Result(val presentable: Presentable) : PresentableState()
+sealed class PresentableItemState {
+    object Loading : PresentableItemState()
+    object Error : PresentableItemState()
+    data class Result(val presentable: Presentable) : PresentableItemState()
 }
 
