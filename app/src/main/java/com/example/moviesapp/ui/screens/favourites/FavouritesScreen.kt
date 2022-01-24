@@ -8,13 +8,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.model.FavouriteType
+import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.ui.components.FavouriteEmptyState
 import com.example.moviesapp.ui.components.FavouriteTypeSelector
 import com.example.moviesapp.ui.components.PresentableGridSection
@@ -34,11 +33,7 @@ fun FavouritesScreen(
     val selectedFavouriteType by viewModel.selectedFavouriteType.collectAsState()
     val favourites = viewModel.favourites.collectAsLazyPagingItems()
 
-    val notEmpty by derivedStateOf {
-        favourites.run {
-            loadState.refresh is LoadState.Loading || itemCount > 0
-        }
-    }
+    val notEmpty = favourites.isNotEmpty()
 
     Column(
         modifier = Modifier

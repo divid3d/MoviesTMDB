@@ -63,5 +63,6 @@
     <string name="favourite_empty_navigate_to_tv_series_button_label">Przejdź do seriali</string>
 
     <string name="search_placeholder">Wpisz, aby wyszukać</string>
+    <string name="search_empty_state">Brak wyników wyszukiwania</string>
 
 </resources>

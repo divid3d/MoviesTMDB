@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalDensity
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 
 @Composable
@@ -41,3 +42,15 @@ fun <T : Any> LazyGridScope.items(
         itemContent(lazyPagingItems[index])
     }
 }
+
+
+fun LazyPagingItems<*>.isEmpty(): Boolean {
+    return run {
+        loadState.source.refresh is LoadState.NotLoading
+                && loadState.append.endOfPaginationReached
+                && itemCount < 1
+    }
+}
+
+fun LazyPagingItems<*>.isNotEmpty(): Boolean = !isEmpty()
+

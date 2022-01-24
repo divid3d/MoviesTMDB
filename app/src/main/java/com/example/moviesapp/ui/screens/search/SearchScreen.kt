@@ -11,7 +11,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -25,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
+import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.ui.components.PresentableGridSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
@@ -67,13 +71,7 @@ fun SearchScreen(
                 is SearchState.Result -> {
                     val result = state.data.collectAsLazyPagingItems()
 
-                    val empty by derivedStateOf {
-                        result.run {
-                            loadState.append.endOfPaginationReached && itemSnapshotList.isEmpty()
-                        }
-                    }
-
-                    if (!empty) {
+                    if (result.isNotEmpty()) {
                         PresentableGridSection(
                             modifier = Modifier.fillMaxSize(),
                             showRefreshItems = false,
@@ -174,7 +172,7 @@ fun SearchEmptyState(
         )
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         Text(
-            text = "Brak wyników wyszukiwania",
+            text = stringResource(R.string.search_empty_state),
             style = TextStyle(color = White300)
         )
     }
