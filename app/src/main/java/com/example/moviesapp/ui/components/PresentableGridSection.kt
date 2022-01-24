@@ -31,6 +31,7 @@ import kotlinx.coroutines.launch
 fun PresentableGridSection(
     modifier: Modifier = Modifier,
     state: LazyPagingItems<Presentable>,
+    showRefreshItems: Boolean = true,
     scrollToBeginningItemsStart: Int = 30,
     onPresentableClick: (Int) -> Unit = {}
 ) {
@@ -72,25 +73,18 @@ fun PresentableGridSection(
             state.apply {
                 when {
                     loadState.refresh is LoadState.Loading -> {
-                        items(12) {
-                            PresentableItem(presentableState = PresentableItemState.Loading)
+                        if (showRefreshItems) {
+                            items(12) {
+                                PresentableItem(presentableState = PresentableItemState.Loading)
+                            }
                         }
                     }
+
                     loadState.append is LoadState.Loading -> {
                         items(3) {
                             PresentableItem(presentableState = PresentableItemState.Loading)
                         }
                     }
-//                    loadState.refresh is LoadState.Error -> {
-//                        val e = moviesPageDataState.loadState.refresh as LoadState.Error
-//
-//                        item { MovieItem(presentableState = PresentableState.Error) }
-//                    }
-//                    loadState.append is LoadState.Error -> {
-//                        val e = moviesPageDataState.loadState.refresh as LoadState.Error
-//
-//                        item { MovieItem(presentableState = PresentableState.Error) }
-//                    }
                 }
             }
         }

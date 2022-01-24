@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.data.MovieDetailsResponseDataSource
 import com.example.moviesapp.data.MovieResponseDataSource
+import com.example.moviesapp.data.MovieSearchResponseDataSource
 import com.example.moviesapp.model.Credits
 import com.example.moviesapp.model.Movie
 import com.example.moviesapp.model.MovieDetails
@@ -71,5 +72,23 @@ class MovieRepository @Inject constructor(
     suspend fun movieCredits(movieId: Int, isoCode: String = "pl-PL"): Credits =
         apiHelper.getMovieCredits(movieId, isoCode)
 
+
+    fun movieSearch(
+        query: String,
+        includeAdult: Boolean = false,
+        year: Int? = null,
+        releaseYear: Int? = null
+    ): Flow<PagingData<Movie>> =
+        Pager(
+            PagingConfig(pageSize = 20)
+        ) {
+            MovieSearchResponseDataSource(
+                apiHelper = apiHelper,
+                query = query,
+                includeAdult = includeAdult,
+                year = year,
+                releaseYear = releaseYear
+            )
+        }.flow
 
 }

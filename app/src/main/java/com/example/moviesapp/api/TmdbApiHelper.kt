@@ -54,4 +54,13 @@ interface TmdbApiHelper {
         isoCode: String = "pl-PL"
     ): TvSeasonsResponse
 
+    suspend fun searchMovies(
+        page: Int,
+        isoCode: String = "pl-PL",
+        query: String,
+        includeAdult: Boolean = false,
+        year: Int? = null,
+        releaseYear: Int? = null
+    ): MoviesResponse
+
 }

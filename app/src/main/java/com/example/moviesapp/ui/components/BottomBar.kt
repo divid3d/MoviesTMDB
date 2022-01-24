@@ -44,6 +44,7 @@ fun BottomBar(
 
     val showBottomBar by derivedStateOf {
         currentRoute in setOf(
+            null,
             MoviesScreenDestination.route,
             TvScreenDestination.route,
             FavouritesScreenDestination.route,
