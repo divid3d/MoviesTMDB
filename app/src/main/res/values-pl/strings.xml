@@ -62,4 +62,6 @@
     <string name="favourite_empty_navigate_to_movies_button_label">Przejdź do filmów</string>
     <string name="favourite_empty_navigate_to_tv_series_button_label">Przejdź do seriali</string>
 
+    <string name="search_placeholder">Wpisz, aby wyszukać</string>
+
 </resources>

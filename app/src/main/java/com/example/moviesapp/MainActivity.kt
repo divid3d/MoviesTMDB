@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
@@ -17,6 +19,10 @@ import coil.compose.LocalImageLoader
 import com.example.moviesapp.model.SnackBarEvent
 import com.example.moviesapp.ui.components.BottomBar
 import com.example.moviesapp.ui.screens.NavGraphs
+import com.example.moviesapp.ui.screens.destinations.FavouritesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.MoviesAppTheme
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -28,7 +34,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 
 
 @AndroidEntryPoint
-@OptIn(InternalCoroutinesApi::class)
+@OptIn(InternalCoroutinesApi::class, ExperimentalComposeUiApi::class)
 class MainActivity : ComponentActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
@@ -40,8 +46,37 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val context = LocalContext.current
+            val keyboardController = LocalSoftwareKeyboardController.current
+
             val snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
             val snackBarEvent: SnackBarEvent? by mainViewModel.networkSnackBarEvent.collectAsState()
+
+            val useDarkIcons = MaterialTheme.colors.isLight
+            val navController = rememberNavController()
+            val systemUiController = rememberSystemUiController()
+
+            var currentRoute: String? by remember {
+                mutableStateOf(null)
+            }
+
+            navController.apply {
+                addOnDestinationChangedListener { controller, _, _ ->
+                    currentRoute = controller.currentBackStackEntry?.destination?.route
+                }
+                addOnDestinationChangedListener { _, _, _ ->
+                    keyboardController?.hide()
+                }
+            }
+
+            val showBottomBar by derivedStateOf {
+                currentRoute in setOf(
+                    null,
+                    MoviesScreenDestination.route,
+                    TvScreenDestination.route,
+                    FavouritesScreenDestination.route,
+                    SearchScreenDestination.route
+                )
+            }
 
             LaunchedEffect(snackBarEvent) {
                 snackBarEvent?.let { event ->
@@ -59,11 +94,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-
-            val systemUiController = rememberSystemUiController()
-            val navController = rememberNavController()
-
-            val useDarkIcons = MaterialTheme.colors.isLight
 
             SideEffect {
                 // Update all of the system bar colors to be transparent, and use
@@ -83,7 +113,9 @@ class MainActivity : ComponentActivity() {
                             bottomBar = {
                                 BottomBar(
                                     modifier = Modifier.navigationBarsPadding(),
-                                    navController = navController
+                                    navController = navController,
+                                    visible = showBottomBar,
+                                    currentRoute = currentRoute
                                 )
                             }
                         ) { innerPadding ->

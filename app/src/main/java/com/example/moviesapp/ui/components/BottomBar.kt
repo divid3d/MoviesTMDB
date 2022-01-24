@@ -10,7 +10,8 @@ import androidx.compose.animation.slideOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
@@ -31,29 +32,12 @@ import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 fun BottomBar(
     modifier: Modifier = Modifier,
     navController: NavController,
+    visible: Boolean = true,
+    currentRoute: String? = null
 ) {
-    var currentRoute: String? by remember {
-        mutableStateOf(null)
-    }
-
-    navController.apply {
-        addOnDestinationChangedListener { controller, _, _ ->
-            currentRoute = controller.currentBackStackEntry?.destination?.route
-        }
-    }
-
-    val showBottomBar by derivedStateOf {
-        currentRoute in setOf(
-            null,
-            MoviesScreenDestination.route,
-            TvScreenDestination.route,
-            FavouritesScreenDestination.route,
-            SearchScreenDestination.route
-        )
-    }
 
     AnimatedVisibility(
-        visible = showBottomBar,
+        visible = visible,
         enter = slideIn(
             animationSpec = spring(),
             initialOffset = { size -> IntOffset(0, size.height) }

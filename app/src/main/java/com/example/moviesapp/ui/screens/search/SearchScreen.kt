@@ -10,20 +10,25 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.moviesapp.R
 import com.example.moviesapp.ui.components.PresentableGridSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
+import com.example.moviesapp.ui.theme.White300
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.systemBarsPadding
 import com.ramcosta.composedestinations.annotation.Destination
@@ -46,13 +51,16 @@ fun SearchScreen(
             .systemBarsPadding(),
     ) {
         QueryTextField(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(MaterialTheme.spacing.medium),
             query = query,
             loading = queryLoading,
             onQueryChange = viewModel::onQueryChange,
             onQueryClear = viewModel::onQueryClear
         )
         Crossfade(
+            modifier = Modifier.fillMaxSize(),
             targetState = searchState
         ) { state ->
             when (state) {
@@ -79,12 +87,12 @@ fun SearchScreen(
                             )
                         }
                     } else {
-                        Text(text = "Brak wyników wyszukiwania")
+                        SearchEmptyState(
+                            modifier = Modifier.fillMaxSize()
+                        )
                     }
                 }
-                is SearchState.Init -> {
-                    Text(text = "Wpisz aby wyszukać")
-                }
+                else -> Unit
             }
         }
 
@@ -101,15 +109,19 @@ fun QueryTextField(
     onQueryChange: (String) -> Unit = {},
     onQueryClear: () -> Unit = {}
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
+    val focusRequester = remember { FocusRequester() }
 
     Box(modifier = modifier) {
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
             value = query.orEmpty(),
             onValueChange = onQueryChange,
             placeholder = {
-                Text("Wpisz aby wyszukać")
+                Text(text = stringResource(R.string.search_placeholder))
             },
             trailingIcon = {
                 Row(
@@ -132,12 +144,38 @@ fun QueryTextField(
                 }
             },
             keyboardActions = KeyboardActions(
-                onSearch = { keyboardController?.hide() }
+                onSearch = {
+                    focusManager.clearFocus(force = true)
+                }
             ),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Search
-            )
+            ),
+            singleLine = true
         )
     }
 
+}
+
+@Composable
+fun SearchEmptyState(
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            modifier = Modifier.size(100.dp),
+            imageVector = Icons.Filled.Info,
+            tint = White300,
+            contentDescription = null
+        )
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+        Text(
+            text = "Brak wyników wyszukiwania",
+            style = TextStyle(color = White300)
+        )
+    }
 }

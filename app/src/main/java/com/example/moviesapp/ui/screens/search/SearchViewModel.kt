@@ -26,6 +26,7 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val queryDelay = 500.milliseconds
+
     private val config = configRepository.config
 
     private val _query: MutableStateFlow<String?> = MutableStateFlow(null)
@@ -75,7 +76,12 @@ class SearchViewModel @Inject constructor(
                         }
                     }
 
-                _searchState.emit(SearchState.Result(response))
+                _searchState.emit(
+                    SearchState.Result(
+                        query = query,
+                        data = response
+                    )
+                )
             } catch (e: CancellationException) {
 
             } finally {
@@ -91,5 +97,8 @@ class SearchViewModel @Inject constructor(
 
 sealed class SearchState {
     object Init : SearchState()
-    data class Result(val data: Flow<PagingData<Presentable>>) : SearchState()
+    data class Result(
+        val query: String,
+        val data: Flow<PagingData<Presentable>>
+    ) : SearchState()
 }
