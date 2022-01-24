@@ -29,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberImagePainter
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Presentable
@@ -42,54 +41,33 @@ fun PresentableItem(
     size: Size = MaterialTheme.sizes.presentableItemSmall,
     presentableState: PresentableItemState,
     showTitle: Boolean = true,
-    showScore: Boolean = true,
+    showScore: Boolean = false,
     transformations: GraphicsLayerScope.() -> Unit = {},
     onClick: (() -> Unit)? = null
 ) {
-    ConstraintLayout {
-        val (content, score) = createRefs()
-
-        Card(
-            modifier = modifier
-                .constrainAs(content) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-                .width(size.width)
-                .height(size.height)
-                .graphicsLayer {
-                    transformations()
-                },
-            backgroundColor = MaterialTheme.colors.background,
-            shape = MaterialTheme.shapes.medium
-        ) {
-            Crossfade(modifier = Modifier.fillMaxSize(), targetState = presentableState) { state ->
-                when (state) {
-                    is PresentableItemState.Loading -> LoadingPresentableItem()
-                    is PresentableItemState.Error -> ErrorPresentableItem()
-                    is PresentableItemState.Result -> {
-                        ResultPresentableItem(
-                            presentableStateResult = state,
-                            showTitle = showTitle,
-                            onClick = onClick
-                        )
-                    }
+    Card(
+        modifier = modifier
+            .width(size.width)
+            .height(size.height)
+            .graphicsLayer {
+                transformations()
+            },
+        backgroundColor = MaterialTheme.colors.background,
+        shape = MaterialTheme.shapes.medium
+    ) {
+        Crossfade(modifier = Modifier.fillMaxSize(), targetState = presentableState) { state ->
+            when (state) {
+                is PresentableItemState.Loading -> LoadingPresentableItem()
+                is PresentableItemState.Error -> ErrorPresentableItem()
+                is PresentableItemState.Result -> {
+                    ResultPresentableItem(
+                        presentableStateResult = state,
+                        showScore = showScore,
+                        showTitle = showTitle,
+                        onClick = onClick
+                    )
                 }
             }
-        }
-
-        if (presentableState is PresentableItemState.Result && presentableState.presentable.voteCount > 0 && showScore) {
-            PresentableScoreItem(
-                modifier = Modifier
-                    .padding(end = MaterialTheme.spacing.small)
-                    .constrainAs(score) {
-                        top.linkTo(content.bottom)
-                        bottom.linkTo(content.bottom)
-                        end.linkTo(content.end)
-                    },
-                score = presentableState.presentable.voteAverage,
-            )
         }
     }
 }
@@ -153,6 +131,7 @@ fun LoadingPresentableItem(
 fun ResultPresentableItem(
     modifier: Modifier = Modifier,
     presentableStateResult: PresentableItemState.Result,
+    showScore: Boolean = false,
     showTitle: Boolean = true,
     onClick: (() -> Unit)? = null
 ) {
@@ -208,6 +187,18 @@ fun ResultPresentableItem(
                     )
                 )
             }
+        }
+
+        if (presentableStateResult.presentable.voteCount > 0 && showScore) {
+            PresentableScoreItem(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(
+                        end = MaterialTheme.spacing.extraSmall,
+                        top = MaterialTheme.spacing.extraSmall
+                    ),
+                score = presentableStateResult.presentable.voteAverage,
+            )
         }
     }
 }
