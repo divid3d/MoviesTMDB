@@ -33,10 +33,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberImagePainter
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Presentable
-import com.example.moviesapp.ui.theme.Black500
-import com.example.moviesapp.ui.theme.Size
-import com.example.moviesapp.ui.theme.sizes
-import com.example.moviesapp.ui.theme.spacing
+import com.example.moviesapp.ui.theme.*
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -47,7 +44,7 @@ fun PresentableItem(
     showTitle: Boolean = true,
     showScore: Boolean = true,
     transformations: GraphicsLayerScope.() -> Unit = {},
-    onClick: () -> Unit = {}
+    onClick: (() -> Unit)? = null
 ) {
     ConstraintLayout {
         val (content, score) = createRefs()
@@ -64,8 +61,8 @@ fun PresentableItem(
                 .graphicsLayer {
                     transformations()
                 },
-            shape = MaterialTheme.shapes.medium,
-            backgroundColor = Color.Transparent
+            backgroundColor = MaterialTheme.colors.background,
+            shape = MaterialTheme.shapes.medium
         ) {
             Crossfade(modifier = Modifier.fillMaxSize(), targetState = presentableState) { state ->
                 when (state) {
@@ -104,10 +101,10 @@ fun NoPhotoPresentableItem(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(MaterialTheme.colors.background)
             .border(
                 width = 1.dp,
-                color = Color.White.copy(0.5f),
+                color = White500,
                 shape = MaterialTheme.shapes.medium
             ),
         contentAlignment = Alignment.Center
@@ -115,7 +112,7 @@ fun NoPhotoPresentableItem(
         Image(
             painter = painterResource(R.drawable.ic_outline_no_photography_24),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(Color.White.copy(0.5f))
+            colorFilter = ColorFilter.tint(White500)
         )
     }
 }
@@ -127,7 +124,7 @@ fun ErrorPresentableItem(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(MaterialTheme.colors.background)
             .border(
                 width = 1.dp,
                 color = Color.White,
@@ -157,7 +154,7 @@ fun ResultPresentableItem(
     modifier: Modifier = Modifier,
     presentableStateResult: PresentableItemState.Result,
     showTitle: Boolean = true,
-    onClick: () -> Unit = {}
+    onClick: (() -> Unit)? = null
 ) {
     val presentable by derivedStateOf {
         presentableStateResult.presentable
@@ -169,7 +166,10 @@ fun ResultPresentableItem(
 
     Box(modifier = modifier
         .fillMaxSize()
-        .clickable { onClick() }
+        .clickable(
+            enabled = onClick != null,
+            onClick = { onClick?.invoke() }
+        )
     ) {
         if (hasPoster) {
             Image(

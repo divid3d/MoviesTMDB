@@ -101,7 +101,9 @@ fun MovieDetailsScreen(
 
             movieDetails?.let { details ->
                 Column(
-                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
+                    modifier = Modifier
+                        .padding(horizontal = MaterialTheme.spacing.medium)
+                        .animateContentSize(),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                 ) {
                     Text(
@@ -154,7 +156,9 @@ fun MovieDetailsScreen(
 
             similarMoviesState?.let { lazyPagingItems ->
                 PresentableSection(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(),
                     title = stringResource(R.string.movie_details_similar),
                     showMoreButton = false,
                     state = lazyPagingItems
@@ -170,7 +174,9 @@ fun MovieDetailsScreen(
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             moviesRecommendationState?.let { lazyPagingItems ->
                 PresentableSection(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(),
                     title = stringResource(R.string.movie_details_recommendations),
                     showMoreButton = false,
                     state = lazyPagingItems

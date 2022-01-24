@@ -8,8 +8,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 data class Sizes(
-    val presentableItemSmall: Size = Size(130.dp, 200.dp),
-    val presentableItemBig: Size = Size(160.dp, 250.dp)
+    val presentableItemSmall: Size = Size(120.dp, 180.dp),
+    val presentableItemBig: Size = Size(160.dp, 240.dp)
 )
 
 data class Size(val width: Dp, val height: Dp)

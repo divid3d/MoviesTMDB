@@ -23,6 +23,7 @@ import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Member
+import com.example.moviesapp.ui.theme.White500
 import com.example.moviesapp.ui.theme.spacing
 
 @Composable
@@ -103,7 +104,7 @@ fun MemberLoadingChip(
             modifier = modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .border(width = 1.dp, color = Color.White.copy(0.5f), shape = CircleShape)
+                .border(width = 1.dp, color = White500, shape = CircleShape)
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -141,13 +142,13 @@ fun MemberNoPhotoChip(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1f)
-            .border(width = 1.dp, color = Color.White.copy(0.5f), shape = CircleShape),
+            .border(width = 1.dp, color = White500, shape = CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painterResource(R.drawable.ic_outline_no_photography_24),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(Color.White.copy(0.5f))
+            colorFilter = ColorFilter.tint(White500)
         )
     }
 }

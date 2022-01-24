@@ -49,7 +49,7 @@ fun MemberSection(
     ) {
         items(members) { member ->
             MemberResultChip(
-                modifier = Modifier.width(80.dp),
+                modifier = Modifier.width(64.dp),
                 member = member
             )
         }

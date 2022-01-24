@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import com.example.moviesapp.ui.theme.White500
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.placeholder.shimmer
@@ -22,12 +22,12 @@ fun PosterPlaceholder(
             .placeholder(
                 visible = true,
                 highlight = PlaceholderHighlight.shimmer(
-                    highlightColor = Color.White, animationSpec = InfiniteRepeatableSpec(
+                    highlightColor = White500, animationSpec = InfiniteRepeatableSpec(
                         animation = tween(durationMillis = 500, easing = LinearEasing),
                         repeatMode = RepeatMode.Restart
                     )
                 ),
-                color = Color.Black,
+                color = MaterialTheme.colors.background,
                 shape = MaterialTheme.shapes.medium
             )
     )
