@@ -1,5 +1,5 @@
 package com.example.moviesapp.model
 
 enum class MovieType {
-    Popular, Upcoming, TopRated, Favourite
+    Popular, Upcoming, TopRated, Favourite, RecentlyBrowsed
 }

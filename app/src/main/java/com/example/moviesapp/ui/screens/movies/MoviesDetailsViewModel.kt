@@ -16,7 +16,7 @@ import com.example.moviesapp.other.getImageUrl
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.MovieRepository
-import com.example.moviesapp.repository.RecentBrowsedRepository
+import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -27,7 +27,7 @@ class MoviesDetailsViewModel @Inject constructor(
     private val configRepository: ConfigRepository,
     private val movieRepository: MovieRepository,
     private val favouritesRepository: FavouritesRepository,
-    private val recentBrowsedRepository: RecentBrowsedRepository,
+    private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -57,7 +57,7 @@ class MoviesDetailsViewModel @Inject constructor(
     }
         .onEach { movieDetails ->
             movieDetails?.let { details ->
-                recentBrowsedRepository.addRecentBrowsedMovie(details)
+                recentlyBrowsedRepository.addRecentlyBrowsedMovie(details)
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)

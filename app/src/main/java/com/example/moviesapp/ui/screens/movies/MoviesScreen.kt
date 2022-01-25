@@ -16,6 +16,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MovieType
+import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.ui.components.ExitDialog
 import com.example.moviesapp.ui.components.PresentableSection
 import com.example.moviesapp.ui.components.PresentableTopSection
@@ -156,7 +157,7 @@ fun MoviesScreen(
                     navigateToAllMovies(MovieType.TopRated)
                 }
             )
-            if (favourites.itemCount > 0) {
+            if (favourites.isNotEmpty()) {
                 SectionDivider(
                     modifier = Modifier.padding(
                         start = MaterialTheme.spacing.medium,
@@ -169,7 +170,7 @@ fun MoviesScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .animateContentSize(),
-                    title = "Ulubione",
+                    title = stringResource(R.string.favourite_movies),
                     state = favourites,
                     onPresentableClick = navigateToMovieDetails,
                     onMoreClick = {
@@ -177,7 +178,7 @@ fun MoviesScreen(
                     }
                 )
             }
-            if (recentlyBrowsed.itemCount > 0) {
+            if (recentlyBrowsed.isNotEmpty()) {
                 SectionDivider(
                     modifier = Modifier.padding(
                         start = MaterialTheme.spacing.medium,
@@ -190,11 +191,11 @@ fun MoviesScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .animateContentSize(),
-                    title = "Ostatnio oglądane",
+                    title = stringResource(R.string.recently_browsed_movies),
                     state = recentlyBrowsed,
                     onPresentableClick = navigateToMovieDetails,
                     onMoreClick = {
-                        //navigateToAllMovies(MovieType.Favourite)
+                        navigateToAllMovies(MovieType.RecentlyBrowsed)
                     }
                 )
             }

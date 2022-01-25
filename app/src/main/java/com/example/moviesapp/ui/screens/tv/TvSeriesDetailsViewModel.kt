@@ -16,6 +16,7 @@ import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.other.getImageUrl
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
+import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import com.example.moviesapp.repository.TvSeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -27,6 +28,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
     private val configRepository: ConfigRepository,
     private val tvSeriesRepository: TvSeriesRepository,
     private val favouritesRepository: FavouritesRepository,
+    private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -56,7 +58,13 @@ class TvSeriesDetailsViewModel @Inject constructor(
             backdropUrl = backdropUrl,
             isFavourite = details.id in favouriteIds
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+    }
+        .onEach { tvSeriesDetails ->
+            tvSeriesDetails?.let { details ->
+                recentlyBrowsedRepository.addRecentlyBrowsedTvSeries(details)
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     val seasonNumbers: StateFlow<List<Int>> = _tvSeriesDetails.map { details ->
         details?.seasons?.map { season -> season.seasonNumber } ?: emptyList()

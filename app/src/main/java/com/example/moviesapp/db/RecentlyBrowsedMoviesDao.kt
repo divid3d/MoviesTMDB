@@ -8,12 +8,12 @@ import androidx.room.Query
 import com.example.moviesapp.model.RecentlyBrowsedMovie
 
 @Dao
-interface RecentBrowsedMoviesDao {
+interface RecentlyBrowsedMoviesDao {
 
     @Query("SELECT * FROM RecentlyBrowsedMovie ORDER BY added_date DESC")
     fun recentBrowsedMovie(): DataSource.Factory<Int, RecentlyBrowsedMovie>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addBrowsedMovie(vararg recentlyBrowsedMovie: RecentlyBrowsedMovie)
+    suspend fun addRecentlyBrowsedMovie(vararg recentlyBrowsedMovie: RecentlyBrowsedMovie)
 
 }

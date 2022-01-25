@@ -1,5 +1,5 @@
 package com.example.moviesapp.model
 
 enum class TvSeriesType {
-    TopRated, AiringToday, Popular, Favourite
+    TopRated, AiringToday, Popular, Favourite, RecentlyBrowsed
 }

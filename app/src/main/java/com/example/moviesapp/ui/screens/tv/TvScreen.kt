@@ -15,6 +15,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.TvSeriesType
+import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.ui.components.PresentableSection
 import com.example.moviesapp.ui.components.PresentableTopSection
 import com.example.moviesapp.ui.components.SectionDivider
@@ -37,7 +38,8 @@ fun TvScreen(
     val onTheAir = viewModel.onTheAir.collectAsLazyPagingItems()
     val popular = viewModel.popular.collectAsLazyPagingItems()
     val airingToday = viewModel.airingToday.collectAsLazyPagingItems()
-    val favourites = viewModel.favouritesTvSeriesSeriesPagingDataFlow.collectAsLazyPagingItems()
+    val favourites = viewModel.favourites.collectAsLazyPagingItems()
+    val recentlyBrowsed = viewModel.recentlyBrowsed.collectAsLazyPagingItems()
 
     val isRefreshing by derivedStateOf {
         listOf(
@@ -127,7 +129,7 @@ fun TvScreen(
                 onPresentableClick = navigateToTvSeriesDetails,
                 onMoreClick = { navigateToAllTvSeries(TvSeriesType.Popular) }
             )
-            if (favourites.itemCount > 0) {
+            if (favourites.isNotEmpty()) {
                 SectionDivider(
                     modifier = Modifier.padding(
                         start = MaterialTheme.spacing.medium,
@@ -140,10 +142,29 @@ fun TvScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .animateContentSize(),
-                    title = "Ulubione",
+                    title = stringResource(R.string.favourites_tv_series),
                     state = favourites,
                     onPresentableClick = navigateToTvSeriesDetails,
                     onMoreClick = { navigateToAllTvSeries(TvSeriesType.Favourite) }
+                )
+            }
+            if (recentlyBrowsed.isNotEmpty()) {
+                SectionDivider(
+                    modifier = Modifier.padding(
+                        start = MaterialTheme.spacing.medium,
+                        top = MaterialTheme.spacing.medium,
+                        end = MaterialTheme.spacing.medium,
+                        bottom = MaterialTheme.spacing.small
+                    )
+                )
+                PresentableSection(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    title = stringResource(R.string.recently_browsed_tv_series),
+                    state = recentlyBrowsed,
+                    onPresentableClick = navigateToTvSeriesDetails,
+                    onMoreClick = { navigateToAllTvSeries(TvSeriesType.RecentlyBrowsed) }
                 )
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))

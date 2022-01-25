@@ -208,7 +208,7 @@ fun MovieDetailsScreen(
             trailing = {
                 val isFavourite = movieDetails?.isFavourite == true
 
-                Row(modifier = Modifier.padding(end = MaterialTheme.spacing.medium)) {
+                Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
                     LikeButton(
                         isFavourite = isFavourite,
                         onClick = {

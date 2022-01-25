@@ -30,7 +30,7 @@ fun AllTvSeriesScreen(
     navigator: DestinationsNavigator
 ) {
     val viewModel: AllTvSeriesViewModel = hiltViewModel()
-    val tvSeries = viewModel.tvSeries.collectAsLazyPagingItems()
+    val tvSeries = viewModel.tvSeries?.collectAsLazyPagingItems()
 
     val favouriteTvSeriesCount by viewModel.favouriteTvSeriesCount.collectAsState()
 
@@ -42,6 +42,7 @@ fun AllTvSeriesScreen(
             R.string.all_tv_series_favourites_label,
             favouriteTvSeriesCount
         )
+        TvSeriesType.RecentlyBrowsed -> stringResource(R.string.all_tv_series_recently_browsed_label)
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -53,13 +54,15 @@ fun AllTvSeriesScreen(
                 )
             }
         })
-        PresentableGridSection(
-            modifier = Modifier.fillMaxSize(),
-            state = tvSeries
-        ) { tvSeriesId ->
-            navigator.navigate(
-                TvSeriesDetailsScreenDestination(tvSeriesId)
-            )
+        tvSeries?.let { state ->
+            PresentableGridSection(
+                modifier = Modifier.fillMaxSize(),
+                state = state
+            ) { tvSeriesId ->
+                navigator.navigate(
+                    TvSeriesDetailsScreenDestination(tvSeriesId)
+                )
+            }
         }
     }
 }

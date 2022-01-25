@@ -37,12 +37,17 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideRecentBrowsedDatabase(@ApplicationContext context: Context) =
-        Room.databaseBuilder(context, RecentBrowsedDatabase::class.java, "recent_browsed")
+        Room.databaseBuilder(context, RecentlyBrowsedDatabase::class.java, "recent_browsed")
             .fallbackToDestructiveMigration()
             .build()
 
     @Singleton
     @Provides
-    fun provideRecentBrowsedMoviesDao(database: RecentBrowsedDatabase): RecentBrowsedMoviesDao =
-        database.recentBrowsedMoviesDao()
+    fun provideRecentlyBrowsedMoviesDao(database: RecentlyBrowsedDatabase): RecentlyBrowsedMoviesDao =
+        database.recentlyBrowsedMovies()
+
+    @Singleton
+    @Provides
+    fun provideRecentlyBrowsedTvSeriesDao(database: RecentlyBrowsedDatabase): RecentlyBrowsedTvSeriesDao =
+        database.recentlyBrowsedTvSeries()
 }

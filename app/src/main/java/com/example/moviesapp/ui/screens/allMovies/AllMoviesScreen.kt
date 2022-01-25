@@ -30,7 +30,7 @@ fun AllMoviesScreen(
     navigator: DestinationsNavigator
 ) {
     val viewModel: AllMoviesViewModel = hiltViewModel()
-    val movies = viewModel.movies.collectAsLazyPagingItems()
+    val movies = viewModel.movies?.collectAsLazyPagingItems()
 
     val favouriteMoviesCount by viewModel.favouriteMoviesCount.collectAsState()
 
@@ -42,6 +42,7 @@ fun AllMoviesScreen(
             R.string.all_movies_favourites_label,
             favouriteMoviesCount
         )
+        MovieType.RecentlyBrowsed -> stringResource(R.string.all_movies_recently_browsed_label)
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -53,13 +54,15 @@ fun AllMoviesScreen(
                 )
             }
         })
-        PresentableGridSection(
-            modifier = Modifier.fillMaxSize(),
-            state = movies
-        ) { movieId ->
-            navigator.navigate(
-                MovieDetailsScreenDestination(movieId)
-            )
+        movies?.let { state ->
+            PresentableGridSection(
+                modifier = Modifier.fillMaxSize(),
+                state = state
+            ) { movieId ->
+                navigator.navigate(
+                    MovieDetailsScreenDestination(movieId)
+                )
+            }
         }
     }
 }

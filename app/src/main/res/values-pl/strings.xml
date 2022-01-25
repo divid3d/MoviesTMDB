@@ -20,12 +20,16 @@
     <string name="popular_movies">Popularne</string>
     <string name="upcoming_movies">Nadchodzące</string>
     <string name="top_rated_movies">Najwyżej oceniane</string>
+    <string name="favourite_movies">Ulubione</string>
+    <string name="recently_browsed_movies">Ostatnio przegądane</string>
     <string name="movies_more">więcej</string>
 
     <string name="now_airing_tv_series">Na antenie</string>
     <string name="top_rated_tv_series">Najwyżej oceniane</string>
     <string name="today_airing_tv_series">Dzisiaj</string>
     <string name="popular_tv_series">Popularne</string>
+    <string name="favourites_tv_series">Ulubione</string>
+    <string name="recently_browsed_tv_series">Ostatnio przeglądane</string>
 
     <string name="read_more">Czytaj więcej</string>
     <string name="read_less">Czytaj mniej</string>
@@ -51,11 +55,13 @@
     <string name="all_movies_upcoming_label">Nachodzące filmy</string>
     <string name="all_movies_popular_label">Popularne filmy</string>
     <string name="all_movies_favourites_label" formatted="true">Ulubione filmy (%d)</string>
+    <string name="all_movies_recently_browsed_label">Ostatnio przeglądane filmy</string>
 
     <string name="all_tv_series_top_rated_label">Najwyżej oceniane seriale</string>
     <string name="all_tv_series_airing_today_label">Seriale emitowane dzisiaj</string>
     <string name="all_tv_series_popular_label">Popularne seriale</string>
     <string name="all_tv_series_favourites_label" formatted="true">Ulubione seriale (%d)</string>
+    <string name="all_tv_series_recently_browsed_label">Ostatnio przeglądane seriale</string>
 
     <string name="favourite_empty_movies_info_text">Obecnie nie posiadasz ulubionych filmów</string>
     <string name="favourite_empty_tv_series_info_text">Obecnie nie posiadasz ulubionych seriali</string>

@@ -13,9 +13,11 @@ import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.MovieRepository
+import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @FlowPreview
@@ -23,11 +25,14 @@ import javax.inject.Inject
 class AllMoviesViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
     private val favouritesRepository: FavouritesRepository,
+    private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
     private val configRepository: ConfigRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val config = configRepository.config
+
+    var movies: Flow<PagingData<Presentable>>? = null
 
     private val movieType: Flow<MovieType> = savedStateHandle
         .getLiveData("movieType", MovieType.Popular.name)
@@ -37,46 +42,47 @@ class AllMoviesViewModel @Inject constructor(
 
     private val topRated: Flow<PagingData<Presentable>> =
         movieRepository.topRatedMovies()
-            .cachedIn(viewModelScope)
             .combine(config) { pagingData, config ->
                 pagingData.map { movie -> movie.appendUrls(config) }
             }
+
     private val upcoming: Flow<PagingData<Presentable>> =
         movieRepository.upcomingMovies()
-            .cachedIn(viewModelScope)
             .combine(config) { pagingData, config ->
                 pagingData.map { movie -> movie.appendUrls(config) }
             }
     private val popular: Flow<PagingData<Presentable>> =
         movieRepository.discoverMovies()
-            .cachedIn(viewModelScope)
             .combine(config) { pagingData, config ->
                 pagingData.map { movie -> movie.appendUrls(config) }
             }
     private val favourites: Flow<PagingData<Presentable>> =
         favouritesRepository.favouriteMovies()
-            .cachedIn(viewModelScope)
             .combine(config) { pagingData, config ->
                 pagingData.map { favouriteMovie -> favouriteMovie.appendUrls(config) }
             }
 
-    val movies: Flow<PagingData<Presentable>> = combine(
-        movieType,
-        topRated,
-        upcoming,
-        popular,
-        favourites
-    ) { type, topRated, upcoming, popular, favourites ->
-        when (type) {
-            MovieType.TopRated -> topRated
-            MovieType.Upcoming -> upcoming
-            MovieType.Popular -> popular
-            MovieType.Favourite -> favourites
-        }
-    }
+    private val recentlyBrowsed: Flow<PagingData<Presentable>> =
+        recentlyBrowsedRepository.recentlyBrowsedMovies()
+            .combine(config) { pagingData, config ->
+                pagingData.map { recentlyBrowsedMovie -> recentlyBrowsedMovie.appendUrls(config) }
+            }
 
     val favouriteMoviesCount: StateFlow<Int> = favouritesRepository.getFavouriteMoviesCount()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), 0)
 
+    init {
+        viewModelScope.launch {
+            movieType.collectLatest { type ->
+                movies = when (type) {
+                    MovieType.TopRated -> topRated
+                    MovieType.Upcoming -> upcoming
+                    MovieType.Popular -> popular
+                    MovieType.Favourite -> favourites
+                    MovieType.RecentlyBrowsed -> recentlyBrowsed
+                }.cachedIn(viewModelScope)
+            }
+        }
+    }
 
 }

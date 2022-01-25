@@ -12,10 +12,12 @@ import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
+import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import com.example.moviesapp.repository.TvSeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @FlowPreview
@@ -23,11 +25,14 @@ import javax.inject.Inject
 class AllTvSeriesViewModel @Inject constructor(
     private val tvSeriesRepository: TvSeriesRepository,
     private val favouritesRepository: FavouritesRepository,
+    private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
     private val configRepository: ConfigRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val config = configRepository.config
+
+    var tvSeries: Flow<PagingData<Presentable>>? = null
 
     private val tvSeriesType: Flow<TvSeriesType> = savedStateHandle
         .getLiveData("tvSeriesType", TvSeriesType.Popular.name)
@@ -37,46 +42,49 @@ class AllTvSeriesViewModel @Inject constructor(
 
     private val topRated: Flow<PagingData<Presentable>> =
         tvSeriesRepository.topRatedTvSeries()
-            .cachedIn(viewModelScope)
             .combine(config) { pagingData, config ->
                 pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
             }
 
     private val airingToday: Flow<PagingData<Presentable>> =
         tvSeriesRepository.airingTodayTvSeries()
-            .cachedIn(viewModelScope)
-            .combine(config) { pagingData, config ->
-                pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
-            }
-    private val popular: Flow<PagingData<Presentable>> =
-        tvSeriesRepository.popularTvSeries()
-            .cachedIn(viewModelScope)
-            .combine(config) { pagingData, config ->
-                pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
-            }
-    private val favourites: Flow<PagingData<Presentable>> =
-        favouritesRepository.favouritesTvSeries()
-            .cachedIn(viewModelScope)
             .combine(config) { pagingData, config ->
                 pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
             }
 
-    val tvSeries: Flow<PagingData<Presentable>> = combine(
-        tvSeriesType,
-        topRated,
-        airingToday,
-        popular,
-        favourites
-    ) { type, topRated, airingToday, popular, favourites ->
-        when (type) {
-            TvSeriesType.TopRated -> topRated
-            TvSeriesType.AiringToday -> airingToday
-            TvSeriesType.Popular -> popular
-            TvSeriesType.Favourite -> favourites
-        }
-    }
+    private val popular: Flow<PagingData<Presentable>> =
+        tvSeriesRepository.popularTvSeries()
+            .combine(config) { pagingData, config ->
+                pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
+            }
+
+    private val favourites: Flow<PagingData<Presentable>> =
+        favouritesRepository.favouritesTvSeries()
+            .combine(config) { pagingData, config ->
+                pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
+            }
+
+    private val recentlyBrowsed: Flow<PagingData<Presentable>> =
+        recentlyBrowsedRepository.recentlyBrowsedTvSeries()
+            .combine(config) { pagingData, config ->
+                pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
+            }
 
     val favouriteTvSeriesCount: StateFlow<Int> = favouritesRepository.getFavouriteTvSeriesCount()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), 0)
+
+    init {
+        viewModelScope.launch {
+            tvSeriesType.collectLatest { type ->
+                tvSeries = when (type) {
+                    TvSeriesType.TopRated -> topRated
+                    TvSeriesType.AiringToday -> airingToday
+                    TvSeriesType.Popular -> popular
+                    TvSeriesType.Favourite -> favourites
+                    TvSeriesType.RecentlyBrowsed -> recentlyBrowsed
+                }.cachedIn(viewModelScope)
+            }
+        }
+    }
 
 }
