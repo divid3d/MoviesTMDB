@@ -57,7 +57,7 @@ fun PresentableTopSection(
     val pagerState = rememberPagerState()
     val density = LocalDensity.current
 
-    var isDark by remember { mutableStateOf(false) }
+    var isDark by remember { mutableStateOf(true) }
 
     val contentColor by animateColorAsState(targetValue = if (isDark) Color.White else Color.Black)
 

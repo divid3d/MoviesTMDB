@@ -2,6 +2,7 @@ package com.example.moviesapp.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -41,7 +42,7 @@ fun PresentableScoreItem(
     val percent = (progress * 100).toInt()
 
     LaunchedEffect(progress) {
-        animatedProgress.animateTo(progress)
+        animatedProgress.animateTo(progress, animationSpec = tween(durationMillis = 700))
     }
 
     val indicatorColor by animateColorAsState(
@@ -98,7 +99,7 @@ fun PresentableScoreItem(
                 drawArc(
                     color = indicatorColor,
                     startAngle = -90f,
-                    sweepAngle = progress * 360f,
+                    sweepAngle = animatedProgress.value * 360f,
                     useCenter = false,
                     style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
                 )
