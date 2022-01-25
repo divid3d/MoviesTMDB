@@ -22,6 +22,10 @@ class RecentlyBrowsedRepository @Inject constructor(
     private val recentlyBrowsedMoviesDao: RecentlyBrowsedMoviesDao,
     private val recentlyBrowsedTvSeriesDao: RecentlyBrowsedTvSeriesDao
 ) {
+    private companion object {
+        const val maxItems = 100
+    }
+
     fun addRecentlyBrowsedMovie(movieDetails: MovieDetails) {
         externalScope.launch {
             val recentlyBrowsedMovie = movieDetails.run {
@@ -36,7 +40,10 @@ class RecentlyBrowsedRepository @Inject constructor(
                 )
             }
 
-            recentlyBrowsedMoviesDao.addRecentlyBrowsedMovie(recentlyBrowsedMovie)
+            recentlyBrowsedMoviesDao.deleteAndAdd(
+                recentlyBrowsedMovie,
+                maxItems = maxItems
+            )
         }
     }
 
@@ -58,7 +65,10 @@ class RecentlyBrowsedRepository @Inject constructor(
                 )
             }
 
-            recentlyBrowsedTvSeriesDao.addRecentlyBrowsedTvSeries(recentlyBrowsedTvSeries)
+            recentlyBrowsedTvSeriesDao.deleteAndAdd(
+                recentlyBrowsedTvSeries,
+                maxItems = maxItems
+            )
         }
     }
 
