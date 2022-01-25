@@ -40,6 +40,13 @@ class MoviesViewModel @Inject constructor(
                 pagingData.map { movie -> movie.appendUrls(config) }
             }
 
+    val trending: Flow<PagingData<Presentable>> =
+        movieRepository.trendingMovies()
+            .cachedIn(viewModelScope)
+            .combine(config) { pagingData, config ->
+                pagingData.map { movie -> movie.appendUrls(config) }
+            }
+
     val topRated: Flow<PagingData<Presentable>> =
         movieRepository.topRatedMovies()
             .cachedIn(viewModelScope)

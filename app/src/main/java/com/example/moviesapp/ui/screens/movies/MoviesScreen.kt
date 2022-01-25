@@ -46,6 +46,7 @@ fun MoviesScreen(
     val discover = viewModel.discover.collectAsLazyPagingItems()
     val upcoming = viewModel.upcoming.collectAsLazyPagingItems()
     val topRated = viewModel.topRated.collectAsLazyPagingItems()
+    val trending = viewModel.trending.collectAsLazyPagingItems()
     val nowPlaying = viewModel.nowPlaying.collectAsLazyPagingItems()
     val favourites = viewModel.favourites.collectAsLazyPagingItems()
     val recentlyBrowsed = viewModel.recentBrowsed.collectAsLazyPagingItems()
@@ -136,6 +137,25 @@ fun MoviesScreen(
                 onPresentableClick = navigateToMovieDetails,
                 onMoreClick = {
                     navigateToAllMovies(MovieType.Upcoming)
+                }
+            )
+            SectionDivider(
+                modifier = Modifier.padding(
+                    start = MaterialTheme.spacing.medium,
+                    top = MaterialTheme.spacing.medium,
+                    end = MaterialTheme.spacing.medium,
+                    bottom = MaterialTheme.spacing.small
+                )
+            )
+            PresentableSection(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                title = "Zyskujące na popularności",
+                state = trending,
+                onPresentableClick = navigateToMovieDetails,
+                onMoreClick = {
+                    //navigateToAllMovies(MovieType.Upcoming)
                 }
             )
             SectionDivider(

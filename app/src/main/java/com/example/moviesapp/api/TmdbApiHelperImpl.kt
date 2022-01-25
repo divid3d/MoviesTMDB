@@ -92,4 +92,10 @@ class TmdbApiHelperImpl @Inject constructor(
         year = year,
         releaseYear = releaseYear
     )
+
+    override suspend fun getTrendingMovies(page: Int, isoCode: String): MoviesResponse =
+        tmdbApi.getTrendingMovies(page, isoCode)
+
+    override suspend fun getTrendingTvSeries(page: Int, isoCode: String): TvSeriesResponse =
+        tmdbApi.getTrendingTvSeries(page, isoCode)
 }

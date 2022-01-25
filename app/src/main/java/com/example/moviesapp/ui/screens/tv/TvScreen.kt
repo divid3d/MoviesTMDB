@@ -36,6 +36,7 @@ fun TvScreen(
 
     val topRated = viewModel.topRated.collectAsLazyPagingItems()
     val onTheAir = viewModel.onTheAir.collectAsLazyPagingItems()
+    val trending = viewModel.trending.collectAsLazyPagingItems()
     val popular = viewModel.popular.collectAsLazyPagingItems()
     val airingToday = viewModel.airingToday.collectAsLazyPagingItems()
     val favourites = viewModel.favourites.collectAsLazyPagingItems()
@@ -94,6 +95,23 @@ fun TvScreen(
                 state = topRated,
                 onPresentableClick = navigateToTvSeriesDetails,
                 onMoreClick = { navigateToAllTvSeries(TvSeriesType.TopRated) }
+            )
+            SectionDivider(
+                modifier = Modifier.padding(
+                    start = MaterialTheme.spacing.medium,
+                    top = MaterialTheme.spacing.medium,
+                    end = MaterialTheme.spacing.medium,
+                    bottom = MaterialTheme.spacing.small
+                )
+            )
+            PresentableSection(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                title = "Zyskujące na popularności",
+                state = trending,
+                onPresentableClick = navigateToTvSeriesDetails,
+                onMoreClick = { }
             )
             SectionDivider(
                 modifier = Modifier.padding(

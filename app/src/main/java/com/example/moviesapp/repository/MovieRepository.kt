@@ -32,6 +32,13 @@ class MovieRepository @Inject constructor(
             MovieResponseDataSource(apiHelper::getUpcomingMovies)
         }.flow
 
+    fun trendingMovies(): Flow<PagingData<Movie>> =
+        Pager(
+            PagingConfig(pageSize = 20)
+        ) {
+            MovieResponseDataSource(apiHelper::getTrendingMovies)
+        }.flow
+
     fun topRatedMovies(): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)

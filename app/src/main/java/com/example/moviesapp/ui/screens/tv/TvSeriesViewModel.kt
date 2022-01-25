@@ -54,6 +54,13 @@ class TvSeriesViewModel @Inject constructor(
                 pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
             }
 
+    val trending: Flow<PagingData<Presentable>> =
+        tvSeriesRepository.trendingTvSeries()
+            .cachedIn(viewModelScope)
+            .combine(config) { pagingData, config ->
+                pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
+            }
+
     val airingToday: Flow<PagingData<Presentable>> =
         tvSeriesRepository.airingTodayTvSeries()
             .cachedIn(viewModelScope)

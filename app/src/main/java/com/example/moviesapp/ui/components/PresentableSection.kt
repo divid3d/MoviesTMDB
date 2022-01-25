@@ -84,7 +84,7 @@ fun PresentableSection(
                     text = title,
                     style = TextStyle(
                         color = Color.White,
-                        fontSize = 24.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     ),
                     maxLines = 1,

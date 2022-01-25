@@ -63,4 +63,7 @@ interface TmdbApiHelper {
         releaseYear: Int? = null
     ): MoviesResponse
 
+    suspend fun getTrendingMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
+
+    suspend fun getTrendingTvSeries(page: Int, isoCode: String = "pl-PL"): TvSeriesResponse
 }

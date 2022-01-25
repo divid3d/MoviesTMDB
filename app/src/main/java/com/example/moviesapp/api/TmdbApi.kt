@@ -122,5 +122,17 @@ interface TmdbApi {
         @Query("primary_release_year") releaseYear: Int?
     ): MoviesResponse
 
+    @GET("trending/movie/week")
+    suspend fun getTrendingMovies(
+        @Query("page") page: Int,
+        @Query("language") isoCode: String
+    ): MoviesResponse
+
+    @GET("trending/tv/week")
+    suspend fun getTrendingTvSeries(
+        @Query("page") page: Int,
+        @Query("language") isoCode: String
+    ): TvSeriesResponse
+
 }
 

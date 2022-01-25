@@ -31,6 +31,13 @@ class TvSeriesRepository @Inject constructor(
             TvSeriesResponseDataSource(apiHelper::getOnTheAirTvSeries)
         }.flow
 
+    fun trendingTvSeries(): Flow<PagingData<TvSeries>> =
+        Pager(
+            PagingConfig(pageSize = 20)
+        ) {
+            TvSeriesResponseDataSource(apiHelper::getTrendingTvSeries)
+        }.flow
+
     fun popularTvSeries(): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
