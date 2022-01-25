@@ -55,8 +55,6 @@ data class TvSeriesDetails(
     override val posterUrl: String?,
     @Transient
     override val backdropUrl: String?,
-    @Transient
-    val isFavourite: Boolean?
 ) : Presentable {
     override val title: String
         get() = name

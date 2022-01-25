@@ -45,15 +45,14 @@ class MoviesDetailsViewModel @Inject constructor(
     var moviesRecommendationPagingDataFlow: Flow<PagingData<Presentable>>? = null
 
     val movieDetails: StateFlow<MovieDetails?> = combine(
-        _movieDetails, config, favouritesMoviesIdsFlow
-    ) { movieDetails, config, favouriteMoviesIds ->
+        _movieDetails, config
+    ) { movieDetails, config ->
         val posterUrl = config?.getImageUrl(movieDetails?.posterPath)
         val backdropUrl = config?.getImageUrl(movieDetails?.backdropPath)
 
         movieDetails?.copy(
             posterUrl = posterUrl,
             backdropUrl = backdropUrl,
-            isFavourite = movieDetails.id in favouriteMoviesIds
         )
     }
         .onEach { movieDetails ->
@@ -62,6 +61,13 @@ class MoviesDetailsViewModel @Inject constructor(
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+
+    val isFavourite: StateFlow<Boolean> = combine(
+        movieId,
+        favouritesMoviesIdsFlow
+    ) { id, favouritesIds ->
+        id in favouritesIds
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
 
     val credits: StateFlow<Credits?> = combine(
         _credits, config

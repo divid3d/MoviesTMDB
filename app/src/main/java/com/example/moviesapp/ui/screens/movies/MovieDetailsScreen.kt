@@ -48,6 +48,7 @@ fun MovieDetailsScreen(
     val viewModel: MoviesDetailsViewModel = hiltViewModel()
 
     val movieDetails by viewModel.movieDetails.collectAsState()
+    val isFavourite by viewModel.isFavourite.collectAsState()
     val credits by viewModel.credits.collectAsState()
 
     val similarMoviesState = viewModel.similarMoviesPagingDataFlow?.collectAsLazyPagingItems()
@@ -206,8 +207,6 @@ fun MovieDetailsScreen(
                 }
             },
             trailing = {
-                val isFavourite = movieDetails?.isFavourite == true
-
                 Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
                     LikeButton(
                         isFavourite = isFavourite,

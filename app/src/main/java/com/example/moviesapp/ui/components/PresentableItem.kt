@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.example.moviesapp.R
+import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.PresentableItemState
 import com.example.moviesapp.ui.theme.*
 
@@ -55,13 +56,16 @@ fun PresentableItem(
         backgroundColor = MaterialTheme.colors.background,
         shape = MaterialTheme.shapes.medium
     ) {
-        Crossfade(modifier = Modifier.fillMaxSize(), targetState = presentableState) { state ->
+        Crossfade(
+            modifier = Modifier.fillMaxSize(),
+            targetState = presentableState
+        ) { state ->
             when (state) {
                 is PresentableItemState.Loading -> LoadingPresentableItem()
                 is PresentableItemState.Error -> ErrorPresentableItem()
                 is PresentableItemState.Result -> {
                     ResultPresentableItem(
-                        presentableStateResult = state,
+                        presentable = state.presentable,
                         showScore = showScore,
                         showTitle = showTitle,
                         onClick = onClick
@@ -130,14 +134,11 @@ fun LoadingPresentableItem(
 @Composable
 fun ResultPresentableItem(
     modifier: Modifier = Modifier,
-    presentableStateResult: PresentableItemState.Result,
+    presentable: Presentable,
     showScore: Boolean = false,
     showTitle: Boolean = true,
     onClick: (() -> Unit)? = null
 ) {
-    val presentable by derivedStateOf {
-        presentableStateResult.presentable
-    }
 
     val hasPoster by derivedStateOf {
         presentable.posterPath != null
@@ -189,7 +190,7 @@ fun ResultPresentableItem(
             }
         }
 
-        if (presentableStateResult.presentable.voteCount > 0 && showScore) {
+        if (presentable.voteCount > 0 && showScore) {
             PresentableScoreItem(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -197,7 +198,7 @@ fun ResultPresentableItem(
                         end = MaterialTheme.spacing.extraSmall,
                         top = MaterialTheme.spacing.extraSmall
                     ),
-                score = presentableStateResult.presentable.voteAverage,
+                score = presentable.voteAverage,
             )
         }
     }

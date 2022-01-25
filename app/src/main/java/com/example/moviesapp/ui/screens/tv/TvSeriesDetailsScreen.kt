@@ -48,6 +48,8 @@ fun TvSeriesDetailsScreen(
     val viewModel: TvSeriesDetailsViewModel = hiltViewModel()
 
     val tvSeriesDetails by viewModel.tvSeriesDetails.collectAsState()
+    val isFavourite by viewModel.isFavourite.collectAsState()
+
     val similar = viewModel.similarTvSeries?.collectAsLazyPagingItems()
     val recommendations = viewModel.tvSeriesRecommendations?.collectAsLazyPagingItems()
 
@@ -236,8 +238,6 @@ fun TvSeriesDetailsScreen(
                 }
             },
             trailing = {
-                val isFavourite = tvSeriesDetails?.isFavourite == true
-
                 Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
                     LikeButton(
                         isFavourite = isFavourite,

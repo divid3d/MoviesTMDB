@@ -43,7 +43,5 @@ data class MovieDetails(
     override val posterUrl: String?,
     @Transient
     override val backdropUrl: String?,
-    @Transient
-    val isFavourite: Boolean?
 ) : Presentable
 

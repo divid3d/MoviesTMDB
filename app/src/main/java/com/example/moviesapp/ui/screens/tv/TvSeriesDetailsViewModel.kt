@@ -45,8 +45,8 @@ class TvSeriesDetailsViewModel @Inject constructor(
     var tvSeriesRecommendations: Flow<PagingData<Presentable>>? = null
 
     val tvSeriesDetails: StateFlow<TvSeriesDetails?> = combine(
-        _tvSeriesDetails, config, favouriteTvSeriesIds
-    ) { details, config, favouriteIds ->
+        _tvSeriesDetails, config
+    ) { details, config ->
         val posterUrl = config?.getImageUrl(details?.posterPath)
         val backdropUrl = config?.getImageUrl(details?.backdropPath)
 
@@ -56,8 +56,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
             seasons = details.seasons.map { season -> season.appendUrl(config) },
             networks = details.networks.map { network -> network.appendUrls(config) },
             posterUrl = posterUrl,
-            backdropUrl = backdropUrl,
-            isFavourite = details.id in favouriteIds
+            backdropUrl = backdropUrl
         )
     }
         .onEach { tvSeriesDetails ->
@@ -66,6 +65,12 @@ class TvSeriesDetailsViewModel @Inject constructor(
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+
+    val isFavourite: StateFlow<Boolean> = combine(
+        tvSeriesId, favouriteTvSeriesIds
+    ) { id, favouritesId ->
+        id in favouritesId
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
 
     val seasonNumbers: StateFlow<List<Int>> = _tvSeriesDetails.map { details ->
         details?.seasons?.map { season -> season.seasonNumber } ?: emptyList()
