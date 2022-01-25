@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.filter
 import androidx.paging.map
 import com.example.moviesapp.model.Config
 import com.example.moviesapp.model.Credits
@@ -90,18 +91,18 @@ class MoviesDetailsViewModel @Inject constructor(
                     similarMoviesPagingDataFlow = movieRepository.similarMovies(id)
                         .cachedIn(viewModelScope)
                         .combine(config) { moviePagingData, config ->
-                            moviePagingData.map { movie ->
-                                movie.appendUrls(config)
-                            }
+                            moviePagingData
+                                .filter { movie -> movie.id != movieId }
+                                .map { movie -> movie.appendUrls(config) }
                         }
 
                     moviesRecommendationPagingDataFlow =
                         movieRepository.moviesRecommendations(movieId)
                             .cachedIn(viewModelScope)
                             .combine(config) { moviePagingData, config ->
-                                moviePagingData.map { movie ->
-                                    movie.appendUrls(config)
-                                }
+                                moviePagingData
+                                    .filter { movie -> movie.id != movieId }
+                                    .map { movie -> movie.appendUrls(config) }
                             }
 
                     getMovieInfo(id)

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.filter
 import androidx.paging.map
 import com.example.moviesapp.model.Config
 import com.example.moviesapp.model.Presentable
@@ -86,17 +87,17 @@ class TvSeriesDetailsViewModel @Inject constructor(
                     similarTvSeries = tvSeriesRepository.similarTvSeries(id)
                         .cachedIn(viewModelScope)
                         .combine(config) { moviePagingData, config ->
-                            moviePagingData.map { tvSeries ->
-                                tvSeries.appendUrls(config)
-                            }
+                            moviePagingData
+                                .filter { tvSeries -> tvSeries.id != id }
+                                .map { tvSeries -> tvSeries.appendUrls(config) }
                         }
 
                     tvSeriesRecommendations = tvSeriesRepository.tvSeriesRecommendations(id)
                         .cachedIn(viewModelScope)
                         .combine(config) { moviePagingData, config ->
-                            moviePagingData.map { tvSeries ->
-                                tvSeries.appendUrls(config)
-                            }
+                            moviePagingData
+                                .filter { tvSeries -> tvSeries.id != id }
+                                .map { tvSeries -> tvSeries.appendUrls(config) }
                         }
 
                     getTvSeriesInfo(id)
