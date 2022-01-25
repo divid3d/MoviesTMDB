@@ -2,9 +2,11 @@ package com.example.moviesapp.ui.screens.allTvSeries
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -19,6 +21,7 @@ import com.example.moviesapp.model.TvSeriesType
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.PresentableGridSection
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
+import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -57,6 +60,12 @@ fun AllTvSeriesScreen(
         tvSeries?.let { state ->
             PresentableGridSection(
                 modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    start = MaterialTheme.spacing.medium,
+                    end = MaterialTheme.spacing.medium,
+                    top = MaterialTheme.spacing.medium,
+                    bottom = MaterialTheme.spacing.large
+                ),
                 state = state
             ) { tvSeriesId ->
                 navigator.navigate(

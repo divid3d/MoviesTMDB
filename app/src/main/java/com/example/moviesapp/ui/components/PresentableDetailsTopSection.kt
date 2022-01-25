@@ -1,18 +1,22 @@
 package com.example.moviesapp.ui.components
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -36,9 +40,20 @@ fun PresentableDetailsTopSection(
         presentable?.let { PresentableItemState.Result(it) } ?: PresentableItemState.Loading
     }
 
-    Box(modifier = modifier) {
+    val backdropScale = remember(presentableItemState) { Animatable(1f) }
+
+    LaunchedEffect(presentableItemState) {
+        backdropScale.animateTo(
+            targetValue = 2f,
+            animationSpec = tween(durationMillis = 10000, easing = LinearEasing)
+        )
+    }
+
+    Box(modifier = modifier.clip(RectangleShape)) {
         Image(
-            modifier = Modifier.matchParentSize(),
+            modifier = Modifier
+                .matchParentSize()
+                .scale(backdropScale.value),
             painter = rememberImagePainter(
                 data = presentable?.backdropUrl,
                 builder = {

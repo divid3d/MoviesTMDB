@@ -75,6 +75,12 @@ fun SearchScreen(
                         PresentableGridSection(
                             modifier = Modifier.fillMaxSize(),
                             showRefreshItems = false,
+                            contentPadding = PaddingValues(
+                                start = MaterialTheme.spacing.medium,
+                                end = MaterialTheme.spacing.medium,
+                                top = MaterialTheme.spacing.medium,
+                                bottom = MaterialTheme.spacing.large
+                            ),
                             state = result
                         ) { movieId ->
                             navigator.navigate(

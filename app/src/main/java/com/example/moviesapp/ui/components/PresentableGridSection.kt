@@ -24,6 +24,7 @@ import com.example.moviesapp.model.PresentableItemState
 import com.example.moviesapp.other.isScrollingTowardsStart
 import com.example.moviesapp.other.items
 import com.example.moviesapp.ui.screens.movies.components.ScrollToTop
+import com.example.moviesapp.ui.theme.sizes
 import com.example.moviesapp.ui.theme.spacing
 import kotlinx.coroutines.launch
 
@@ -33,6 +34,7 @@ fun PresentableGridSection(
     modifier: Modifier = Modifier,
     state: LazyPagingItems<Presentable>,
     showRefreshItems: Boolean = true,
+    contentPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.default),
     scrollToBeginningItemsStart: Int = 30,
     onPresentableClick: (Int) -> Unit = {}
 ) {
@@ -56,8 +58,8 @@ fun PresentableGridSection(
         LazyVerticalGrid(
             state = gridState,
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-            cells = GridCells.Fixed(3),
+            contentPadding = contentPadding,
+            cells = GridCells.Adaptive(MaterialTheme.sizes.presentableItemSmall.width),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
         ) {

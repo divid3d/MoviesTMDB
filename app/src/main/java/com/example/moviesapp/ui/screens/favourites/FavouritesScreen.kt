@@ -1,10 +1,7 @@
 package com.example.moviesapp.ui.screens.favourites
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -55,6 +52,12 @@ fun FavouritesScreen(
                 notEmpty -> {
                     PresentableGridSection(
                         modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(
+                            start = MaterialTheme.spacing.medium,
+                            end = MaterialTheme.spacing.medium,
+                            top = MaterialTheme.spacing.medium,
+                            bottom = MaterialTheme.spacing.large
+                        ),
                         state = favourites
                     ) { id ->
                         navigator.navigate(

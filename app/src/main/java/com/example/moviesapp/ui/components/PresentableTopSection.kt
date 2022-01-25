@@ -2,6 +2,8 @@ package com.example.moviesapp.ui.components
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,11 +12,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.GraphicsLayerScope
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.lerp
@@ -71,18 +71,16 @@ fun PresentableTopSection(
 
     val itemHeight = density.run { MaterialTheme.sizes.presentableItemBig.height.toPx() }
 
-//    LaunchedEffect(selectedPresentable) {
-//        backdropScale.animateTo(
-//            targetValue = 1.3f,
-//            animationSpec = tween(durationMillis = 10000, easing = LinearEasing)
-//        )
-//    }
+    LaunchedEffect(selectedPresentable) {
+        backdropScale.animateTo(
+            targetValue = 2f,
+            animationSpec = tween(durationMillis = 10000, easing = LinearEasing)
+        )
+    }
 
-    Box(modifier = modifier) {
+    Box(modifier = modifier.clip(RectangleShape)) {
         Crossfade(
-            modifier = Modifier
-                .matchParentSize()
-                .scale(backdropScale.value),
+            modifier = Modifier.matchParentSize(),
             targetState = selectedPresentable
         ) { movie ->
             val backgroundPainter = rememberImagePainter(
@@ -101,7 +99,9 @@ fun PresentableTopSection(
             val backgroundPainterState = backgroundPainter.state
 
             LaunchedEffect(backgroundPainterState) {
-                val drawable = backgroundPainter.run { imageLoader.execute(request).drawable }
+                val drawable = backgroundPainter.run {
+                    imageLoader.execute(request).drawable
+                }
                 val bitmap = drawable?.toBitmap()
 
                 isDark = bitmap?.let {
@@ -110,9 +110,11 @@ fun PresentableTopSection(
                     } ?: true
                 } ?: true
             }
-            
+
             Image(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .scale(backdropScale.value),
                 painter = backgroundPainter,
                 contentDescription = null,
                 contentScale = ContentScale.FillBounds
