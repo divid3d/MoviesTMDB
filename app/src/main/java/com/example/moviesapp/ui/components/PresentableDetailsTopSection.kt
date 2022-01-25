@@ -40,9 +40,9 @@ fun PresentableDetailsTopSection(
         presentable?.let { PresentableItemState.Result(it) } ?: PresentableItemState.Loading
     }
 
-    val backdropScale = remember(presentableItemState) { Animatable(1f) }
+    val backdropScale = remember(presentable?.id) { Animatable(1f) }
 
-    LaunchedEffect(presentableItemState) {
+    LaunchedEffect(presentable?.id) {
         backdropScale.animateTo(
             targetValue = 2f,
             animationSpec = tween(durationMillis = 10000, easing = LinearEasing)

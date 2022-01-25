@@ -98,7 +98,7 @@ interface TmdbApi {
     ): MoviesResponse
 
 
-    @GET("movie/{tv_id}/recommendations")
+    @GET("tv/{tv_id}/recommendations")
     suspend fun getTvSeriesRecommendations(
         @Path("tv_id") tvSeriesId: Int,
         @Query("page") page: Int,

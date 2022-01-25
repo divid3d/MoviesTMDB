@@ -133,37 +133,30 @@ fun TvSeriesDetailsScreen(
                             .fillMaxWidth()
                             .animateContentSize()
                     ) {
-                        Text(
-                            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
-                            text = "Sezony",
-                            style = TextStyle(
-                                color = Color.White,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                        SeasonsSection(
+                            title = "Sezony",
+                            seasons = seasons
                         )
-                        SeasonsList(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                            seasons = seasons,
-                            selectedSeasonId = selectedSeasonId
-                        ) { seasonNumber ->
-                            viewModel.getTvSeason(seasonNumber)
-                        }
+//                        SeasonsList(
+//                            modifier = Modifier.fillMaxWidth(),
+//                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+//                            seasons = seasons,
+//                            selectedSeasonId = selectedSeasonId
+//                        ) { seasonNumber ->
+//                            viewModel.getTvSeason(seasonNumber)
+//                        }
 //                    EpisodesList(
 //                        modifier = Modifier.fillMaxWidth(),
 //                        episodes = episodes
 //                    )
-                        selectedSeason?.let { season ->
-                            SeasonDetails(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(MaterialTheme.spacing.medium),
-                                season = season
-                            )
-                        }
+//                        selectedSeason?.let { season ->
+//                            SeasonSection(
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(MaterialTheme.spacing.medium),
+//                                season = season
+//                            )
+//                        }
                     }
                 }
             }
