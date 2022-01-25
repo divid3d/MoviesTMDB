@@ -35,6 +35,7 @@ import androidx.paging.compose.LazyPagingItems
 import coil.compose.rememberImagePainter
 import coil.transform.BlurTransformation
 import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.model.PresentableItemState
 import com.example.moviesapp.ui.theme.Size
 import com.example.moviesapp.ui.theme.sizes
 import com.example.moviesapp.ui.theme.spacing
@@ -233,15 +234,17 @@ fun PresentableTopSectionItem(
                             fontWeight = FontWeight.Bold
                         )
                     )
-                    Text(
-                        text = presentableItemState.presentable.overview,
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            color = Color.White
-                        ),
-                        maxLines = 5,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    presentableItemState.presentable.overview?.let { overview ->
+                        Text(
+                            text = overview,
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                color = Color.White
+                            ),
+                            maxLines = 5,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
             }
         }

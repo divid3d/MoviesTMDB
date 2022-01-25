@@ -47,6 +47,7 @@ fun MoviesScreen(
     val topRated = viewModel.topRated.collectAsLazyPagingItems()
     val nowPlaying = viewModel.nowPlaying.collectAsLazyPagingItems()
     val favourites = viewModel.favourites.collectAsLazyPagingItems()
+    val recentlyBrowsed = viewModel.recentBrowsed.collectAsLazyPagingItems()
 
     BackHandler {
         showExitDialog = true
@@ -173,6 +174,27 @@ fun MoviesScreen(
                     onPresentableClick = navigateToMovieDetails,
                     onMoreClick = {
                         navigateToAllMovies(MovieType.Favourite)
+                    }
+                )
+            }
+            if (recentlyBrowsed.itemCount > 0) {
+                SectionDivider(
+                    modifier = Modifier.padding(
+                        start = MaterialTheme.spacing.medium,
+                        top = MaterialTheme.spacing.medium,
+                        end = MaterialTheme.spacing.medium,
+                        bottom = MaterialTheme.spacing.small
+                    )
+                )
+                PresentableSection(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    title = "Ostatnio oglądane",
+                    state = recentlyBrowsed,
+                    onPresentableClick = navigateToMovieDetails,
+                    onMoreClick = {
+                        //navigateToAllMovies(MovieType.Favourite)
                     }
                 )
             }

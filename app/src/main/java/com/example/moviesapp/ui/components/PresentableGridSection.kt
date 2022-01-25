@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.model.PresentableItemState
 import com.example.moviesapp.other.isScrollingTowardsStart
 import com.example.moviesapp.other.items
 import com.example.moviesapp.ui.screens.movies.components.ScrollToTop

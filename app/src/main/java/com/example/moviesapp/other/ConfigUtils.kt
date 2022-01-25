@@ -103,6 +103,18 @@ fun MovieFavourite.appendUrls(
     )
 }
 
+fun RecentlyBrowsedMovie.appendUrls(
+    config: Config?
+): RecentlyBrowsedMovie {
+    val moviePosterUrl = config?.getImageUrl(posterPath)
+    val movieBackdropUrl = config?.getImageUrl(backdropPath, size = "w300")
+
+    return copy(
+        posterUrl = moviePosterUrl,
+        backdropUrl = movieBackdropUrl
+    )
+}
+
 fun Network.appendUrls(
     config: Config?
 ): Network {

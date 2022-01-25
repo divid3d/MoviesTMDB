@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.example.moviesapp.R
-import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.model.PresentableItemState
 import com.example.moviesapp.ui.theme.*
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -202,10 +202,3 @@ fun ResultPresentableItem(
         }
     }
 }
-
-sealed class PresentableItemState {
-    object Loading : PresentableItemState()
-    object Error : PresentableItemState()
-    data class Result(val presentable: Presentable) : PresentableItemState()
-}
-

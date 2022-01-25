@@ -31,6 +31,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.model.PresentableItemState
 import com.example.moviesapp.other.isScrollingTowardsStart
 import com.example.moviesapp.ui.screens.movies.components.ScrollToStartButton
 import com.example.moviesapp.ui.theme.spacing

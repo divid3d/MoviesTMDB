@@ -2,9 +2,7 @@ package com.example.moviesapp.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.moviesapp.db.FavouritesDatabase
-import com.example.moviesapp.db.FavouritesMoviesDao
-import com.example.moviesapp.db.FavouritesTvSeriesDao
+import com.example.moviesapp.db.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +18,7 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideDatabase(@ApplicationContext context: Context) =
+    fun provideFavouritesDatabase(@ApplicationContext context: Context) =
         Room.databaseBuilder(context, FavouritesDatabase::class.java, "favourites")
             .fallbackToDestructiveMigration()
             .build()
@@ -35,4 +33,16 @@ object DatabaseModule {
     fun provideFavouriteTvSeriesDao(database: FavouritesDatabase): FavouritesTvSeriesDao =
         database.favouritesTvSeriesDao()
 
+
+    @Singleton
+    @Provides
+    fun provideRecentBrowsedDatabase(@ApplicationContext context: Context) =
+        Room.databaseBuilder(context, RecentBrowsedDatabase::class.java, "recent_browsed")
+            .fallbackToDestructiveMigration()
+            .build()
+
+    @Singleton
+    @Provides
+    fun provideRecentBrowsedMoviesDao(database: RecentBrowsedDatabase): RecentBrowsedMoviesDao =
+        database.recentBrowsedMoviesDao()
 }

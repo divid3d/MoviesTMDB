@@ -11,6 +11,7 @@ import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.MovieRepository
+import com.example.moviesapp.repository.RecentBrowsedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class MoviesViewModel @Inject constructor(
     private val configRepository: ConfigRepository,
     private val favouritesRepository: FavouritesRepository,
+    private val recentBrowsedRepository: RecentBrowsedRepository,
     private val movieRepository: MovieRepository
 ) : ViewModel() {
     private val config = configRepository.config
@@ -60,6 +62,14 @@ class MoviesViewModel @Inject constructor(
 
     val favourites: Flow<PagingData<Presentable>> =
         favouritesRepository.favouriteMovies()
+            .cachedIn(viewModelScope)
+            .combine(config) { pagingData, config ->
+                pagingData.map { movie -> movie.appendUrls(config) }
+            }
+
+
+    val recentBrowsed: Flow<PagingData<Presentable>> =
+        recentBrowsedRepository.recentBrowsedMovies()
             .cachedIn(viewModelScope)
             .combine(config) { pagingData, config ->
                 pagingData.map { movie -> movie.appendUrls(config) }

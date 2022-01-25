@@ -24,17 +24,19 @@ class FavouritesRepository @Inject constructor(
 ) {
     fun likeMovie(movieDetails: MovieDetails) {
         externalScope.launch {
-            val favouriteMovie = MovieFavourite(
-                id = movieDetails.id,
-                backdropPath = movieDetails.backdropPath,
-                posterPath = movieDetails.posterPath,
-                title = movieDetails.title,
-                originalTitle = movieDetails.originalTitle,
-                overview = movieDetails.overview,
-                voteAverage = movieDetails.voteAverage,
-                voteCount = movieDetails.voteCount,
-                addedDate = Date()
-            )
+            val favouriteMovie = movieDetails.run {
+                MovieFavourite(
+                    id = id,
+                    backdropPath = backdropPath,
+                    posterPath = posterPath,
+                    title = title,
+                    originalTitle = originalTitle,
+                    overview = overview,
+                    voteAverage = voteAverage,
+                    voteCount = voteCount,
+                    addedDate = Date()
+                )
+            }
 
             favouritesMoviesDao.likeMovie(favouriteMovie)
         }
@@ -42,16 +44,18 @@ class FavouritesRepository @Inject constructor(
 
     fun likeTvSeries(tvSeriesDetails: TvSeriesDetails) {
         externalScope.launch {
-            val favouriteTvSeries = TvSeriesFavourite(
-                id = tvSeriesDetails.id,
-                backdropPath = tvSeriesDetails.backdropPath,
-                posterPath = tvSeriesDetails.posterPath,
-                name = tvSeriesDetails.name,
-                overview = tvSeriesDetails.overview,
-                voteAverage = tvSeriesDetails.voteAverage,
-                voteCount = tvSeriesDetails.voteCount,
-                addedDate = Date()
-            )
+            val favouriteTvSeries = tvSeriesDetails.run {
+                TvSeriesFavourite(
+                    id = id,
+                    backdropPath = backdropPath,
+                    posterPath = posterPath,
+                    name = name,
+                    overview = overview,
+                    voteAverage = voteAverage,
+                    voteCount = voteCount,
+                    addedDate = Date()
+                )
+            }
 
             favouritesTvSeriesDao.likeTvSeries(favouriteTvSeries)
         }

@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import com.example.moviesapp.model.PresentableItemState
 import com.example.moviesapp.model.TvSeasonsResponse
 import com.example.moviesapp.ui.theme.spacing
 
