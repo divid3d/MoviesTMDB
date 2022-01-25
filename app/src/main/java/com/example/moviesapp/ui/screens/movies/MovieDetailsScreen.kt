@@ -77,7 +77,7 @@ fun MovieDetailsScreen(
                     Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
                         LabeledText(
                             label = stringResource(R.string.movie_details_status),
-                            text = details.status
+                            text = stringResource(details.status.getLabel())
                         )
                         if (details.budget > 0) {
                             LabeledText(

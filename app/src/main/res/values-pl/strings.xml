@@ -71,4 +71,11 @@
     <string name="search_placeholder">Wpisz, aby wyszukać</string>
     <string name="search_empty_state">Brak wyników wyszukiwania</string>
 
+    <string name="status_rumored_label">Plotki</string>
+    <string name="status_planned_label">Zaplanowany</string>
+    <string name="status_in_production_label">W produkcji</string>
+    <string name="status_post_production_label">W postprodukcji</string>
+    <string name="status_released_label">Wydany</string>
+    <string name="status_cancelled_label">Anulowany</string>
+
 </resources>

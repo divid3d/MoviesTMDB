@@ -31,7 +31,7 @@ data class MovieDetails(
     val runtime: Int?,
     @SerializedName("spoken_languages")
     val spokenLanguages: List<SpokenLanguage>,
-    val status: String,
+    val status: MovieStatus,
     val tagline: String?,
     override val title: String,
     val video: Boolean,
