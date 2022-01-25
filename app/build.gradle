@@ -88,6 +88,8 @@ dependencies {
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
     implementation "com.google.accompanist:accompanist-placeholder:$accompanist_version"
 
+    implementation "androidx.palette:palette-ktx:1.0.0"
+
     implementation "androidx.core:core-splashscreen:1.0.0-beta01"
 
     implementation "io.coil-kt:coil-compose:1.4.0"

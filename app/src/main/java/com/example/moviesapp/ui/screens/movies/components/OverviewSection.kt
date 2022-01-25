@@ -8,7 +8,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -88,7 +87,7 @@ fun ReadMoreButton(
 
     TextButton(
         modifier = modifier,
-        shape = RoundedCornerShape(50),
+        shape = MaterialTheme.shapes.small,
         onClick = onClick
     ) {
         Text(

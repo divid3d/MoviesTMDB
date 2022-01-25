@@ -1,19 +1,13 @@
 package com.example.moviesapp.ui.components
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
+import androidx.compose.animation.*
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -31,7 +25,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.luminance
 import androidx.paging.compose.LazyPagingItems
+import androidx.palette.graphics.Palette
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import coil.transform.BlurTransformation
 import com.example.moviesapp.model.Presentable
@@ -46,7 +44,7 @@ import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import com.google.accompanist.pager.rememberPagerState
 import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalCoilApi::class)
 @Composable
 fun PresentableTopSection(
     modifier: Modifier = Modifier,
@@ -58,6 +56,10 @@ fun PresentableTopSection(
 
     val pagerState = rememberPagerState()
     val density = LocalDensity.current
+
+    var isDark by remember { mutableStateOf(false) }
+
+    val contentColor by animateColorAsState(targetValue = if (isDark) Color.White else Color.Black)
 
     val selectedPresentable by derivedStateOf {
         val snapshot = state.itemSnapshotList
@@ -83,20 +85,35 @@ fun PresentableTopSection(
                 .scale(backdropScale.value),
             targetState = selectedPresentable
         ) { movie ->
+            val backgroundPainter = rememberImagePainter(
+                data = movie?.backdropUrl,
+                builder = {
+                    transformations(
+                        BlurTransformation(
+                            context = context,
+                            radius = 16f,
+                            sampling = 2f
+                        )
+                    )
+                },
+            )
+
+            val backgroundPainterState = backgroundPainter.state
+
+            LaunchedEffect(backgroundPainterState) {
+                val drawable = backgroundPainter.run { imageLoader.execute(request).drawable }
+                val bitmap = drawable?.toBitmap()
+
+                isDark = bitmap?.let {
+                    Palette.from(it).generate().dominantSwatch?.run {
+                        rgb.luminance < 0.5
+                    } ?: true
+                } ?: true
+            }
+            
             Image(
                 modifier = Modifier.fillMaxSize(),
-                painter = rememberImagePainter(
-                    data = movie?.backdropUrl,
-                    builder = {
-                        transformations(
-                            BlurTransformation(
-                                context = context,
-                                radius = 16f,
-                                sampling = 2f
-                            )
-                        )
-                    }
-                ),
+                painter = backgroundPainter,
                 contentDescription = null,
                 contentScale = ContentScale.FillBounds
             )
@@ -122,7 +139,7 @@ fun PresentableTopSection(
                 modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
                 text = title,
                 style = TextStyle(
-                    color = Color.White,
+                    color = contentColor,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -142,13 +159,15 @@ fun PresentableTopSection(
                         .padding(MaterialTheme.spacing.medium)
                 ) {
                     val presentable = state[page]
-                    val presentableItemState = presentable?.let { PresentableItemState.Result(it) }
-                        ?: PresentableItemState.Loading
+                    val presentableItemState =
+                        presentable?.let { PresentableItemState.Result(it) }
+                            ?: PresentableItemState.Loading
 
                     PresentableTopSectionItem(
                         modifier = Modifier.fillMaxWidth(),
                         presentableItemState = presentableItemState,
                         isSelected = selectedPresentable == presentable,
+                        contentColor = contentColor,
                         onPresentableClick = {
                             presentable?.let {
                                 onPresentableClick(it.id)
@@ -196,6 +215,7 @@ fun PresentableTopSectionItem(
     modifier: Modifier = Modifier,
     presentableItemState: PresentableItemState,
     presentableSize: Size = MaterialTheme.sizes.presentableItemBig,
+    contentColor: Color = Color.White,
     onPresentableClick: () -> Unit = {},
     isSelected: Boolean,
     itemTransformations: GraphicsLayerScope.() -> Unit = {},
@@ -230,7 +250,7 @@ fun PresentableTopSectionItem(
                         text = presentableItemState.presentable.title,
                         style = TextStyle(
                             fontSize = 16.sp,
-                            color = Color.White,
+                            color = contentColor,
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -239,7 +259,7 @@ fun PresentableTopSectionItem(
                             text = overview,
                             style = TextStyle(
                                 fontSize = 12.sp,
-                                color = Color.White
+                                color = contentColor
                             ),
                             maxLines = 5,
                             overflow = TextOverflow.Ellipsis
