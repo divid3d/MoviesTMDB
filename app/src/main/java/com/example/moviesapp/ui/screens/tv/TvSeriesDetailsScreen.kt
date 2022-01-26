@@ -101,7 +101,6 @@ fun TvSeriesDetailsScreen(
                     },
                 presentable = tvSeriesDetails
             ) {
-
                 Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
                     tvSeriesDetails?.let { details ->
                         LabeledText(
@@ -123,10 +122,12 @@ fun TvSeriesDetailsScreen(
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
             tvSeriesDetails?.let { details ->
                 Column(
-                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
+                    modifier = Modifier
+                        .padding(horizontal = MaterialTheme.spacing.medium)
+                        .animateContentSize(),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                 ) {
                     Text(
@@ -150,6 +151,46 @@ fun TvSeriesDetailsScreen(
                     )
                 }
             }
+            SectionDivider(
+                modifier = Modifier.padding(
+                    top = MaterialTheme.spacing.large,
+                    start = MaterialTheme.spacing.medium,
+                    end = MaterialTheme.spacing.medium,
+                )
+            )
+
+            tvSeriesDetails?.networks?.let { networks ->
+                if (networks.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                top = MaterialTheme.spacing.medium,
+                                start = MaterialTheme.spacing.medium,
+                                end = MaterialTheme.spacing.medium
+                            )
+                            .animateContentSize()
+                    ) {
+                        SectionLabel(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(R.string.tv_series_details_networks)
+                        )
+                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+                        NetworksList(
+                            modifier = Modifier.fillMaxWidth(),
+                            networks = networks
+                        )
+
+                        SectionDivider(
+                            modifier = Modifier.padding(
+                                top = MaterialTheme.spacing.medium,
+                                start = MaterialTheme.spacing.medium,
+                                end = MaterialTheme.spacing.small,
+                            )
+                        )
+                    }
+                }
+            }
 
             tvSeriesDetails?.seasons?.let { seasons ->
                 if (seasons.isNotEmpty()) {
@@ -162,54 +203,24 @@ fun TvSeriesDetailsScreen(
                             title = "Sezony",
                             seasons = seasons
                         )
-//                        SeasonsList(
-//                            modifier = Modifier.fillMaxWidth(),
-//                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-//                            seasons = seasons,
-//                            selectedSeasonId = selectedSeasonId
-//                        ) { seasonNumber ->
-//                            viewModel.getTvSeason(seasonNumber)
-//                        }
-//                    EpisodesList(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        episodes = episodes
-//                    )
-//                        selectedSeason?.let { season ->
-//                            SeasonSection(
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(MaterialTheme.spacing.medium),
-//                                season = season
-//                            )
-//                        }
                     }
-                }
-            }
 
-            tvSeriesDetails?.networks?.let { networks ->
-                if (networks.isNotEmpty()) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = MaterialTheme.spacing.medium)
-                    ) {
-                        SectionLabel(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(R.string.tv_series_details_networks)
+                    SectionDivider(
+                        modifier = Modifier.padding(
+                            top = MaterialTheme.spacing.medium,
+                            start = MaterialTheme.spacing.medium,
+                            end = MaterialTheme.spacing.small,
                         )
-                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-                        NetworksList(
-                            modifier = Modifier.fillMaxWidth(),
-                            networks = networks
-                        )
-                    }
+                    )
                 }
             }
 
             similar?.let { lazyPagingItems ->
                 PresentableSection(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .padding(top = MaterialTheme.spacing.medium)
+                        .fillMaxWidth()
+                        .animateContentSize(),
                     title = stringResource(R.string.tv_series_details_similar),
                     showMoreButton = false,
                     state = lazyPagingItems
@@ -221,11 +232,21 @@ fun TvSeriesDetailsScreen(
                         )
                     )
                 }
+
+                SectionDivider(
+                    modifier = Modifier.padding(
+                        top = MaterialTheme.spacing.medium,
+                        start = MaterialTheme.spacing.medium,
+                        end = MaterialTheme.spacing.small,
+                    )
+                )
             }
             recommendations?.let { lazyPagingItems ->
                 PresentableSection(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .padding(top = MaterialTheme.spacing.medium)
+                        .fillMaxWidth()
+                        .animateContentSize(),
                     title = stringResource(R.string.tv_series_details_recommendations),
                     showMoreButton = false,
                     state = lazyPagingItems
@@ -237,6 +258,14 @@ fun TvSeriesDetailsScreen(
                         )
                     )
                 }
+
+                SectionDivider(
+                    modifier = Modifier.padding(
+                        top = MaterialTheme.spacing.medium,
+                        start = MaterialTheme.spacing.medium,
+                        end = MaterialTheme.spacing.small,
+                    )
+                )
             }
             Spacer(
                 modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.large)

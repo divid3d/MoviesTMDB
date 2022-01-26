@@ -156,33 +156,60 @@ fun MovieDetailsScreen(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            SectionDivider(
+                modifier = Modifier.padding(
+                    top = MaterialTheme.spacing.large,
+                    start = MaterialTheme.spacing.medium,
+                    end = MaterialTheme.spacing.medium,
+                )
+            )
 
             credits?.cast?.let { castMembers ->
                 MemberSection(
                     modifier = Modifier
+                        .padding(top = MaterialTheme.spacing.medium)
                         .fillMaxWidth()
                         .animateContentSize(),
                     title = "Obsada",
                     members = castMembers,
                     contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
                 )
+
+                SectionDivider(
+                    modifier = Modifier.padding(
+                        top = MaterialTheme.spacing.medium,
+                        start = MaterialTheme.spacing.medium,
+                        end = MaterialTheme.spacing.small,
+                    )
+                )
             }
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
             credits?.crew?.let { crewMembers ->
                 MemberSection(
-                    modifier = Modifier.animateContentSize(),
+                    modifier = Modifier
+                        .padding(top = MaterialTheme.spacing.small)
+                        .fillMaxWidth()
+                        .animateContentSize(),
                     title = "Ekipa filmowa",
                     members = crewMembers,
                     contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
                 )
+
+                SectionDivider(
+                    modifier = Modifier.padding(
+                        top = MaterialTheme.spacing.medium,
+                        start = MaterialTheme.spacing.medium,
+                        end = MaterialTheme.spacing.small,
+                    )
+                )
             }
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+
 
             similarMoviesState?.let { lazyPagingItems ->
                 PresentableSection(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(top = MaterialTheme.spacing.medium)
                         .animateContentSize(),
                     title = stringResource(R.string.movie_details_similar),
                     showMoreButton = false,
@@ -195,12 +222,21 @@ fun MovieDetailsScreen(
                         )
                     )
                 }
+
+                SectionDivider(
+                    modifier = Modifier.padding(
+                        top = MaterialTheme.spacing.medium,
+                        start = MaterialTheme.spacing.medium,
+                        end = MaterialTheme.spacing.small,
+                    )
+                )
             }
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
             moviesRecommendationState?.let { lazyPagingItems ->
                 PresentableSection(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(top = MaterialTheme.spacing.small)
                         .animateContentSize(),
                     title = stringResource(R.string.movie_details_recommendations),
                     showMoreButton = false,
@@ -213,6 +249,14 @@ fun MovieDetailsScreen(
                         )
                     )
                 }
+
+                SectionDivider(
+                    modifier = Modifier.padding(
+                        top = MaterialTheme.spacing.medium,
+                        start = MaterialTheme.spacing.medium,
+                        end = MaterialTheme.spacing.small,
+                    )
+                )
             }
             Spacer(
                 modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.large)

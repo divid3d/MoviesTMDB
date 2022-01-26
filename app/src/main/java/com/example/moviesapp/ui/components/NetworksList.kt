@@ -10,12 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
+import com.example.moviesapp.R
 import com.example.moviesapp.model.Network
 import com.example.moviesapp.ui.theme.White500
 import com.example.moviesapp.ui.theme.spacing
@@ -48,12 +51,7 @@ fun NetworkChip(
     modifier: Modifier = Modifier,
     network: Network
 ) {
-    val painter = rememberImagePainter(
-        data = network.logoUrl,
-        builder = {
-            crossfade(true)
-        }
-    )
+
 
     Column(
         modifier = modifier
@@ -71,29 +69,25 @@ fun NetworkChip(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
     ) {
-//        Image(
-//            modifier = modifier
-//                .height(40.dp)
-//                .width(60.dp)
-//                .background(
-//                    color = White300,
-//                    shape = MaterialTheme.shapes.small
-//                )
-//                .border(
-//                    width = 1.dp,
-//                    color = White500,
-//                    shape = MaterialTheme.shapes.small
-//                )
-//                .padding(MaterialTheme.spacing.small)
-//                .animateContentSize(),
-//            painter = painter,
-//            contentDescription = null
-//        )
-        Image(
-            modifier = Modifier.height(40.dp),
-            painter = painter,
-            contentDescription = network.name
-        )
+        if (network.logoUrl != null) {
+            Image(
+                modifier = Modifier.height(40.dp),
+                painter = rememberImagePainter(
+                    data = network.logoUrl,
+                    builder = {
+                        crossfade(true)
+                    }
+                ),
+                contentDescription = network.name
+            )
+        } else {
+            Image(
+                painter = painterResource(R.drawable.ic_outline_no_photography_24),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(White500)
+            )
+        }
+
         Text(
             text = network.name,
             style = TextStyle(
@@ -105,6 +99,5 @@ fun NetworkChip(
             overflow = TextOverflow.Ellipsis
         )
     }
-
 
 }

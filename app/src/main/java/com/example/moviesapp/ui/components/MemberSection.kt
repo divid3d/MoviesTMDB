@@ -26,19 +26,19 @@ fun MemberSection(
                 text = title
             )
         }
-    }
-    LazyRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = MaterialTheme.spacing.small),
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
-        contentPadding = contentPadding
-    ) {
-        items(members) { member ->
-            MemberResultChip(
-                modifier = Modifier.width(64.dp),
-                member = member
-            )
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = MaterialTheme.spacing.small),
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+            contentPadding = contentPadding
+        ) {
+            items(members) { member ->
+                MemberResultChip(
+                    modifier = Modifier.width(64.dp),
+                    member = member
+                )
+            }
         }
     }
 }
