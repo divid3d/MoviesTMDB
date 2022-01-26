@@ -11,18 +11,18 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -34,6 +34,7 @@ import com.example.moviesapp.ui.screens.movies.components.GenresSection
 import com.example.moviesapp.ui.screens.movies.components.OverviewSection
 import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.spacing
+import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -46,6 +47,8 @@ fun TvSeriesDetailsScreen(
     startRoute: String = TvScreenDestination.route
 ) {
     val viewModel: TvSeriesDetailsViewModel = hiltViewModel()
+    val density = LocalDensity.current
+    val insets = LocalWindowInsets.current
 
     val tvSeriesDetails by viewModel.tvSeriesDetails.collectAsState()
     val isFavourite by viewModel.isFavourite.collectAsState()
@@ -65,6 +68,24 @@ fun TvSeriesDetailsScreen(
 
     val scrollState = rememberScrollState()
 
+    var topSectionHeight: Int? by remember { mutableStateOf(null) }
+    val appBarHeight by remember { mutableStateOf(density.run { 56.dp.toPx() }) }
+    val statusBarHeight: Int by remember {
+        mutableStateOf(insets.statusBars.top)
+    }
+
+    val appbarColor: Color by derivedStateOf {
+        topSectionHeight?.let { height ->
+            val alpha =
+                (scrollState.value.toFloat() / (height - appBarHeight - statusBarHeight)).coerceIn(
+                    0f,
+                    1f
+                ) * 0.5f + 0.5f
+
+            Color.Black.copy(alpha)
+        } ?: Black500
+    }
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -75,7 +96,10 @@ fun TvSeriesDetailsScreen(
         ) {
             PresentableDetailsTopSection(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .onGloballyPositioned { coordinates ->
+                        topSectionHeight = coordinates.size.height
+                    },
                 presentable = tvSeriesDetails
             ) {
 
@@ -228,7 +252,7 @@ fun TvSeriesDetailsScreen(
         AppBar(
             modifier = Modifier.align(Alignment.TopCenter),
             title = stringResource(R.string.tv_series_details_label),
-            backgroundColor = Black500,
+            backgroundColor = appbarColor,
             action = {
                 IconButton(onClick = { navigator.navigateUp() }) {
                     Icon(
