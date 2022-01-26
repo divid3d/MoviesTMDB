@@ -34,7 +34,7 @@ import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestinati
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
 import com.example.moviesapp.ui.theme.White300
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.insets.systemBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -52,7 +52,7 @@ fun SearchScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .systemBarsPadding(),
+            .statusBarsPadding(),
     ) {
         QueryTextField(
             modifier = Modifier
@@ -76,10 +76,8 @@ fun SearchScreen(
                             modifier = Modifier.fillMaxSize(),
                             showRefreshItems = false,
                             contentPadding = PaddingValues(
-                                start = MaterialTheme.spacing.medium,
-                                end = MaterialTheme.spacing.medium,
-                                top = MaterialTheme.spacing.medium,
-                                bottom = MaterialTheme.spacing.large
+                                horizontal = MaterialTheme.spacing.small,
+                                vertical = MaterialTheme.spacing.medium,
                             ),
                             state = result
                         ) { movieId ->

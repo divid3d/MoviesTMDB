@@ -53,10 +53,8 @@ fun FavouritesScreen(
                     PresentableGridSection(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(
-                            start = MaterialTheme.spacing.medium,
-                            end = MaterialTheme.spacing.medium,
-                            top = MaterialTheme.spacing.medium,
-                            bottom = MaterialTheme.spacing.large
+                            horizontal = MaterialTheme.spacing.small,
+                            vertical = MaterialTheme.spacing.medium,
                         ),
                         state = favourites
                     ) { id ->
