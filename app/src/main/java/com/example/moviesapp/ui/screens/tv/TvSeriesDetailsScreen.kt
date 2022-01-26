@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -194,17 +193,11 @@ fun TvSeriesDetailsScreen(
                             .fillMaxWidth()
                             .padding(horizontal = MaterialTheme.spacing.medium)
                     ) {
-                        Text(
-                            text = stringResource(R.string.tv_series_details_networks),
-                            style = TextStyle(
-                                color = Color.White,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                        SectionLabel(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(R.string.tv_series_details_networks)
                         )
-                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
                         NetworksList(
                             modifier = Modifier.fillMaxWidth(),
                             networks = networks

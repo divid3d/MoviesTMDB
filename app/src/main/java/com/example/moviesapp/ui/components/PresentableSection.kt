@@ -22,8 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
@@ -79,16 +77,9 @@ fun PresentableSection(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
+                SectionLabel(
                     modifier = Modifier.weight(1f),
-                    text = title,
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    text = title
                 )
                 if (showMoreButton) {
                     TextButton(onClick = onMoreClick) {
