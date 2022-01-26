@@ -72,11 +72,6 @@ class TvSeriesDetailsViewModel @Inject constructor(
         id in favouritesId
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
 
-    val seasonNumbers: StateFlow<List<Int>> = _tvSeriesDetails.map { details ->
-        details?.seasons?.map { season -> season.seasonNumber } ?: emptyList()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
-
-
     private val _selectedSeason: MutableStateFlow<TvSeasonsResponse?> = MutableStateFlow(null)
     val selectedSeason: StateFlow<TvSeasonsResponse?> =
         _selectedSeason.combine(config) { season, config ->

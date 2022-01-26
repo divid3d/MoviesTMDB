@@ -136,3 +136,14 @@ fun Network.appendUrls(
         logoUrl = logoUrl
     )
 }
+
+fun SeasonDetails.appendUrls(
+    config: Config?
+): SeasonDetails {
+    val posterUrl = config?.getImageUrl(posterPath)
+
+    return copy(
+        posterUrl = posterUrl,
+        episodes = episodes.map { episode -> episode.appendUrls(config) }
+    )
+}

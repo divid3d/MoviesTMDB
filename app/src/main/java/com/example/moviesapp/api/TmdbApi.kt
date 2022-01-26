@@ -134,5 +134,12 @@ interface TmdbApi {
         @Query("language") isoCode: String
     ): TvSeriesResponse
 
+    @GET("tv/{tv_id}/season/{season_number}")
+    suspend fun getSeasonDetails(
+        @Path("tv_id") tvSeriesId: Int,
+        @Path("season_number") seasonNumber: Int,
+        @Query("language") isoCode: String
+    ): SeasonDetails
+
 }
 

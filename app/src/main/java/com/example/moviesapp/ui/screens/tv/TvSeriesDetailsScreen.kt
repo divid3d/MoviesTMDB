@@ -26,7 +26,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
+import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.ui.components.*
+import com.example.moviesapp.ui.screens.destinations.SeasonDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.movies.components.GenresSection
@@ -56,14 +58,6 @@ fun TvSeriesDetailsScreen(
     val recommendations = viewModel.tvSeriesRecommendations?.collectAsLazyPagingItems()
 
     val selectedSeason by viewModel.selectedSeason.collectAsState()
-
-    val selectedSeasonId by derivedStateOf {
-        selectedSeason?.id
-    }
-
-    val selectedSeasonEpisodes by derivedStateOf {
-        selectedSeason?.episodes
-    }
 
     val scrollState = rememberScrollState()
 
@@ -200,9 +194,23 @@ fun TvSeriesDetailsScreen(
                             .animateContentSize()
                     ) {
                         SeasonsSection(
-                            title = "Sezony",
+                            title = stringResource(R.string.tv_series_details_seasons),
                             seasons = seasons
-                        )
+                        ) { seasonNumber ->
+                            tvSeriesDetails?.id?.let { id ->
+
+                                val seasonInfo = SeasonInfo(
+                                    tvSeriesId = id,
+                                    seasonNumber = seasonNumber
+                                )
+                                navigator.navigate(
+                                    SeasonDetailsScreenDestination(
+                                        seasonInfo = seasonInfo,
+                                        startRoute = startRoute
+                                    )
+                                )
+                            }
+                        }
                     }
 
                     SectionDivider(

@@ -43,6 +43,7 @@
     <string name="movie_details_genres">Gatunki</string>
     <string name="movie_details_similar">Podobne</string>
     <string name="movie_details_recommendations">Polecane</string>
+    <string name="tv_series_details_seasons">Sezony</string>
 
     <string name="tv_series_details_label">Szczegóły serialu</string>
     <string name="tv_series_details_type">Typ</string>
@@ -81,5 +82,7 @@
     <string name="status_post_production_label">W postprodukcji</string>
     <string name="status_released_label">Wydany</string>
     <string name="status_cancelled_label">Anulowany</string>
+
+    <string name="season_details_appbar_label">Szczegóły sezonu</string>
 
 </resources>

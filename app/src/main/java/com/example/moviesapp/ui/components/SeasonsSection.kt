@@ -47,7 +47,7 @@ fun SeasonsSection(
                     PresentableItem(
                         presentableState = PresentableItemState.Result(season),
                         showScore = false,
-                        onClick = { onSeasonClick(season.id) }
+                        onClick = { onSeasonClick(season.seasonNumber) }
                     )
                 }
             }

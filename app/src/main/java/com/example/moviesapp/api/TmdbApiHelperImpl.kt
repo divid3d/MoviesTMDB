@@ -98,4 +98,11 @@ class TmdbApiHelperImpl @Inject constructor(
 
     override suspend fun getTrendingTvSeries(page: Int, isoCode: String): TvSeriesResponse =
         tmdbApi.getTrendingTvSeries(page, isoCode)
+
+    override suspend fun getSeasonDetails(
+        tvSeriesId: Int,
+        seasonNumber: Int,
+        isoCode: String
+    ): SeasonDetails =
+        tmdbApi.getSeasonDetails(tvSeriesId, seasonNumber, isoCode)
 }

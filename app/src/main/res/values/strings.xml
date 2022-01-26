@@ -52,6 +52,7 @@
     <string name="tv_series_details_similar">Similar</string>
     <string name="tv_series_details_recommendations">Recommendations</string>
     <string name="tv_series_details_networks">Available on</string>
+    <string name="tv_series_details_seasons">Seasons</string>
 
     <string name="all_movies_top_rated_label">Top rated movies</string>
     <string name="all_movies_upcoming_label">Upcoming movies</string>
@@ -81,5 +82,7 @@
     <string name="status_post_production_label">Post production</string>
     <string name="status_released_label">Released</string>
     <string name="status_cancelled_label">Cancelled</string>
+
+    <string name="season_details_appbar_label">Season details</string>
 
 </resources>

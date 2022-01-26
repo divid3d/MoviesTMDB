@@ -10,6 +10,7 @@ import com.example.moviesapp.data.MovieSearchResponseDataSource
 import com.example.moviesapp.model.Credits
 import com.example.moviesapp.model.Movie
 import com.example.moviesapp.model.MovieDetails
+import com.example.moviesapp.model.SeasonDetails
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -97,5 +98,10 @@ class MovieRepository @Inject constructor(
                 releaseYear = releaseYear
             )
         }.flow
+
+    suspend fun seasonDetails(
+        tvSeriesId: Int,
+        seasonNumber: Int
+    ): SeasonDetails = apiHelper.getSeasonDetails(tvSeriesId, seasonNumber)
 
 }
