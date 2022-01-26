@@ -108,10 +108,10 @@ fun TvScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
-                title = "Zyskujące na popularności",
+                title = stringResource(R.string.trending_tv_series),
                 state = trending,
                 onPresentableClick = navigateToTvSeriesDetails,
-                onMoreClick = { }
+                onMoreClick = { navigateToAllTvSeries(TvSeriesType.Trending) }
             )
             SectionDivider(
                 modifier = Modifier.padding(

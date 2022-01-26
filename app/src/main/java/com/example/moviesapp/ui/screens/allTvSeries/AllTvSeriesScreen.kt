@@ -46,6 +46,7 @@ fun AllTvSeriesScreen(
             favouriteTvSeriesCount
         )
         TvSeriesType.RecentlyBrowsed -> stringResource(R.string.all_tv_series_recently_browsed_label)
+        TvSeriesType.Trending -> stringResource(R.string.all_tv_series_trending_label)
     }
 
     Column(modifier = Modifier.fillMaxSize()) {

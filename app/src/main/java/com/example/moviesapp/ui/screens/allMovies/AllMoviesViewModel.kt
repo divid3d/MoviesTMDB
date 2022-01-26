@@ -68,6 +68,12 @@ class AllMoviesViewModel @Inject constructor(
                 pagingData.map { recentlyBrowsedMovie -> recentlyBrowsedMovie.appendUrls(config) }
             }
 
+    private val trending: Flow<PagingData<Presentable>> =
+        movieRepository.trendingMovies()
+            .combine(config) { pagingData, config ->
+                pagingData.map { movie -> movie.appendUrls(config) }
+            }
+
     val favouriteMoviesCount: StateFlow<Int> = favouritesRepository.getFavouriteMoviesCount()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), 0)
 
@@ -80,6 +86,7 @@ class AllMoviesViewModel @Inject constructor(
                     MovieType.Popular -> popular
                     MovieType.Favourite -> favourites
                     MovieType.RecentlyBrowsed -> recentlyBrowsed
+                    MovieType.Trending -> trending
                 }.cachedIn(viewModelScope)
             }
         }

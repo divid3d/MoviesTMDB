@@ -23,6 +23,7 @@
     <string name="movies_more">more</string>
     <string name="favourite_movies">Favourites</string>
     <string name="recently_browsed_movies">Recently browsed</string>
+    <string name="trending_movies">Trending</string>
 
     <string name="now_airing_tv_series">Now airing</string>
     <string name="top_rated_tv_series">Top rated</string>
@@ -30,6 +31,7 @@
     <string name="popular_tv_series">Popular</string>
     <string name="favourites_tv_series">Favourites</string>
     <string name="recently_browsed_tv_series">Recently browsed</string>
+    <string name="trending_tv_series">Trending</string>
 
     <string name="read_more">Read more</string>
     <string name="read_less">Read less</string>
@@ -56,12 +58,14 @@
     <string name="all_movies_popular_label">Popular movies</string>
     <string name="all_movies_favourites_label" formatted="true">Favourites movies (%d)</string>
     <string name="all_movies_recently_browsed_label">Recently browsed movies</string>
+    <string name="all_movies_trending_label">Trending movies</string>
 
     <string name="all_tv_series_top_rated_label">Top rated tv series</string>
     <string name="all_tv_series_airing_today_label">Airing today tv series</string>
     <string name="all_tv_series_popular_label">Popular tv series</string>
     <string name="all_tv_series_favourites_label" formatted="true">Favourites tv series (%d)</string>
     <string name="all_tv_series_recently_browsed_label">Recently browsed tv series</string>
+    <string name="all_tv_series_trending_label">Trending tv series</string>
 
     <string name="favourite_empty_movies_info_text">Currently you don\'t have favourite movies</string>
     <string name="favourite_empty_tv_series_info_text">Currently you don\'t have favourite tv series</string>

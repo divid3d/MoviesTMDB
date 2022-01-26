@@ -70,6 +70,12 @@ class AllTvSeriesViewModel @Inject constructor(
                 pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
             }
 
+    private val trending: Flow<PagingData<Presentable>> =
+        tvSeriesRepository.trendingTvSeries()
+            .combine(config) { pagingData, config ->
+                pagingData.map { tvSeries -> tvSeries.appendUrls(config) }
+            }
+
     val favouriteTvSeriesCount: StateFlow<Int> = favouritesRepository.getFavouriteTvSeriesCount()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), 0)
 
@@ -82,6 +88,7 @@ class AllTvSeriesViewModel @Inject constructor(
                     TvSeriesType.Popular -> popular
                     TvSeriesType.Favourite -> favourites
                     TvSeriesType.RecentlyBrowsed -> recentlyBrowsed
+                    TvSeriesType.Trending -> trending
                 }.cachedIn(viewModelScope)
             }
         }

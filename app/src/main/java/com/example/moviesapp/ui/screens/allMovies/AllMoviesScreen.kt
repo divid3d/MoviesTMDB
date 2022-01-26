@@ -46,6 +46,7 @@ fun AllMoviesScreen(
             favouriteMoviesCount
         )
         MovieType.RecentlyBrowsed -> stringResource(R.string.all_movies_recently_browsed_label)
+        MovieType.Trending -> stringResource(R.string.all_movies_trending_label)
     }
 
     Column(modifier = Modifier.fillMaxSize()) {

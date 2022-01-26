@@ -151,11 +151,11 @@ fun MoviesScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
-                title = "Zyskujące na popularności",
+                title = stringResource(R.string.trending_movies),
                 state = trending,
                 onPresentableClick = navigateToMovieDetails,
                 onMoreClick = {
-                    //navigateToAllMovies(MovieType.Upcoming)
+                    navigateToAllMovies(MovieType.Trending)
                 }
             )
             SectionDivider(
