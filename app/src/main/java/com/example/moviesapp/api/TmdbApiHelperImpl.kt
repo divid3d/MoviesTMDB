@@ -77,14 +77,14 @@ class TmdbApiHelperImpl @Inject constructor(
         tmdbApi.getTvSeasons(tvSeriesId, seasonNumber, isoCode)
 
 
-    override suspend fun searchMovies(
+    override suspend fun multiSearch(
         page: Int,
         isoCode: String,
         query: String,
         includeAdult: Boolean,
         year: Int?,
         releaseYear: Int?
-    ): MoviesResponse = tmdbApi.searchMovie(
+    ): SearchResponse = tmdbApi.multiSearch(
         page = page,
         isoCode = isoCode,
         query = query,

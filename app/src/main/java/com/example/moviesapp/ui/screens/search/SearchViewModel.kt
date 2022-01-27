@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.model.SearchResult
 import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.repository.ConfigRepository
-import com.example.moviesapp.repository.MovieRepository
+import com.example.moviesapp.repository.SearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -21,7 +21,7 @@ import kotlin.time.ExperimentalTime
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val configRepository: ConfigRepository,
-    private val movieRepository: MovieRepository,
+    private val searchRepository: SearchRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -32,10 +32,11 @@ class SearchViewModel @Inject constructor(
     private val _query: MutableStateFlow<String?> = MutableStateFlow(null)
     val query: StateFlow<String?> = _query.asStateFlow()
 
-    private val _searchState: MutableStateFlow<SearchState> = MutableStateFlow(SearchState.Init)
+    private val _searchState: MutableStateFlow<SearchState> =
+        MutableStateFlow(SearchState.EmptyQuery)
     val searchState: StateFlow<SearchState> = _searchState
         .asStateFlow()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), SearchState.Init)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), SearchState.EmptyQuery)
 
     private val _queryLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val queryLoading: StateFlow<Boolean> = _queryLoading.asStateFlow()
@@ -49,7 +50,7 @@ class SearchViewModel @Inject constructor(
             queryJob?.cancel()
 
             if (query.isBlank()) {
-                _searchState.emit(SearchState.Init)
+                _searchState.emit(SearchState.EmptyQuery)
             } else {
                 queryJob = createQueryJob(query).apply {
                     start()
@@ -69,10 +70,10 @@ class SearchViewModel @Inject constructor(
 
                 _queryLoading.emit(true)
 
-                val response = movieRepository.movieSearch(query = query)
+                val response = searchRepository.multiSearch(query = query)
                     .combine(config) { moviePagingData, config ->
-                        moviePagingData.map { movie ->
-                            movie.appendUrls(config) as Presentable
+                        moviePagingData.map { searchResult ->
+                            searchResult.appendUrls(config)
                         }
                     }
 
@@ -96,9 +97,9 @@ class SearchViewModel @Inject constructor(
 
 
 sealed class SearchState {
-    object Init : SearchState()
+    object EmptyQuery : SearchState()
     data class Result(
         val query: String,
-        val data: Flow<PagingData<Presentable>>
+        val data: Flow<PagingData<SearchResult>>
     ) : SearchState()
 }

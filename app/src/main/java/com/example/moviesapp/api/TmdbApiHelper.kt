@@ -54,14 +54,14 @@ interface TmdbApiHelper {
         isoCode: String = "pl-PL"
     ): TvSeasonsResponse
 
-    suspend fun searchMovies(
+    suspend fun multiSearch(
         page: Int,
         isoCode: String = "pl-PL",
         query: String,
         includeAdult: Boolean = false,
         year: Int? = null,
         releaseYear: Int? = null
-    ): MoviesResponse
+    ): SearchResponse
 
     suspend fun getTrendingMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
 

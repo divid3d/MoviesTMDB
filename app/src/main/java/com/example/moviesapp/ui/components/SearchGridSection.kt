@@ -19,8 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.model.PresentableItemState
+import com.example.moviesapp.model.SearchResult
 import com.example.moviesapp.other.isScrollingTowardsStart
 import com.example.moviesapp.other.items
 import com.example.moviesapp.ui.screens.movies.components.ScrollToTop
@@ -30,12 +31,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PresentableGridSection(
+fun SearchGridSection(
     modifier: Modifier = Modifier,
-    state: LazyPagingItems<Presentable>,
+    state: LazyPagingItems<SearchResult>,
     contentPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.default),
     scrollToBeginningItemsStart: Int = 30,
-    onPresentableClick: (Int) -> Unit = {}
+    onSearchResultClick: (Int, MediaType) -> Unit = { _, _ -> }
 ) {
     val coroutineScope = rememberCoroutineScope()
     val gridState = rememberLazyListState()
@@ -67,24 +68,19 @@ fun PresentableGridSection(
                     PresentableItem(
                         presentableState = PresentableItemState.Result(it),
                         showScore = false,
-                        onClick = { onPresentableClick(it.id) }
+                        onClick = { onSearchResultClick(it.id, it.mediaType) }
                     )
                 }
             }
 
             state.apply {
-                when {
-                    loadState.refresh is LoadState.Loading -> {
-                        items(12) {
-                            PresentableItem(presentableState = PresentableItemState.Loading)
-                        }
-                    }
-
-                    loadState.append is LoadState.Loading -> {
+                when (loadState.append) {
+                    is LoadState.Loading -> {
                         items(3) {
                             PresentableItem(presentableState = PresentableItemState.Loading)
                         }
                     }
+                    else -> Unit
                 }
             }
         }

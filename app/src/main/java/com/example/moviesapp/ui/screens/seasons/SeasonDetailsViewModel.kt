@@ -34,6 +34,10 @@ class SeasonDetailsViewModel @Inject constructor(
         details?.appendUrls(config)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
+    val episodeCount: StateFlow<Int?> = _seasonDetails.map { details ->
+        details?.episodes?.count()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+
     init {
         viewModelScope.launch {
             seasonInfo.collectLatest { seasonInfo ->

@@ -112,15 +112,15 @@ interface TmdbApi {
         @Query("language") isoCode: String
     ): TvSeasonsResponse
 
-    @GET("search/movie")
-    suspend fun searchMovie(
+    @GET("search/multi")
+    suspend fun multiSearch(
         @Query("page") page: Int,
         @Query("language") isoCode: String,
         @Query("query") query: String,
         @Query("year") year: Int?,
         @Query("include_adult") includeAdult: Boolean,
         @Query("primary_release_year") releaseYear: Int?
-    ): MoviesResponse
+    ): SearchResponse
 
     @GET("trending/movie/week")
     suspend fun getTrendingMovies(

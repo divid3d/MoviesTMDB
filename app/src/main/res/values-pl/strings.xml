@@ -84,5 +84,8 @@
     <string name="status_cancelled_label">Anulowany</string>
 
     <string name="season_details_appbar_label">Szczegóły sezonu</string>
+    <string name="season_details_episodes_count_label">Liczba odcinków</string>
+    <string name="season_details_air_date_label">Data emisji</string>
+    <string name="season_details_season_number_label">Number sezonu</string>
 
 </resources>

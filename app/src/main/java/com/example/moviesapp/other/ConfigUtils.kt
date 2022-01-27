@@ -147,3 +147,13 @@ fun SeasonDetails.appendUrls(
         episodes = episodes.map { episode -> episode.appendUrls(config) }
     )
 }
+
+fun SearchResult.appendUrls(
+    config: Config?
+): SearchResult {
+    val posterUrl = config?.getImageUrl(posterPath)
+
+    return copy(
+        posterUrl = posterUrl
+    )
+}

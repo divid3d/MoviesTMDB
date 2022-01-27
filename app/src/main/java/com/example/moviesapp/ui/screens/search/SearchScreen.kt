@@ -28,10 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
+import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.other.isNotEmpty
-import com.example.moviesapp.ui.components.PresentableGridSection
+import com.example.moviesapp.ui.components.SearchGridSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.White300
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
@@ -72,21 +74,31 @@ fun SearchScreen(
                     val result = state.data.collectAsLazyPagingItems()
 
                     if (result.isNotEmpty()) {
-                        PresentableGridSection(
+                        SearchGridSection(
                             modifier = Modifier.fillMaxSize(),
-                            showRefreshItems = false,
                             contentPadding = PaddingValues(
                                 horizontal = MaterialTheme.spacing.small,
                                 vertical = MaterialTheme.spacing.medium,
                             ),
                             state = result
-                        ) { movieId ->
-                            navigator.navigate(
-                                MovieDetailsScreenDestination(
-                                    movieId = movieId,
+                        ) { resultId, mediaType ->
+                            val destination = when (mediaType) {
+                                MediaType.Movie -> MovieDetailsScreenDestination(
+                                    movieId = resultId,
                                     startRoute = SearchScreenDestination.route
                                 )
-                            )
+
+                                MediaType.Tv -> TvSeriesDetailsScreenDestination(
+                                    tvSeriesId = resultId,
+                                    startRoute = SearchScreenDestination.route
+                                )
+
+                                else -> null
+                            }
+
+                            if (destination != null) {
+                                navigator.navigate(destination)
+                            }
                         }
                     } else {
                         SearchEmptyState(
