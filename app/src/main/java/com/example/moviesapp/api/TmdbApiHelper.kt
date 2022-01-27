@@ -75,6 +75,10 @@ interface TmdbApiHelper {
 
     suspend fun getMovieImages(
         movieId: Int
-    ): MovieImagesResponse
+    ): ImagesResponse
+
+    suspend fun getTvSeriesImages(
+        movieId: Int
+    ): ImagesResponse
 
 }

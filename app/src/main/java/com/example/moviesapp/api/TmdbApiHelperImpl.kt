@@ -108,5 +108,10 @@ class TmdbApiHelperImpl @Inject constructor(
 
     override suspend fun getMovieImages(
         movieId: Int
-    ): MovieImagesResponse = tmdbApi.getMovieImages(movieId)
+    ): ImagesResponse = tmdbApi.getMovieImages(movieId)
+
+    override suspend fun getTvSeriesImages(
+        tvSeriesId: Int
+    ): ImagesResponse = tmdbApi.getTvSeriesImages(tvSeriesId)
+
 }

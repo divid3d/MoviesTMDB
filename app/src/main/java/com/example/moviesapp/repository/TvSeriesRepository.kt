@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.data.TvSeriesDetailsResponseDataSource
 import com.example.moviesapp.data.TvSeriesResponseDataSource
+import com.example.moviesapp.model.ImagesResponse
 import com.example.moviesapp.model.TvSeasonsResponse
 import com.example.moviesapp.model.TvSeries
 import com.example.moviesapp.model.TvSeriesDetails
@@ -81,5 +82,9 @@ class TvSeriesRepository @Inject constructor(
         isoCode: String = "pl-PL"
     ): TvSeasonsResponse =
         apiHelper.getTvSeasons(tvSeriesId, seasonNumber, isoCode)
+
+    suspend fun tvSeriesImages(
+        tvSeriesId: Int
+    ): ImagesResponse = apiHelper.getTvSeriesImages(tvSeriesId)
 
 }

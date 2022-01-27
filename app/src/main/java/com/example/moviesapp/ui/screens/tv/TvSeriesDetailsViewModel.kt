@@ -7,10 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
 import androidx.paging.map
-import com.example.moviesapp.model.Config
-import com.example.moviesapp.model.Presentable
-import com.example.moviesapp.model.TvSeasonsResponse
-import com.example.moviesapp.model.TvSeriesDetails
+import com.example.moviesapp.model.*
 import com.example.moviesapp.other.appendUrl
 import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.other.asFlow
@@ -43,6 +40,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
     var similarTvSeries: Flow<PagingData<Presentable>>? = null
     var tvSeriesRecommendations: Flow<PagingData<Presentable>>? = null
+    private val _tvSeriesBackdrops: MutableStateFlow<List<Backdrop>?> = MutableStateFlow(null)
 
     val tvSeriesDetails: StateFlow<TvSeriesDetails?> = combine(
         _tvSeriesDetails, config
@@ -65,6 +63,12 @@ class TvSeriesDetailsViewModel @Inject constructor(
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+
+    val backdrops: StateFlow<List<Backdrop>> = combine(
+        _tvSeriesBackdrops, config
+    ) { backdrops, config ->
+        backdrops?.map { backdrop -> backdrop.appendUrls(config) } ?: emptyList()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
 
     val isFavourite: StateFlow<Boolean> = combine(
         tvSeriesId, favouriteTvSeriesIds
@@ -116,6 +120,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
     private fun getTvSeriesInfo(tvSeriesId: Int) {
         getTvSeriesDetails(tvSeriesId)
+        getMovieImages(tvSeriesId)
     }
 
     private fun getTvSeriesDetails(tvSeriesId: Int) {
@@ -125,7 +130,14 @@ class TvSeriesDetailsViewModel @Inject constructor(
         }
     }
 
-    fun getTvSeason(seasonNumber: Int) {
+    private fun getMovieImages(tvSeriesId: Int) {
+        viewModelScope.launch {
+            val imagesResponse = tvSeriesRepository.tvSeriesImages(tvSeriesId)
+            _tvSeriesBackdrops.emit(imagesResponse.backdrops)
+        }
+    }
+
+    private fun getTvSeason(seasonNumber: Int) {
         viewModelScope.launch {
             val selectedSeasonNumber = _selectedSeason.value?.seasonNumber
 

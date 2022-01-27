@@ -56,8 +56,8 @@ fun TvSeriesDetailsScreen(
 
     val similar = viewModel.similarTvSeries?.collectAsLazyPagingItems()
     val recommendations = viewModel.tvSeriesRecommendations?.collectAsLazyPagingItems()
+    val backdrops by viewModel.backdrops.collectAsState()
 
-    val selectedSeason by viewModel.selectedSeason.collectAsState()
 
     val scrollState = rememberScrollState()
 
@@ -93,7 +93,8 @@ fun TvSeriesDetailsScreen(
                     .onGloballyPositioned { coordinates ->
                         topSectionHeight = coordinates.size.height
                     },
-                presentable = tvSeriesDetails
+                presentable = tvSeriesDetails,
+                backdrops = backdrops
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
                     tvSeriesDetails?.let { details ->

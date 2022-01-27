@@ -144,6 +144,11 @@ interface TmdbApi {
     @GET("movie/{movie_id}/images")
     suspend fun getMovieImages(
         @Path("movie_id") movieId: Int
-    ): MovieImagesResponse
+    ): ImagesResponse
+
+    @GET("tv/{tv_id}/images")
+    suspend fun getTvSeriesImages(
+        @Path("tv_id") tvSeriesId: Int
+    ): ImagesResponse
 }
 

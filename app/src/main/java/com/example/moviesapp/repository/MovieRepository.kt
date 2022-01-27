@@ -84,6 +84,6 @@ class MovieRepository @Inject constructor(
 
     suspend fun movieImages(
         movieId: Int
-    ): MovieImagesResponse = apiHelper.getMovieImages(movieId)
+    ): ImagesResponse = apiHelper.getMovieImages(movieId)
 
 }
