@@ -43,7 +43,7 @@ fun PresentableDetailsTopSection(
     val availableBackdropUrls: List<String> by derivedStateOf {
         buildList {
             add(presentable?.backdropUrl)
-            addAll(backdrops.map { backdrop -> backdrop.fileUrl })
+            addAll(backdrops.map { backdrop -> backdrop.fileUrl }.shuffled())
         }.filterNotNull()
     }
 
