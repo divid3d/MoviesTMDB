@@ -21,6 +21,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -83,6 +84,7 @@ fun QueryTextField(
                             IconButton(onClick = onVoiceSearchClick) {
                                 Image(
                                     painter = painterResource(R.drawable.ic_baseline_keyboard_voice_24),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
                                     contentDescription = "voice search"
                                 )
                             }

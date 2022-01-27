@@ -2,7 +2,6 @@ package com.example.moviesapp.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.slideIn
@@ -56,7 +55,9 @@ fun BottomBar(
                     navController.safeNavigate(MoviesScreenDestination.route)
                 },
                 label = stringResource(R.string.movies_label),
-                icon = R.drawable.ic_outline_movie_24
+                contentDescription = "movies",
+                unselectedIcon = R.drawable.ic_outline_movie_24,
+                selectedIcon = R.drawable.ic_baseline_movie_24
             )
             BottomBarNavigationItem(
                 selected = currentRoute == TvScreenDestination.route,
@@ -64,7 +65,8 @@ fun BottomBar(
                     navController.safeNavigate(TvScreenDestination.route)
                 },
                 label = stringResource(R.string.tv_series_label),
-                icon = R.drawable.ic_outline_tv_24
+                contentDescription = "tv series",
+                selectedIcon = R.drawable.ic_outline_tv_24
             )
             BottomBarNavigationItem(
                 selected = currentRoute == FavouritesScreenDestination.route,
@@ -72,7 +74,9 @@ fun BottomBar(
                     navController.safeNavigate(FavouritesScreenDestination.route)
                 },
                 label = stringResource(R.string.favourites_label),
-                icon = R.drawable.ic_heart_outline
+                contentDescription = "favourites",
+                unselectedIcon = R.drawable.ic_heart_outline,
+                selectedIcon = R.drawable.ic_heart
             )
             BottomBarNavigationItem(
                 selected = currentRoute == SearchScreenDestination.route,
@@ -80,7 +84,8 @@ fun BottomBar(
                     navController.safeNavigate(SearchScreenDestination.route)
                 },
                 label = stringResource(R.string.search_label),
-                icon = R.drawable.ic_outline_search_24
+                contentDescription = "search",
+                selectedIcon = R.drawable.ic_outline_search_24
             )
         }
     }
@@ -91,31 +96,28 @@ fun RowScope.BottomBarNavigationItem(
     modifier: Modifier = Modifier,
     selected: Boolean,
     label: String,
-    @DrawableRes icon: Int,
-    selectedColor: Color = LocalContentColor.current,
+    @DrawableRes selectedIcon: Int,
+    @DrawableRes unselectedIcon: Int = selectedIcon,
+    contentDescription: String? = null,
+    selectedColor: Color = MaterialTheme.colors.primary,
+    unselectedColor: Color = LocalContentColor.current.copy(alpha = ContentAlpha.medium),
     onClick: () -> Unit = {}
 ) {
-    val iconTint by animateColorAsState(
-        targetValue = if (selected) {
-            selectedColor
-        } else {
-            selectedColor.copy(alpha = ContentAlpha.medium)
-        }
-    )
-
     val iconScale by animateFloatAsState(targetValue = if (selected) 1.1f else 1f)
 
     BottomNavigationItem(
-        modifier = modifier,
+        modifier = modifier.scale(iconScale),
         selected = selected,
         onClick = onClick,
+        selectedContentColor = selectedColor,
+        unselectedContentColor = unselectedColor,
         label = { Text(label) },
         icon = {
             Image(
-                modifier = Modifier.scale(iconScale),
-                painter = painterResource(icon),
-                contentDescription = "search",
-                colorFilter = ColorFilter.tint(iconTint)
+                //modifier = Modifier.scale(iconScale),
+                painter = painterResource(if (selected) selectedIcon else unselectedIcon),
+                contentDescription = contentDescription,
+                colorFilter = ColorFilter.tint(LocalContentColor.current)
             )
         }
     )

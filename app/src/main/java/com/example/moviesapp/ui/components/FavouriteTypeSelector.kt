@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import com.example.moviesapp.model.FavouriteType
 
 @Composable
@@ -40,14 +42,17 @@ fun FavouriteTypeButton(
     type: FavouriteType,
     onClick: () -> Unit = {}
 ) {
-    val backgroundColor by animateColorAsState(targetValue = if (selected) Color.White else Color.Transparent)
-    val textColor by animateColorAsState(targetValue = if (selected) Color.Black else Color.White)
+    val backgroundColor by animateColorAsState(targetValue = if (selected) MaterialTheme.colors.primary else Color.Transparent)
+    val textColor by animateColorAsState(targetValue = if (selected) Color.White else MaterialTheme.colors.primary)
 
     OutlinedButton(
         modifier = modifier,
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(backgroundColor = backgroundColor)
     ) {
-        Text(text = stringResource(type.getLabelResourceId()), style = TextStyle(color = textColor))
+        Text(
+            text = stringResource(type.getLabelResourceId()),
+            style = TextStyle(color = textColor, fontWeight = FontWeight.Bold)
+        )
     }
 }
