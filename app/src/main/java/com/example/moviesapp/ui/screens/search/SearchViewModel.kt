@@ -55,7 +55,7 @@ class SearchViewModel @Inject constructor(
                     _searchState.emit(SearchState.EmptyQuery)
                 }
 
-                query.length <= minQueryLength -> {
+                query.length < minQueryLength -> {
                     _searchState.emit(SearchState.InsufficientQuery)
                 }
 

@@ -40,7 +40,6 @@ fun SearchScreen(
     val queryLoading by viewModel.queryLoading.collectAsState()
     val searchState by viewModel.searchState.collectAsState()
 
-
     val speechToTextLauncher = rememberLauncherForActivityResult(CaptureSpeechToText()) { result ->
         if (result != null) {
             viewModel.onQueryChange(result)

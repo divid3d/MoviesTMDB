@@ -1,11 +1,12 @@
 package com.example.moviesapp.model
 
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 data class Episode(
     val id: Int,
     @SerializedName("air_date")
-    val airDate: String?,
+    val airDate: Date?,
     @SerializedName("episode_number")
     val episodeNumber: Int,
     val name: String,
