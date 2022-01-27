@@ -1,30 +1,16 @@
 package com.example.moviesapp.ui.screens.search
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
@@ -34,7 +20,8 @@ import com.example.moviesapp.ui.components.SearchGridSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
-import com.example.moviesapp.ui.theme.White300
+import com.example.moviesapp.ui.screens.search.components.QueryTextField
+import com.example.moviesapp.ui.screens.search.components.SearchEmptyState
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
 import com.ramcosta.composedestinations.annotation.Destination
@@ -59,9 +46,23 @@ fun SearchScreen(
         QueryTextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(MaterialTheme.spacing.medium),
+                .padding(MaterialTheme.spacing.medium)
+                .animateContentSize(),
             query = query,
             loading = queryLoading,
+            showClearButton = searchState !is SearchState.EmptyQuery,
+            info = {
+                AnimatedVisibility(
+                    enter = fadeIn() + slideInVertically(),
+                    exit = fadeOut() + slideOutVertically(),
+                    visible = searchState is SearchState.InsufficientQuery
+                ) {
+                    Text(
+                        text = stringResource(R.string.search_insufficient_query_length_info_text),
+                        style = TextStyle(fontSize = 12.sp)
+                    )
+                }
+            },
             onQueryChange = viewModel::onQueryChange,
             onQueryClear = viewModel::onQueryClear
         )
@@ -111,85 +112,5 @@ fun SearchScreen(
         }
 
     }
-
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun QueryTextField(
-    modifier: Modifier = Modifier,
-    query: String?,
-    loading: Boolean = false,
-    onQueryChange: (String) -> Unit = {},
-    onQueryClear: () -> Unit = {}
-) {
-    val focusManager = LocalFocusManager.current
-
-    val focusRequester = remember { FocusRequester() }
-
-    Box(modifier = modifier) {
-        OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(focusRequester),
-            value = query.orEmpty(),
-            onValueChange = onQueryChange,
-            placeholder = {
-                Text(text = stringResource(R.string.search_placeholder))
-            },
-            trailingIcon = {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AnimatedVisibility(
-                        enter = fadeIn(),
-                        exit = fadeOut(),
-                        visible = loading
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                    IconButton(onClick = onQueryClear) {
-                        Icon(
-                            imageVector = Icons.Filled.Clear,
-                            contentDescription = "clear"
-                        )
-                    }
-                }
-            },
-            keyboardActions = KeyboardActions(
-                onSearch = {
-                    focusManager.clearFocus(force = true)
-                }
-            ),
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Search
-            ),
-            singleLine = true
-        )
-    }
-
-}
-
-@Composable
-fun SearchEmptyState(
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            modifier = Modifier.size(100.dp),
-            imageVector = Icons.Filled.Info,
-            tint = White300,
-            contentDescription = null
-        )
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-        Text(
-            text = stringResource(R.string.search_empty_state),
-            style = TextStyle(color = White300)
-        )
-    }
-}

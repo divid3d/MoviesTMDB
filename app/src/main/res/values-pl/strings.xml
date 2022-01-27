@@ -73,8 +73,9 @@
     <string name="favourite_empty_navigate_to_movies_button_label">Przejdź do filmów</string>
     <string name="favourite_empty_navigate_to_tv_series_button_label">Przejdź do seriali</string>
 
-    <string name="search_placeholder">Wpisz, aby wyszukać</string>
+    <string name="search_placeholder">Wpisz tytuł, aby wyszukać</string>
     <string name="search_empty_state">Brak wyników wyszukiwania</string>
+    <string name="search_insufficient_query_length_info_text">Wpisz conajmniej 3 znaki, aby zacząć wyszukiwanie</string>
 
     <string name="status_rumored_label">Plotki</string>
     <string name="status_planned_label">Zaplanowany</string>

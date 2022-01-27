@@ -26,6 +26,7 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val queryDelay = 500.milliseconds
+    private val minQueryLength = 3
 
     private val config = configRepository.config
 
@@ -49,11 +50,19 @@ class SearchViewModel @Inject constructor(
 
             queryJob?.cancel()
 
-            if (query.isBlank()) {
-                _searchState.emit(SearchState.EmptyQuery)
-            } else {
-                queryJob = createQueryJob(query).apply {
-                    start()
+            when {
+                query.isBlank() -> {
+                    _searchState.emit(SearchState.EmptyQuery)
+                }
+
+                query.length <= minQueryLength -> {
+                    _searchState.emit(SearchState.InsufficientQuery)
+                }
+
+                else -> {
+                    queryJob = createQueryJob(query).apply {
+                        start()
+                    }
                 }
             }
         }
@@ -98,6 +107,7 @@ class SearchViewModel @Inject constructor(
 
 sealed class SearchState {
     object EmptyQuery : SearchState()
+    object InsufficientQuery : SearchState()
     data class Result(
         val query: String,
         val data: Flow<PagingData<SearchResult>>
