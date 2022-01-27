@@ -141,5 +141,9 @@ interface TmdbApi {
         @Query("language") isoCode: String
     ): SeasonDetails
 
+    @GET("movie/{movie_id}/images")
+    suspend fun getMovieImages(
+        @Path("movie_id") movieId: Int
+    ): MovieImagesResponse
 }
 

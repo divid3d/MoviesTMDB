@@ -72,4 +72,9 @@ interface TmdbApiHelper {
         seasonNumber: Int,
         isoCode: String = "pl-PL"
     ): SeasonDetails
+
+    suspend fun getMovieImages(
+        movieId: Int
+    ): MovieImagesResponse
+
 }

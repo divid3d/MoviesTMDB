@@ -7,10 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
 import androidx.paging.map
-import com.example.moviesapp.model.Config
-import com.example.moviesapp.model.Credits
-import com.example.moviesapp.model.MovieDetails
-import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.model.*
 import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.other.getImageUrl
@@ -36,10 +33,11 @@ class MoviesDetailsViewModel @Inject constructor(
     private val favouritesMoviesIdsFlow: Flow<List<Int>> =
         favouritesRepository.getFavouritesMoviesIds()
 
+    private val movieId: Flow<Int?> = savedStateHandle.getLiveData<Int>("movieId").asFlow()
+
     private val _movieDetails: MutableStateFlow<MovieDetails?> = MutableStateFlow(null)
     private val _credits: MutableStateFlow<Credits?> = MutableStateFlow(null)
-
-    private val movieId: Flow<Int?> = savedStateHandle.getLiveData<Int>("movieId").asFlow()
+    private val _movieBackdrops: MutableStateFlow<List<Backdrop>?> = MutableStateFlow(null)
 
     var similarMoviesPagingDataFlow: Flow<PagingData<Presentable>>? = null
     var moviesRecommendationPagingDataFlow: Flow<PagingData<Presentable>>? = null
@@ -61,6 +59,12 @@ class MoviesDetailsViewModel @Inject constructor(
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+
+    val backdrops: StateFlow<List<Backdrop>> = combine(
+        _movieBackdrops, config
+    ) { backdrops, config ->
+        backdrops?.map { backdrop -> backdrop.appendUrls(config) } ?: emptyList()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
 
     val isFavourite: StateFlow<Boolean> = combine(
         movieId,
@@ -128,6 +132,7 @@ class MoviesDetailsViewModel @Inject constructor(
     private fun getMovieInfo(movieId: Int) {
         getMovieDetails(movieId)
         getMovieCredits(movieId)
+        getMovieImages(movieId)
     }
 
     private fun getMovieDetails(movieId: Int) {
@@ -141,6 +146,13 @@ class MoviesDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             val credits = movieRepository.movieCredits(movieId)
             _credits.emit(credits)
+        }
+    }
+
+    private fun getMovieImages(movieId: Int) {
+        viewModelScope.launch {
+            val imagesResponse = movieRepository.movieImages(movieId)
+            _movieBackdrops.emit(imagesResponse.backdrops)
         }
     }
 

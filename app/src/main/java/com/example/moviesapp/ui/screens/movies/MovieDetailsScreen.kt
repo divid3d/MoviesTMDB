@@ -53,6 +53,7 @@ fun MovieDetailsScreen(
     val movieDetails by viewModel.movieDetails.collectAsState()
     val isFavourite by viewModel.isFavourite.collectAsState()
     val credits by viewModel.credits.collectAsState()
+    val backdrops by viewModel.backdrops.collectAsState()
 
     val similarMoviesState = viewModel.similarMoviesPagingDataFlow?.collectAsLazyPagingItems()
     val moviesRecommendationState =
@@ -97,6 +98,7 @@ fun MovieDetailsScreen(
                         topSectionHeight = coordinates.size.height
                     },
                 presentable = movieDetails,
+                backdrops = backdrops
             ) {
                 movieDetails?.let { details ->
                     Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {

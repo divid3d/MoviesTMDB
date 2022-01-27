@@ -6,10 +6,7 @@ import androidx.paging.PagingData
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.data.MovieDetailsResponseDataSource
 import com.example.moviesapp.data.MovieResponseDataSource
-import com.example.moviesapp.model.Credits
-import com.example.moviesapp.model.Movie
-import com.example.moviesapp.model.MovieDetails
-import com.example.moviesapp.model.SeasonDetails
+import com.example.moviesapp.model.*
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -84,5 +81,9 @@ class MovieRepository @Inject constructor(
         tvSeriesId: Int,
         seasonNumber: Int
     ): SeasonDetails = apiHelper.getSeasonDetails(tvSeriesId, seasonNumber)
+
+    suspend fun movieImages(
+        movieId: Int
+    ): MovieImagesResponse = apiHelper.getMovieImages(movieId)
 
 }

@@ -105,4 +105,8 @@ class TmdbApiHelperImpl @Inject constructor(
         isoCode: String
     ): SeasonDetails =
         tmdbApi.getSeasonDetails(tvSeriesId, seasonNumber, isoCode)
+
+    override suspend fun getMovieImages(
+        movieId: Int
+    ): MovieImagesResponse = tmdbApi.getMovieImages(movieId)
 }

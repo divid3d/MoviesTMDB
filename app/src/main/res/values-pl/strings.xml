@@ -4,7 +4,7 @@
     <string name="yes">Tak</string>
     <string name="no">Nie</string>
 
-    <string name="exit_dialog_info">Czy na pewno chcesz opóścić aplikację?</string>
+    <string name="exit_dialog_info">Czy na pewno chcesz opuścić aplikację?</string>
     <string name="exit_dialog_confirm_button_label">Potwierdź</string>
     <string name="exit_dialog_cancel_button_label">Anuluj</string>
 
