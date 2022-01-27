@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.search
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -15,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MediaType
+import com.example.moviesapp.other.CaptureSpeechToText
 import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.ui.components.SearchGridSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
@@ -37,6 +39,13 @@ fun SearchScreen(
     val query by viewModel.query.collectAsState()
     val queryLoading by viewModel.queryLoading.collectAsState()
     val searchState by viewModel.searchState.collectAsState()
+
+
+    val speechToTextLauncher = rememberLauncherForActivityResult(CaptureSpeechToText()) { result ->
+        if (result != null) {
+            viewModel.onQueryChange(result)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -64,7 +73,10 @@ fun SearchScreen(
                 }
             },
             onQueryChange = viewModel::onQueryChange,
-            onQueryClear = viewModel::onQueryClear
+            onQueryClear = viewModel::onQueryClear,
+            onVoiceSearchClick = {
+                speechToTextLauncher.launch(null)
+            }
         )
         Crossfade(
             modifier = Modifier.fillMaxSize(),
