@@ -54,7 +54,8 @@ fun AllTvSeriesScreen(
             IconButton(onClick = { navigator.navigateUp() }) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = null
+                    contentDescription = "go back",
+                    tint = MaterialTheme.colors.primary
                 )
             }
         })

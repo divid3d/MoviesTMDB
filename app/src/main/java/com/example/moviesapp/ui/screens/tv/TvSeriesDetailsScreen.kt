@@ -288,7 +288,8 @@ fun TvSeriesDetailsScreen(
                 IconButton(onClick = { navigator.navigateUp() }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = null
+                        contentDescription = "go back",
+                        tint = MaterialTheme.colors.primary
                     )
                 }
             },
@@ -313,7 +314,8 @@ fun TvSeriesDetailsScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Close,
-                            contentDescription = null
+                            contentDescription = "close",
+                            tint = MaterialTheme.colors.primary
                         )
                     }
                 }

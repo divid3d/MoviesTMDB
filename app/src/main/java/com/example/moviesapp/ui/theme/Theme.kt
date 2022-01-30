@@ -6,17 +6,20 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,
     primaryVariant = Purple700,
-    secondary = Teal200
+    secondary = Teal200,
+    background = Color.Black
 )
 
 private val LightColorPalette = lightColors(
     primary = Purple500,
     primaryVariant = Purple700,
-    secondary = Teal200
+    secondary = Teal200,
+    background = Color.Black
 
     /* Other default colors to override
     background = Color.White,
@@ -36,7 +39,10 @@ fun MoviesAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composa
         LightColorPalette
     }
 
-    CompositionLocalProvider(LocalSpacing provides Spacing(), LocalSizes provides Sizes()) {
+    CompositionLocalProvider(
+        LocalSpacing provides Spacing(),
+        LocalSizes provides Sizes()
+    ) {
         MaterialTheme(
             colors = colors,
             typography = Typography,
