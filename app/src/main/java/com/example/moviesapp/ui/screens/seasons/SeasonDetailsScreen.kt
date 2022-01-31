@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
+import coil.size.OriginalSize
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Episode
 import com.example.moviesapp.model.SeasonInfo
@@ -216,7 +216,6 @@ fun EpisodeChip(
     expanded: Boolean = false,
     onClick: () -> Unit = {}
 ) {
-    val context = LocalContext.current
     val iconRotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
 
     Card(
@@ -257,7 +256,7 @@ fun EpisodeChip(
                     modifier = Modifier.rotate(iconRotation),
                     imageVector = Icons.Filled.ArrowDropDown,
                     tint = MaterialTheme.colors.primary,
-                    contentDescription = null
+                    contentDescription = if (expanded) "collapse" else "expand"
                 )
             }
 
@@ -272,17 +271,16 @@ fun EpisodeChip(
                 ) {
                     Text(text = episode.overview, style = TextStyle(fontSize = 12.sp))
                     Image(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(max = 400.dp),
                         painter = rememberImagePainter(
                             data = episode.stillUrl,
                             builder = {
+                                size(OriginalSize)
                                 crossfade(true)
                             }
                         ),
                         contentScale = ContentScale.FillWidth,
-                        contentDescription = null
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
             }

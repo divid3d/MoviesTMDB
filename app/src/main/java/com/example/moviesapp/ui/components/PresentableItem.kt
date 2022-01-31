@@ -30,6 +30,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
+import coil.size.OriginalSize
+import coil.size.Scale
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.PresentableItemState
@@ -157,6 +159,8 @@ fun ResultPresentableItem(
                 painter = rememberImagePainter(
                     data = presentable.posterUrl,
                     builder = {
+                        size(OriginalSize)
+                        scale(Scale.FILL)
                         crossfade(true)
                     }
                 ),

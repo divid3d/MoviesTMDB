@@ -184,20 +184,20 @@ fun TvSeriesDetailsScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(
-                                top = MaterialTheme.spacing.medium,
-                                start = MaterialTheme.spacing.medium,
-                                end = MaterialTheme.spacing.medium
-                            )
+                            .padding(top = MaterialTheme.spacing.medium)
                             .animateContentSize()
                     ) {
                         SectionLabel(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = MaterialTheme.spacing.medium),
                             text = stringResource(R.string.tv_series_details_networks)
                         )
                         Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
                         NetworksList(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = MaterialTheme.spacing.medium),
                             networks = networks
                         )
 
@@ -208,6 +208,8 @@ fun TvSeriesDetailsScreen(
                                 end = MaterialTheme.spacing.small,
                             )
                         )
+
+                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
                     }
                 }
             }
