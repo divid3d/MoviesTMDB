@@ -23,7 +23,6 @@ import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Member
-import com.example.moviesapp.ui.theme.White500
 import com.example.moviesapp.ui.theme.spacing
 
 @Composable
@@ -92,49 +91,6 @@ fun MemberResultChip(
 }
 
 @Composable
-fun MemberLoadingChip(
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .border(width = 1.dp, color = White500, shape = CircleShape)
-        )
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "",
-            style = TextStyle(
-                color = Color.White,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Center
-        )
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "",
-            style = TextStyle(
-                color = Color.White,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Center
-        )
-    }
-
-}
-
-@Composable
 fun MemberNoPhotoChip(
     modifier: Modifier = Modifier
 ) {
@@ -142,13 +98,19 @@ fun MemberNoPhotoChip(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1f)
-            .border(width = 1.dp, color = White500, shape = CircleShape),
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colors.primary.copy(alpha = 0.5f),
+                shape = CircleShape
+            ),
         contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painterResource(R.drawable.ic_outline_no_photography_24),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(White500)
+            colorFilter = ColorFilter.tint(
+                MaterialTheme.colors.primary.copy(alpha = 0.3f)
+            )
         )
     }
 }

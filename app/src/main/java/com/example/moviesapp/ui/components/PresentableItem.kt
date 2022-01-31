@@ -1,7 +1,5 @@
 package com.example.moviesapp.ui.components
 
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,9 +33,11 @@ import coil.size.Scale
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.PresentableItemState
-import com.example.moviesapp.ui.theme.*
+import com.example.moviesapp.ui.theme.Black500
+import com.example.moviesapp.ui.theme.Size
+import com.example.moviesapp.ui.theme.sizes
+import com.example.moviesapp.ui.theme.spacing
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun PresentableItem(
     modifier: Modifier = Modifier,
@@ -55,24 +55,28 @@ fun PresentableItem(
             .graphicsLayer {
                 transformations()
             },
-        backgroundColor = MaterialTheme.colors.background,
-        shape = MaterialTheme.shapes.medium
+        shape = MaterialTheme.shapes.medium,
+        backgroundColor = MaterialTheme.colors.background
     ) {
-        Crossfade(
-            modifier = Modifier.fillMaxSize(),
-            targetState = presentableState
-        ) { state ->
-            when (state) {
-                is PresentableItemState.Loading -> LoadingPresentableItem()
-                is PresentableItemState.Error -> ErrorPresentableItem()
-                is PresentableItemState.Result -> {
-                    ResultPresentableItem(
-                        presentable = state.presentable,
-                        showScore = showScore,
-                        showTitle = showTitle,
-                        onClick = onClick
-                    )
-                }
+        when (presentableState) {
+            is PresentableItemState.Loading -> {
+                LoadingPresentableItem(
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            is PresentableItemState.Error -> {
+                ErrorPresentableItem(
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            is PresentableItemState.Result -> {
+                ResultPresentableItem(
+                    modifier = Modifier.fillMaxSize(),
+                    presentable = presentableState.presentable,
+                    showScore = showScore,
+                    showTitle = showTitle,
+                    onClick = onClick
+                )
             }
         }
     }
@@ -84,11 +88,10 @@ fun NoPhotoPresentableItem(
 ) {
     Box(
         modifier = modifier
-            .fillMaxSize()
             .background(MaterialTheme.colors.background)
             .border(
                 width = 1.dp,
-                color = White500,
+                color = MaterialTheme.colors.primary.copy(alpha = 0.5f),
                 shape = MaterialTheme.shapes.medium
             ),
         contentAlignment = Alignment.Center
@@ -96,7 +99,7 @@ fun NoPhotoPresentableItem(
         Image(
             painter = painterResource(R.drawable.ic_outline_no_photography_24),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(White500)
+            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary.copy(alpha = 0.3f))
         )
     }
 }
@@ -107,7 +110,6 @@ fun ErrorPresentableItem(
 ) {
     Box(
         modifier = modifier
-            .fillMaxSize()
             .background(MaterialTheme.colors.background)
             .border(
                 width = 1.dp,
@@ -129,7 +131,7 @@ fun LoadingPresentableItem(
     modifier: Modifier = Modifier,
 ) {
     PosterPlaceholder(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
     )
 }
 
@@ -147,7 +149,6 @@ fun ResultPresentableItem(
     }
 
     Box(modifier = modifier
-        .fillMaxSize()
         .clickable(
             enabled = onClick != null,
             onClick = { onClick?.invoke() }
@@ -165,10 +166,12 @@ fun ResultPresentableItem(
                     }
                 ),
                 contentDescription = null,
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.FillBounds
             )
         } else {
-            NoPhotoPresentableItem()
+            NoPhotoPresentableItem(
+                modifier = Modifier.fillMaxSize()
+            )
         }
 
         if (showTitle) {
@@ -206,4 +209,5 @@ fun ResultPresentableItem(
             )
         }
     }
+
 }
