@@ -121,7 +121,7 @@ fun SearchScreen(
                 else -> Unit
             }
         }
-
     }
+
 }
 
