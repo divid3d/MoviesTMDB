@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
@@ -40,8 +41,11 @@ fun SearchScreen(
     val queryLoading by viewModel.queryLoading.collectAsState()
     val searchState by viewModel.searchState.collectAsState()
 
+    val focusManager = LocalFocusManager.current
+
     val speechToTextLauncher = rememberLauncherForActivityResult(CaptureSpeechToText()) { result ->
         if (result != null) {
+            focusManager.clearFocus()
             viewModel.onQueryChange(result)
         }
     }
