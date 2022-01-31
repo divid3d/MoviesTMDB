@@ -7,7 +7,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,23 +23,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberImagePainter
-import coil.size.OriginalSize
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Episode
+import com.example.moviesapp.model.Image
 import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.other.formatted
-import com.example.moviesapp.ui.components.AppBar
-import com.example.moviesapp.ui.components.ErrorDialog
-import com.example.moviesapp.ui.components.LabeledText
-import com.example.moviesapp.ui.components.PresentableDetailsTopSection
+import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.screens.movies.components.OverviewSection
 import com.example.moviesapp.ui.theme.Black500
@@ -59,6 +53,7 @@ fun SeasonDetailsScreen(
 
     val seasonDetails by viewModel.seasonDetails.collectAsState()
     val episodesCount by viewModel.episodeCount.collectAsState()
+    val episodeStills by viewModel.episodeStills.collectAsState()
 
     val lazyState = rememberLazyListState()
 
@@ -157,15 +152,25 @@ fun SeasonDetailsScreen(
                         mutableStateOf(false)
                     }
 
+                    val stills by derivedStateOf {
+                        episodeStills.getOrElse(
+                            episode.episodeNumber,
+                            defaultValue = { emptyList() })
+                    }
+
                     EpisodeChip(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = MaterialTheme.spacing.medium)
                             .padding(bottom = bottomPadding),
                         episode = episode,
+                        stills = stills,
                         expanded = expanded
                     ) {
                         expanded = !expanded
+                        if (expanded) {
+                            viewModel.getEpisodeStills(episode.episodeNumber)
+                        }
                     }
                 }
 
@@ -214,6 +219,7 @@ fun EpisodeChip(
     modifier: Modifier = Modifier,
     episode: Episode,
     expanded: Boolean = false,
+    stills: List<Image> = emptyList(),
     onClick: () -> Unit = {}
 ) {
     val iconRotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
@@ -270,18 +276,13 @@ fun EpisodeChip(
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {
                     Text(text = episode.overview, style = TextStyle(fontSize = 12.sp))
-                    Image(
-                        painter = rememberImagePainter(
-                            data = episode.stillUrl,
-                            builder = {
-                                size(OriginalSize)
-                                crossfade(true)
-                            }
-                        ),
-                        contentScale = ContentScale.FillWidth,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
+
+                    if (stills.isNotEmpty()) {
+                        StillBrowser(
+                            modifier = Modifier.fillMaxWidth(),
+                            stillUrls = stills
+                        )
+                    }
                 }
             }
         }

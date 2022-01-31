@@ -79,7 +79,13 @@ interface TmdbApiHelper {
     ): Call<ImagesResponse>
 
     fun getTvSeriesImages(
-        movieId: Int
+        tvSeriesId: Int
+    ): Call<ImagesResponse>
+
+    fun getEpisodeImages(
+        tvSeriesId: Int,
+        seasonNumber: Int,
+        episodeNumber: Int
     ): Call<ImagesResponse>
 
 }

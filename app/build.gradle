@@ -89,6 +89,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-pager:$accompanist_version"
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
     implementation "com.google.accompanist:accompanist-placeholder:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-pager-indicators:$accompanist_version"
 
     implementation "androidx.palette:palette-ktx:1.0.0"
 

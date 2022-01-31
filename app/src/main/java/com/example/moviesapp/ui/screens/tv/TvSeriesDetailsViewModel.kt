@@ -44,7 +44,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
     var similarTvSeries: Flow<PagingData<Presentable>>? = null
     var tvSeriesRecommendations: Flow<PagingData<Presentable>>? = null
-    private val _tvSeriesBackdrops: MutableStateFlow<List<Backdrop>?> = MutableStateFlow(null)
+    private val _tvSeriesBackdrops: MutableStateFlow<List<Image>?> = MutableStateFlow(null)
 
     val tvSeriesDetails: StateFlow<TvSeriesDetails?> = combine(
         _tvSeriesDetails, config
@@ -68,7 +68,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
-    val backdrops: StateFlow<List<Backdrop>> = combine(
+    val backdrops: StateFlow<List<Image>> = combine(
         _tvSeriesBackdrops, config
     ) { backdrops, config ->
         backdrops?.map { backdrop -> backdrop.appendUrls(config) } ?: emptyList()

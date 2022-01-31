@@ -150,5 +150,13 @@ interface TmdbApi {
     fun getTvSeriesImages(
         @Path("tv_id") tvSeriesId: Int
     ): Call<ImagesResponse>
+
+
+    @GET("tv/{tv_id}/season/{season_number}/episode/{episode_number}/images")
+    fun getEpisodeImages(
+        @Path("tv_id") tvSeriesId: Int,
+        @Path("season_number") seasonNumber: Int,
+        @Path("episode_number") episodeNumber: Int
+    ): Call<ImagesResponse>
 }
 

@@ -6,10 +6,7 @@ import androidx.paging.PagingData
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.data.TvSeriesDetailsResponseDataSource
 import com.example.moviesapp.data.TvSeriesResponseDataSource
-import com.example.moviesapp.model.ImagesResponse
-import com.example.moviesapp.model.TvSeasonsResponse
-import com.example.moviesapp.model.TvSeries
-import com.example.moviesapp.model.TvSeriesDetails
+import com.example.moviesapp.model.*
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Call
 import javax.inject.Inject
@@ -87,5 +84,16 @@ class TvSeriesRepository @Inject constructor(
     fun tvSeriesImages(
         tvSeriesId: Int
     ): Call<ImagesResponse> = apiHelper.getTvSeriesImages(tvSeriesId)
+
+    fun seasonDetails(
+        tvSeriesId: Int,
+        seasonNumber: Int
+    ): Call<SeasonDetails> = apiHelper.getSeasonDetails(tvSeriesId, seasonNumber)
+
+    fun episodeImages(
+        tvSeriesId: Int,
+        seasonNumber: Int,
+        episodeNumber: Int
+    ): Call<ImagesResponse> = apiHelper.getEpisodeImages(tvSeriesId, seasonNumber, episodeNumber)
 
 }

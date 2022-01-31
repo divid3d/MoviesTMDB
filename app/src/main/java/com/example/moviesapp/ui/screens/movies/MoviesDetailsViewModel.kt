@@ -41,7 +41,7 @@ class MoviesDetailsViewModel @Inject constructor(
 
     private val _movieDetails: MutableStateFlow<MovieDetails?> = MutableStateFlow(null)
     private val _credits: MutableStateFlow<Credits?> = MutableStateFlow(null)
-    private val _movieBackdrops: MutableStateFlow<List<Backdrop>?> = MutableStateFlow(null)
+    private val _movieBackdrops: MutableStateFlow<List<Image>?> = MutableStateFlow(null)
 
     var similarMoviesPagingDataFlow: Flow<PagingData<Presentable>>? = null
     var moviesRecommendationPagingDataFlow: Flow<PagingData<Presentable>>? = null
@@ -64,7 +64,7 @@ class MoviesDetailsViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
-    val backdrops: StateFlow<List<Backdrop>> = combine(
+    val backdrops: StateFlow<List<Image>> = combine(
         _movieBackdrops, config
     ) { backdrops, config ->
         backdrops?.map { backdrop -> backdrop.appendUrls(config) } ?: emptyList()

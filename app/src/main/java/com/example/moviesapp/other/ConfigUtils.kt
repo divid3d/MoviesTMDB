@@ -158,10 +158,10 @@ fun SearchResult.appendUrls(
     )
 }
 
-fun Backdrop.appendUrls(
+fun Image.appendUrls(
     config: Config?
-): Backdrop {
-    val url = config?.getImageUrl(filePath, size = "w300")
+): Image {
+    val url = config?.getImageUrl(filePath, size = "original")
 
     return copy(
         fileUrl = url

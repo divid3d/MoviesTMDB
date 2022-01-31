@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import coil.transform.BlurTransformation
-import com.example.moviesapp.model.Backdrop
+import com.example.moviesapp.model.Image
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.PresentableItemState
 import com.example.moviesapp.ui.theme.sizes
@@ -31,7 +31,7 @@ import com.google.accompanist.insets.statusBarsPadding
 fun PresentableDetailsTopSection(
     modifier: Modifier = Modifier,
     presentable: Presentable?,
-    backdrops: List<Backdrop> = emptyList(),
+    backdrops: List<Image> = emptyList(),
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     val context = LocalContext.current

@@ -6,7 +6,10 @@ import androidx.paging.PagingData
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.data.MovieDetailsResponseDataSource
 import com.example.moviesapp.data.MovieResponseDataSource
-import com.example.moviesapp.model.*
+import com.example.moviesapp.model.Credits
+import com.example.moviesapp.model.ImagesResponse
+import com.example.moviesapp.model.Movie
+import com.example.moviesapp.model.MovieDetails
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Call
 import javax.inject.Inject
@@ -76,11 +79,6 @@ class MovieRepository @Inject constructor(
 
     fun movieCredits(movieId: Int, isoCode: String = "pl-PL"): Call<Credits> =
         apiHelper.getMovieCredits(movieId, isoCode)
-
-    fun seasonDetails(
-        tvSeriesId: Int,
-        seasonNumber: Int
-    ): Call<SeasonDetails> = apiHelper.getSeasonDetails(tvSeriesId, seasonNumber)
 
     fun movieImages(
         movieId: Int

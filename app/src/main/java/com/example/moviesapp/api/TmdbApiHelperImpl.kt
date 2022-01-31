@@ -114,4 +114,10 @@ class TmdbApiHelperImpl @Inject constructor(
         tvSeriesId: Int
     ): Call<ImagesResponse> = tmdbApi.getTvSeriesImages(tvSeriesId)
 
+    override fun getEpisodeImages(
+        tvSeriesId: Int,
+        seasonNumber: Int,
+        episodeNumber: Int
+    ): Call<ImagesResponse> = tmdbApi.getEpisodeImages(tvSeriesId, seasonNumber, episodeNumber)
+
 }

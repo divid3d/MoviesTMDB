@@ -8,12 +8,13 @@ import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.Config
+import com.example.moviesapp.model.Image
 import com.example.moviesapp.model.SeasonDetails
 import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.ConfigRepository
-import com.example.moviesapp.repository.MovieRepository
+import com.example.moviesapp.repository.TvSeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -22,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SeasonDetailsViewModel @Inject constructor(
     private val configRepository: ConfigRepository,
-    private val movieRepository: MovieRepository,
+    private val tvSeriesRepository: TvSeriesRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
@@ -42,11 +43,25 @@ class SeasonDetailsViewModel @Inject constructor(
         details?.episodes?.count()
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
+    private val _episodesStills: MutableStateFlow<Map<Int, List<Image>>> =
+        MutableStateFlow(emptyMap())
+    val episodeStills: StateFlow<Map<Int, List<Image>>> = combine(
+        _episodesStills, config
+    ) { stills, config ->
+        stills.map { (episodeNumber, stills) ->
+            episodeNumber to stills.map { image ->
+                image.appendUrls(
+                    config
+                )
+            }
+        }.toMap()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyMap())
+
     init {
         viewModelScope.launch {
             seasonInfo.collectLatest { seasonInfo ->
                 seasonInfo?.let { info ->
-                    movieRepository.seasonDetails(
+                    tvSeriesRepository.seasonDetails(
                         tvSeriesId = info.tvSeriesId,
                         seasonNumber = info.seasonNumber
                     ).request { response ->
@@ -63,6 +78,45 @@ class SeasonDetailsViewModel @Inject constructor(
 
                         response.onException {
                             onError(message)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun getEpisodeStills(episodeNumber: Int) {
+        if (_episodesStills.value.containsKey(episodeNumber)) {
+            return
+        }
+
+        viewModelScope.launch {
+            seasonInfo.collectLatest { seasonInfo ->
+                seasonInfo?.let { info ->
+                    tvSeriesRepository.episodeImages(
+                        tvSeriesId = info.tvSeriesId,
+                        seasonNumber = info.seasonNumber,
+                        episodeNumber = episodeNumber
+                    ).request { response ->
+                        response.onSuccess {
+                            viewModelScope.launch {
+                                data?.stills?.let { stills ->
+                                    episodeStills.collectLatest { current ->
+                                        val updatedStills = current.toMutableMap().apply {
+                                            put(episodeNumber, stills)
+                                        }
+                                        _episodesStills.emit(updatedStills)
+                                    }
+                                }
+                            }
+
+                            response.onFailure {
+                                onError(message)
+                            }
+
+                            response.onException {
+                                onError(message)
+                            }
                         }
                     }
                 }
