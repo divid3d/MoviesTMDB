@@ -161,7 +161,7 @@ fun ResultPresentableItem(
                     }
                 ),
                 contentDescription = null,
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.Fit
             )
         } else {
             NoPhotoPresentableItem()
