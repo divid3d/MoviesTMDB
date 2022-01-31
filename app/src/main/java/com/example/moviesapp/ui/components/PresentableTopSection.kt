@@ -138,7 +138,9 @@ fun PresentableTopSection(
         )
         {
             Text(
-                modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
+                modifier = Modifier
+                    .padding(horizontal = MaterialTheme.spacing.medium)
+                    .padding(top = MaterialTheme.spacing.small),
                 text = title,
                 style = TextStyle(
                     color = contentColor,

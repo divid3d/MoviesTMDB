@@ -16,7 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -33,9 +32,7 @@ import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestinati
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.RelatedMoviesDestination
 import com.example.moviesapp.ui.screens.movies.components.OverviewSection
-import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -48,8 +45,6 @@ fun MovieDetailsScreen(
     startRoute: String = MoviesScreenDestination.route
 ) {
     val viewModel: MoviesDetailsViewModel = hiltViewModel()
-    val density = LocalDensity.current
-    val insets = LocalWindowInsets.current
 
     val movieDetails by viewModel.movieDetails.collectAsState()
     val isFavourite by viewModel.isFavourite.collectAsState()
@@ -65,24 +60,6 @@ fun MovieDetailsScreen(
     }
 
     val scrollState = rememberScrollState()
-
-//    var topSectionHeight: Int? by remember { mutableStateOf(null) }
-//    val appBarHeight by remember { mutableStateOf(density.run { 56.dp.toPx() }) }
-//    val statusBarHeight: Int by remember {
-//        mutableStateOf(insets.statusBars.top)
-//    }
-//
-//    val appbarColor: Color by derivedStateOf {
-//        topSectionHeight?.let { height ->
-//            val alpha =
-//                (scrollState.value.toFloat() / (height - appBarHeight - statusBarHeight)).coerceIn(
-//                    0f,
-//                    1f
-//                ) * 0.5f + 0.5f
-//
-//            Color.Black.copy(alpha)
-//        } ?: Black500
-//    }
 
     var showErrorDialog by remember { mutableStateOf(false) }
     val error: String? by viewModel.error.collectAsState()
@@ -303,7 +280,7 @@ fun MovieDetailsScreen(
         AppBar(
             modifier = Modifier.align(Alignment.TopCenter),
             title = stringResource(R.string.movie_details_label),
-            backgroundColor = Black500,
+            backgroundColor = Color.Black.copy(0.7f),
             action = {
                 IconButton(onClick = { navigator.navigateUp() }) {
                     Icon(
