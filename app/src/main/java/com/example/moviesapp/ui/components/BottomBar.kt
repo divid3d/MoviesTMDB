@@ -3,9 +3,8 @@ package com.example.moviesapp.ui.components
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.slideIn
-import androidx.compose.animation.slideOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.*
@@ -17,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.IntOffset
 import androidx.navigation.NavController
 import com.example.moviesapp.R
 import com.example.moviesapp.other.safeNavigate
@@ -34,17 +32,10 @@ fun BottomBar(
     visible: Boolean = true,
     currentRoute: String? = null
 ) {
-
     AnimatedVisibility(
         visible = visible,
-        enter = slideIn(
-            animationSpec = spring(),
-            initialOffset = { size -> IntOffset(0, size.height) }
-        ),
-        exit = slideOut(
-            animationSpec = spring(),
-            targetOffset = { size -> IntOffset(0, size.height) }
-        )
+        enter = slideInVertically { it },
+        exit = slideOutVertically { it }
     ) {
         BottomNavigation(
             modifier = modifier
@@ -114,7 +105,6 @@ fun RowScope.BottomBarNavigationItem(
         label = { Text(label) },
         icon = {
             Image(
-                //modifier = Modifier.scale(iconScale),
                 painter = painterResource(if (selected) selectedIcon else unselectedIcon),
                 contentDescription = contentDescription,
                 colorFilter = ColorFilter.tint(LocalContentColor.current)

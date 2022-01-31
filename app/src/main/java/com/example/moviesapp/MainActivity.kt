@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,6 +26,7 @@ import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.MoviesAppTheme
+import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -51,11 +53,11 @@ class MainActivity : ComponentActivity() {
             val snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
             val snackBarEvent: SnackBarEvent? by mainViewModel.networkSnackBarEvent.collectAsState()
 
-            val useDarkIcons = MaterialTheme.colors.isLight
+            //val useDarkIcons = MaterialTheme.colors.isLight
             val navController = rememberNavController()
             val systemUiController = rememberSystemUiController()
 
-            var currentRoute: String? by remember {
+            var currentRoute: String? by rememberSaveable {
                 mutableStateOf(null)
             }
 
@@ -122,7 +124,13 @@ class MainActivity : ComponentActivity() {
                             Surface(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(bottom = innerPadding.calculateBottomPadding()),
+                                    .padding(
+                                        bottom = if (showBottomBar) {
+                                            innerPadding.calculateBottomPadding()
+                                        } else {
+                                            MaterialTheme.spacing.default
+                                        }
+                                    ),
                                 color = MaterialTheme.colors.background
                             ) {
                                 DestinationsNavHost(
