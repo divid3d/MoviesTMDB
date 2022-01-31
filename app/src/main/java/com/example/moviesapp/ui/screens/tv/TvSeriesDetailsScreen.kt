@@ -27,8 +27,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
+import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.model.SeasonInfo
+import com.example.moviesapp.model.TvSeriesRelationInfo
 import com.example.moviesapp.ui.components.*
+import com.example.moviesapp.ui.screens.destinations.RelatedTvSeriesDestination
 import com.example.moviesapp.ui.screens.destinations.SeasonDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
@@ -258,8 +261,17 @@ fun TvSeriesDetailsScreen(
                         .fillMaxWidth()
                         .animateContentSize(),
                     title = stringResource(R.string.tv_series_details_similar),
-                    showMoreButton = false,
-                    state = lazyPagingItems
+                    state = lazyPagingItems,
+                    onMoreClick = {
+                        val tvSeriesRelationInfo = TvSeriesRelationInfo(
+                            tvSeriesId = tvSeriesId,
+                            type = RelationType.Similar
+                        )
+
+                        navigator.navigate(
+                            RelatedTvSeriesDestination(tvSeriesRelationInfo)
+                        )
+                    }
                 ) { tvSeriesId ->
                     navigator.navigate(
                         TvSeriesDetailsScreenDestination(
@@ -285,8 +297,17 @@ fun TvSeriesDetailsScreen(
                         .fillMaxWidth()
                         .animateContentSize(),
                     title = stringResource(R.string.tv_series_details_recommendations),
-                    showMoreButton = false,
-                    state = lazyPagingItems
+                    state = lazyPagingItems,
+                    onMoreClick = {
+                        val tvSeriesRelationInfo = TvSeriesRelationInfo(
+                            tvSeriesId = tvSeriesId,
+                            type = RelationType.Recommended
+                        )
+
+                        navigator.navigate(
+                            RelatedTvSeriesDestination(tvSeriesRelationInfo)
+                        )
+                    }
                 ) { tvSeriesId ->
                     navigator.navigate(
                         TvSeriesDetailsScreenDestination(
