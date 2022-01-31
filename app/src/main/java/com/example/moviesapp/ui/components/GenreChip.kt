@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.screens.movies.components
+package com.example.moviesapp.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,26 +13,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.moviesapp.model.Genre
 import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.flowlayout.FlowRow
-
-@Composable
-fun GenresSection(
-    modifier: Modifier = Modifier,
-    genres: List<Genre>
-) {
-    FlowRow(
-        modifier = modifier,
-        mainAxisSpacing = MaterialTheme.spacing.extraSmall,
-        crossAxisSpacing = MaterialTheme.spacing.extraSmall
-    ) {
-        genres.map { genre ->
-            GenreChip(text = genre.name)
-        }
-    }
-}
 
 @Composable
 fun GenreChip(
@@ -42,7 +24,11 @@ fun GenreChip(
     Box(
         modifier = modifier
             .background(shape = RoundedCornerShape(50f), color = Black500)
-            .border(width = 1.dp, color = Color.White, shape = RoundedCornerShape(50f))
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colors.primary,
+                shape = RoundedCornerShape(50f)
+            )
             .padding(
                 horizontal = MaterialTheme.spacing.small,
                 vertical = MaterialTheme.spacing.extraSmall
