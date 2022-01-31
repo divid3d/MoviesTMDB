@@ -54,7 +54,7 @@ fun PresentableScoreItem(
         }
     )
 
-    val backgroundColor = MaterialTheme.colors.background
+    val backgroundColor = MaterialTheme.colors.background.copy(alpha = 0.7f)
 
     val scoreText = buildAnnotatedString {
         withStyle(

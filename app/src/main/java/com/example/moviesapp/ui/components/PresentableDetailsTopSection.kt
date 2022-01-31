@@ -90,8 +90,8 @@ fun PresentableDetailsTopSection(
                         transformations(
                             BlurTransformation(
                                 context = context,
-                                radius = 16f,
-                                sampling = 2f
+                                radius = 24f,
+                                sampling = 3f
                             )
                         )
                     }
