@@ -27,10 +27,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
+import com.example.moviesapp.model.MovieRelationInfo
+import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.other.formattedMoney
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.RelatedMoviesDestination
 import com.example.moviesapp.ui.screens.movies.components.OverviewSection
 import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.spacing
@@ -238,8 +241,19 @@ fun MovieDetailsScreen(
                         .padding(top = MaterialTheme.spacing.medium)
                         .animateContentSize(),
                     title = stringResource(R.string.movie_details_similar),
-                    showMoreButton = false,
-                    state = lazyPagingItems
+                    state = lazyPagingItems,
+                    onMoreClick = {
+                        val movieRelationInfo = MovieRelationInfo(
+                            movieId = movieId,
+                            type = RelationType.Similar
+                        )
+
+                        navigator.navigate(
+                            RelatedMoviesDestination(
+                                movieRelationInfo = movieRelationInfo
+                            )
+                        )
+                    }
                 ) { movieId ->
                     navigator.navigate(
                         MovieDetailsScreenDestination(
@@ -265,8 +279,19 @@ fun MovieDetailsScreen(
                         .padding(top = MaterialTheme.spacing.small)
                         .animateContentSize(),
                     title = stringResource(R.string.movie_details_recommendations),
-                    showMoreButton = false,
-                    state = lazyPagingItems
+                    state = lazyPagingItems,
+                    onMoreClick = {
+                        val movieRelationInfo = MovieRelationInfo(
+                            movieId = movieId,
+                            type = RelationType.Recommended
+                        )
+
+                        navigator.navigate(
+                            RelatedMoviesDestination(
+                                movieRelationInfo = movieRelationInfo
+                            )
+                        )
+                    }
                 ) { movieId ->
                     navigator.navigate(
                         MovieDetailsScreenDestination(
