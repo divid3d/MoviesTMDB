@@ -16,13 +16,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -68,23 +66,23 @@ fun MovieDetailsScreen(
 
     val scrollState = rememberScrollState()
 
-    var topSectionHeight: Int? by remember { mutableStateOf(null) }
-    val appBarHeight by remember { mutableStateOf(density.run { 56.dp.toPx() }) }
-    val statusBarHeight: Int by remember {
-        mutableStateOf(insets.statusBars.top)
-    }
-
-    val appbarColor: Color by derivedStateOf {
-        topSectionHeight?.let { height ->
-            val alpha =
-                (scrollState.value.toFloat() / (height - appBarHeight - statusBarHeight)).coerceIn(
-                    0f,
-                    1f
-                ) * 0.5f + 0.5f
-
-            Color.Black.copy(alpha)
-        } ?: Black500
-    }
+//    var topSectionHeight: Int? by remember { mutableStateOf(null) }
+//    val appBarHeight by remember { mutableStateOf(density.run { 56.dp.toPx() }) }
+//    val statusBarHeight: Int by remember {
+//        mutableStateOf(insets.statusBars.top)
+//    }
+//
+//    val appbarColor: Color by derivedStateOf {
+//        topSectionHeight?.let { height ->
+//            val alpha =
+//                (scrollState.value.toFloat() / (height - appBarHeight - statusBarHeight)).coerceIn(
+//                    0f,
+//                    1f
+//                ) * 0.5f + 0.5f
+//
+//            Color.Black.copy(alpha)
+//        } ?: Black500
+//    }
 
     var showErrorDialog by remember { mutableStateOf(false) }
     val error: String? by viewModel.error.collectAsState()
@@ -117,11 +115,7 @@ fun MovieDetailsScreen(
                 .verticalScroll(scrollState)
         ) {
             PresentableDetailsTopSection(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .onGloballyPositioned { coordinates ->
-                        topSectionHeight = coordinates.size.height
-                    },
+                modifier = Modifier.fillMaxWidth(),
                 presentable = movieDetails,
                 backdrops = backdrops
             ) {
@@ -309,7 +303,7 @@ fun MovieDetailsScreen(
         AppBar(
             modifier = Modifier.align(Alignment.TopCenter),
             title = stringResource(R.string.movie_details_label),
-            backgroundColor = appbarColor,
+            backgroundColor = Black500,
             action = {
                 IconButton(onClick = { navigator.navigateUp() }) {
                     Icon(
