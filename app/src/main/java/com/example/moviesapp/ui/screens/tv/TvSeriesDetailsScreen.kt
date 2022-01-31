@@ -119,12 +119,11 @@ fun TvSeriesDetailsScreen(
 
             tvSeriesDetails?.let { details ->
                 Column(
-                    modifier = Modifier
-                        .padding(horizontal = MaterialTheme.spacing.medium)
-                        .animateContentSize(),
+                    modifier = Modifier.animateContentSize(),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                 ) {
                     Text(
+                        modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
                         text = details.name,
                         style = TextStyle(
                             color = Color.White,
@@ -135,23 +134,27 @@ fun TvSeriesDetailsScreen(
                     details.tagline.let { tagline ->
                         if (tagline.isNotEmpty()) {
                             Text(
+                                modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
                                 text = "\"$tagline\"",
                                 style = TextStyle(fontStyle = FontStyle.Italic)
                             )
                         }
                     }
+
                     OverviewSection(
+                        modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
                         overview = details.overview
+                    )
+
+                    SectionDivider(
+                        modifier = Modifier.padding(
+                            top = MaterialTheme.spacing.large,
+                            start = MaterialTheme.spacing.medium,
+                            end = MaterialTheme.spacing.medium,
+                        )
                     )
                 }
             }
-            SectionDivider(
-                modifier = Modifier.padding(
-                    top = MaterialTheme.spacing.large,
-                    start = MaterialTheme.spacing.medium,
-                    end = MaterialTheme.spacing.medium,
-                )
-            )
 
             tvSeriesDetails?.networks?.let { networks ->
                 if (networks.isNotEmpty()) {
@@ -249,6 +252,7 @@ fun TvSeriesDetailsScreen(
                     )
                 )
             }
+
             recommendations?.let { lazyPagingItems ->
                 PresentableSection(
                     modifier = Modifier
@@ -266,15 +270,8 @@ fun TvSeriesDetailsScreen(
                         )
                     )
                 }
-
-                SectionDivider(
-                    modifier = Modifier.padding(
-                        top = MaterialTheme.spacing.medium,
-                        start = MaterialTheme.spacing.medium,
-                        end = MaterialTheme.spacing.small,
-                    )
-                )
             }
+
             Spacer(
                 modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.large)
             )

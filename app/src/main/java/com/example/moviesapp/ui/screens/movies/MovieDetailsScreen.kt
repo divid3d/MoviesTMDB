@@ -156,14 +156,16 @@ fun MovieDetailsScreen(
                         overview = details.overview
                     )
                 }
-            }
-            SectionDivider(
-                modifier = Modifier.padding(
-                    top = MaterialTheme.spacing.large,
-                    start = MaterialTheme.spacing.medium,
-                    end = MaterialTheme.spacing.medium,
+
+                SectionDivider(
+                    modifier = Modifier.padding(
+                        top = MaterialTheme.spacing.large,
+                        start = MaterialTheme.spacing.medium,
+                        end = MaterialTheme.spacing.medium,
+                    )
                 )
-            )
+            }
+
 
             credits?.cast?.let { castMembers ->
                 MemberSection(
@@ -250,15 +252,8 @@ fun MovieDetailsScreen(
                         )
                     )
                 }
-
-                SectionDivider(
-                    modifier = Modifier.padding(
-                        top = MaterialTheme.spacing.medium,
-                        start = MaterialTheme.spacing.medium,
-                        end = MaterialTheme.spacing.small,
-                    )
-                )
             }
+
             Spacer(
                 modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.large)
             )
