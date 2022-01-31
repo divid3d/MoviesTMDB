@@ -1,12 +1,14 @@
 package com.example.moviesapp.ui.screens.tv
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
 import androidx.paging.map
+import com.example.moviesapp.BaseViewModel
+import com.example.moviesapp.api.onException
+import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
@@ -30,7 +32,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
     private val favouritesRepository: FavouritesRepository,
     private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
     private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val config: StateFlow<Config?> = configRepository.config
     private val favouriteTvSeriesIds: Flow<List<Int>> =
@@ -133,6 +135,14 @@ class TvSeriesDetailsViewModel @Inject constructor(
                     _tvSeriesDetails.emit(tvSeriesDetails)
                 }
             }
+
+            response.onFailure {
+                onError(message)
+            }
+
+            response.onException {
+                onError(message)
+            }
         }
     }
 
@@ -143,6 +153,14 @@ class TvSeriesDetailsViewModel @Inject constructor(
                     val imagesResponse = data
                     _tvSeriesBackdrops.emit(imagesResponse?.backdrops)
                 }
+            }
+
+            response.onFailure {
+                onError(message)
+            }
+
+            response.onException {
+                onError(message)
             }
         }
     }
@@ -163,6 +181,14 @@ class TvSeriesDetailsViewModel @Inject constructor(
                                     val season = data
                                     _selectedSeason.emit(season)
                                 }
+                            }
+
+                            response.onFailure {
+                                onError(message)
+                            }
+
+                            response.onException {
+                                onError(message)
                             }
                         }
                     }

@@ -1,6 +1,5 @@
 package com.example.moviesapp
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviesapp.model.SnackBarEvent
 import com.example.moviesapp.other.NetworkStatus
@@ -12,7 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val networkStatusTracker: NetworkStatusTracker
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val connectionStatus = networkStatusTracker.connectionStatus
 

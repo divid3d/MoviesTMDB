@@ -1,8 +1,10 @@
 package com.example.moviesapp.ui.screens.seasons
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.moviesapp.BaseViewModel
+import com.example.moviesapp.api.onException
+import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.Config
@@ -22,7 +24,7 @@ class SeasonDetailsViewModel @Inject constructor(
     private val configRepository: ConfigRepository,
     private val movieRepository: MovieRepository,
     private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val config: StateFlow<Config?> = configRepository.config
 
@@ -49,11 +51,18 @@ class SeasonDetailsViewModel @Inject constructor(
                         seasonNumber = info.seasonNumber
                     ).request { response ->
                         response.onSuccess {
-
                             viewModelScope.launch {
                                 val seasonDetails = data
                                 _seasonDetails.emit(seasonDetails)
                             }
+                        }
+
+                        response.onFailure {
+                            onError(message)
+                        }
+
+                        response.onException {
+                            onError(message)
                         }
                     }
                 }

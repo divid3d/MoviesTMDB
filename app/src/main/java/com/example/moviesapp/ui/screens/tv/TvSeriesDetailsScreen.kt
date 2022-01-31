@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.tv
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -76,6 +77,28 @@ fun TvSeriesDetailsScreen(
 
             Color.Black.copy(alpha)
         } ?: Black500
+    }
+
+    var showErrorDialog by remember { mutableStateOf(false) }
+    val error: String? by viewModel.error.collectAsState()
+
+    LaunchedEffect(error) {
+        showErrorDialog = error != null
+    }
+
+    BackHandler(showErrorDialog) {
+        showErrorDialog = false
+    }
+
+    if (showErrorDialog) {
+        ErrorDialog(
+            onDismissRequest = {
+                showErrorDialog = false
+            },
+            onConfirmClick = {
+                showErrorDialog = false
+            }
+        )
     }
 
     Box(

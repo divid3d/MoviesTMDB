@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.seasons
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
@@ -37,6 +38,7 @@ import com.example.moviesapp.model.Episode
 import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.other.formatted
 import com.example.moviesapp.ui.components.AppBar
+import com.example.moviesapp.ui.components.ErrorDialog
 import com.example.moviesapp.ui.components.LabeledText
 import com.example.moviesapp.ui.components.PresentableDetailsTopSection
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
@@ -59,6 +61,28 @@ fun SeasonDetailsScreen(
     val episodesCount by viewModel.episodeCount.collectAsState()
 
     val lazyState = rememberLazyListState()
+
+    var showErrorDialog by remember { mutableStateOf(false) }
+    val error: String? by viewModel.error.collectAsState()
+
+    LaunchedEffect(error) {
+        showErrorDialog = error != null
+    }
+
+    BackHandler(showErrorDialog) {
+        showErrorDialog = false
+    }
+
+    if (showErrorDialog) {
+        ErrorDialog(
+            onDismissRequest = {
+                showErrorDialog = false
+            },
+            onConfirmClick = {
+                showErrorDialog = false
+            }
+        )
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
