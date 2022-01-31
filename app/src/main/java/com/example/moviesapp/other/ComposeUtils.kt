@@ -1,14 +1,39 @@
 package com.example.moviesapp.other
 
+import androidx.compose.animation.core.InfiniteRepeatableSpec
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.lazy.LazyGridScope
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.platform.LocalDensity
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.example.moviesapp.ui.theme.White500
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.placeholder
+import com.google.accompanist.placeholder.shimmer
+
+fun Modifier.defaultPlaceholder() = composed {
+    this.placeholder(
+        visible = true,
+        highlight = PlaceholderHighlight.shimmer(
+            highlightColor = White500, animationSpec = InfiniteRepeatableSpec(
+                animation = tween(durationMillis = 500, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart
+            )
+        ),
+        color = MaterialTheme.colors.background,
+        shape = MaterialTheme.shapes.medium
+    )
+}
 
 @Composable
 fun LazyListState.isScrollingTowardsStart(): Boolean {
