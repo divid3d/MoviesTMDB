@@ -19,7 +19,7 @@ import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.ui.components.PresentableSection
 import com.example.moviesapp.ui.components.PresentableTopSection
 import com.example.moviesapp.ui.components.SectionDivider
-import com.example.moviesapp.ui.screens.destinations.AllTvSeriesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.BrowseTvSeriesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -66,8 +66,8 @@ fun TvScreen(
         navigator.navigate(TvSeriesDetailsScreenDestination(tvSeriesId))
     }
 
-    val navigateToAllTvSeries: (TvSeriesType) -> Unit = { type ->
-        navigator.navigate(AllTvSeriesScreenDestination(type))
+    val navigateToBrowseTvSeries: (TvSeriesType) -> Unit = { type ->
+        navigator.navigate(BrowseTvSeriesScreenDestination(type))
     }
 
     SwipeRefresh(
@@ -94,7 +94,7 @@ fun TvScreen(
                 title = stringResource(R.string.top_rated_tv_series),
                 state = topRated,
                 onPresentableClick = navigateToTvSeriesDetails,
-                onMoreClick = { navigateToAllTvSeries(TvSeriesType.TopRated) }
+                onMoreClick = { navigateToBrowseTvSeries(TvSeriesType.TopRated) }
             )
             SectionDivider(
                 modifier = Modifier.padding(
@@ -111,7 +111,7 @@ fun TvScreen(
                 title = stringResource(R.string.trending_tv_series),
                 state = trending,
                 onPresentableClick = navigateToTvSeriesDetails,
-                onMoreClick = { navigateToAllTvSeries(TvSeriesType.Trending) }
+                onMoreClick = { navigateToBrowseTvSeries(TvSeriesType.Trending) }
             )
             SectionDivider(
                 modifier = Modifier.padding(
@@ -128,7 +128,7 @@ fun TvScreen(
                 title = stringResource(R.string.today_airing_tv_series),
                 state = airingToday,
                 onPresentableClick = navigateToTvSeriesDetails,
-                onMoreClick = { navigateToAllTvSeries(TvSeriesType.AiringToday) }
+                onMoreClick = { navigateToBrowseTvSeries(TvSeriesType.AiringToday) }
             )
             SectionDivider(
                 modifier = Modifier.padding(
@@ -145,7 +145,7 @@ fun TvScreen(
                 title = stringResource(R.string.popular_tv_series),
                 state = popular,
                 onPresentableClick = navigateToTvSeriesDetails,
-                onMoreClick = { navigateToAllTvSeries(TvSeriesType.Popular) }
+                onMoreClick = { navigateToBrowseTvSeries(TvSeriesType.Popular) }
             )
             if (favourites.isNotEmpty()) {
                 SectionDivider(
@@ -163,7 +163,7 @@ fun TvScreen(
                     title = stringResource(R.string.favourites_tv_series),
                     state = favourites,
                     onPresentableClick = navigateToTvSeriesDetails,
-                    onMoreClick = { navigateToAllTvSeries(TvSeriesType.Favourite) }
+                    onMoreClick = { navigateToBrowseTvSeries(TvSeriesType.Favourite) }
                 )
             }
             if (recentlyBrowsed.isNotEmpty()) {
@@ -182,7 +182,7 @@ fun TvScreen(
                     title = stringResource(R.string.recently_browsed_tv_series),
                     state = recentlyBrowsed,
                     onPresentableClick = navigateToTvSeriesDetails,
-                    onMoreClick = { navigateToAllTvSeries(TvSeriesType.RecentlyBrowsed) }
+                    onMoreClick = { navigateToBrowseTvSeries(TvSeriesType.RecentlyBrowsed) }
                 )
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))

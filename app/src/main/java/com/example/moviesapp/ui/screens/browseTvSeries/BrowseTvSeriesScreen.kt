@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.screens.allMovies
+package com.example.moviesapp.ui.screens.browseTvSeries
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
@@ -17,10 +17,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
-import com.example.moviesapp.model.MovieType
+import com.example.moviesapp.model.TvSeriesType
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.PresentableGridSection
-import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -28,25 +28,25 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @OptIn(ExperimentalFoundationApi::class, kotlinx.coroutines.FlowPreview::class)
 @Destination
 @Composable
-fun AllMoviesScreen(
-    movieType: MovieType,
+fun BrowseTvSeriesScreen(
+    tvSeriesType: TvSeriesType,
     navigator: DestinationsNavigator
 ) {
-    val viewModel: AllMoviesViewModel = hiltViewModel()
-    val movies = viewModel.movies?.collectAsLazyPagingItems()
+    val viewModel: BrowseTvSeriesViewModel = hiltViewModel()
+    val tvSeries = viewModel.tvSeries?.collectAsLazyPagingItems()
 
-    val favouriteMoviesCount by viewModel.favouriteMoviesCount.collectAsState()
+    val favouriteTvSeriesCount by viewModel.favouriteTvSeriesCount.collectAsState()
 
-    val appbarTitle = when (movieType) {
-        MovieType.Popular -> stringResource(R.string.all_movies_top_rated_label)
-        MovieType.Upcoming -> stringResource(R.string.all_movies_upcoming_label)
-        MovieType.TopRated -> stringResource(R.string.all_movies_top_rated_label)
-        MovieType.Favourite -> stringResource(
-            R.string.all_movies_favourites_label,
-            favouriteMoviesCount
+    val appbarTitle = when (tvSeriesType) {
+        TvSeriesType.TopRated -> stringResource(R.string.all_tv_series_top_rated_label)
+        TvSeriesType.AiringToday -> stringResource(R.string.all_tv_series_airing_today_label)
+        TvSeriesType.Popular -> stringResource(R.string.all_tv_series_popular_label)
+        TvSeriesType.Favourite -> stringResource(
+            R.string.all_tv_series_favourites_label,
+            favouriteTvSeriesCount
         )
-        MovieType.RecentlyBrowsed -> stringResource(R.string.all_movies_recently_browsed_label)
-        MovieType.Trending -> stringResource(R.string.all_movies_trending_label)
+        TvSeriesType.RecentlyBrowsed -> stringResource(R.string.all_tv_series_recently_browsed_label)
+        TvSeriesType.Trending -> stringResource(R.string.all_tv_series_trending_label)
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -59,7 +59,7 @@ fun AllMoviesScreen(
                 )
             }
         })
-        movies?.let { state ->
+        tvSeries?.let { state ->
             PresentableGridSection(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
@@ -67,12 +67,11 @@ fun AllMoviesScreen(
                     vertical = MaterialTheme.spacing.medium,
                 ),
                 state = state
-            ) { movieId ->
+            ) { tvSeriesId ->
                 navigator.navigate(
-                    MovieDetailsScreenDestination(movieId)
+                    TvSeriesDetailsScreenDestination(tvSeriesId)
                 )
             }
         }
     }
-
 }

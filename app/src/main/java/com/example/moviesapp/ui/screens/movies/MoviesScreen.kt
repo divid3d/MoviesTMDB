@@ -21,7 +21,7 @@ import com.example.moviesapp.ui.components.ExitDialog
 import com.example.moviesapp.ui.components.PresentableSection
 import com.example.moviesapp.ui.components.PresentableTopSection
 import com.example.moviesapp.ui.components.SectionDivider
-import com.example.moviesapp.ui.screens.destinations.AllMoviesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.BrowseMoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -90,8 +90,8 @@ fun MoviesScreen(
         navigator.navigate(MovieDetailsScreenDestination(movieId))
     }
 
-    val navigateToAllMovies: (MovieType) -> Unit = { type ->
-        navigator.navigate(AllMoviesScreenDestination(type))
+    val navigateToBrowseMovies: (MovieType) -> Unit = { type ->
+        navigator.navigate(BrowseMoviesScreenDestination(type))
     }
 
     SwipeRefresh(
@@ -118,7 +118,7 @@ fun MoviesScreen(
                 title = stringResource(R.string.popular_movies),
                 state = discover,
                 onPresentableClick = navigateToMovieDetails,
-                onMoreClick = { navigateToAllMovies(MovieType.Popular) }
+                onMoreClick = { navigateToBrowseMovies(MovieType.Popular) }
             )
             SectionDivider(
                 modifier = Modifier.padding(
@@ -136,7 +136,7 @@ fun MoviesScreen(
                 state = upcoming,
                 onPresentableClick = navigateToMovieDetails,
                 onMoreClick = {
-                    navigateToAllMovies(MovieType.Upcoming)
+                    navigateToBrowseMovies(MovieType.Upcoming)
                 }
             )
             SectionDivider(
@@ -155,7 +155,7 @@ fun MoviesScreen(
                 state = trending,
                 onPresentableClick = navigateToMovieDetails,
                 onMoreClick = {
-                    navigateToAllMovies(MovieType.Trending)
+                    navigateToBrowseMovies(MovieType.Trending)
                 }
             )
             SectionDivider(
@@ -174,7 +174,7 @@ fun MoviesScreen(
                 state = topRated,
                 onPresentableClick = navigateToMovieDetails,
                 onMoreClick = {
-                    navigateToAllMovies(MovieType.TopRated)
+                    navigateToBrowseMovies(MovieType.TopRated)
                 }
             )
             if (favourites.isNotEmpty()) {
@@ -194,7 +194,7 @@ fun MoviesScreen(
                     state = favourites,
                     onPresentableClick = navigateToMovieDetails,
                     onMoreClick = {
-                        navigateToAllMovies(MovieType.Favourite)
+                        navigateToBrowseMovies(MovieType.Favourite)
                     }
                 )
             }
@@ -215,7 +215,7 @@ fun MoviesScreen(
                     state = recentlyBrowsed,
                     onPresentableClick = navigateToMovieDetails,
                     onMoreClick = {
-                        navigateToAllMovies(MovieType.RecentlyBrowsed)
+                        navigateToBrowseMovies(MovieType.RecentlyBrowsed)
                     }
                 )
             }

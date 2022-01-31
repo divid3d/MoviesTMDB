@@ -16,7 +16,7 @@ import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.model.TvSeriesRelationInfo
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.PresentableGridSection
-import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -53,9 +53,9 @@ fun RelatedTvSeries(
                     vertical = MaterialTheme.spacing.medium,
                 ),
                 state = state
-            ) { movieId ->
+            ) { tvSeriesId ->
                 navigator.navigate(
-                    MovieDetailsScreenDestination(movieId)
+                    TvSeriesDetailsScreenDestination(tvSeriesId)
                 )
             }
         }
