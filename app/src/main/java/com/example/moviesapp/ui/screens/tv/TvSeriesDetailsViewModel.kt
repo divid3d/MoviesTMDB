@@ -7,6 +7,8 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
 import androidx.paging.map
+import com.example.moviesapp.api.onSuccess
+import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
 import com.example.moviesapp.other.appendUrl
 import com.example.moviesapp.other.appendUrls
@@ -124,16 +126,24 @@ class TvSeriesDetailsViewModel @Inject constructor(
     }
 
     private fun getTvSeriesDetails(tvSeriesId: Int) {
-        viewModelScope.launch {
-            val tvSeriesDetails = tvSeriesRepository.getTvSeriesDetails(tvSeriesId)
-            _tvSeriesDetails.emit(tvSeriesDetails)
+        tvSeriesRepository.getTvSeriesDetails(tvSeriesId).request { response ->
+            response.onSuccess {
+                viewModelScope.launch {
+                    val tvSeriesDetails = data
+                    _tvSeriesDetails.emit(tvSeriesDetails)
+                }
+            }
         }
     }
 
     private fun getMovieImages(tvSeriesId: Int) {
-        viewModelScope.launch {
-            val imagesResponse = tvSeriesRepository.tvSeriesImages(tvSeriesId)
-            _tvSeriesBackdrops.emit(imagesResponse.backdrops)
+        tvSeriesRepository.tvSeriesImages(tvSeriesId).request { response ->
+            response.onSuccess {
+                viewModelScope.launch {
+                    val imagesResponse = data
+                    _tvSeriesBackdrops.emit(imagesResponse?.backdrops)
+                }
+            }
         }
     }
 
@@ -144,12 +154,17 @@ class TvSeriesDetailsViewModel @Inject constructor(
             if (seasonNumber != selectedSeasonNumber) {
                 tvSeriesId.collectLatest { id ->
                     id?.let {
-
-                        val season = tvSeriesRepository.getTvSeason(
+                        tvSeriesRepository.getTvSeason(
                             tvSeriesId = it,
                             seasonNumber = seasonNumber
-                        )
-                        _selectedSeason.emit(season)
+                        ).request { response ->
+                            response.onSuccess {
+                                viewModelScope.launch {
+                                    val season = data
+                                    _selectedSeason.emit(season)
+                                }
+                            }
+                        }
                     }
                 }
             } else {

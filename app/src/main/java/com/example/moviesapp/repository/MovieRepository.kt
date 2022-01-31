@@ -8,6 +8,7 @@ import com.example.moviesapp.data.MovieDetailsResponseDataSource
 import com.example.moviesapp.data.MovieResponseDataSource
 import com.example.moviesapp.model.*
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Call
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -70,20 +71,19 @@ class MovieRepository @Inject constructor(
             )
         }.flow
 
-    suspend fun movieDetails(movieId: Int, isoCode: String = "pl-PL"): MovieDetails =
+    fun movieDetails(movieId: Int, isoCode: String = "pl-PL"): Call<MovieDetails> =
         apiHelper.getMovieDetails(movieId, isoCode)
 
-    suspend fun movieCredits(movieId: Int, isoCode: String = "pl-PL"): Credits =
+    fun movieCredits(movieId: Int, isoCode: String = "pl-PL"): Call<Credits> =
         apiHelper.getMovieCredits(movieId, isoCode)
 
-
-    suspend fun seasonDetails(
+    fun seasonDetails(
         tvSeriesId: Int,
         seasonNumber: Int
-    ): SeasonDetails = apiHelper.getSeasonDetails(tvSeriesId, seasonNumber)
+    ): Call<SeasonDetails> = apiHelper.getSeasonDetails(tvSeriesId, seasonNumber)
 
-    suspend fun movieImages(
+    fun movieImages(
         movieId: Int
-    ): ImagesResponse = apiHelper.getMovieImages(movieId)
+    ): Call<ImagesResponse> = apiHelper.getMovieImages(movieId)
 
 }

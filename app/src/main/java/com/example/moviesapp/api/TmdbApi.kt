@@ -1,6 +1,7 @@
 package com.example.moviesapp.api
 
 import com.example.moviesapp.model.*
+import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -8,7 +9,7 @@ import retrofit2.http.Query
 interface TmdbApi {
 
     @GET("configuration")
-    suspend fun getConfig(): Config
+    fun getConfig(): Call<Config>
 
     @GET("discover/movie")
     suspend fun discoverMovies(
@@ -59,22 +60,22 @@ interface TmdbApi {
     ): TvSeriesResponse
 
     @GET("movie/{movie_id}")
-    suspend fun getMovieDetails(
+    fun getMovieDetails(
         @Path("movie_id") movieId: Int,
         @Query("language") isoCode: String
-    ): MovieDetails
+    ): Call<MovieDetails>
 
     @GET("tv/{tv_id}")
-    suspend fun getTvSeriesDetails(
+    fun getTvSeriesDetails(
         @Path("tv_id") tvSeriesId: Int,
         @Query("language") isoCode: String
-    ): TvSeriesDetails
+    ): Call<TvSeriesDetails>
 
     @GET("movie/{movie_id}/credits")
-    suspend fun getMovieCredits(
+    fun getMovieCredits(
         @Path("movie_id") movieId: Int,
         @Query("language") isoCode: String
-    ): Credits
+    ): Call<Credits>
 
     @GET("movie/{movie_id}/similar")
     suspend fun getSimilarMovies(
@@ -97,7 +98,6 @@ interface TmdbApi {
         @Query("language") isoCode: String
     ): MoviesResponse
 
-
     @GET("tv/{tv_id}/recommendations")
     suspend fun getTvSeriesRecommendations(
         @Path("tv_id") tvSeriesId: Int,
@@ -106,11 +106,11 @@ interface TmdbApi {
     ): TvSeriesResponse
 
     @GET("tv/{tv_id}/season/{season_number}")
-    suspend fun getTvSeasons(
+    fun getTvSeasons(
         @Path("tv_id") tvSeriesId: Int,
         @Path("season_number") seasonNumber: Int,
         @Query("language") isoCode: String
-    ): TvSeasonsResponse
+    ): Call<TvSeasonsResponse>
 
     @GET("search/multi")
     suspend fun multiSearch(
@@ -135,20 +135,20 @@ interface TmdbApi {
     ): TvSeriesResponse
 
     @GET("tv/{tv_id}/season/{season_number}")
-    suspend fun getSeasonDetails(
+    fun getSeasonDetails(
         @Path("tv_id") tvSeriesId: Int,
         @Path("season_number") seasonNumber: Int,
         @Query("language") isoCode: String
-    ): SeasonDetails
+    ): Call<SeasonDetails>
 
     @GET("movie/{movie_id}/images")
-    suspend fun getMovieImages(
+    fun getMovieImages(
         @Path("movie_id") movieId: Int
-    ): ImagesResponse
+    ): Call<ImagesResponse>
 
     @GET("tv/{tv_id}/images")
-    suspend fun getTvSeriesImages(
+    fun getTvSeriesImages(
         @Path("tv_id") tvSeriesId: Int
-    ): ImagesResponse
+    ): Call<ImagesResponse>
 }
 

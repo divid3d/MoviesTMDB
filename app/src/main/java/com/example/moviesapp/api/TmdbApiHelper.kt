@@ -1,10 +1,11 @@
 package com.example.moviesapp.api
 
 import com.example.moviesapp.model.*
+import retrofit2.Call
 
 interface TmdbApiHelper {
 
-    suspend fun getConfig(): Config
+    fun getConfig(): Call<Config>
 
     suspend fun discoverMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
 
@@ -22,11 +23,11 @@ interface TmdbApiHelper {
 
     suspend fun getAiringTodayTvSeries(page: Int, isoCode: String = "pl-PL"): TvSeriesResponse
 
-    suspend fun getMovieDetails(movieId: Int, isoCode: String = "pl-PL"): MovieDetails
+    fun getMovieDetails(movieId: Int, isoCode: String = "pl-PL"): Call<MovieDetails>
 
-    suspend fun getTvSeriesDetails(tvSeriesId: Int, isoCode: String = "pl-PL"): TvSeriesDetails
+    fun getTvSeriesDetails(tvSeriesId: Int, isoCode: String = "pl-PL"): Call<TvSeriesDetails>
 
-    suspend fun getMovieCredits(movieId: Int, isoCode: String = "pl-PL"): Credits
+    fun getMovieCredits(movieId: Int, isoCode: String = "pl-PL"): Call<Credits>
 
     suspend fun getSimilarMovies(movieId: Int, page: Int, isoCode: String = "pl-PL"): MoviesResponse
 
@@ -48,11 +49,11 @@ interface TmdbApiHelper {
         isoCode: String = "pl-PL"
     ): TvSeriesResponse
 
-    suspend fun getTvSeasons(
+    fun getTvSeasons(
         tvSeriesId: Int,
         seasonNumber: Int,
         isoCode: String = "pl-PL"
-    ): TvSeasonsResponse
+    ): Call<TvSeasonsResponse>
 
     suspend fun multiSearch(
         page: Int,
@@ -67,18 +68,18 @@ interface TmdbApiHelper {
 
     suspend fun getTrendingTvSeries(page: Int, isoCode: String = "pl-PL"): TvSeriesResponse
 
-    suspend fun getSeasonDetails(
+    fun getSeasonDetails(
         tvSeriesId: Int,
         seasonNumber: Int,
         isoCode: String = "pl-PL"
-    ): SeasonDetails
+    ): Call<SeasonDetails>
 
-    suspend fun getMovieImages(
+    fun getMovieImages(
         movieId: Int
-    ): ImagesResponse
+    ): Call<ImagesResponse>
 
-    suspend fun getTvSeriesImages(
+    fun getTvSeriesImages(
         movieId: Int
-    ): ImagesResponse
+    ): Call<ImagesResponse>
 
 }

@@ -1,6 +1,8 @@
 package com.example.moviesapp.repository
 
 import com.example.moviesapp.api.TmdbApiHelper
+import com.example.moviesapp.api.onSuccess
+import com.example.moviesapp.api.request
 import com.example.moviesapp.model.Config
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,10 +21,13 @@ class ConfigRepository @Inject constructor(
     val config: StateFlow<Config?> = _config.asStateFlow()
 
     fun init() {
-        externalScope.launch {
-            val config = apiHelper.getConfig()
-
-            _config.emit(config)
+        apiHelper.getConfig().request { response ->
+            response.onSuccess {
+                externalScope.launch {
+                    val config = data
+                    _config.emit(config)
+                }
+            }
         }
     }
 }

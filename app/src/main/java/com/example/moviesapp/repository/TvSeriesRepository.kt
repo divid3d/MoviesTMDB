@@ -11,6 +11,7 @@ import com.example.moviesapp.model.TvSeasonsResponse
 import com.example.moviesapp.model.TvSeries
 import com.example.moviesapp.model.TvSeriesDetails
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Call
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -73,18 +74,18 @@ class TvSeriesRepository @Inject constructor(
             )
         }.flow
 
-    suspend fun getTvSeriesDetails(tvSeriesId: Int, isoCode: String = "pl-PL"): TvSeriesDetails =
+    fun getTvSeriesDetails(tvSeriesId: Int, isoCode: String = "pl-PL"): Call<TvSeriesDetails> =
         apiHelper.getTvSeriesDetails(tvSeriesId, isoCode)
 
-    suspend fun getTvSeason(
+    fun getTvSeason(
         tvSeriesId: Int,
         seasonNumber: Int,
         isoCode: String = "pl-PL"
-    ): TvSeasonsResponse =
+    ): Call<TvSeasonsResponse> =
         apiHelper.getTvSeasons(tvSeriesId, seasonNumber, isoCode)
 
-    suspend fun tvSeriesImages(
+    fun tvSeriesImages(
         tvSeriesId: Int
-    ): ImagesResponse = apiHelper.getTvSeriesImages(tvSeriesId)
+    ): Call<ImagesResponse> = apiHelper.getTvSeriesImages(tvSeriesId)
 
 }

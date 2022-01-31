@@ -3,6 +3,8 @@ package com.example.moviesapp.ui.screens.seasons
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.moviesapp.api.onSuccess
+import com.example.moviesapp.api.request
 import com.example.moviesapp.model.Config
 import com.example.moviesapp.model.SeasonDetails
 import com.example.moviesapp.model.SeasonInfo
@@ -42,12 +44,18 @@ class SeasonDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             seasonInfo.collectLatest { seasonInfo ->
                 seasonInfo?.let { info ->
-                    val seasonDetails = movieRepository.seasonDetails(
+                    movieRepository.seasonDetails(
                         tvSeriesId = info.tvSeriesId,
                         seasonNumber = info.seasonNumber
-                    )
+                    ).request { response ->
+                        response.onSuccess {
 
-                    _seasonDetails.emit(seasonDetails)
+                            viewModelScope.launch {
+                                val seasonDetails = data
+                                _seasonDetails.emit(seasonDetails)
+                            }
+                        }
+                    }
                 }
             }
         }

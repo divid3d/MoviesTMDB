@@ -7,6 +7,8 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
 import androidx.paging.map
+import com.example.moviesapp.api.onSuccess
+import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
 import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.other.asFlow
@@ -136,23 +138,35 @@ class MoviesDetailsViewModel @Inject constructor(
     }
 
     private fun getMovieDetails(movieId: Int) {
-        viewModelScope.launch {
-            val movieDetails = movieRepository.movieDetails(movieId)
-            _movieDetails.emit(movieDetails)
+        movieRepository.movieDetails(movieId).request { response ->
+            response.onSuccess {
+                viewModelScope.launch {
+                    val movieDetails = data
+                    _movieDetails.emit(movieDetails)
+                }
+            }
         }
     }
 
     private fun getMovieCredits(movieId: Int) {
-        viewModelScope.launch {
-            val credits = movieRepository.movieCredits(movieId)
-            _credits.emit(credits)
+        movieRepository.movieCredits(movieId).request { response ->
+            response.onSuccess {
+                viewModelScope.launch {
+                    val credits = data
+                    _credits.emit(credits)
+                }
+            }
         }
     }
 
     private fun getMovieImages(movieId: Int) {
-        viewModelScope.launch {
-            val imagesResponse = movieRepository.movieImages(movieId)
-            _movieBackdrops.emit(imagesResponse.backdrops)
+        movieRepository.movieImages(movieId).request { response ->
+            response.onSuccess {
+                viewModelScope.launch {
+                    val imagesResponse = data
+                    _movieBackdrops.emit(imagesResponse?.backdrops)
+                }
+            }
         }
     }
 

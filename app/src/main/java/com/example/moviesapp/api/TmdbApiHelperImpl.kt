@@ -1,12 +1,13 @@
 package com.example.moviesapp.api
 
 import com.example.moviesapp.model.*
+import retrofit2.Call
 import javax.inject.Inject
 
 class TmdbApiHelperImpl @Inject constructor(
     private val tmdbApi: TmdbApi
 ) : TmdbApiHelper {
-    override suspend fun getConfig(): Config = tmdbApi.getConfig()
+    override fun getConfig(): Call<Config> = tmdbApi.getConfig()
 
     override suspend fun discoverMovies(page: Int, isoCode: String): MoviesResponse =
         tmdbApi.discoverMovies(page, isoCode)
@@ -32,13 +33,13 @@ class TmdbApiHelperImpl @Inject constructor(
     override suspend fun getAiringTodayTvSeries(page: Int, isoCode: String): TvSeriesResponse =
         tmdbApi.getAiringTodayTvSeries(page, isoCode)
 
-    override suspend fun getMovieDetails(movieId: Int, isoCode: String): MovieDetails =
+    override fun getMovieDetails(movieId: Int, isoCode: String): Call<MovieDetails> =
         tmdbApi.getMovieDetails(movieId, isoCode)
 
-    override suspend fun getTvSeriesDetails(tvSeriesId: Int, isoCode: String): TvSeriesDetails =
+    override fun getTvSeriesDetails(tvSeriesId: Int, isoCode: String): Call<TvSeriesDetails> =
         tmdbApi.getTvSeriesDetails(tvSeriesId, isoCode)
 
-    override suspend fun getMovieCredits(movieId: Int, isoCode: String): Credits =
+    override fun getMovieCredits(movieId: Int, isoCode: String): Call<Credits> =
         tmdbApi.getMovieCredits(movieId, isoCode)
 
     override suspend fun getSimilarMovies(
@@ -69,13 +70,12 @@ class TmdbApiHelperImpl @Inject constructor(
     ): TvSeriesResponse =
         tmdbApi.getTvSeriesRecommendations(tvSeriesId, page, isoCode)
 
-    override suspend fun getTvSeasons(
+    override fun getTvSeasons(
         tvSeriesId: Int,
         seasonNumber: Int,
         isoCode: String
-    ): TvSeasonsResponse =
+    ): Call<TvSeasonsResponse> =
         tmdbApi.getTvSeasons(tvSeriesId, seasonNumber, isoCode)
-
 
     override suspend fun multiSearch(
         page: Int,
@@ -99,19 +99,19 @@ class TmdbApiHelperImpl @Inject constructor(
     override suspend fun getTrendingTvSeries(page: Int, isoCode: String): TvSeriesResponse =
         tmdbApi.getTrendingTvSeries(page, isoCode)
 
-    override suspend fun getSeasonDetails(
+    override fun getSeasonDetails(
         tvSeriesId: Int,
         seasonNumber: Int,
         isoCode: String
-    ): SeasonDetails =
+    ): Call<SeasonDetails> =
         tmdbApi.getSeasonDetails(tvSeriesId, seasonNumber, isoCode)
 
-    override suspend fun getMovieImages(
+    override fun getMovieImages(
         movieId: Int
-    ): ImagesResponse = tmdbApi.getMovieImages(movieId)
+    ): Call<ImagesResponse> = tmdbApi.getMovieImages(movieId)
 
-    override suspend fun getTvSeriesImages(
+    override fun getTvSeriesImages(
         tvSeriesId: Int
-    ): ImagesResponse = tmdbApi.getTvSeriesImages(tvSeriesId)
+    ): Call<ImagesResponse> = tmdbApi.getTvSeriesImages(tvSeriesId)
 
 }
