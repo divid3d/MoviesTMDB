@@ -1,9 +1,11 @@
 package com.example.moviesapp.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class ProductionCountry(
-    @SerializedName("iso_3166_1")
+    @Json(name = "iso_3166_1")
     val iso: String,
     val name: String
 )

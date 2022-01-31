@@ -1,14 +1,14 @@
 package com.example.moviesapp.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 enum class MediaType(val value: String) {
-    @SerializedName("movie")
+    @Json(name = "movie")
     Movie("movie"),
 
-    @SerializedName("tv")
+    @Json(name = "tv")
     Tv("tv"),
 
-    @SerializedName("person")
+    @Json(name = "person")
     Person("person")
 }

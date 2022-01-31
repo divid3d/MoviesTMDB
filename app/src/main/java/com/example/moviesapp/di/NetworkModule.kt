@@ -7,6 +7,8 @@ import com.example.moviesapp.api.TmdbApi
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.api.TmdbApiHelperImpl
 import com.example.moviesapp.other.ApiParams
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,7 +19,8 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.*
 import javax.inject.Singleton
 import kotlin.time.ExperimentalTime
 import kotlin.time.toJavaDuration
@@ -72,8 +75,14 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
-        .addConverterFactory(GsonConverterFactory.create())
+    fun provideMoshi(): Moshi = Moshi.Builder()
+        .add(Date::class.java, Rfc3339DateJsonAdapter().nullSafe())
+        .build()
+
+    @Singleton
+    @Provides
+    fun provideRetrofit(client: OkHttpClient, moshi: Moshi): Retrofit = Retrofit.Builder()
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
         .baseUrl(ApiParams.baseUrl)
         .client(client)
         .build()

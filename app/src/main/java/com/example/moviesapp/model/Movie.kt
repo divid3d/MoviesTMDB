@@ -1,34 +1,51 @@
 package com.example.moviesapp.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import java.util.*
 
 
+@JsonClass(generateAdapter = true)
 data class Movie(
     override val id: Int,
-    @SerializedName("poster_path")
+
+    @Json(name = "poster_path")
     override val posterPath: String?,
+
     val adult: Boolean,
+
     override val overview: String,
-    @SerializedName("release_date")
+
+    @Json(name = "release_date")
     val releaseDate: Date?,
-    @SerializedName("genre_ids")
+
+    @Json(name = "genre_ids")
     val genreIds: List<Int>,
-    @SerializedName("original_title")
+
+    @Json(name = "original_title")
     val originalTitle: String,
-    @SerializedName("original_language")
+
+    @Json(name = "original_language")
     val originalLanguage: String,
+
     override val title: String,
-    @SerializedName("backdrop_path")
+
+    @Json(name = "backdrop_path")
     override val backdropPath: String?,
+
     val popularity: Float,
-    @SerializedName("vote_count")
+
+    @Json(name = "vote_count")
     override val voteCount: Int,
+
     val video: Boolean,
-    @SerializedName("vote_average")
+
+    @Json(name = "vote_average")
     override val voteAverage: Float,
+
     @Transient
-    override val posterUrl: String?,
+    override val posterUrl: String? = null,
+
     @Transient
-    override val backdropUrl: String?
+    override val backdropUrl: String? = null
 ) : Presentable

@@ -1,12 +1,14 @@
 package com.example.moviesapp.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class Config(
-    @SerializedName("images")
+    @Json(name = "images")
     val imagesConfig: ImagesConfig,
 
-    @SerializedName("change_keys")
+    @Json(name = "change_keys")
     val changeKeys: List<String>
 )
 

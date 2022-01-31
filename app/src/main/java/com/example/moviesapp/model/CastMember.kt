@@ -1,27 +1,42 @@
 package com.example.moviesapp.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 
 data class CastMember(
     val id: Int,
+
     val adult: Boolean,
+
     val gender: Int?,
-    @SerializedName("known_for_department")
+
+    @Json(name = "known_for_department")
     val knownForDepartment: String?,
+
     val name: String,
-    @SerializedName("original_name")
+
+    @Json(name = "original_name")
     val originalName: String?,
+
     val popularity: Float,
-    @SerializedName("profile_path")
+
+    @Json(name = "profile_path")
     override val profilePath: String?,
-    @SerializedName("cast_id")
+
+    @Json(name = "cast_id")
     val castId: Int,
+
     val character: String,
-    @SerializedName("credit_id")
+
+    @Json(name = "credit_id")
     val creditId: String,
+
     val order: Int,
+
     @Transient
-    override val profileUrl: String?
+    override val profileUrl: String? = null
 ) : Member {
     override val firstLine: String
         get() = name

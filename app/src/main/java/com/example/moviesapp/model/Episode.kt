@@ -1,26 +1,28 @@
 package com.example.moviesapp.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import java.util.*
 
+@JsonClass(generateAdapter = true)
 data class Episode(
     val id: Int,
-    @SerializedName("air_date")
+    @Json(name = "air_date")
     val airDate: Date?,
-    @SerializedName("episode_number")
+    @Json(name = "episode_number")
     val episodeNumber: Int,
     val name: String,
     val overview: String,
-    @SerializedName("production_code")
+    @Json(name = "production_code")
     val productionCode: String,
-    @SerializedName("season_number")
+    @Json(name = "season_number")
     val seasonNumber: Int,
-    @SerializedName("still_path")
+    @Json(name = "still_path")
     val stillPath: String?,
-    @SerializedName("vote_average")
+    @Json(name = "vote_average")
     val voteAverage: Float,
-    @SerializedName("vote_count")
+    @Json(name = "vote_count")
     val voteCount: Int,
     @Transient
-    val stillUrl: String?,
+    val stillUrl: String? = null
 )

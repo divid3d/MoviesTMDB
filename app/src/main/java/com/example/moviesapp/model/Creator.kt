@@ -1,15 +1,22 @@
 package com.example.moviesapp.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class Creator(
     val id: Int,
-    @SerializedName("credit_id")
+
+    @Json(name = "credit_id")
     val creditId: String,
+
     val name: String,
+
     val gender: Int,
-    @SerializedName("profile_path")
+
+    @Json(name = "profile_path")
     val profilePath: String?,
+
     @Transient
-    val profileUrl: String?
+    val profileUrl: String? = null
 )

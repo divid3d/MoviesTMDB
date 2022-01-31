@@ -1,35 +1,51 @@
 package com.example.moviesapp.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 
+@JsonClass(generateAdapter = true)
 data class TvSeries(
     override val id: Int,
-    @SerializedName("poster_path")
+
+    @Json(name = "poster_path")
     override val posterPath: String?,
+
     override val overview: String,
-    @SerializedName("first_air_date")
+
+    @Json(name = "first_air_date")
     val firstAirDate: String?,
-    @SerializedName("genre_ids")
+
+    @Json(name = "genre_ids")
     val genreIds: List<Int>,
-    @SerializedName("original_name")
+
+    @Json(name = "original_name")
     val originalName: String?,
-    @SerializedName("original_language")
+
+    @Json(name = "original_language")
     val originalLanguage: String,
-    @SerializedName("origin_country")
+
+    @Json(name = "origin_country")
     val originCountry: List<String>?,
+
     val name: String?,
-    @SerializedName("backdrop_path")
+
+    @Json(name = "backdrop_path")
     override val backdropPath: String?,
+
     val popularity: Float,
-    @SerializedName("vote_count")
+
+    @Json(name = "vote_count")
     override val voteCount: Int,
-    @SerializedName("vote_average")
+
+    @Json(name = "vote_average")
     override val voteAverage: Float,
+
     @Transient
-    override val posterUrl: String?,
+    override val posterUrl: String? = null,
+
     @Transient
-    override val backdropUrl: String?
+    override val backdropUrl: String? = null
 ) : Presentable {
     override val title: String
         get() = name.orEmpty()

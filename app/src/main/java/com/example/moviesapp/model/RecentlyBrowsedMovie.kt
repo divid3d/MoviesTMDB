@@ -23,10 +23,10 @@ data class RecentlyBrowsedMovie(
     val addedDate: Date?,
 
     @Transient
-    override val posterUrl: String?,
+    override val posterUrl: String? = null,
 
     @Transient
-    override val backdropUrl: String?
+    override val backdropUrl: String? = null
 ) : Presentable {
     constructor(
         id: Int,

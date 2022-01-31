@@ -1,26 +1,28 @@
 package com.example.moviesapp.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class SearchResult(
     override val id: Int,
 
-    @SerializedName("name")
-    private val tvSeriesName: String?,
+    @Json(name = "name")
+    val tvSeriesName: String?,
 
-    @SerializedName("title")
-    private val movieTitle: String?,
+    @Json(name = "title")
+    val movieTitle: String?,
 
-    @SerializedName("media_type")
+    @Json(name = "media_type")
     val mediaType: MediaType,
 
     override val overview: String,
 
-    @SerializedName("poster_path")
+    @Json(name = "poster_path")
     override val posterPath: String?,
 
     @Transient
-    override val posterUrl: String?
+    override val posterUrl: String? = null
 ) : Presentable {
     override val backdropPath: String?
         get() = null
@@ -37,5 +39,5 @@ data class SearchResult(
             !tvSeriesName.isNullOrEmpty() -> tvSeriesName
             else -> ""
         }
-        
+
 }

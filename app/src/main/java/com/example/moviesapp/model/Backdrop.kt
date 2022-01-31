@@ -1,24 +1,26 @@
 package com.example.moviesapp.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class Backdrop(
-    @SerializedName("aspect_ratio")
+    @Json(name = "aspect_ratio")
     val aspectRatio: Float,
 
-    @SerializedName("file_path")
+    @Json(name = "file_path")
     val filePath: String,
 
     val height: Int,
 
     val width: Int,
 
-    @SerializedName("vote_average")
+    @Json(name = "vote_average")
     val voteAverage: Float,
 
-    @SerializedName("vote_count")
+    @Json(name = "vote_count")
     val voteCount: Int,
 
     @Transient
-    val fileUrl: String?
+    val fileUrl: String? = null
 )

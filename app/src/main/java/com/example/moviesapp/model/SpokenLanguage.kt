@@ -1,9 +1,12 @@
 package com.example.moviesapp.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class SpokenLanguage(
-    @SerializedName("iso_639_1")
+    @Json(name = "iso_639_1")
     val iso: String,
+
     val name: String
 )

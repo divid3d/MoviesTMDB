@@ -2,25 +2,25 @@ package com.example.moviesapp.model
 
 import androidx.annotation.StringRes
 import com.example.moviesapp.R
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 enum class TvSeriesStatus(val value: String) {
-    @SerializedName("Rumored")
+    @Json(name = "Rumored")
     Rumored("Rumored"),
 
-    @SerializedName("Planned")
+    @Json(name = "Planned")
     Planned("Planned"),
 
-    @SerializedName("In Production")
+    @Json(name = "In Production")
     InProduction("In Production"),
 
-    @SerializedName("Post Production")
+    @Json(name = "Post Production")
     PostProduction("Post Production"),
 
-    @SerializedName("Released")
+    @Json(name = "Released")
     Released("Released"),
 
-    @SerializedName("Cancelled")
+    @Json(name = "Cancelled")
     Cancelled("Cancelled");
 
     @StringRes

@@ -1,10 +1,12 @@
 package com.example.moviesapp.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import java.util.*
 
+@JsonClass(generateAdapter = true)
 data class SeasonDetails(
-    @SerializedName("air_date")
+    @Json(name = "air_date")
     val airDate: Date?,
 
     val episodes: List<Episode>,
@@ -15,14 +17,14 @@ data class SeasonDetails(
 
     override val id: Int,
 
-    @SerializedName("season_number")
+    @Json(name = "season_number")
     val seasonNumber: Int,
 
-    @SerializedName("poster_path")
+    @Json(name = "poster_path")
     override val posterPath: String?,
 
     @Transient
-    override val posterUrl: String?
+    override val posterUrl: String? = null
 ) : Presentable {
     override val title: String
         get() = name

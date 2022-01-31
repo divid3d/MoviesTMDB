@@ -1,47 +1,74 @@
 package com.example.moviesapp.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import java.util.*
 
+@JsonClass(generateAdapter = true)
 data class MovieDetails(
     override val id: Int,
+
     val adult: Boolean,
-    @SerializedName("backdrop_path")
+
+    @Json(name = "backdrop_path")
     override val backdropPath: String?,
+
     val budget: Int,
+
     val genres: List<Genre>,
+
     val homepage: String?,
-    @SerializedName("imdb_id")
+
+    @Json(name = "imdb_id")
     val imdbId: String?,
-    @SerializedName("original_language")
+
+    @Json(name = "original_language")
     val originalLanguage: String,
-    @SerializedName("original_title")
+
+    @Json(name = "original_title")
     val originalTitle: String,
+
     override val overview: String,
+
     val popularity: Float,
-    @SerializedName("poster_path")
+
+    @Json(name = "poster_path")
     override val posterPath: String?,
-    @SerializedName("production_companies")
+
+    @Json(name = "production_companies")
     val productionCompanies: List<ProductionCompany>,
-    @SerializedName("production_countries")
+
+    @Json(name = "production_countries")
     val productionCountries: List<ProductionCountry>,
-    @SerializedName("release_date")
+
+    @Json(name = "release_date")
     val releaseDate: Date,
+
     val revenue: Int,
+
     val runtime: Int?,
-    @SerializedName("spoken_languages")
+
+    @Json(name = "spoken_languages")
     val spokenLanguages: List<SpokenLanguage>,
+
     val status: MovieStatus,
+
     val tagline: String?,
+
     override val title: String,
+
     val video: Boolean,
-    @SerializedName("vote_average")
+
+    @Json(name = "vote_average")
     override val voteAverage: Float,
-    @SerializedName("vote_count")
+
+    @Json(name = "vote_count")
     override val voteCount: Int,
+
     @Transient
-    override val posterUrl: String?,
+    override val posterUrl: String? = null,
+
     @Transient
-    override val backdropUrl: String?,
+    override val backdropUrl: String? = null
 ) : Presentable
 
