@@ -42,6 +42,7 @@ class MoviesDetailsViewModel @Inject constructor(
     private val _movieDetails: MutableStateFlow<MovieDetails?> = MutableStateFlow(null)
     private val _credits: MutableStateFlow<Credits?> = MutableStateFlow(null)
     private val _movieBackdrops: MutableStateFlow<List<Image>?> = MutableStateFlow(null)
+    private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     var similarMoviesPagingDataFlow: Flow<PagingData<Presentable>>? = null
     var moviesRecommendationPagingDataFlow: Flow<PagingData<Presentable>>? = null
@@ -98,6 +99,10 @@ class MoviesDetailsViewModel @Inject constructor(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
+
+    val hasReviews: StateFlow<Boolean> = _hasReviews.asStateFlow()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
+
     init {
         viewModelScope.launch {
             movieId.collectLatest { movieId ->
@@ -135,8 +140,9 @@ class MoviesDetailsViewModel @Inject constructor(
 
     private fun getMovieInfo(movieId: Int) {
         getMovieDetails(movieId)
-        getMovieCredits(movieId)
         getMovieImages(movieId)
+        getMovieCredits(movieId)
+        getMovieReview(movieId)
     }
 
     private fun getMovieDetails(movieId: Int) {
@@ -177,12 +183,33 @@ class MoviesDetailsViewModel @Inject constructor(
         }
     }
 
+
     private fun getMovieImages(movieId: Int) {
         movieRepository.movieImages(movieId).request { response ->
             response.onSuccess {
                 viewModelScope.launch {
                     val imagesResponse = data
                     _movieBackdrops.emit(imagesResponse?.backdrops)
+                }
+            }
+
+            response.onFailure {
+                onError(message)
+            }
+
+            response.onException {
+                onError(message)
+            }
+        }
+    }
+
+    private fun getMovieReview(movieId: Int) {
+        movieRepository.movieReview(movieId).request { response ->
+            response.onSuccess {
+                viewModelScope.launch {
+                    val hasReviews = (data?.totalResults ?: 0) > 1
+
+                    _hasReviews.emit(hasReviews)
                 }
             }
 

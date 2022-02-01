@@ -168,3 +168,13 @@ fun Image.appendUrls(
     )
 }
 
+fun AuthorDetails.appendUrls(
+    config: Config?
+): AuthorDetails {
+    val avatarUrl = config?.getImageUrl(avatarPath, size = "w185")
+
+    return copy(
+        avatarUrl = avatarUrl
+    )
+}
+

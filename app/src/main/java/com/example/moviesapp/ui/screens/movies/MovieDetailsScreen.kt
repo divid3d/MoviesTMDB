@@ -31,6 +31,7 @@ import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.RelatedMoviesDestination
+import com.example.moviesapp.ui.screens.destinations.ReviewsScreenDestination
 import com.example.moviesapp.ui.screens.movies.components.OverviewSection
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
@@ -53,6 +54,7 @@ fun MovieDetailsScreen(
     val similarMoviesState = viewModel.similarMoviesPagingDataFlow?.collectAsLazyPagingItems()
     val moviesRecommendationState =
         viewModel.moviesRecommendationPagingDataFlow?.collectAsLazyPagingItems()
+    val hasReviews by viewModel.hasReviews.collectAsState()
 
     val otherOriginalTitle: Boolean by derivedStateOf {
         movieDetails?.run { originalTitle.isNotEmpty() && title != originalTitle } ?: false
@@ -253,6 +255,20 @@ fun MovieDetailsScreen(
                             startRoute = startRoute
                         )
                     )
+                }
+            }
+
+            if (hasReviews) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    SectionDivider(
+                        modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
+                    )
+
+                    ReviewSection(modifier = Modifier.fillMaxWidth()) {
+                        navigator.navigate(
+                            ReviewsScreenDestination(movieId)
+                        )
+                    }
                 }
             }
 

@@ -158,5 +158,17 @@ interface TmdbApi {
         @Path("season_number") seasonNumber: Int,
         @Path("episode_number") episodeNumber: Int
     ): Call<ImagesResponse>
+
+    @GET("movie/{movie_id}/reviews")
+    suspend fun getMovieReviews(
+        @Path("movie_id") movieId: Int,
+        @Query("page") page: Int
+    ): MovieReviewsResponse
+
+    @GET("movie/{movie_id}/reviews")
+    fun getMovieReview(
+        @Path("movie_id") movieId: Int
+    ): Call<MovieReviewsResponse>
+
 }
 

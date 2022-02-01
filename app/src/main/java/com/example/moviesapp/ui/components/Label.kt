@@ -14,6 +14,7 @@ fun Label(
     label: String
 ) {
     Text(
+        modifier = modifier,
         text = label,
         style = TextStyle(color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
     )

@@ -74,18 +74,18 @@ interface TmdbApiHelper {
         isoCode: String = "pl-PL"
     ): Call<SeasonDetails>
 
-    fun getMovieImages(
-        movieId: Int
-    ): Call<ImagesResponse>
+    fun getMovieImages(movieId: Int): Call<ImagesResponse>
 
-    fun getTvSeriesImages(
-        tvSeriesId: Int
-    ): Call<ImagesResponse>
+    fun getTvSeriesImages(tvSeriesId: Int): Call<ImagesResponse>
 
     fun getEpisodeImages(
         tvSeriesId: Int,
         seasonNumber: Int,
         episodeNumber: Int
     ): Call<ImagesResponse>
+
+    suspend fun getMovieReviews(movieId: Int, page: Int): MovieReviewsResponse
+
+    fun getMovieReview(movieId: Int): Call<MovieReviewsResponse>
 
 }

@@ -89,4 +89,9 @@
     <string name="season_details_air_date_label">Data emisji</string>
     <string name="season_details_season_number_label">Number sezonu</string>
 
+    <string name="review_item_created_text" formatted="true">Opublikowano %s</string>
+    <string name="review_item_last_modified_text" formatted="true">Ostatnia modyfikacja %s</string>
+
+    <string name="reviews_screen_appbar_title">Recenzje</string>
+
 </resources>

@@ -89,4 +89,9 @@
     <string name="season_details_air_date_label">Air date</string>
     <string name="season_details_season_number_label">Season number</string>
 
+    <string name="review_item_created_text" formatted="true">Published %s</string>
+    <string name="review_item_last_modified_text" formatted="true">Last modified %s</string>
+
+    <string name="reviews_screen_appbar_title">Reviews</string>
+
 </resources>
