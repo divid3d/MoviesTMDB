@@ -155,11 +155,7 @@ fun MovieDetailsScreen(
                 }
 
                 SectionDivider(
-                    modifier = Modifier.padding(
-                        top = MaterialTheme.spacing.large,
-                        start = MaterialTheme.spacing.medium,
-                        end = MaterialTheme.spacing.medium,
-                    )
+                    modifier = Modifier.padding(top = MaterialTheme.spacing.large)
                 )
             }
 
@@ -176,11 +172,7 @@ fun MovieDetailsScreen(
                 )
 
                 SectionDivider(
-                    modifier = Modifier.padding(
-                        top = MaterialTheme.spacing.medium,
-                        start = MaterialTheme.spacing.medium,
-                        end = MaterialTheme.spacing.small,
-                    )
+                    modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
                 )
             }
 
@@ -196,11 +188,7 @@ fun MovieDetailsScreen(
                 )
 
                 SectionDivider(
-                    modifier = Modifier.padding(
-                        top = MaterialTheme.spacing.medium,
-                        start = MaterialTheme.spacing.medium,
-                        end = MaterialTheme.spacing.small,
-                    )
+                    modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
                 )
             }
 
@@ -235,11 +223,7 @@ fun MovieDetailsScreen(
                 }
 
                 SectionDivider(
-                    modifier = Modifier.padding(
-                        top = MaterialTheme.spacing.medium,
-                        start = MaterialTheme.spacing.medium,
-                        end = MaterialTheme.spacing.small,
-                    )
+                    modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
                 )
             }
 

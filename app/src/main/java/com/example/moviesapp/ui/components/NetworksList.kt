@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Network
-import com.example.moviesapp.ui.theme.White500
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
@@ -51,8 +50,6 @@ fun NetworkChip(
     modifier: Modifier = Modifier,
     network: Network
 ) {
-
-
     Column(
         modifier = modifier
             .width(80.dp)
@@ -62,7 +59,7 @@ fun NetworkChip(
             )
             .border(
                 width = 1.dp,
-                color = White500,
+                color = MaterialTheme.colors.primary.copy(0.5f),
                 shape = MaterialTheme.shapes.small
             )
             .padding(MaterialTheme.spacing.small),
@@ -84,7 +81,7 @@ fun NetworkChip(
             Image(
                 painter = painterResource(R.drawable.ic_outline_no_photography_24),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(White500)
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.primary.copy(0.3f))
             )
         }
 

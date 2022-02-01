@@ -25,8 +25,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.moviesapp.ui.theme.Orange
-import com.example.moviesapp.ui.theme.spacing
+import com.example.moviesapp.ui.theme.*
 
 @Composable
 fun PresentableScoreItem(
@@ -47,10 +46,12 @@ fun PresentableScoreItem(
 
     val indicatorColor by animateColorAsState(
         targetValue = when (progress) {
-            in 0f..0.3f -> Color.Red
-            in 0.3f..0.5f -> Orange
-            in 0.5f..0.7f -> Color.Yellow
-            else -> Color.Green
+            in 0f..0.15f -> DarkRed
+            in 0.15f..0.3f -> Red
+            in 0.3f..0.45f -> Orange
+            in 0.45f..0.7f -> Yellow
+            in 0.7f..0.85f -> LightGreen
+            else -> DarkGreen
         }
     )
 

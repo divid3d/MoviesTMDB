@@ -37,7 +37,6 @@ import com.example.moviesapp.other.formatted
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.screens.movies.components.OverviewSection
-import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -183,7 +182,7 @@ fun SeasonDetailsScreen(
         AppBar(
             modifier = Modifier.align(Alignment.TopCenter),
             title = stringResource(R.string.season_details_appbar_label),
-            backgroundColor = Black500,
+            backgroundColor = Color.Black.copy(0.7f),
             action = {
                 IconButton(onClick = { navigator.navigateUp() }) {
                     Icon(

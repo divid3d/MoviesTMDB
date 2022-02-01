@@ -12,7 +12,7 @@ data class Creator(
 
     val name: String,
 
-    val gender: Int,
+    val gender: Int?,
 
     @Json(name = "profile_path")
     val profilePath: String?,

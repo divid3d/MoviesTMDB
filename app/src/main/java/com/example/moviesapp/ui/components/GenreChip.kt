@@ -26,7 +26,7 @@ fun GenreChip(
             .background(shape = RoundedCornerShape(50f), color = Black500)
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colors.primary,
+                color = MaterialTheme.colors.primary.copy(0.5f),
                 shape = RoundedCornerShape(50f)
             )
             .padding(

@@ -143,11 +143,7 @@ fun TvSeriesDetailsScreen(
                     )
 
                     SectionDivider(
-                        modifier = Modifier.padding(
-                            top = MaterialTheme.spacing.large,
-                            start = MaterialTheme.spacing.medium,
-                            end = MaterialTheme.spacing.medium,
-                        )
+                        modifier = Modifier.padding(top = MaterialTheme.spacing.large)
                     )
                 }
             }
@@ -175,11 +171,7 @@ fun TvSeriesDetailsScreen(
                         )
 
                         SectionDivider(
-                            modifier = Modifier.padding(
-                                top = MaterialTheme.spacing.medium,
-                                start = MaterialTheme.spacing.medium,
-                                end = MaterialTheme.spacing.small,
-                            )
+                            modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
                         )
 
                         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -215,11 +207,7 @@ fun TvSeriesDetailsScreen(
                     }
 
                     SectionDivider(
-                        modifier = Modifier.padding(
-                            top = MaterialTheme.spacing.medium,
-                            start = MaterialTheme.spacing.medium,
-                            end = MaterialTheme.spacing.small,
-                        )
+                        modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
                     )
                 }
             }
@@ -252,11 +240,7 @@ fun TvSeriesDetailsScreen(
                 }
 
                 SectionDivider(
-                    modifier = Modifier.padding(
-                        top = MaterialTheme.spacing.medium,
-                        start = MaterialTheme.spacing.medium,
-                        end = MaterialTheme.spacing.small,
-                    )
+                    modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
                 )
             }
 

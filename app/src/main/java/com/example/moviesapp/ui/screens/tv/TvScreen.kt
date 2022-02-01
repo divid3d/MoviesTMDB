@@ -98,9 +98,7 @@ fun TvScreen(
             )
             SectionDivider(
                 modifier = Modifier.padding(
-                    start = MaterialTheme.spacing.medium,
                     top = MaterialTheme.spacing.medium,
-                    end = MaterialTheme.spacing.medium,
                     bottom = MaterialTheme.spacing.small
                 )
             )
@@ -115,9 +113,7 @@ fun TvScreen(
             )
             SectionDivider(
                 modifier = Modifier.padding(
-                    start = MaterialTheme.spacing.medium,
                     top = MaterialTheme.spacing.medium,
-                    end = MaterialTheme.spacing.medium,
                     bottom = MaterialTheme.spacing.small
                 )
             )
@@ -132,9 +128,7 @@ fun TvScreen(
             )
             SectionDivider(
                 modifier = Modifier.padding(
-                    start = MaterialTheme.spacing.medium,
                     top = MaterialTheme.spacing.medium,
-                    end = MaterialTheme.spacing.medium,
                     bottom = MaterialTheme.spacing.small
                 )
             )
@@ -150,9 +144,7 @@ fun TvScreen(
             if (favourites.isNotEmpty()) {
                 SectionDivider(
                     modifier = Modifier.padding(
-                        start = MaterialTheme.spacing.medium,
                         top = MaterialTheme.spacing.medium,
-                        end = MaterialTheme.spacing.medium,
                         bottom = MaterialTheme.spacing.small
                     )
                 )
@@ -169,9 +161,7 @@ fun TvScreen(
             if (recentlyBrowsed.isNotEmpty()) {
                 SectionDivider(
                     modifier = Modifier.padding(
-                        start = MaterialTheme.spacing.medium,
                         top = MaterialTheme.spacing.medium,
-                        end = MaterialTheme.spacing.medium,
                         bottom = MaterialTheme.spacing.small
                     )
                 )

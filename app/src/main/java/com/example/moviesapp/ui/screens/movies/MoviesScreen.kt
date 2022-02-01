@@ -122,9 +122,7 @@ fun MoviesScreen(
             )
             SectionDivider(
                 modifier = Modifier.padding(
-                    start = MaterialTheme.spacing.medium,
                     top = MaterialTheme.spacing.medium,
-                    end = MaterialTheme.spacing.medium,
                     bottom = MaterialTheme.spacing.small
                 )
             )
@@ -141,9 +139,7 @@ fun MoviesScreen(
             )
             SectionDivider(
                 modifier = Modifier.padding(
-                    start = MaterialTheme.spacing.medium,
                     top = MaterialTheme.spacing.medium,
-                    end = MaterialTheme.spacing.medium,
                     bottom = MaterialTheme.spacing.small
                 )
             )
@@ -160,9 +156,7 @@ fun MoviesScreen(
             )
             SectionDivider(
                 modifier = Modifier.padding(
-                    start = MaterialTheme.spacing.medium,
                     top = MaterialTheme.spacing.medium,
-                    end = MaterialTheme.spacing.medium,
                     bottom = MaterialTheme.spacing.small
                 )
             )
@@ -180,9 +174,7 @@ fun MoviesScreen(
             if (favourites.isNotEmpty()) {
                 SectionDivider(
                     modifier = Modifier.padding(
-                        start = MaterialTheme.spacing.medium,
                         top = MaterialTheme.spacing.medium,
-                        end = MaterialTheme.spacing.medium,
                         bottom = MaterialTheme.spacing.small
                     )
                 )
@@ -201,9 +193,7 @@ fun MoviesScreen(
             if (recentlyBrowsed.isNotEmpty()) {
                 SectionDivider(
                     modifier = Modifier.padding(
-                        start = MaterialTheme.spacing.medium,
                         top = MaterialTheme.spacing.medium,
-                        end = MaterialTheme.spacing.medium,
                         bottom = MaterialTheme.spacing.small
                     )
                 )
