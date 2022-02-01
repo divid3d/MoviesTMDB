@@ -29,10 +29,10 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun BrowseTvSeriesScreen(
+    viewModel: BrowseTvSeriesViewModel = hiltViewModel(),
     tvSeriesType: TvSeriesType,
     navigator: DestinationsNavigator
 ) {
-    val viewModel: BrowseTvSeriesViewModel = hiltViewModel()
     val tvSeries = viewModel.tvSeries?.collectAsLazyPagingItems()
 
     val favouriteTvSeriesCount by viewModel.favouriteTvSeriesCount.collectAsState()

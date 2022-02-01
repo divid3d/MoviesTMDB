@@ -29,10 +29,10 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun BrowseMoviesScreen(
+    viewModel: BrowseMoviesViewModel = hiltViewModel(),
     movieType: MovieType,
     navigator: DestinationsNavigator
 ) {
-    val viewModel: BrowseMoviesViewModel = hiltViewModel()
     val movies = viewModel.movies?.collectAsLazyPagingItems()
 
     val favouriteMoviesCount by viewModel.favouriteMoviesCount.collectAsState()

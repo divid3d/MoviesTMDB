@@ -23,10 +23,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun FavouritesScreen(
+    viewModel: FavouritesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-    val viewModel: FavouritesViewModel = hiltViewModel()
-
     val selectedFavouriteType by viewModel.selectedFavouriteType.collectAsState()
     val favourites = viewModel.favourites.collectAsLazyPagingItems()
 

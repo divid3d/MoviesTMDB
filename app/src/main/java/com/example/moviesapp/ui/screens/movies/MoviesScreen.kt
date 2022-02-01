@@ -32,9 +32,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination(start = true)
 @Composable
 fun MoviesScreen(
+    viewModel: MoviesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-    val viewModel: MoviesViewModel = hiltViewModel()
     val context = LocalContext.current
 
     var showExitDialog by remember { mutableStateOf(false) }

@@ -41,12 +41,11 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun TvSeriesDetailsScreen(
+    viewModel: TvSeriesDetailsViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
     tvSeriesId: Int,
     startRoute: String = TvScreenDestination.route
 ) {
-    val viewModel: TvSeriesDetailsViewModel = hiltViewModel()
-
     val tvSeriesDetails by viewModel.tvSeriesDetails.collectAsState()
     val isFavourite by viewModel.isFavourite.collectAsState()
 

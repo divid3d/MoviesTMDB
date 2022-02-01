@@ -44,12 +44,11 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun SeasonDetailsScreen(
+    viewModel: SeasonDetailsViewModel = hiltViewModel(),
     seasonInfo: SeasonInfo,
     navigator: DestinationsNavigator,
     startRoute: String = TvScreenDestination.route
 ) {
-    val viewModel: SeasonDetailsViewModel = hiltViewModel()
-
     val seasonDetails by viewModel.seasonDetails.collectAsState()
     val episodesCount by viewModel.episodeCount.collectAsState()
     val episodeStills by viewModel.episodeStills.collectAsState()

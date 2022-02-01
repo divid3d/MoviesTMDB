@@ -30,10 +30,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun TvScreen(
+    viewModel: TvSeriesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-    val viewModel: TvSeriesViewModel = hiltViewModel()
-
     val topRated = viewModel.topRated.collectAsLazyPagingItems()
     val onTheAir = viewModel.onTheAir.collectAsLazyPagingItems()
     val trending = viewModel.trending.collectAsLazyPagingItems()

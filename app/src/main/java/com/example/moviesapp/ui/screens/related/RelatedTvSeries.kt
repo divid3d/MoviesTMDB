@@ -24,10 +24,10 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun RelatedTvSeries(
+    viewModel: RelatedTvSeriesViewModel = hiltViewModel(),
     tvSeriesRelationInfo: TvSeriesRelationInfo,
     navigator: DestinationsNavigator
 ) {
-    val viewModel: RelatedTvSeriesViewModel = hiltViewModel()
     val tvSeries = viewModel.tvSeries?.collectAsLazyPagingItems()
 
     val appbarTitle = when (tvSeriesRelationInfo.type) {

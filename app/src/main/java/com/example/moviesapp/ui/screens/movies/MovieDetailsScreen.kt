@@ -40,12 +40,11 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun MovieDetailsScreen(
+    viewModel: MoviesDetailsViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
     movieId: Int,
     startRoute: String = MoviesScreenDestination.route
 ) {
-    val viewModel: MoviesDetailsViewModel = hiltViewModel()
-
     val movieDetails by viewModel.movieDetails.collectAsState()
     val isFavourite by viewModel.isFavourite.collectAsState()
     val credits by viewModel.credits.collectAsState()

@@ -33,10 +33,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun SearchScreen(
+    viewModel: SearchViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-    val viewModel: SearchViewModel = hiltViewModel()
-
     val query by viewModel.query.collectAsState()
     val queryLoading by viewModel.queryLoading.collectAsState()
     val searchState by viewModel.searchState.collectAsState()

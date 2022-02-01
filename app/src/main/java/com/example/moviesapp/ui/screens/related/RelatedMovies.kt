@@ -24,10 +24,10 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun RelatedMovies(
+    viewModel: RelatedMoviesViewModel = hiltViewModel(),
     movieRelationInfo: MovieRelationInfo,
     navigator: DestinationsNavigator
 ) {
-    val viewModel: RelatedMoviesViewModel = hiltViewModel()
     val movies = viewModel.movies?.collectAsLazyPagingItems()
 
     val appbarTitle = when (movieRelationInfo.type) {
