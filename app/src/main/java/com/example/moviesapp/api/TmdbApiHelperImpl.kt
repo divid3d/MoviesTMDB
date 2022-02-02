@@ -138,4 +138,6 @@ class TmdbApiHelperImpl @Inject constructor(
         tvSeriesId: Int
     ): Call<ReviewsResponse> = tmdbApi.getTvSeriesReview(tvSeriesId)
 
+    override fun getCollection(collectionId: Int, isoCode: String): Call<CollectionResponse> =
+        tmdbApi.getCollection(collectionId, isoCode)
 }

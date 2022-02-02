@@ -22,6 +22,9 @@ data class MovieDetails(
     @Json(name = "imdb_id")
     val imdbId: String?,
 
+    @Json(name = "belongs_to_collection")
+    val collection: Collection?,
+
     @Json(name = "original_language")
     val originalLanguage: String,
 

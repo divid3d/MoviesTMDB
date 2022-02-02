@@ -94,4 +94,6 @@
 
     <string name="reviews_screen_appbar_title">Recenzje</string>
 
+    <string name="error_dialog_default_text">Ups, coś poszło nie tak.</string>
+
 </resources>

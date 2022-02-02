@@ -42,6 +42,7 @@ class MoviesDetailsViewModel @Inject constructor(
     private val _movieDetails: MutableStateFlow<MovieDetails?> = MutableStateFlow(null)
     private val _credits: MutableStateFlow<Credits?> = MutableStateFlow(null)
     private val _movieBackdrops: MutableStateFlow<List<Image>?> = MutableStateFlow(null)
+    private val _movieCollection: MutableStateFlow<MovieCollection?> = MutableStateFlow(null)
     private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     var similarMoviesPagingDataFlow: Flow<PagingData<Presentable>>? = null
@@ -77,6 +78,14 @@ class MoviesDetailsViewModel @Inject constructor(
     ) { id, favouritesIds ->
         id in favouritesIds
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
+
+    val movieCollection: StateFlow<MovieCollection?> = combine(
+        _movieCollection, config
+    ) { collection, config ->
+        collection?.copy(
+            parts = collection.parts.map { part -> part.appendUrls(config) }
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     val credits: StateFlow<Credits?> = combine(
         _credits, config
@@ -151,6 +160,10 @@ class MoviesDetailsViewModel @Inject constructor(
                 viewModelScope.launch {
                     val movieDetails = data
                     _movieDetails.emit(movieDetails)
+
+                    data?.collection?.id?.let { collectionId ->
+                        getMovieCollection(collectionId)
+                    }
                 }
             }
 
@@ -223,4 +236,33 @@ class MoviesDetailsViewModel @Inject constructor(
         }
     }
 
+    private fun getMovieCollection(collectionId: Int) {
+        movieRepository.collection(collectionId).request { response ->
+            response.onSuccess {
+                viewModelScope.launch {
+                    val collectionResponse = data
+
+                    collectionResponse?.let { response ->
+                        val name = response.name
+                        val parts = response.parts
+
+                        val movieCollection = MovieCollection(
+                            name = name,
+                            parts = parts
+                        )
+
+                        _movieCollection.emit(movieCollection)
+                    }
+                }
+            }
+
+            response.onFailure {
+                onError(message)
+            }
+
+            response.onException {
+                onError(message)
+            }
+        }
+    }
 }

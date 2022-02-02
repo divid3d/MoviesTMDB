@@ -93,4 +93,7 @@ class MovieRepository @Inject constructor(
         }.flow
 
     fun movieReview(movieId: Int): Call<ReviewsResponse> = apiHelper.getMovieReview(movieId)
+
+    fun collection(collectionId: Int): Call<CollectionResponse> =
+        apiHelper.getCollection(collectionId)
 }

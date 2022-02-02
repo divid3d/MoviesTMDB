@@ -92,4 +92,5 @@ interface TmdbApiHelper {
 
     fun getTvSeriesReview(tvSeriesId: Int): Call<ReviewsResponse>
 
+    fun getCollection(collectionId: Int, isoCode: String = "pl-PL"): Call<CollectionResponse>
 }

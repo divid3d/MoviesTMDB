@@ -24,9 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
-import com.example.moviesapp.model.MediaType
-import com.example.moviesapp.model.MovieRelationInfo
-import com.example.moviesapp.model.RelationType
+import com.example.moviesapp.model.*
 import com.example.moviesapp.other.formattedMoney
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
@@ -52,6 +50,7 @@ fun MovieDetailsScreen(
     val isFavourite by viewModel.isFavourite.collectAsState()
     val credits by viewModel.credits.collectAsState()
     val backdrops by viewModel.backdrops.collectAsState()
+    val movieCollection by viewModel.movieCollection.collectAsState()
 
     val similarMoviesState = viewModel.similarMoviesPagingDataFlow?.collectAsLazyPagingItems()
     val moviesRecommendationState =
@@ -162,6 +161,25 @@ fun MovieDetailsScreen(
                 )
             }
 
+            movieCollection?.let { collection ->
+                if (collection.parts.isNotEmpty()) {
+                    PresentableListSection(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = MaterialTheme.spacing.small)
+                            .animateContentSize(),
+                        title = collection.name,
+                        list = collection.parts
+                    ) { movieId ->
+                        navigator.navigate(
+                            MovieDetailsScreenDestination(
+                                movieId = movieId,
+                                startRoute = startRoute
+                            )
+                        )
+                    }
+                }
+            }
 
             credits?.cast?.let { castMembers ->
                 MemberSection(

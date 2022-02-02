@@ -178,3 +178,13 @@ fun AuthorDetails.appendUrls(
     )
 }
 
+fun Part.appendUrls(
+    config: Config?
+): Part {
+    val posterUrl = config?.getImageUrl(posterPath)
+
+    return copy(
+        posterUrl = posterUrl
+    )
+}
+

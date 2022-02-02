@@ -181,5 +181,10 @@ interface TmdbApi {
         @Path("tv_id") tvSeriesId: Int
     ): Call<ReviewsResponse>
 
+    @GET("collection/{collection_id}")
+    fun getCollection(
+        @Path("collection_id") collectionId: Int,
+        @Query("language") isoCode: String
+    ): Call<CollectionResponse>
 }
 

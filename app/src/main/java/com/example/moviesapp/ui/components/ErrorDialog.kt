@@ -31,9 +31,7 @@ fun ErrorDialog(
             )
         },
         text = {
-            errorMessage?.let { message ->
-                Text(text = message)
-            }
+            Text(text = errorMessage ?: stringResource(R.string.error_dialog_default_text))
         },
         confirmButton = {
             OutlinedButton(
