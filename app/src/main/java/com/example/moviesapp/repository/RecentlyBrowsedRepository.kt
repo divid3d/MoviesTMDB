@@ -47,6 +47,12 @@ class RecentlyBrowsedRepository @Inject constructor(
         }
     }
 
+    fun clear() {
+        externalScope.launch {
+            recentlyBrowsedMoviesDao.clear()
+        }
+    }
+
     fun recentlyBrowsedMovies(): Flow<PagingData<RecentlyBrowsedMovie>> = Pager(
         PagingConfig(pageSize = 20)
     ) {

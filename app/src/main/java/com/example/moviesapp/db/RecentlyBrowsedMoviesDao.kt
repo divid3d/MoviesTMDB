@@ -36,4 +36,7 @@ interface RecentlyBrowsedMoviesDao {
         addRecentlyBrowsedMovie(*recentlyBrowsedMovie)
     }
 
+    @Query("DELETE FROM RecentlyBrowsedMovie")
+    suspend fun clear()
+
 }
