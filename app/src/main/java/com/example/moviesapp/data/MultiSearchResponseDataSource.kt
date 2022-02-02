@@ -5,6 +5,8 @@ import androidx.paging.PagingState
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.model.SearchResult
+import retrofit2.HttpException
+import java.io.IOException
 
 class MultiSearchResponseDataSource(
     private val apiHelper: TmdbApiHelper,
@@ -38,8 +40,10 @@ class MultiSearchResponseDataSource(
                 prevKey = if (nextPage == 1) null else nextPage - 1,
                 nextKey = if (currentPage + 1 > totalPages) null else currentPage + 1
             )
-        } catch (e: Exception) {
-            LoadResult.Error(e)
+        } catch (e: IOException) {
+            return LoadResult.Error(e)
+        } catch (e: HttpException) {
+            return LoadResult.Error(e)
         }
     }
 

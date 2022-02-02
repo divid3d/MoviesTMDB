@@ -4,6 +4,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.moviesapp.model.Review
 import com.example.moviesapp.model.ReviewsResponse
+import retrofit2.HttpException
+import java.io.IOException
 
 class ReviewsDataSource(
     private val mediaId: Int,
@@ -22,8 +24,10 @@ class ReviewsDataSource(
                 prevKey = if (nextPage == 1) null else nextPage - 1,
                 nextKey = if (currentPage + 1 > totalPages) null else currentPage + 1
             )
-        } catch (e: Exception) {
-            LoadResult.Error(e)
+        } catch (e: IOException) {
+            return LoadResult.Error(e)
+        } catch (e: HttpException) {
+            return LoadResult.Error(e)
         }
     }
 
