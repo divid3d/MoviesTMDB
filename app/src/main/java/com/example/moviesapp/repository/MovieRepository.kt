@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.data.MovieDetailsResponseDataSource
 import com.example.moviesapp.data.MovieResponseDataSource
-import com.example.moviesapp.data.MovieReviewsDataSource
+import com.example.moviesapp.data.ReviewsDataSource
 import com.example.moviesapp.model.*
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Call
@@ -82,16 +82,15 @@ class MovieRepository @Inject constructor(
         movieId: Int
     ): Call<ImagesResponse> = apiHelper.getMovieImages(movieId)
 
-
     fun movieReviews(movieId: Int): Flow<PagingData<Review>> =
         Pager(
-            PagingConfig(pageSize = 20)
+            PagingConfig(pageSize = 5)
         ) {
-            MovieReviewsDataSource(
-                movieId = movieId,
+            ReviewsDataSource(
+                mediaId = movieId,
                 apiHelperMethod = apiHelper::getMovieReviews
             )
         }.flow
 
-    fun movieReview(movieId: Int): Call<MovieReviewsResponse> = apiHelper.getMovieReview(movieId)
+    fun movieReview(movieId: Int): Call<ReviewsResponse> = apiHelper.getMovieReview(movieId)
 }

@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.moviesapp.api.TmdbApiHelper
+import com.example.moviesapp.data.ReviewsDataSource
 import com.example.moviesapp.data.TvSeriesDetailsResponseDataSource
 import com.example.moviesapp.data.TvSeriesResponseDataSource
 import com.example.moviesapp.model.*
@@ -95,5 +96,18 @@ class TvSeriesRepository @Inject constructor(
         seasonNumber: Int,
         episodeNumber: Int
     ): Call<ImagesResponse> = apiHelper.getEpisodeImages(tvSeriesId, seasonNumber, episodeNumber)
+
+    fun tvSeriesReviews(tvSeriesId: Int): Flow<PagingData<Review>> =
+        Pager(
+            PagingConfig(pageSize = 5)
+        ) {
+            ReviewsDataSource(
+                mediaId = tvSeriesId,
+                apiHelperMethod = apiHelper::getTvSeriesReviews
+            )
+        }.flow
+
+    fun tvSeriesReview(tvSeriesId: Int): Call<ReviewsResponse> =
+        apiHelper.getTvSeriesReview(tvSeriesId)
 
 }

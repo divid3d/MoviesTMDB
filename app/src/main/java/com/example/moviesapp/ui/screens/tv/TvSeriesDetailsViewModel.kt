@@ -45,6 +45,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
     var similarTvSeries: Flow<PagingData<Presentable>>? = null
     var tvSeriesRecommendations: Flow<PagingData<Presentable>>? = null
     private val _tvSeriesBackdrops: MutableStateFlow<List<Image>?> = MutableStateFlow(null)
+    private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     val tvSeriesDetails: StateFlow<TvSeriesDetails?> = combine(
         _tvSeriesDetails, config
@@ -88,6 +89,9 @@ class TvSeriesDetailsViewModel @Inject constructor(
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
+    val hasReviews: StateFlow<Boolean> = _hasReviews.asStateFlow()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
+
     init {
         viewModelScope.launch {
             tvSeriesId.collectLatest { tvSeriesId ->
@@ -125,6 +129,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
     private fun getTvSeriesInfo(tvSeriesId: Int) {
         getTvSeriesDetails(tvSeriesId)
         getMovieImages(tvSeriesId)
+        getTvSeriesReview(tvSeriesId)
     }
 
     private fun getTvSeriesDetails(tvSeriesId: Int) {
@@ -195,6 +200,26 @@ class TvSeriesDetailsViewModel @Inject constructor(
                 }
             } else {
                 _selectedSeason.emit(null)
+            }
+        }
+    }
+
+    private fun getTvSeriesReview(tvSeriesId: Int) {
+        tvSeriesRepository.tvSeriesReview(tvSeriesId).request { response ->
+            response.onSuccess {
+                viewModelScope.launch {
+                    val hasReviews = (data?.totalResults ?: 0) > 1
+
+                    _hasReviews.emit(hasReviews)
+                }
+            }
+
+            response.onFailure {
+                onError(message)
+            }
+
+            response.onException {
+                onError(message)
             }
         }
     }

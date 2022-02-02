@@ -163,12 +163,23 @@ interface TmdbApi {
     suspend fun getMovieReviews(
         @Path("movie_id") movieId: Int,
         @Query("page") page: Int
-    ): MovieReviewsResponse
+    ): ReviewsResponse
 
     @GET("movie/{movie_id}/reviews")
     fun getMovieReview(
         @Path("movie_id") movieId: Int
-    ): Call<MovieReviewsResponse>
+    ): Call<ReviewsResponse>
+
+    @GET("tv/{tv_id}/reviews")
+    suspend fun getTvSeriesReviews(
+        @Path("tv_id") movieId: Int,
+        @Query("page") page: Int
+    ): ReviewsResponse
+
+    @GET("tv/{tv_id}/reviews")
+    fun getTvSeriesReview(
+        @Path("tv_id") tvSeriesId: Int
+    ): Call<ReviewsResponse>
 
 }
 

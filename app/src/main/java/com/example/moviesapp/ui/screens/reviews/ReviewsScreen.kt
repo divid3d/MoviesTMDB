@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.reviews
 
+import android.os.Parcelable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
@@ -15,17 +16,25 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import com.example.moviesapp.R
+import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.ReviewItem
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class ReviewsScreenNavArgs(
+    val mediaId: Int,
+    val type: MediaType
+) : Parcelable
 
 @Destination
 @Composable
 fun ReviewsScreen(
     viewModel: ReviewsViewModel = hiltViewModel(),
-    movieId: Int,
+    navArgs: ReviewsScreenNavArgs,
     navigator: DestinationsNavigator
 ) {
     val reviews = viewModel.review?.collectAsLazyPagingItems()

@@ -24,15 +24,18 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
+import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.model.TvSeriesRelationInfo
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.screens.destinations.RelatedTvSeriesDestination
+import com.example.moviesapp.ui.screens.destinations.ReviewsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.SeasonDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.movies.components.OverviewSection
+import com.example.moviesapp.ui.screens.reviews.ReviewsScreenNavArgs
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
@@ -52,6 +55,8 @@ fun TvSeriesDetailsScreen(
     val similar = viewModel.similarTvSeries?.collectAsLazyPagingItems()
     val recommendations = viewModel.tvSeriesRecommendations?.collectAsLazyPagingItems()
     val backdrops by viewModel.backdrops.collectAsState()
+    val hasReviews by viewModel.hasReviews.collectAsState()
+
 
     val scrollState = rememberScrollState()
 
@@ -268,6 +273,25 @@ fun TvSeriesDetailsScreen(
                             startRoute = startRoute
                         )
                     )
+                }
+            }
+
+            if (hasReviews) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    SectionDivider(
+                        modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
+                    )
+
+                    ReviewSection(modifier = Modifier.fillMaxWidth()) {
+                        val args = ReviewsScreenNavArgs(
+                            mediaId = tvSeriesId,
+                            type = MediaType.Tv
+                        )
+
+                        navigator.navigate(
+                            ReviewsScreenDestination(args)
+                        )
+                    }
                 }
             }
 

@@ -2,17 +2,17 @@ package com.example.moviesapp.data
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.moviesapp.model.MovieReviewsResponse
 import com.example.moviesapp.model.Review
+import com.example.moviesapp.model.ReviewsResponse
 
-class MovieReviewsDataSource(
-    private val movieId: Int,
-    private inline val apiHelperMethod: suspend (Int, Int) -> MovieReviewsResponse
+class ReviewsDataSource(
+    private val mediaId: Int,
+    private inline val apiHelperMethod: suspend (Int, Int) -> ReviewsResponse
 ) : PagingSource<Int, Review>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Review> {
         return try {
             val nextPage = params.key ?: 1
-            val reviewsResponse = apiHelperMethod(movieId, nextPage)
+            val reviewsResponse = apiHelperMethod(mediaId, nextPage)
 
             val currentPage = reviewsResponse.page
             val totalPages = reviewsResponse.totalPages

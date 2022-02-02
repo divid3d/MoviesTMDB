@@ -120,13 +120,22 @@ class TmdbApiHelperImpl @Inject constructor(
         episodeNumber: Int
     ): Call<ImagesResponse> = tmdbApi.getEpisodeImages(tvSeriesId, seasonNumber, episodeNumber)
 
-
     override suspend fun getMovieReviews(
         movieId: Int,
         page: Int
-    ): MovieReviewsResponse = tmdbApi.getMovieReviews(movieId, page)
+    ): ReviewsResponse = tmdbApi.getMovieReviews(movieId, page)
 
     override fun getMovieReview(
         movieId: Int
-    ): Call<MovieReviewsResponse> = tmdbApi.getMovieReview(movieId)
+    ): Call<ReviewsResponse> = tmdbApi.getMovieReview(movieId)
+
+    override suspend fun getTvSeriesReviews(
+        tvSeriesId: Int,
+        page: Int
+    ): ReviewsResponse = tmdbApi.getTvSeriesReviews(tvSeriesId, page)
+
+    override fun getTvSeriesReview(
+        tvSeriesId: Int
+    ): Call<ReviewsResponse> = tmdbApi.getTvSeriesReview(tvSeriesId)
+
 }
