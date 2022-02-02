@@ -225,7 +225,7 @@ fun EpisodeChip(
     Card(
         modifier = modifier.clickable { onClick() },
         shape = MaterialTheme.shapes.small,
-        border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.primary),
+        border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.primary.copy(0.5f)),
         backgroundColor = MaterialTheme.colors.background
     ) {
         Column(
