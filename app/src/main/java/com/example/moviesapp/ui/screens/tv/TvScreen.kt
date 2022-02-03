@@ -23,6 +23,7 @@ import com.example.moviesapp.ui.screens.destinations.BrowseTvSeriesScreenDestina
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -45,6 +46,7 @@ fun TvScreen(
         listOf(
             topRated,
             onTheAir,
+            trending,
             popular,
             airingToday
         ).any { lazyPagingItems -> lazyPagingItems.itemCount > 0 && lazyPagingItems.loadState.refresh is LoadState.Loading }
@@ -56,6 +58,7 @@ fun TvScreen(
         listOf(
             topRated,
             onTheAir,
+            trending,
             popular,
             airingToday
         ).forEach { lazyPagingItems -> lazyPagingItems.refresh() }
@@ -71,6 +74,16 @@ fun TvScreen(
 
     SwipeRefresh(
         state = swipeRefreshState,
+        indicator = { state, trigger ->
+            SwipeRefreshIndicator(
+                state = state,
+                refreshTriggerDistance = trigger,
+                fade = true,
+                scale = true,
+                backgroundColor = MaterialTheme.colors.surface,
+                contentColor = MaterialTheme.colors.primary
+            )
+        },
         onRefresh = refreshAllPagingData
     ) {
         Column(

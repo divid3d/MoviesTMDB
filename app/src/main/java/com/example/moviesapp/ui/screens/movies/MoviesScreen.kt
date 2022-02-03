@@ -25,6 +25,7 @@ import com.example.moviesapp.ui.screens.destinations.BrowseMoviesScreenDestinati
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -71,6 +72,7 @@ fun MoviesScreen(
             discover,
             upcoming,
             topRated,
+            trending,
             nowPlaying
         ).any { lazyPagingItems -> lazyPagingItems.itemCount > 0 && lazyPagingItems.loadState.refresh is LoadState.Loading }
     }
@@ -82,6 +84,7 @@ fun MoviesScreen(
             discover,
             upcoming,
             topRated,
+            trending,
             nowPlaying
         ).forEach { lazyPagingItems -> lazyPagingItems.refresh() }
     }
@@ -96,6 +99,16 @@ fun MoviesScreen(
 
     SwipeRefresh(
         state = swipeRefreshState,
+        indicator = { state, trigger ->
+            SwipeRefreshIndicator(
+                state = state,
+                refreshTriggerDistance = trigger,
+                fade = true,
+                scale = true,
+                backgroundColor = MaterialTheme.colors.surface,
+                contentColor = MaterialTheme.colors.primary
+            )
+        },
         onRefresh = refreshAllPagingData
     ) {
         Column(
