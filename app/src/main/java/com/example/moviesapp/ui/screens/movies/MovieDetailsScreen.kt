@@ -170,13 +170,15 @@ fun MovieDetailsScreen(
                             .animateContentSize(),
                         title = collection.name,
                         list = collection.parts
-                    ) { movieId ->
-                        navigator.navigate(
-                            MovieDetailsScreenDestination(
-                                movieId = movieId,
-                                startRoute = startRoute
+                    ) { id ->
+                        if (movieId != id) {
+                            navigator.navigate(
+                                MovieDetailsScreenDestination(
+                                    movieId = id,
+                                    startRoute = startRoute
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }

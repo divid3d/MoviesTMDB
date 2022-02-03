@@ -16,7 +16,7 @@ data class SearchResult(
     @Json(name = "media_type")
     val mediaType: MediaType,
 
-    override val overview: String,
+    override val overview: String?,
 
     @Json(name = "poster_path")
     override val posterPath: String?,
