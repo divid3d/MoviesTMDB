@@ -30,7 +30,7 @@ fun Modifier.defaultPlaceholder() = composed {
                 repeatMode = RepeatMode.Restart
             )
         ),
-        color = MaterialTheme.colors.background,
+        color = MaterialTheme.colors.surface,
         shape = MaterialTheme.shapes.medium
     )
 }

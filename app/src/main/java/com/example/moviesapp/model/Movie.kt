@@ -2,7 +2,6 @@ package com.example.moviesapp.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.util.*
 
 
 @JsonClass(generateAdapter = true)
@@ -17,7 +16,7 @@ data class Movie(
     override val overview: String,
 
     @Json(name = "release_date")
-    val releaseDate: Date?,
+    val releaseDate: String?,
 
     @Json(name = "genre_ids")
     val genreIds: List<Int>,

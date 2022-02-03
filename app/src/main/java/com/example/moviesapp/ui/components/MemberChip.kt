@@ -1,6 +1,7 @@
 package com.example.moviesapp.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -36,22 +37,21 @@ fun MemberResultChip(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (member.profileUrl != null) {
-            Box {
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f),
-                    painter = rememberImagePainter(
-                        data = member.profileUrl,
-                        builder = {
-                            transformations(CircleCropTransformation())
-                            crossfade(true)
-                        }
-                    ),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillBounds
-                )
-            }
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colors.surface, shape = CircleShape)
+                    .aspectRatio(1f),
+                painter = rememberImagePainter(
+                    data = member.profileUrl,
+                    builder = {
+                        transformations(CircleCropTransformation())
+                        crossfade(true)
+                    }
+                ),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds
+            )
         } else {
             MemberNoPhotoChip()
         }
@@ -98,6 +98,7 @@ fun MemberNoPhotoChip(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1f)
+            .background(color = MaterialTheme.colors.surface, shape = CircleShape)
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colors.primary.copy(alpha = 0.5f),

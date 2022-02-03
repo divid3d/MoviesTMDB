@@ -184,35 +184,39 @@ fun MovieDetailsScreen(
             }
 
             credits?.cast?.let { castMembers ->
-                MemberSection(
-                    modifier = Modifier
-                        .padding(top = MaterialTheme.spacing.medium)
-                        .fillMaxWidth()
-                        .animateContentSize(),
-                    title = "Obsada",
-                    members = castMembers,
-                    contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                )
+                if (castMembers.isNotEmpty()) {
+                    MemberSection(
+                        modifier = Modifier
+                            .padding(top = MaterialTheme.spacing.medium)
+                            .fillMaxWidth()
+                            .animateContentSize(),
+                        title = "Obsada",
+                        members = castMembers,
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
+                    )
 
-                SectionDivider(
-                    modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
-                )
+                    SectionDivider(
+                        modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
+                    )
+                }
             }
 
             credits?.crew?.let { crewMembers ->
-                MemberSection(
-                    modifier = Modifier
-                        .padding(top = MaterialTheme.spacing.small)
-                        .fillMaxWidth()
-                        .animateContentSize(),
-                    title = "Ekipa filmowa",
-                    members = crewMembers,
-                    contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                )
+                if (crewMembers.isNotEmpty()) {
+                    MemberSection(
+                        modifier = Modifier
+                            .padding(top = MaterialTheme.spacing.small)
+                            .fillMaxWidth()
+                            .animateContentSize(),
+                        title = "Ekipa filmowa",
+                        members = crewMembers,
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
+                    )
 
-                SectionDivider(
-                    modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
-                )
+                    SectionDivider(
+                        modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
+                    )
+                }
             }
 
 

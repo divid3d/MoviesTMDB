@@ -77,7 +77,8 @@ fun SearchScreen(
             onQueryChange = viewModel::onQueryChange,
             onQueryClear = viewModel::onQueryClear,
             onVoiceSearchClick = {
-                speechToTextLauncher.launch(null)
+
+            speechToTextLauncher.launch(null)
             }
         )
         Crossfade(

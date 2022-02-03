@@ -55,8 +55,7 @@ fun PresentableItem(
             .graphicsLayer {
                 transformations()
             },
-        shape = MaterialTheme.shapes.medium,
-        backgroundColor = MaterialTheme.colors.background
+        shape = MaterialTheme.shapes.medium
     ) {
         when (presentableState) {
             is PresentableItemState.Loading -> {
@@ -88,7 +87,7 @@ fun NoPhotoPresentableItem(
 ) {
     Box(
         modifier = modifier
-            .background(MaterialTheme.colors.background)
+            .background(MaterialTheme.colors.surface)
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colors.primary.copy(alpha = 0.5f),

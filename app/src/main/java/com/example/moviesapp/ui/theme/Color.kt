@@ -9,6 +9,8 @@ val Teal200 = Color(0xFF03DAC5)
 val Black500 = Color(0x7F000000)
 val White300 = Color(0xFFFFFFFF).copy(alpha = 0.3f)
 val White500 = Color(0xFFFFFFFF).copy(alpha = 0.5f)
+val ShadowGrey = Color(0xFF363636)
+val Charcoal = Color(0xFF222021)
 
 val DarkGreen = Color(0xFF0f9246)
 val LightGreen = Color(0xFF7dbb42)

@@ -54,7 +54,7 @@ fun NetworkChip(
         modifier = modifier
             .width(80.dp)
             .background(
-                color = Color.White.copy(0.1f),
+                color = MaterialTheme.colors.surface,
                 shape = MaterialTheme.shapes.small
             )
             .border(
