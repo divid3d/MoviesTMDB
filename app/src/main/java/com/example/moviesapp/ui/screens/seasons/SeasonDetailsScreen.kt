@@ -36,7 +36,6 @@ import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.other.formatted
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
-import com.example.moviesapp.ui.screens.movies.components.OverviewSection
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -133,8 +132,9 @@ fun SeasonDetailsScreen(
                                 fontWeight = FontWeight.Bold
                             )
                         )
-                        OverviewSection(
-                            overview = details.overview
+                        ExpandableText(
+                            modifier = Modifier.fillMaxSize(),
+                            text = details.overview
                         )
                     }
                 }

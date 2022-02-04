@@ -33,8 +33,8 @@
     <string name="recently_browsed_tv_series">Recently browsed</string>
     <string name="trending_tv_series">Trending</string>
 
-    <string name="read_more">Read more</string>
-    <string name="read_less">Read less</string>
+    <string name="show_more">Show\u00A0more</string>
+    <string name="show_less">Show\u00A0less</string>
 
     <string name="movie_details_label">Movie details</string>
     <string name="movie_details_budget">Budget</string>

@@ -24,14 +24,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
-import com.example.moviesapp.model.*
+import com.example.moviesapp.model.MediaType
+import com.example.moviesapp.model.MovieRelationInfo
+import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.other.formattedMoney
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.RelatedMoviesDestination
 import com.example.moviesapp.ui.screens.destinations.ReviewsScreenDestination
-import com.example.moviesapp.ui.screens.movies.components.OverviewSection
 import com.example.moviesapp.ui.screens.reviews.ReviewsScreenNavArgs
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
@@ -151,8 +152,10 @@ fun MovieDetailsScreen(
                             )
                         }
                     }
-                    OverviewSection(
-                        overview = details.overview
+
+                    ExpandableText(
+                        modifier = Modifier.fillMaxSize(),
+                        text = details.overview
                     )
                 }
 

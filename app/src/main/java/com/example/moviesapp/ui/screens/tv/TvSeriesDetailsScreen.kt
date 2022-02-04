@@ -29,12 +29,7 @@ import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.model.TvSeriesRelationInfo
 import com.example.moviesapp.ui.components.*
-import com.example.moviesapp.ui.screens.destinations.RelatedTvSeriesDestination
-import com.example.moviesapp.ui.screens.destinations.ReviewsScreenDestination
-import com.example.moviesapp.ui.screens.destinations.SeasonDetailsScreenDestination
-import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
-import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
-import com.example.moviesapp.ui.screens.movies.components.OverviewSection
+import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.screens.reviews.ReviewsScreenNavArgs
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
@@ -141,9 +136,11 @@ fun TvSeriesDetailsScreen(
                         }
                     }
 
-                    OverviewSection(
-                        modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
-                        overview = details.overview
+                    ExpandableText(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = MaterialTheme.spacing.medium),
+                        text = details.overview
                     )
 
                     SectionDivider(

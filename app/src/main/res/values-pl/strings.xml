@@ -33,8 +33,8 @@
     <string name="recently_browsed_tv_series">Ostatnio przeglądane</string>
     <string name="trending_tv_series">Zyskujące na popularności</string>
 
-    <string name="read_more">Czytaj więcej</string>
-    <string name="read_less">Czytaj mniej</string>
+    <string name="show_more">Pokaż\u00A0więcej</string>
+    <string name="show_less">Pokaż\u00A0mniej</string>
 
     <string name="movie_details_label">Szczegóły filmu</string>
     <string name="movie_details_budget">Budżet</string>

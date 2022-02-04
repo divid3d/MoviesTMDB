@@ -33,7 +33,7 @@ data class TvSeries(
     @Json(name = "backdrop_path")
     override val backdropPath: String?,
 
-    val popularity: Float,
+    val popularity: Float?,
 
     @Json(name = "vote_count")
     override val voteCount: Int,
