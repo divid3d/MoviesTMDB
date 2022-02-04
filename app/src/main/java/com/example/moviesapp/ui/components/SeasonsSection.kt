@@ -51,22 +51,6 @@ fun SeasonsSection(
                     )
                 }
             }
-//            androidx.compose.animation.AnimatedVisibility(
-//                modifier = Modifier
-//                    .align(Alignment.CenterStart)
-//                    .padding(start = MaterialTheme.spacing.small),
-//                visible = showScrollToBeginningButton,
-//                enter = slideIn(
-//                    animationSpec = tween(),
-//                    initialOffset = { size -> IntOffset(-size.width, 0) }),
-//                exit = slideOut(
-//                    animationSpec = tween(),
-//                    targetOffset = { size -> IntOffset(-size.width, 0) }),
-//            ) {
-//                ScrollToStartButton(
-//                    onClick = onScrollToStartClick
-//                )
-//            }
         }
     }
 

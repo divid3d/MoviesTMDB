@@ -2,6 +2,7 @@ package com.example.moviesapp.ui.screens.movies
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -169,7 +170,8 @@ fun MovieDetailsScreen(
                     PresentableListSection(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = MaterialTheme.spacing.small)
+                            .background(MaterialTheme.colors.surface)
+                            .padding(vertical = MaterialTheme.spacing.small)
                             .animateContentSize(),
                         title = collection.name,
                         list = collection.parts
@@ -190,7 +192,7 @@ fun MovieDetailsScreen(
                 if (castMembers.isNotEmpty()) {
                     MemberSection(
                         modifier = Modifier
-                            .padding(top = MaterialTheme.spacing.medium)
+                            .padding(top = MaterialTheme.spacing.small)
                             .fillMaxWidth()
                             .animateContentSize(),
                         title = "Obsada",

@@ -2,6 +2,7 @@ package com.example.moviesapp.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -51,6 +52,7 @@ fun ReviewItem(
     Card(
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
+        backgroundColor = MaterialTheme.colors.surface,
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.primary.copy(0.5f))
     ) {
         Column(
@@ -83,6 +85,7 @@ fun ReviewItem(
                     Box(
                         modifier = Modifier
                             .size(48.dp)
+                            .background(color = MaterialTheme.colors.surface, shape = CircleShape)
                             .border(
                                 width = 1.dp,
                                 color = MaterialTheme.colors.primary.copy(alpha = 0.5f),

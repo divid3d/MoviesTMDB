@@ -2,6 +2,7 @@ package com.example.moviesapp.ui.screens.tv
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -174,8 +175,6 @@ fun TvSeriesDetailsScreen(
                         SectionDivider(
                             modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
                         )
-
-                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
                     }
                 }
             }
@@ -185,6 +184,8 @@ fun TvSeriesDetailsScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(MaterialTheme.colors.surface)
+                            .padding(vertical = MaterialTheme.spacing.small)
                             .animateContentSize()
                     ) {
                         SeasonsSection(
@@ -207,9 +208,7 @@ fun TvSeriesDetailsScreen(
                         }
                     }
 
-                    SectionDivider(
-                        modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
-                    )
+                    SectionDivider()
                 }
             }
 
