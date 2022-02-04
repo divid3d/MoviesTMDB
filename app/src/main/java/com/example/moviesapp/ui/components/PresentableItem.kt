@@ -45,6 +45,7 @@ fun PresentableItem(
     presentableState: PresentableItemState,
     showTitle: Boolean = true,
     showScore: Boolean = false,
+    showAdult: Boolean = false,
     transformations: GraphicsLayerScope.() -> Unit = {},
     onClick: (() -> Unit)? = null
 ) {
@@ -74,6 +75,7 @@ fun PresentableItem(
                     presentable = presentableState.presentable,
                     showScore = showScore,
                     showTitle = showTitle,
+                    showAdult = showAdult,
                     onClick = onClick
                 )
             }
@@ -140,6 +142,7 @@ fun ResultPresentableItem(
     presentable: Presentable,
     showScore: Boolean = false,
     showTitle: Boolean = true,
+    showAdult: Boolean = false,
     onClick: (() -> Unit)? = null
 ) {
 
@@ -205,6 +208,17 @@ fun ResultPresentableItem(
                         top = MaterialTheme.spacing.extraSmall
                     ),
                 score = presentable.voteAverage,
+            )
+        }
+
+        if (presentable.adult == true && showAdult) {
+            AdultChip(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(
+                        start = MaterialTheme.spacing.extraSmall,
+                        bottom = MaterialTheme.spacing.extraSmall
+                    )
             )
         }
     }

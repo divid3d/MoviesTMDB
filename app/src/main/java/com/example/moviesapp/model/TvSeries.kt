@@ -47,6 +47,8 @@ data class TvSeries(
     @Transient
     override val backdropUrl: String? = null
 ) : Presentable {
+    override val adult: Boolean?
+        get() = null
     override val title: String
         get() = name.orEmpty()
 }

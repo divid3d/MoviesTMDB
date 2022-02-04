@@ -8,7 +8,7 @@ import java.util.*
 data class MovieDetails(
     override val id: Int,
 
-    val adult: Boolean,
+    override val adult: Boolean,
 
     @Json(name = "backdrop_path")
     override val backdropPath: String?,

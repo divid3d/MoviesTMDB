@@ -37,8 +37,9 @@ data class MovieFavourite(
     override val backdropUrl: String?,
 
     @Ignore
-    override val posterUrl: String?
-) : Presentable {
+    override val posterUrl: String?,
+
+    ) : Presentable {
     constructor(
         id: Int,
         backdropPath: String?,
@@ -62,4 +63,7 @@ data class MovieFavourite(
         null,
         null
     )
+
+    override val adult: Boolean?
+        get() = null
 }

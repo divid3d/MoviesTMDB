@@ -26,8 +26,9 @@ data class RecentlyBrowsedMovie(
     override val posterUrl: String? = null,
 
     @Transient
-    override val backdropUrl: String? = null
-) : Presentable {
+    override val backdropUrl: String? = null,
+
+    ) : Presentable {
     constructor(
         id: Int,
         posterPath: String?,
@@ -44,10 +45,15 @@ data class RecentlyBrowsedMovie(
         null
     )
 
+    override val adult: Boolean?
+        get() = null
+
     override val overview: String?
         get() = null
     override val voteAverage: Float
         get() = 0f
     override val voteCount: Int
         get() = 0
+
+
 }

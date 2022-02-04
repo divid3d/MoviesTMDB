@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 data class Part(
     override val id: Int,
 
-    val adult: Boolean,
+    override val adult: Boolean?,
 
     @Json(name = "genre_ids")
     val genreIds: List<Int>,

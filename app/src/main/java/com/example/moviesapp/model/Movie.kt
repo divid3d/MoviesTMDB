@@ -11,7 +11,7 @@ data class Movie(
     @Json(name = "poster_path")
     override val posterPath: String?,
 
-    val adult: Boolean,
+    override val adult: Boolean?,
 
     override val overview: String,
 

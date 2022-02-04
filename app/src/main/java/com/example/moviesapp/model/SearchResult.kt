@@ -32,6 +32,8 @@ data class SearchResult(
         get() = null
     override val voteCount: Int
         get() = 0
+    override val adult: Boolean?
+        get() = null
 
     override val title: String
         get() = when {

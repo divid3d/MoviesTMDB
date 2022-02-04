@@ -27,6 +27,7 @@ data class RecentlyBrowsedTvSeries(
 
     @Ignore
     override val posterUrl: String?
+
 ) : Presentable {
     constructor(
         id: Int,
@@ -43,6 +44,9 @@ data class RecentlyBrowsedTvSeries(
         null,
         null
     )
+
+    override val adult: Boolean?
+        get() = null
 
     override val title: String
         get() = name

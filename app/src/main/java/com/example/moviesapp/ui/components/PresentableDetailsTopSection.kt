@@ -127,6 +127,7 @@ fun PresentableDetailsTopSection(
                     size = MaterialTheme.sizes.presentableItemBig,
                     showScore = true,
                     showTitle = false,
+                    showAdult = true,
                     presentableState = presentableItemState
                 )
                 Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))

@@ -26,6 +26,8 @@ data class SeasonDetails(
     @Transient
     override val posterUrl: String? = null
 ) : Presentable {
+    override val adult: Boolean?
+        get() = null
     override val title: String
         get() = name
     override val backdropPath: String?
