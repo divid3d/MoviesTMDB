@@ -108,7 +108,7 @@ fun PresentableScoreItem(
 
         }
         Column(
-            modifier = Modifier.padding(MaterialTheme.spacing.medium),
+            modifier = Modifier.padding(MaterialTheme.spacing.small),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
