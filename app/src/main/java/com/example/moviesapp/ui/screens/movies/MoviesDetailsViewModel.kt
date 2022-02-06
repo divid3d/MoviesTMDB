@@ -231,7 +231,6 @@ class MoviesDetailsViewModel @Inject constructor(
         }
     }
 
-
     private fun getMovieImages(movieId: Int) {
         movieRepository.movieImages(movieId).request { response ->
             response.onSuccess {
