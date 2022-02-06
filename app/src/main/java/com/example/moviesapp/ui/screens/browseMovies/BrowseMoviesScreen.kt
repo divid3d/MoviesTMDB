@@ -53,6 +53,9 @@ fun BrowseMoviesScreen(
         MovieType.Trending -> stringResource(R.string.all_movies_trending_label)
     }
 
+    val showClearButton = movieType == MovieType.RecentlyBrowsed
+            && movies?.itemSnapshotList?.isEmpty() != true
+
     var showClearDialog by remember { mutableStateOf(false) }
 
     val showDialog = {
@@ -65,7 +68,7 @@ fun BrowseMoviesScreen(
 
     if (showClearDialog) {
         InfoDialog(
-            infoText = "Czy na pewno chcesz wyczyścić ostatnio przeglądane filmy?",
+            infoText = stringResource(R.string.clear_recent_movies_dialog_text),
             onDismissRequest = dismissDialog,
             onCancelClick = dismissDialog,
             onConfirmClick = {
@@ -86,7 +89,7 @@ fun BrowseMoviesScreen(
             }
         }, trailing = {
             AnimatedVisibility(
-                visible = movieType == MovieType.RecentlyBrowsed && movies?.itemSnapshotList?.isEmpty() != true,
+                visible = showClearButton,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {

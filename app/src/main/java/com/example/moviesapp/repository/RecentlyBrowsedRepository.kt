@@ -47,9 +47,15 @@ class RecentlyBrowsedRepository @Inject constructor(
         }
     }
 
-    fun clear() {
+    fun clearRecentlyBrowsedMovies() {
         externalScope.launch {
             recentlyBrowsedMoviesDao.clear()
+        }
+    }
+
+    fun clearRecentlyBrowsedTvSeries() {
+        externalScope.launch {
+            recentlyBrowsedTvSeriesDao.clear()
         }
     }
 

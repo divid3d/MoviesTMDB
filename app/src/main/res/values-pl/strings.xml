@@ -96,4 +96,7 @@
 
     <string name="error_dialog_default_text">Ups, coś poszło nie tak.</string>
 
+    <string name="clear_recent_movies_dialog_text">Czy na pewno chcesz wyczyścić ostatnio przeglądane filmy?</string>
+    <string name="clear_recent_tv_series_dialog_text">Czy na pewno chcesz wyczyścić ostatnio przeglądane seriale?</string>
+
 </resources>

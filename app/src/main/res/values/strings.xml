@@ -96,4 +96,7 @@
 
     <string name="error_dialog_default_text">Whoops, something went wrong.</string>
 
+    <string name="clear_recent_movies_dialog_text">Are you sure you want to clear recent browsed movies?</string>
+    <string name="clear_recent_tv_series_dialog_text">Are you sure you want to clear recent browsed tv series?</string>
+
 </resources>

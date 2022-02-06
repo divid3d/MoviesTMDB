@@ -93,7 +93,7 @@ class BrowseMoviesViewModel @Inject constructor(
     }
 
     fun onClearClicked() {
-        recentlyBrowsedRepository.clear()
+        recentlyBrowsedRepository.clearRecentlyBrowsedMovies()
     }
 
 }

@@ -1,17 +1,20 @@
 package com.example.moviesapp.ui.screens.browseTvSeries
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,6 +22,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.TvSeriesType
 import com.example.moviesapp.ui.components.AppBar
+import com.example.moviesapp.ui.components.InfoDialog
 import com.example.moviesapp.ui.components.PresentableGridSection
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
@@ -48,6 +52,30 @@ fun BrowseTvSeriesScreen(
         TvSeriesType.RecentlyBrowsed -> stringResource(R.string.all_tv_series_recently_browsed_label)
         TvSeriesType.Trending -> stringResource(R.string.all_tv_series_trending_label)
     }
+    val showClearButton = tvSeriesType == TvSeriesType.RecentlyBrowsed
+            && tvSeries?.itemSnapshotList?.isEmpty() != true
+
+    var showClearDialog by remember { mutableStateOf(false) }
+
+    val showDialog = {
+        showClearDialog = true
+    }
+
+    val dismissDialog = {
+        showClearDialog = false
+    }
+
+    if (showClearDialog) {
+        InfoDialog(
+            infoText = stringResource(R.string.clear_recent_tv_series_dialog_text),
+            onDismissRequest = dismissDialog,
+            onCancelClick = dismissDialog,
+            onConfirmClick = {
+                viewModel.onClearClicked()
+                dismissDialog()
+            }
+        )
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         AppBar(title = appbarTitle, action = {
@@ -58,7 +86,25 @@ fun BrowseTvSeriesScreen(
                     tint = MaterialTheme.colors.primary
                 )
             }
-        })
+        },
+            trailing = {
+                AnimatedVisibility(
+                    visible = showClearButton,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    IconButton(
+                        modifier = Modifier.padding(end = MaterialTheme.spacing.medium),
+                        onClick = showDialog
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "clear recent",
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
+                }
+            })
         tvSeries?.let { state ->
             PresentableGridSection(
                 modifier = Modifier.fillMaxSize(),

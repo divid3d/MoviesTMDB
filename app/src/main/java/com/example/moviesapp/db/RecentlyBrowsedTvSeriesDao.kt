@@ -36,4 +36,7 @@ interface RecentlyBrowsedTvSeriesDao {
         addRecentlyBrowsedTvSeries(*recentlyBrowsedTvSeries)
     }
 
+    @Query("DELETE FROM RecentlyBrowsedTvSeries")
+    suspend fun clear()
+
 }

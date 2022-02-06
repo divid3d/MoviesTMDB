@@ -94,4 +94,8 @@ class BrowseTvSeriesViewModel @Inject constructor(
         }
     }
 
+    fun onClearClicked() {
+        recentlyBrowsedRepository.clearRecentlyBrowsedTvSeries()
+    }
+
 }
