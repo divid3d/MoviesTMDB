@@ -2,6 +2,7 @@ package com.example.moviesapp.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.util.*
 
 @JsonClass(generateAdapter = true)
 data class TvSeriesDetails(
@@ -26,10 +27,10 @@ data class TvSeriesDetails(
     val languages: List<String>,
 
     @Json(name = "first_air_date")
-    val firstAirDate: String?,
+    val firstAirDate: Date?,
 
     @Json(name = "last_air_date")
-    val lastAirDate: String?,
+    val lastAirDate: Date?,
 
     @Json(name = "last_episode_to_air")
     val lastEpisodeToAir: Episode,

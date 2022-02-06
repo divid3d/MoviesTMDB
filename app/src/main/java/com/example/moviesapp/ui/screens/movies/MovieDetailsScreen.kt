@@ -29,6 +29,8 @@ import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.model.MovieRelationInfo
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.other.formattedMoney
+import com.example.moviesapp.other.formattedRuntime
+import com.example.moviesapp.other.yearString
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
@@ -145,6 +147,16 @@ fun MovieDetailsScreen(
                         Text(text = details.originalTitle)
                     }
 
+                    AdditionalInfoText(
+                        modifier = Modifier.fillMaxWidth(),
+                        infoTexts = details.run {
+                            listOfNotNull(
+                                releaseDate.yearString(),
+                                runtime?.formattedRuntime()
+                            )
+                        }
+                    )
+
                     details.tagline?.let { tagline ->
                         if (tagline.isNotEmpty()) {
                             Text(
@@ -155,7 +167,7 @@ fun MovieDetailsScreen(
                     }
 
                     ExpandableText(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxWidth(),
                         text = details.overview
                     )
                 }

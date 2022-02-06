@@ -29,6 +29,7 @@ import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.model.TvSeriesRelationInfo
+import com.example.moviesapp.other.yearRangeString
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.screens.reviews.ReviewsScreenNavArgs
@@ -127,6 +128,21 @@ fun TvSeriesDetailsScreen(
                             fontWeight = FontWeight.Bold
                         )
                     )
+
+                    AdditionalInfoText(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = MaterialTheme.spacing.medium),
+                        infoTexts = details.run {
+                            listOf(
+                                yearRangeString(
+                                    from = firstAirDate,
+                                    to = lastAirDate
+                                )
+                            )
+                        }
+                    )
+
                     details.tagline.let { tagline ->
                         if (tagline.isNotEmpty()) {
                             Text(

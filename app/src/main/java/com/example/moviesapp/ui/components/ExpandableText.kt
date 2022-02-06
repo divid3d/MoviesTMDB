@@ -75,7 +75,7 @@ fun ExpandableText(
                 val adjustedText = text
                     .substring(startIndex = 0, endIndex = lastCharIndex)
                     .dropLast(postfixText.length)
-                    .dropLastWhile { it == ' ' || it == '.' }
+                    .dropLastWhile { it in setOf(' ', '.') }
 
                 finalText = buildAnnotatedString {
                     withStyle(
