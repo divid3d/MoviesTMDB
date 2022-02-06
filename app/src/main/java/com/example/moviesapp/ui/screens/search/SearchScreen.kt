@@ -40,6 +40,8 @@ fun SearchScreen(
     val queryLoading by viewModel.queryLoading.collectAsState()
     val searchState by viewModel.searchState.collectAsState()
 
+    val voiceSearchAvailable by viewModel.voiceSearchAvailable.collectAsState()
+
     val focusManager = LocalFocusManager.current
 
     val speechToTextLauncher = rememberLauncherForActivityResult(CaptureSpeechToText()) { result ->
@@ -60,6 +62,7 @@ fun SearchScreen(
                 .padding(MaterialTheme.spacing.medium)
                 .animateContentSize(),
             query = query,
+            voiceSearchAvailable = voiceSearchAvailable,
             loading = queryLoading,
             showClearButton = searchState !is SearchState.EmptyQuery,
             info = {
@@ -77,8 +80,7 @@ fun SearchScreen(
             onQueryChange = viewModel::onQueryChange,
             onQueryClear = viewModel::onQueryClear,
             onVoiceSearchClick = {
-
-            speechToTextLauncher.launch(null)
+                speechToTextLauncher.launch(null)
             }
         )
         Crossfade(

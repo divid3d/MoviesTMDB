@@ -36,6 +36,7 @@ fun QueryTextField(
     query: String?,
     loading: Boolean = false,
     showClearButton: Boolean = false,
+    voiceSearchAvailable: Boolean = false,
     info: @Composable () -> Unit = {},
     onQueryChange: (String) -> Unit = {},
     onQueryClear: () -> Unit = {},
@@ -81,12 +82,14 @@ fun QueryTextField(
                                 )
                             }
                         } else {
-                            IconButton(onClick = onVoiceSearchClick) {
-                                Image(
-                                    painter = painterResource(R.drawable.ic_baseline_keyboard_voice_24),
-                                    colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
-                                    contentDescription = "voice search"
-                                )
+                            if (voiceSearchAvailable) {
+                                IconButton(onClick = onVoiceSearchClick) {
+                                    Image(
+                                        painter = painterResource(R.drawable.ic_baseline_keyboard_voice_24),
+                                        colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
+                                        contentDescription = "voice search"
+                                    )
+                                }
                             }
                         }
                     }

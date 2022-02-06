@@ -29,11 +29,7 @@ fun ApplicationDialog(
                 contentScale = ContentScale.FillWidth
             )
         },
-        text = {
-            infoText?.let { text ->
-                Text(text = text)
-            }
-        },
+        text = { infoText?.let { text -> Text(text = text) } },
         confirmButton = { confirmButton?.invoke() },
         dismissButton = { dismissButton?.invoke() }
     )

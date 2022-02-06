@@ -8,6 +8,7 @@ import androidx.paging.map
 import com.example.moviesapp.model.SearchResult
 import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.repository.ConfigRepository
+import com.example.moviesapp.repository.DeviceRepository
 import com.example.moviesapp.repository.SearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -21,6 +22,7 @@ import kotlin.time.ExperimentalTime
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val configRepository: ConfigRepository,
+    private val deviceRepository: DeviceRepository,
     private val searchRepository: SearchRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -29,6 +31,9 @@ class SearchViewModel @Inject constructor(
     private val minQueryLength = 3
 
     private val config = configRepository.config
+
+    val voiceSearchAvailable: StateFlow<Boolean> = deviceRepository.speechToTextAvailable
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
 
     private val _query: MutableStateFlow<String?> = MutableStateFlow(null)
     val query: StateFlow<String?> = _query.asStateFlow()
