@@ -28,4 +28,5 @@ class DeviceRepository @Inject constructor(
         emit(activities.isNotEmpty())
     }.flowOn(Dispatchers.Default)
 
+
 }

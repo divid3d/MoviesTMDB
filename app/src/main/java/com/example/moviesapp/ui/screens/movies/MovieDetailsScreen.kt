@@ -30,6 +30,7 @@ import com.example.moviesapp.model.MovieRelationInfo
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.other.formattedMoney
 import com.example.moviesapp.other.formattedRuntime
+import com.example.moviesapp.other.timeString
 import com.example.moviesapp.other.yearString
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
@@ -53,6 +54,9 @@ fun MovieDetailsScreen(
 ) {
     val movieDetails by viewModel.movieDetails.collectAsState()
     val isFavourite by viewModel.isFavourite.collectAsState()
+
+    val watchAtTime by viewModel.watchAtTime.collectAsState()
+
     val credits by viewModel.credits.collectAsState()
     val backdrops by viewModel.backdrops.collectAsState()
     val movieCollection by viewModel.movieCollection.collectAsState()
@@ -64,6 +68,10 @@ fun MovieDetailsScreen(
 
     val otherOriginalTitle: Boolean by derivedStateOf {
         movieDetails?.run { originalTitle.isNotEmpty() && title != originalTitle } ?: false
+    }
+
+    val watchAtTimeString = watchAtTime?.let { time ->
+        stringResource(R.string.movie_details_watch_at, time.timeString())
     }
 
     val scrollState = rememberScrollState()
@@ -153,7 +161,8 @@ fun MovieDetailsScreen(
                         infoTexts = details.run {
                             listOfNotNull(
                                 releaseDate.yearString(),
-                                runtime?.formattedRuntime()
+                                runtime?.formattedRuntime(),
+                                watchAtTimeString
                             )
                         }
                     )

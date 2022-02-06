@@ -20,10 +20,17 @@ import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.MovieRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @HiltViewModel
 class MoviesDetailsViewModel @Inject constructor(
     private val configRepository: ConfigRepository,
@@ -38,6 +45,9 @@ class MoviesDetailsViewModel @Inject constructor(
         favouritesRepository.getFavouritesMoviesIds()
 
     private val movieId: Flow<Int?> = savedStateHandle.getLiveData<Int>("movieId").asFlow()
+
+    private val _watchAtTime: MutableStateFlow<Date?> = MutableStateFlow(null)
+    val watchAtTime: StateFlow<Date?> = _watchAtTime.asStateFlow()
 
     private val _movieDetails: MutableStateFlow<MovieDetails?> = MutableStateFlow(null)
     private val _credits: MutableStateFlow<Credits?> = MutableStateFlow(null)
@@ -134,6 +144,31 @@ class MoviesDetailsViewModel @Inject constructor(
                             }
 
                     getMovieInfo(id)
+                }
+            }
+        }
+
+        startRefreshingWatchAtTime()
+    }
+
+    private fun startRefreshingWatchAtTime() {
+        viewModelScope.launch {
+            _movieDetails.collectLatest { details ->
+                while (isActive) {
+                    details?.runtime?.let { runtime ->
+                        runtime.minutes.toComponents { hours, minutes, _, _ ->
+                            val watchAtTime = Calendar.getInstance().apply {
+                                time = Date()
+
+                                add(Calendar.HOUR, hours.toInt())
+                                add(Calendar.MINUTE, minutes)
+                            }.time
+
+                            _watchAtTime.emit(watchAtTime)
+                        }
+                    }
+
+                    delay(10.seconds)
                 }
             }
         }

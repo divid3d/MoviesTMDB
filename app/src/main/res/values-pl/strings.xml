@@ -44,6 +44,7 @@
     <string name="movie_details_similar">Podobne</string>
     <string name="movie_details_recommendations">Polecane</string>
     <string name="tv_series_details_seasons">Sezony</string>
+    <string name="movie_details_watch_at">Skończ oglądać o %s</string>
 
     <string name="tv_series_details_label">Szczegóły serialu</string>
     <string name="tv_series_details_type">Typ</string>

@@ -43,6 +43,7 @@
     <string name="movie_details_genres">Genres</string>
     <string name="movie_details_similar">Similar</string>
     <string name="movie_details_recommendations">Recommendations</string>
+    <string name="movie_details_watch_at">Watch at %s</string>
 
     <string name="tv_series_details_label">Tv series details</string>
     <string name="tv_series_details_type">Type</string>
