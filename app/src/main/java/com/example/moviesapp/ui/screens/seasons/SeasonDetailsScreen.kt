@@ -27,6 +27,7 @@ import com.example.moviesapp.R
 import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.other.formatted
 import com.example.moviesapp.ui.components.*
+import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination

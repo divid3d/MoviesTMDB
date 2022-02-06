@@ -32,6 +32,7 @@ import com.example.moviesapp.other.formattedMoney
 import com.example.moviesapp.other.formattedRuntime
 import com.example.moviesapp.other.yearString
 import com.example.moviesapp.ui.components.*
+import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.RelatedMoviesDestination

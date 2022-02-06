@@ -17,10 +17,10 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MovieType
 import com.example.moviesapp.other.isNotEmpty
-import com.example.moviesapp.ui.components.ExitDialog
 import com.example.moviesapp.ui.components.PresentableSection
 import com.example.moviesapp.ui.components.PresentableTopSection
 import com.example.moviesapp.ui.components.SectionDivider
+import com.example.moviesapp.ui.components.dialogs.ExitDialog
 import com.example.moviesapp.ui.screens.destinations.BrowseMoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing

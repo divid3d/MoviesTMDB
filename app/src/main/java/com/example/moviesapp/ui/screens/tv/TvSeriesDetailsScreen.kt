@@ -31,6 +31,7 @@ import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.model.TvSeriesRelationInfo
 import com.example.moviesapp.other.yearRangeString
 import com.example.moviesapp.ui.components.*
+import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.screens.reviews.ReviewsScreenNavArgs
 import com.example.moviesapp.ui.theme.spacing
