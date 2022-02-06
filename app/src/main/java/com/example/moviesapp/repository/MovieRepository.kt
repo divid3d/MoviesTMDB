@@ -8,13 +8,17 @@ import com.example.moviesapp.data.MovieDetailsResponseDataSource
 import com.example.moviesapp.data.MovieResponseDataSource
 import com.example.moviesapp.data.ReviewsDataSource
 import com.example.moviesapp.model.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import retrofit2.Call
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class MovieRepository @Inject constructor(
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val apiHelper: TmdbApiHelper
 ) {
     fun discoverMovies(): Flow<PagingData<Movie>> =
@@ -22,35 +26,35 @@ class MovieRepository @Inject constructor(
             PagingConfig(pageSize = 20)
         ) {
             MovieResponseDataSource(apiHelper::discoverMovies)
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun upcomingMovies(): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
             MovieResponseDataSource(apiHelper::getUpcomingMovies)
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun trendingMovies(): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
             MovieResponseDataSource(apiHelper::getTrendingMovies)
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun topRatedMovies(): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
             MovieResponseDataSource(apiHelper::getTopRatedMovies)
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun nowPlayingMovies(): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
             MovieResponseDataSource(apiHelper::getNowPlayingMovies)
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun similarMovies(movieId: Int): Flow<PagingData<Movie>> =
         Pager(
@@ -60,7 +64,7 @@ class MovieRepository @Inject constructor(
                 movieId = movieId,
                 apiHelperMethod = apiHelper::getSimilarMovies
             )
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun moviesRecommendations(movieId: Int): Flow<PagingData<Movie>> =
         Pager(
@@ -70,7 +74,7 @@ class MovieRepository @Inject constructor(
                 movieId = movieId,
                 apiHelperMethod = apiHelper::getMoviesRecommendations
             )
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun movieDetails(movieId: Int, isoCode: String = "pl-PL"): Call<MovieDetails> =
         apiHelper.getMovieDetails(movieId, isoCode)
@@ -90,7 +94,7 @@ class MovieRepository @Inject constructor(
                 mediaId = movieId,
                 apiHelperMethod = apiHelper::getMovieReviews
             )
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun movieReview(movieId: Int): Call<ReviewsResponse> = apiHelper.getMovieReview(movieId)
 

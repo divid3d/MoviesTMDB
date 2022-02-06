@@ -16,6 +16,7 @@ import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.TvSeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -58,7 +59,7 @@ class SeasonDetailsViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyMap())
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             seasonInfo.collectLatest { seasonInfo ->
                 seasonInfo?.let { info ->
                     tvSeriesRepository.seasonDetails(
@@ -90,7 +91,7 @@ class SeasonDetailsViewModel @Inject constructor(
             return
         }
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             seasonInfo.collectLatest { seasonInfo ->
                 seasonInfo?.let { info ->
                     tvSeriesRepository.episodeImages(

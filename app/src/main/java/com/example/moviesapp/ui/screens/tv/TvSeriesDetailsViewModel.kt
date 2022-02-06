@@ -11,7 +11,10 @@ import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
-import com.example.moviesapp.model.*
+import com.example.moviesapp.model.Config
+import com.example.moviesapp.model.Image
+import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.model.TvSeriesDetails
 import com.example.moviesapp.other.appendUrl
 import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.other.asFlow
@@ -80,14 +83,6 @@ class TvSeriesDetailsViewModel @Inject constructor(
     ) { id, favouritesId ->
         id in favouritesId
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
-
-    private val _selectedSeason: MutableStateFlow<TvSeasonsResponse?> = MutableStateFlow(null)
-    val selectedSeason: StateFlow<TvSeasonsResponse?> =
-        _selectedSeason.combine(config) { season, config ->
-            season?.appendUrl(config)?.copy(
-                episodes = season.episodes.map { episode -> episode.appendUrls(config) }
-            )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     val hasReviews: StateFlow<Boolean> = _hasReviews.asStateFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
@@ -166,40 +161,6 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
             response.onException {
                 onError(message)
-            }
-        }
-    }
-
-    private fun getTvSeason(seasonNumber: Int) {
-        viewModelScope.launch {
-            val selectedSeasonNumber = _selectedSeason.value?.seasonNumber
-
-            if (seasonNumber != selectedSeasonNumber) {
-                tvSeriesId.collectLatest { id ->
-                    id?.let {
-                        tvSeriesRepository.getTvSeason(
-                            tvSeriesId = it,
-                            seasonNumber = seasonNumber
-                        ).request { response ->
-                            response.onSuccess {
-                                viewModelScope.launch {
-                                    val season = data
-                                    _selectedSeason.emit(season)
-                                }
-                            }
-
-                            response.onFailure {
-                                onError(message)
-                            }
-
-                            response.onException {
-                                onError(message)
-                            }
-                        }
-                    }
-                }
-            } else {
-                _selectedSeason.emit(null)
             }
         }
     }

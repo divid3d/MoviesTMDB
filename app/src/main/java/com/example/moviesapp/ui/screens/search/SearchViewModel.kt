@@ -78,7 +78,7 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun createQueryJob(query: String): Job {
-        return viewModelScope.launch {
+        return viewModelScope.launch(Dispatchers.IO) {
             try {
                 delay(queryDelay)
 

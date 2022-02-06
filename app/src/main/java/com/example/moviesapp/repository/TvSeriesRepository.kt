@@ -8,49 +8,53 @@ import com.example.moviesapp.data.ReviewsDataSource
 import com.example.moviesapp.data.TvSeriesDetailsResponseDataSource
 import com.example.moviesapp.data.TvSeriesResponseDataSource
 import com.example.moviesapp.model.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import retrofit2.Call
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class TvSeriesRepository @Inject constructor(
-    private val apiHelper: TmdbApiHelper,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val apiHelper: TmdbApiHelper
 ) {
     fun topRatedTvSeries(): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
             TvSeriesResponseDataSource(apiHelper::getTopRatedTvSeries)
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun onTheAirTvSeries(): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
             TvSeriesResponseDataSource(apiHelper::getOnTheAirTvSeries)
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun trendingTvSeries(): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
             TvSeriesResponseDataSource(apiHelper::getTrendingTvSeries)
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun popularTvSeries(): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
             TvSeriesResponseDataSource(apiHelper::getPopularTvSeries)
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun airingTodayTvSeries(): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
             TvSeriesResponseDataSource(apiHelper::getAiringTodayTvSeries)
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun similarTvSeries(tvSeriesId: Int): Flow<PagingData<TvSeries>> =
         Pager(
@@ -60,7 +64,7 @@ class TvSeriesRepository @Inject constructor(
                 tvSeriesId = tvSeriesId,
                 apiHelperMethod = apiHelper::getSimilarTvSeries
             )
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun tvSeriesRecommendations(tvSeriesId: Int): Flow<PagingData<TvSeries>> =
         Pager(
@@ -70,7 +74,7 @@ class TvSeriesRepository @Inject constructor(
                 tvSeriesId = tvSeriesId,
                 apiHelperMethod = apiHelper::getTvSeriesRecommendations
             )
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun getTvSeriesDetails(tvSeriesId: Int, isoCode: String = "pl-PL"): Call<TvSeriesDetails> =
         apiHelper.getTvSeriesDetails(tvSeriesId, isoCode)
@@ -105,7 +109,7 @@ class TvSeriesRepository @Inject constructor(
                 mediaId = tvSeriesId,
                 apiHelperMethod = apiHelper::getTvSeriesReviews
             )
-        }.flow
+        }.flow.flowOn(defaultDispatcher)
 
     fun tvSeriesReview(tvSeriesId: Int): Call<ReviewsResponse> =
         apiHelper.getTvSeriesReview(tvSeriesId)

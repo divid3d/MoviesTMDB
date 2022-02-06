@@ -9,8 +9,11 @@ import com.example.moviesapp.model.MovieDetails
 import com.example.moviesapp.model.RecentlyBrowsedMovie
 import com.example.moviesapp.model.RecentlyBrowsedTvSeries
 import com.example.moviesapp.model.TvSeriesDetails
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -19,6 +22,7 @@ import javax.inject.Singleton
 @Singleton
 class RecentlyBrowsedRepository @Inject constructor(
     private val externalScope: CoroutineScope,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val recentlyBrowsedMoviesDao: RecentlyBrowsedMoviesDao,
     private val recentlyBrowsedTvSeriesDao: RecentlyBrowsedTvSeriesDao
 ) {
@@ -27,7 +31,7 @@ class RecentlyBrowsedRepository @Inject constructor(
     }
 
     fun addRecentlyBrowsedMovie(movieDetails: MovieDetails) {
-        externalScope.launch {
+        externalScope.launch(defaultDispatcher) {
             val recentlyBrowsedMovie = movieDetails.run {
                 RecentlyBrowsedMovie(
                     id = id,
@@ -48,13 +52,13 @@ class RecentlyBrowsedRepository @Inject constructor(
     }
 
     fun clearRecentlyBrowsedMovies() {
-        externalScope.launch {
+        externalScope.launch(defaultDispatcher) {
             recentlyBrowsedMoviesDao.clear()
         }
     }
 
     fun clearRecentlyBrowsedTvSeries() {
-        externalScope.launch {
+        externalScope.launch(defaultDispatcher) {
             recentlyBrowsedTvSeriesDao.clear()
         }
     }
@@ -63,10 +67,10 @@ class RecentlyBrowsedRepository @Inject constructor(
         PagingConfig(pageSize = 20)
     ) {
         recentlyBrowsedMoviesDao.recentBrowsedMovie().asPagingSourceFactory()()
-    }.flow
+    }.flow.flowOn(defaultDispatcher)
 
     fun addRecentlyBrowsedTvSeries(tvSeriesDetails: TvSeriesDetails) {
-        externalScope.launch {
+        externalScope.launch(defaultDispatcher) {
             val recentlyBrowsedTvSeries = tvSeriesDetails.run {
                 RecentlyBrowsedTvSeries(
                     id = id,
@@ -88,6 +92,6 @@ class RecentlyBrowsedRepository @Inject constructor(
         PagingConfig(pageSize = 20)
     ) {
         recentlyBrowsedTvSeriesDao.recentBrowsedTvSeries().asPagingSourceFactory()()
-    }.flow
+    }.flow.flowOn(defaultDispatcher)
 
 }

@@ -9,7 +9,9 @@ import com.example.moviesapp.model.MovieDetails
 import com.example.moviesapp.model.MovieFavourite
 import com.example.moviesapp.model.TvSeriesDetails
 import com.example.moviesapp.model.TvSeriesFavourite
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.*
@@ -19,11 +21,12 @@ import javax.inject.Singleton
 @Singleton
 class FavouritesRepository @Inject constructor(
     private val externalScope: CoroutineScope,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val favouritesMoviesDao: FavouritesMoviesDao,
     private val favouritesTvSeriesDao: FavouritesTvSeriesDao
 ) {
     fun likeMovie(movieDetails: MovieDetails) {
-        externalScope.launch {
+        externalScope.launch(defaultDispatcher) {
             val favouriteMovie = movieDetails.run {
                 MovieFavourite(
                     id = id,
