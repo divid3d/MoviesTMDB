@@ -1,14 +1,9 @@
 package com.example.moviesapp.other
 
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
-import androidx.navigation.Navigator
+import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 
-fun NavController.safeNavigate(
-    route: String,
-    navOptions: NavOptions? = null,
-    navigatorExtras: Navigator.Extras? = null
-) {
+fun NavController.safeNavigate(route: String) {
     val currentRoute = currentBackStackEntry?.destination?.route
 
     if (currentRoute == route) {
@@ -24,6 +19,8 @@ fun NavController.safeNavigate(
             inclusive = false
         )
     } else {
-        navigate(route, navOptions, navigatorExtras)
+        navigate(route) {
+            popUpTo(MoviesScreenDestination.route)
+        }
     }
 }

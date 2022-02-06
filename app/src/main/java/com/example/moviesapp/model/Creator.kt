@@ -15,8 +15,13 @@ data class Creator(
     val gender: Int?,
 
     @Json(name = "profile_path")
-    val profilePath: String?,
+    override val profilePath: String?,
 
     @Transient
-    val profileUrl: String? = null
-)
+    override val profileUrl: String? = null
+) : Member {
+    override val firstLine: String?
+        get() = name
+    override val secondLine: String?
+        get() = null
+}

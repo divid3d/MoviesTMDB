@@ -196,6 +196,16 @@ fun TvSeriesDetailsScreen(
                 }
             }
 
+            tvSeriesDetails?.creators?.let { creators ->
+                if (creators.isNotEmpty()) {
+                    MemberSection(
+                        title = "Twórcy",
+                        members = creators,
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
+                    )
+                }
+            }
+
             tvSeriesDetails?.seasons?.let { seasons ->
                 if (seasons.isNotEmpty()) {
                     Column(
