@@ -7,6 +7,7 @@ import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
@@ -32,13 +33,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun PresentableGridSection(
     modifier: Modifier = Modifier,
+    gridState: LazyListState = rememberLazyListState(),
     state: LazyPagingItems<Presentable>,
     contentPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.default),
     scrollToBeginningItemsStart: Int = 30,
     onPresentableClick: (Int) -> Unit = {}
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val gridState = rememberLazyListState()
     val isScrollingLeft = gridState.isScrollingTowardsStart()
 
     val showScrollToBeginningButton by derivedStateOf {

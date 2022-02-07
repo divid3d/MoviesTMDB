@@ -1,12 +1,18 @@
 package com.example.moviesapp.ui.screens.discoverMovies
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
@@ -24,10 +31,16 @@ import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.PresentableGridSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, kotlinx.coroutines.FlowPreview::class)
+@OptIn(
+    ExperimentalFoundationApi::class, FlowPreview::class, ExperimentalMaterialApi::class,
+    ExperimentalAnimationApi::class
+)
 @Destination
 @Composable
 fun DiscoverMoviesScreen(
@@ -41,7 +54,27 @@ fun DiscoverMoviesScreen(
 
     var showSortTypeDropdown by remember { mutableStateOf(false) }
 
+    val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        skipHalfExpanded = true
+    )
+    val gridState = rememberLazyListState()
+
+    val showFloatingButton = if (gridState.isScrollInProgress) {
+        false
+    } else {
+        !sheetState.isVisible
+    }
+
     val orderIconRotation by animateFloatAsState(targetValue = if (sortOrder == SortOrder.Desc) 0f else 180f)
+
+
+    BackHandler(sheetState.isVisible) {
+        coroutineScope.launch {
+            sheetState.hide()
+        }
+    }
 
     SortTypeDropDown(
         expanded = showSortTypeDropdown,
@@ -58,70 +91,126 @@ fun DiscoverMoviesScreen(
         }
     )
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        AppBar(
-            title = stringResource(R.string.discover_movies_appbar_title),
-            action = {
-                IconButton(onClick = { navigator.navigateUp() }) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "go back",
-                        tint = MaterialTheme.colors.primary
+    ModalBottomSheetLayout(
+        modifier = Modifier.fillMaxSize(),
+        sheetState = sheetState,
+        scrimColor = Color.Transparent,
+        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        sheetContent = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.8f)
+                    .padding(MaterialTheme.spacing.medium)
+            ) {
+                Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.End) {
+                    IconButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                sheetState.hide()
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Close,
+                            contentDescription = "close filter",
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
+                }
+            }
+        }
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                AppBar(
+                    title = stringResource(R.string.discover_movies_appbar_title),
+                    action = {
+                        IconButton(onClick = { navigator.navigateUp() }) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = "go back",
+                                tint = MaterialTheme.colors.primary
+                            )
+                        }
+                    }, trailing = {
+                        Row(
+                            modifier = Modifier.padding(end = MaterialTheme.spacing.medium),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    showSortTypeDropdown = true
+                                }
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_baseline_sort_24),
+                                    contentDescription = "sort type",
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
+                                )
+                            }
+                            IconButton(
+                                modifier = Modifier.rotate(orderIconRotation),
+                                onClick = {
+                                    val order =
+                                        if (sortOrder == SortOrder.Desc) SortOrder.Asc else SortOrder.Desc
+                                    viewModel.onSortOrderChange(order)
+                                }
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_baseline_arrow_downward_24),
+                                    contentDescription = "sort order",
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
+                                )
+                            }
+                        }
+                    })
+
+                PresentableGridSection(
+                    modifier = Modifier.fillMaxSize(),
+                    gridState = gridState,
+                    contentPadding = PaddingValues(
+                        horizontal = MaterialTheme.spacing.small,
+                        vertical = MaterialTheme.spacing.medium,
+                    ),
+                    state = movies
+                ) { movieId ->
+                    navigator.navigate(
+                        MovieDetailsScreenDestination(movieId)
                     )
                 }
-            }, trailing = {
-                Row(
-                    modifier = Modifier.padding(end = MaterialTheme.spacing.medium),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_baseline_filter_list_24),
-                            contentDescription = "filter",
-                            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
-                        )
-                    }
-                    IconButton(
-                        onClick = {
-                            showSortTypeDropdown = true
-                        }
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_baseline_sort_24),
-                            contentDescription = "sort type",
-                            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
-                        )
-                    }
-                    IconButton(
-                        modifier = Modifier.rotate(orderIconRotation),
-                        onClick = {
-                            val order =
-                                if (sortOrder == SortOrder.Desc) SortOrder.Asc else SortOrder.Desc
-                            viewModel.onSortOrderChange(order)
-                        }
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_baseline_arrow_downward_24),
-                            contentDescription = "sort order",
-                            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
-                        )
-                    }
-                }
-            })
+            }
 
-        PresentableGridSection(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                horizontal = MaterialTheme.spacing.small,
-                vertical = MaterialTheme.spacing.medium,
-            ),
-            state = movies
-        ) { movieId ->
-            navigator.navigate(
-                MovieDetailsScreenDestination(movieId)
-            )
+            AnimatedVisibility(
+                modifier = Modifier.align(Alignment.BottomEnd),
+                visible = showFloatingButton,
+                enter = fadeIn(animationSpec = spring()) + scaleIn(
+                    animationSpec = spring(),
+                    initialScale = 0.3f
+                ),
+                exit = fadeOut(animationSpec = spring()) + scaleOut(
+                    animationSpec = spring(),
+                    targetScale = 0.3f
+                )
+            ) {
+                FilterFloatingButton(
+                    modifier = Modifier
+                        .padding(MaterialTheme.spacing.medium)
+                        .navigationBarsWithImePadding(),
+                    onClick = {
+                        coroutineScope.launch {
+                            if (sheetState.isVisible) {
+                                sheetState.hide()
+                            } else {
+                                sheetState.show()
+                            }
+                        }
+                    }
+                )
+            }
         }
     }
+
 }
 
 
@@ -156,6 +245,22 @@ fun SortTypeDropDown(
                 }
             }
         }
+    }
+}
 
+@Composable
+fun FilterFloatingButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
+    FloatingActionButton(
+        modifier = modifier,
+        backgroundColor = MaterialTheme.colors.primary,
+        onClick = onClick
+    ) {
+        Image(
+            painter = painterResource(R.drawable.ic_baseline_filter_list_24),
+            contentDescription = "filter"
+        )
     }
 }
