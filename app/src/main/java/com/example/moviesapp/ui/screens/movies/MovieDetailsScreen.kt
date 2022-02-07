@@ -117,21 +117,26 @@ fun MovieDetailsScreen(
                             label = stringResource(R.string.movie_details_status),
                             text = stringResource(details.status.getLabel())
                         )
+
                         if (details.budget > 0) {
                             LabeledText(
                                 label = stringResource(R.string.movie_details_budget),
                                 text = details.budget.formattedMoney()
                             )
                         }
+
                         if (details.revenue > 0) {
                             LabeledText(
                                 label = stringResource(R.string.movie_details_boxoffice),
                                 text = details.revenue.formattedMoney()
                             )
                         }
-                        Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
-                            Label(label = stringResource(R.string.movie_details_genres))
-                            GenresSection(genres = details.genres)
+
+                        if (details.genres.isNotEmpty()) {
+                            GenresSection(
+                                modifier = Modifier.padding(top = MaterialTheme.spacing.small),
+                                genres = details.genres
+                            )
                         }
                     }
                 }
@@ -144,42 +149,45 @@ fun MovieDetailsScreen(
                         .animateContentSize(),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                 ) {
-                    Text(
-                        text = details.title,
-                        style = TextStyle(
-                            color = Color.White,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
+                    Column {
+                        Text(
+                            text = details.title,
+                            style = TextStyle(
+                                color = Color.White,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         )
-                    )
-                    if (otherOriginalTitle) {
-                        Text(text = details.originalTitle)
+                        if (otherOriginalTitle) {
+                            Text(text = details.originalTitle)
+                        }
+                        AdditionalInfoText(
+                            modifier = Modifier.fillMaxWidth(),
+                            infoTexts = details.run {
+                                listOfNotNull(
+                                    releaseDate.yearString(),
+                                    runtime?.formattedRuntime(),
+                                    watchAtTimeString
+                                )
+                            }
+                        )
                     }
 
-                    AdditionalInfoText(
-                        modifier = Modifier.fillMaxWidth(),
-                        infoTexts = details.run {
-                            listOfNotNull(
-                                releaseDate.yearString(),
-                                runtime?.formattedRuntime(),
-                                watchAtTimeString
-                            )
+                    Column {
+                        details.tagline?.let { tagline ->
+                            if (tagline.isNotEmpty()) {
+                                Text(
+                                    text = "\"$tagline\"",
+                                    style = TextStyle(fontStyle = FontStyle.Italic)
+                                )
+                            }
                         }
-                    )
 
-                    details.tagline?.let { tagline ->
-                        if (tagline.isNotEmpty()) {
-                            Text(
-                                text = "\"$tagline\"",
-                                style = TextStyle(fontStyle = FontStyle.Italic)
-                            )
-                        }
+                        ExpandableText(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = details.overview
+                        )
                     }
-
-                    ExpandableText(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = details.overview
-                    )
                 }
 
                 SectionDivider(

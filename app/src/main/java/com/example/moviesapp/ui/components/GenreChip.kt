@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.moviesapp.ui.theme.Black500
@@ -37,7 +38,7 @@ fun GenreChip(
     ) {
         Text(
             text = text,
-            style = TextStyle(color = Color.White, fontSize = 12.sp)
+            style = TextStyle(color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
         )
     }
 }

@@ -55,6 +55,9 @@ fun TvSeriesDetailsScreen(
     val backdrops by viewModel.backdrops.collectAsState()
     val hasReviews by viewModel.hasReviews.collectAsState()
 
+    val otherOriginalTitle: Boolean by derivedStateOf {
+        tvSeriesDetails?.run { !originalName.isNullOrEmpty() && title != originalName } ?: false
+    }
 
     val scrollState = rememberScrollState()
 
@@ -99,17 +102,22 @@ fun TvSeriesDetailsScreen(
                             label = stringResource(R.string.tv_series_details_type),
                             text = details.type
                         )
+
                         LabeledText(
                             label = stringResource(R.string.tv_series_details_status),
                             text = details.status
                         )
+
                         LabeledText(
                             label = stringResource(R.string.tv_series_details_in_production),
                             text = stringResource(if (details.inProduction) R.string.yes else R.string.no)
                         )
-                        Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
-                            Label(label = stringResource(R.string.tv_series_details_genres))
-                            GenresSection(genres = details.genres)
+
+                        if (details.genres.isNotEmpty()) {
+                            GenresSection(
+                                modifier = Modifier.padding(top = MaterialTheme.spacing.small),
+                                genres = details.genres
+                            )
                         }
                     }
                 }
@@ -120,46 +128,59 @@ fun TvSeriesDetailsScreen(
                     modifier = Modifier.animateContentSize(),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                 ) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
-                        text = details.name,
-                        style = TextStyle(
-                            color = Color.White,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
+                    Column {
+                        Text(
+                            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
+                            text = details.name,
+                            style = TextStyle(
+                                color = Color.White,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         )
-                    )
-
-                    AdditionalInfoText(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = MaterialTheme.spacing.medium),
-                        infoTexts = details.run {
-                            listOf(
-                                yearRangeString(
-                                    from = firstAirDate,
-                                    to = lastAirDate
+                        details.originalName?.let { name ->
+                            if (otherOriginalTitle) {
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = MaterialTheme.spacing.medium),
+                                    text = name
                                 )
-                            )
+                            }
                         }
-                    )
-
-                    details.tagline.let { tagline ->
-                        if (tagline.isNotEmpty()) {
-                            Text(
-                                modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
-                                text = "\"$tagline\"",
-                                style = TextStyle(fontStyle = FontStyle.Italic)
-                            )
-                        }
+                        AdditionalInfoText(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = MaterialTheme.spacing.medium),
+                            infoTexts = details.run {
+                                listOf(
+                                    yearRangeString(
+                                        from = firstAirDate,
+                                        to = lastAirDate
+                                    )
+                                )
+                            }
+                        )
                     }
 
-                    ExpandableText(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = MaterialTheme.spacing.medium),
-                        text = details.overview
-                    )
+                    Column {
+                        details.tagline.let { tagline ->
+                            if (tagline.isNotEmpty()) {
+                                Text(
+                                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
+                                    text = "\"$tagline\"",
+                                    style = TextStyle(fontStyle = FontStyle.Italic)
+                                )
+                            }
+                        }
+
+                        ExpandableText(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = MaterialTheme.spacing.medium),
+                            text = details.overview
+                        )
+                    }
 
                     SectionDivider(
                         modifier = Modifier.padding(top = MaterialTheme.spacing.large)
