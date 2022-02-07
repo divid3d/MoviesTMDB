@@ -42,7 +42,6 @@ fun BrowseMoviesScreen(
     val favouriteMoviesCount by viewModel.favouriteMoviesCount.collectAsState()
 
     val appbarTitle = when (movieType) {
-        MovieType.Popular -> stringResource(R.string.all_movies_top_rated_label)
         MovieType.Upcoming -> stringResource(R.string.all_movies_upcoming_label)
         MovieType.TopRated -> stringResource(R.string.all_movies_top_rated_label)
         MovieType.Favourite -> stringResource(

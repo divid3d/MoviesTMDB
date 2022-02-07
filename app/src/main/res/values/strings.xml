@@ -100,4 +100,11 @@
     <string name="clear_recent_movies_dialog_text">Are you sure you want to clear recent browsed movies?</string>
     <string name="clear_recent_tv_series_dialog_text">Are you sure you want to clear recent browsed tv series?</string>
 
+    <string name="discover_movies_appbar_title">Explore</string>
+    <string name="sort_type_popularity_label">Popularity</string>
+    <string name="sort_type_release_date_label">Date</string>
+    <string name="sort_type_vote_average_label">Score</string>
+    <string name="sort_type_title_label">Title</string>
+    <string name="sort_type_vote_count_label">Vote count</string>
+
 </resources>

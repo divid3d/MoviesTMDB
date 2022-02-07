@@ -35,7 +35,7 @@ class BrowseMoviesViewModel @Inject constructor(
     var movies: Flow<PagingData<Presentable>>? = null
 
     private val movieType: Flow<MovieType> = savedStateHandle
-        .getLiveData("movieType", MovieType.Popular.name)
+        .getLiveData("movieType", MovieType.Upcoming.name)
         .asFlow().map { value ->
             MovieType.valueOf(value)
         }
@@ -51,11 +51,7 @@ class BrowseMoviesViewModel @Inject constructor(
             .combine(config) { pagingData, config ->
                 pagingData.map { movie -> movie.appendUrls(config) }
             }
-    private val popular: Flow<PagingData<Presentable>> =
-        movieRepository.discoverMovies()
-            .combine(config) { pagingData, config ->
-                pagingData.map { movie -> movie.appendUrls(config) }
-            }
+
     private val favourites: Flow<PagingData<Presentable>> =
         favouritesRepository.favouriteMovies()
             .combine(config) { pagingData, config ->
@@ -83,7 +79,6 @@ class BrowseMoviesViewModel @Inject constructor(
                 movies = when (type) {
                     MovieType.TopRated -> topRated
                     MovieType.Upcoming -> upcoming
-                    MovieType.Popular -> popular
                     MovieType.Favourite -> favourites
                     MovieType.RecentlyBrowsed -> recentlyBrowsed
                     MovieType.Trending -> trending

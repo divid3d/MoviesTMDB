@@ -14,6 +14,13 @@ interface TmdbApi {
     @GET("discover/movie")
     suspend fun discoverMovies(
         @Query("page") page: Int,
+        @Query("language") isoCode: String,
+        @Query("sort_by") type: SortTypeParam,
+    ): MoviesResponse
+
+    @GET("movie/popular")
+    suspend fun getPopularMovies(
+        @Query("page") page: Int,
         @Query("language") isoCode: String
     ): MoviesResponse
 

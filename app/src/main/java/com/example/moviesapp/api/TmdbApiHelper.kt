@@ -7,7 +7,13 @@ interface TmdbApiHelper {
 
     fun getConfig(): Call<Config>
 
-    suspend fun discoverMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
+    suspend fun discoverMovies(
+        page: Int,
+        isoCode: String = "pl-PL",
+        sortTypeParam: SortTypeParam = SortTypeParam.PopularityDesc
+    ): MoviesResponse
+
+    suspend fun getPopularMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
 
     suspend fun getUpcomingMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
 

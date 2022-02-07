@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.moviesapp.api.TmdbApiHelper
+import com.example.moviesapp.data.DiscoverMoviesDataSource
 import com.example.moviesapp.data.MovieDetailsResponseDataSource
 import com.example.moviesapp.data.MovieResponseDataSource
 import com.example.moviesapp.data.ReviewsDataSource
@@ -21,11 +22,25 @@ class MovieRepository @Inject constructor(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val apiHelper: TmdbApiHelper
 ) {
-    fun discoverMovies(): Flow<PagingData<Movie>> =
+    fun discoverMovies(
+        sortType: SortType = SortType.Popularity,
+        sortOrder: SortOrder = SortOrder.Desc
+    ): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
-            MovieResponseDataSource(apiHelper::discoverMovies)
+            DiscoverMoviesDataSource(
+                apiHelper = apiHelper,
+                sortType = sortType,
+                sortOrder = sortOrder
+            )
+        }.flow.flowOn(defaultDispatcher)
+
+    fun popularMovies(): Flow<PagingData<Movie>> =
+        Pager(
+            PagingConfig(pageSize = 20)
+        ) {
+            MovieResponseDataSource(apiHelper::getPopularMovies)
         }.flow.flowOn(defaultDispatcher)
 
     fun upcomingMovies(): Flow<PagingData<Movie>> =

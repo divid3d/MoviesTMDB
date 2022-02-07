@@ -9,8 +9,15 @@ class TmdbApiHelperImpl @Inject constructor(
 ) : TmdbApiHelper {
     override fun getConfig(): Call<Config> = tmdbApi.getConfig()
 
-    override suspend fun discoverMovies(page: Int, isoCode: String): MoviesResponse =
-        tmdbApi.discoverMovies(page, isoCode)
+    override suspend fun discoverMovies(
+        page: Int,
+        isoCode: String,
+        sortType: SortTypeParam
+    ): MoviesResponse =
+        tmdbApi.discoverMovies(page, isoCode, sortType)
+
+    override suspend fun getPopularMovies(page: Int, isoCode: String): MoviesResponse =
+        tmdbApi.getPopularMovies(page, isoCode)
 
     override suspend fun getUpcomingMovies(page: Int, isoCode: String): MoviesResponse =
         tmdbApi.getUpcomingMovies(page, isoCode)

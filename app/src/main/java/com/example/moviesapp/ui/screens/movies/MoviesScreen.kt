@@ -22,6 +22,7 @@ import com.example.moviesapp.ui.components.PresentableTopSection
 import com.example.moviesapp.ui.components.SectionDivider
 import com.example.moviesapp.ui.components.dialogs.ExitDialog
 import com.example.moviesapp.ui.screens.destinations.BrowseMoviesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.DiscoverMoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -97,6 +98,10 @@ fun MoviesScreen(
         navigator.navigate(BrowseMoviesScreenDestination(type))
     }
 
+    val navigateToDiscoverMovies = {
+        navigator.navigate(DiscoverMoviesScreenDestination)
+    }
+
     SwipeRefresh(
         state = swipeRefreshState,
         indicator = { state, trigger ->
@@ -128,10 +133,10 @@ fun MoviesScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
-                title = stringResource(R.string.popular_movies),
+                title = "Odkrywaj",
                 state = discover,
                 onPresentableClick = navigateToMovieDetails,
-                onMoreClick = { navigateToBrowseMovies(MovieType.Popular) }
+                onMoreClick = navigateToDiscoverMovies
             )
             SectionDivider(
                 modifier = Modifier.padding(
