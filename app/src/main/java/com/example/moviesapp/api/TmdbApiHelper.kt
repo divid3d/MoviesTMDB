@@ -10,7 +10,9 @@ interface TmdbApiHelper {
     suspend fun discoverMovies(
         page: Int,
         isoCode: String = "pl-PL",
-        sortTypeParam: SortTypeParam = SortTypeParam.PopularityDesc
+        sortTypeParam: SortTypeParam = SortTypeParam.PopularityDesc,
+        genresParam: GenresParam = GenresParam(genres = emptyList()),
+        voteRange: ClosedFloatingPointRange<Float> = 0f..10f
     ): MoviesResponse
 
     suspend fun getPopularMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
@@ -99,4 +101,9 @@ interface TmdbApiHelper {
     fun getTvSeriesReview(tvSeriesId: Int): Call<ReviewsResponse>
 
     fun getCollection(collectionId: Int, isoCode: String = "pl-PL"): Call<CollectionResponse>
+
+    fun getMoviesGenres(isoCode: String = "pl-PL"): Call<GenresResponse>
+
+    fun getTvSeriesGenres(isoCode: String = "pl-PL"): Call<GenresResponse>
+
 }

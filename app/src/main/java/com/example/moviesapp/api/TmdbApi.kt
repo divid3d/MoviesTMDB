@@ -1,5 +1,6 @@
 package com.example.moviesapp.api
 
+import androidx.annotation.FloatRange
 import com.example.moviesapp.model.*
 import retrofit2.Call
 import retrofit2.http.GET
@@ -16,6 +17,13 @@ interface TmdbApi {
         @Query("page") page: Int,
         @Query("language") isoCode: String,
         @Query("sort_by") type: SortTypeParam,
+        @Query("with_genres") genres: GenresParam,
+        @FloatRange(from = 0.0)
+        @Query("vote_average.gte")
+        voteAverageMin: Float,
+        @FloatRange(from = 0.0)
+        @Query("vote_average.lte")
+        voteAverageMax: Float
     ): MoviesResponse
 
     @GET("movie/popular")
@@ -193,5 +201,16 @@ interface TmdbApi {
         @Path("collection_id") collectionId: Int,
         @Query("language") isoCode: String
     ): Call<CollectionResponse>
+
+    @GET("genre/movie/list")
+    fun getMovieGenres(
+        @Query("language") isoCode: String
+    ): Call<GenresResponse>
+
+    @GET("genre/tv/list")
+    fun getTvSeriesGenres(
+        @Query("language") isoCode: String
+    ): Call<GenresResponse>
+
 }
 

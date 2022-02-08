@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import com.example.moviesapp.R
 
 enum class SortType {
-    Popularity, ReleaseDate, VoteAverage, OriginalTitle, VoteCount;
+    Popularity, VoteCount, ReleaseDate, VoteAverage, OriginalTitle;
 
     fun toSortTypeParam(order: SortOrder) = when (this) {
         Popularity -> if (order == SortOrder.Desc) SortTypeParam.PopularityDesc else SortTypeParam.PopularityAsc

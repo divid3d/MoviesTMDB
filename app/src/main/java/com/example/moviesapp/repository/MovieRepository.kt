@@ -24,7 +24,10 @@ class MovieRepository @Inject constructor(
 ) {
     fun discoverMovies(
         sortType: SortType = SortType.Popularity,
-        sortOrder: SortOrder = SortOrder.Desc
+        sortOrder: SortOrder = SortOrder.Desc,
+        genresParam: GenresParam = GenresParam(genres = emptyList()),
+        voteRange: ClosedFloatingPointRange<Float> = 0f..10f,
+        onlyWithPosters: Boolean = false,
     ): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
@@ -32,7 +35,10 @@ class MovieRepository @Inject constructor(
             DiscoverMoviesDataSource(
                 apiHelper = apiHelper,
                 sortType = sortType,
-                sortOrder = sortOrder
+                sortOrder = sortOrder,
+                genresParam = genresParam,
+                voteRange = voteRange,
+                onlyWithPosters = onlyWithPosters
             )
         }.flow.flowOn(defaultDispatcher)
 

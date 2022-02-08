@@ -12,9 +12,18 @@ class TmdbApiHelperImpl @Inject constructor(
     override suspend fun discoverMovies(
         page: Int,
         isoCode: String,
-        sortType: SortTypeParam
+        sortType: SortTypeParam,
+        genresParam: GenresParam,
+        voteRange: ClosedFloatingPointRange<Float>
     ): MoviesResponse =
-        tmdbApi.discoverMovies(page, isoCode, sortType)
+        tmdbApi.discoverMovies(
+            page,
+            isoCode,
+            sortType,
+            genresParam,
+            voteAverageMin = voteRange.start,
+            voteAverageMax = voteRange.endInclusive
+        )
 
     override suspend fun getPopularMovies(page: Int, isoCode: String): MoviesResponse =
         tmdbApi.getPopularMovies(page, isoCode)
@@ -147,4 +156,11 @@ class TmdbApiHelperImpl @Inject constructor(
 
     override fun getCollection(collectionId: Int, isoCode: String): Call<CollectionResponse> =
         tmdbApi.getCollection(collectionId, isoCode)
+
+    override fun getMoviesGenres(isoCode: String): Call<GenresResponse> =
+        tmdbApi.getMovieGenres(isoCode)
+
+    override fun getTvSeriesGenres(isoCode: String): Call<GenresResponse> =
+        tmdbApi.getTvSeriesGenres(isoCode)
+
 }
