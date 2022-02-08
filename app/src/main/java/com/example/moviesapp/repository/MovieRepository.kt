@@ -31,7 +31,7 @@ class MovieRepository @Inject constructor(
         releaseDateRange: ReleaseDateRange = ReleaseDateRange()
     ): Flow<PagingData<Movie>> =
         Pager(
-            PagingConfig(pageSize = 20)
+            PagingConfig(pageSize = 30)
         ) {
             DiscoverMoviesDataSource(
                 apiHelper = apiHelper,

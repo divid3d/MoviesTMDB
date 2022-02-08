@@ -44,7 +44,8 @@ fun createDateDialog(
     }
 
     return DatePickerDialog(
-        context, { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+        context,
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
             val date = Calendar.getInstance().apply {
                 set(Calendar.YEAR, year)
                 set(Calendar.MONTH, month)
