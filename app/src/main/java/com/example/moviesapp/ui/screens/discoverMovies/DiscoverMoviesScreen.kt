@@ -4,8 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,7 +30,10 @@ import com.example.moviesapp.R
 import com.example.moviesapp.model.*
 import com.example.moviesapp.other.isEmpty
 import com.example.moviesapp.other.singleDecimalPlaceFormatted
-import com.example.moviesapp.ui.components.*
+import com.example.moviesapp.ui.components.AppBar
+import com.example.moviesapp.ui.components.FilterEmptyState
+import com.example.moviesapp.ui.components.GenreChip
+import com.example.moviesapp.ui.components.PresentableGridSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.flowlayout.FlowRow
@@ -324,55 +326,76 @@ fun FilterModalBottomSheetContent(
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
         ) {
-            FilterGenresSection(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                genres = currentFilterState.selectedGenres,
-                onGenreClick = { genre ->
-                    currentFilterState = currentFilterState.copy(
-                        selectedGenres = currentFilterState.selectedGenres.minus(genre)
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+            ) {
+                Text(
+                    text = "Gatunki filmowe",
+                    style = TextStyle(
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
                     )
-                }
-            )
-            SectionDivider(modifier = Modifier.fillMaxWidth())
-            FilterGenresSection(
-                modifier = Modifier.fillMaxWidth(),
-                genres = currentFilterState.run {
-                    availableGenres.filterNot { genre ->
-                        genre.id in selectedGenres.map { selectedGenre -> selectedGenre.id }
+                )
+                GenresSelector(
+                    modifier = Modifier.fillMaxWidth(),
+                    genres = currentFilterState.availableGenres,
+                    selectedGenres = currentFilterState.selectedGenres,
+                    onGenreClick = { genre ->
+                        val selectedGenres = currentFilterState.selectedGenres.run {
+                            if (genre in this) {
+                                minus(genre)
+                            } else {
+                                plus(genre)
+                            }
+                        }
+
+                        currentFilterState = currentFilterState.copy(
+                            selectedGenres = selectedGenres
+                        )
                     }
-                },
-                onGenreClick = { genre ->
+                )
+            }
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+            ) {
+                Text(
+                    text = "Zakres ocen",
+                    style = TextStyle(
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+                VoteRangeSlider(
+                    modifier = Modifier.fillMaxWidth(),
+                    voteRange = currentFilterState.voteRange,
+                    onCurrentVoteRangeChange = { voteRange ->
+                        currentFilterState = currentFilterState.copy(
+                            voteRange = currentFilterState.voteRange.copy(
+                                current = voteRange
+                            )
+                        )
+                    }
+                )
+            }
+
+
+            LabeledSwitch(
+                modifier = Modifier.fillMaxWidth(),
+                checked = currentFilterState.showOnlyWithPoster,
+                onCheckedChanged = { show ->
                     currentFilterState = currentFilterState.copy(
-                        selectedGenres = currentFilterState.selectedGenres.plus(genre)
+                        showOnlyWithPoster = show
                     )
                 }
             )
         }
-        VoteRangeSlider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = MaterialTheme.spacing.medium),
-            voteRange = currentFilterState.voteRange,
-            onCurrentVoteRangeChange = { voteRange ->
-                currentFilterState = currentFilterState.copy(
-                    voteRange = currentFilterState.voteRange.copy(
-                        current = voteRange
-                    )
-                )
-            }
-        )
-
-        LabeledSwitch(
-            modifier = Modifier.fillMaxWidth(),
-            checked = currentFilterState.showOnlyWithPoster,
-            onCheckedChanged = { show ->
-                currentFilterState = currentFilterState.copy(
-                    showOnlyWithPoster = show
-                )
-            }
-        )
 
         Spacer(modifier = Modifier.weight(1f))
         Column(
@@ -416,6 +439,61 @@ fun FilterGenresSection(
     }
 }
 
+@Composable
+fun GenresSelector(
+    modifier: Modifier = Modifier,
+    genres: List<Genre>,
+    selectedGenres: List<Genre>,
+    onGenreClick: (Genre) -> Unit = {}
+) {
+    FlowRow(
+        modifier = modifier,
+        mainAxisSpacing = MaterialTheme.spacing.extraSmall,
+        crossAxisSpacing = MaterialTheme.spacing.extraSmall
+    ) {
+        genres.sortedBy { genre ->
+            genre.name
+        }.map { genre ->
+            SelectableGenreChip(
+                modifier = Modifier.animateContentSize(),
+                text = genre.name,
+                selected = genre in selectedGenres,
+                onClick = { onGenreClick(genre) }
+            )
+        }
+    }
+}
+
+@Composable
+fun SelectableGenreChip(
+    modifier: Modifier = Modifier,
+    text: String,
+    selected: Boolean,
+    onClick: (() -> Unit)? = null
+) {
+    val backgroundColor by animateColorAsState(targetValue = if (selected) MaterialTheme.colors.primary else Color.Black)
+
+    Box(
+        modifier = modifier
+            .background(shape = RoundedCornerShape(50f), color = backgroundColor)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colors.primary.copy(0.5f),
+                shape = RoundedCornerShape(50f)
+            )
+            .padding(
+                horizontal = MaterialTheme.spacing.medium,
+                vertical = MaterialTheme.spacing.small
+            )
+            .clickable(enabled = onClick != null, onClick = { onClick?.invoke() })
+    ) {
+        Text(
+            text = text,
+            style = TextStyle(color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        )
+    }
+}
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun VoteRangeSlider(
@@ -433,14 +511,16 @@ fun VoteRangeSlider(
                 text = voteRange.current.start.singleDecimalPlaceFormatted(),
                 style = TextStyle(
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colors.primary
                 )
             )
             Text(
                 text = voteRange.current.endInclusive.singleDecimalPlaceFormatted(),
                 style = TextStyle(
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colors.primary
                 )
             )
         }
