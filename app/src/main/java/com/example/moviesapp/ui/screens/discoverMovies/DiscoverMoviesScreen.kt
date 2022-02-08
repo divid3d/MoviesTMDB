@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -28,6 +29,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.*
+import com.example.moviesapp.other.createDateDialog
+import com.example.moviesapp.other.formatted
 import com.example.moviesapp.other.isEmpty
 import com.example.moviesapp.other.singleDecimalPlaceFormatted
 import com.example.moviesapp.ui.components.AppBar
@@ -42,9 +45,12 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
+import java.util.*
 
 @OptIn(
-    ExperimentalFoundationApi::class, FlowPreview::class, ExperimentalMaterialApi::class,
+    ExperimentalFoundationApi::class,
+    FlowPreview::class,
+    ExperimentalMaterialApi::class,
     ExperimentalAnimationApi::class
 )
 @Destination
@@ -365,7 +371,7 @@ fun FilterModalBottomSheetContent(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
             ) {
                 Text(
-                    text = "Zakres ocen",
+                    text = "Oceny",
                     style = TextStyle(
                         color = Color.White,
                         fontSize = 16.sp,
@@ -384,18 +390,51 @@ fun FilterModalBottomSheetContent(
                     }
                 )
             }
+        }
 
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+        ) {
+            Text(
+                text = "Data wydania",
+                style = TextStyle(
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            )
 
-            LabeledSwitch(
+            ReleaseDateSelector(
                 modifier = Modifier.fillMaxWidth(),
-                checked = currentFilterState.showOnlyWithPoster,
-                onCheckedChanged = { show ->
+                fromDate = currentFilterState.releaseDateRange.from,
+                toDate = currentFilterState.releaseDateRange.to,
+                onFromDateChanged = { date ->
                     currentFilterState = currentFilterState.copy(
-                        showOnlyWithPoster = show
+                        releaseDateRange = currentFilterState.releaseDateRange.copy(
+                            from = date
+                        )
+                    )
+                },
+                onToDateChanged = { date ->
+                    currentFilterState = currentFilterState.copy(
+                        releaseDateRange = currentFilterState.releaseDateRange.copy(
+                            to = date
+                        )
                     )
                 }
             )
         }
+
+        LabeledSwitch(
+            modifier = Modifier.fillMaxWidth(),
+            checked = currentFilterState.showOnlyWithPoster,
+            onCheckedChanged = { show ->
+                currentFilterState = currentFilterState.copy(
+                    showOnlyWithPoster = show
+                )
+            }
+        )
 
         Spacer(modifier = Modifier.weight(1f))
         Column(
@@ -548,5 +587,63 @@ fun LabeledSwitch(
             text = "Tylko z plakatami"
         )
         Switch(checked = checked, onCheckedChange = onCheckedChanged)
+    }
+}
+
+@Composable
+fun ReleaseDateSelector(
+    modifier: Modifier = Modifier,
+    fromDate: Date?,
+    toDate: Date?,
+    onFromDateChanged: (Date) -> Unit = {},
+    onToDateChanged: (Date) -> Unit = {}
+) {
+    val context = LocalContext.current
+
+    Row(modifier = modifier) {
+        Box(
+            modifier = Modifier
+                .clickable {
+                    createDateDialog(
+                        context = context,
+                        initialDate = fromDate,
+                        onDateSelected = onFromDateChanged,
+                        maxDate = toDate
+                    ).show()
+                }
+                .border(
+                    width = 1.dp,
+                    shape = MaterialTheme.shapes.small,
+                    color = MaterialTheme.colors.primary
+                )
+                .padding(MaterialTheme.spacing.medium),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = fromDate?.formatted() ?: "Data od"
+            )
+        }
+        Box(
+            modifier = Modifier
+                .clickable {
+                    createDateDialog(
+                        context = context,
+                        initialDate = toDate,
+                        onDateSelected = onToDateChanged,
+                        minDate = fromDate
+                    ).show()
+                }
+                .border(
+                    width = 1.dp,
+                    shape = MaterialTheme.shapes.small,
+                    color = MaterialTheme.colors.primary
+                )
+                .padding(MaterialTheme.spacing.medium),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = toDate?.formatted() ?: "Data do"
+            )
+        }
     }
 }

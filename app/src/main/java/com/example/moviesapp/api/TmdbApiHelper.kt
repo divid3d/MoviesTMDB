@@ -12,7 +12,9 @@ interface TmdbApiHelper {
         isoCode: String = "pl-PL",
         sortTypeParam: SortTypeParam = SortTypeParam.PopularityDesc,
         genresParam: GenresParam = GenresParam(genres = emptyList()),
-        voteRange: ClosedFloatingPointRange<Float> = 0f..10f
+        voteRange: ClosedFloatingPointRange<Float> = 0f..10f,
+        fromReleaseDate: DateParam? = null,
+        toReleaseDate: DateParam? = null
     ): MoviesResponse
 
     suspend fun getPopularMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse

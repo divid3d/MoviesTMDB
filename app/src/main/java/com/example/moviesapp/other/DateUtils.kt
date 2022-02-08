@@ -1,5 +1,8 @@
 package com.example.moviesapp.other
 
+import android.app.DatePickerDialog
+import android.content.Context
+import android.widget.DatePicker
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,4 +28,41 @@ fun Date.getYearInt(): Int {
     return Calendar.getInstance().apply {
         time = this@getYearInt
     }.get(Calendar.YEAR)
+}
+
+fun createDateDialog(
+    context: Context,
+    initialDate: Date?,
+    minDate: Date? = null,
+    maxDate: Date? = null,
+    onDateSelected: (Date) -> Unit = {}
+): DatePickerDialog {
+    val (initYear, initMonth, initDayOfMonth) = Calendar.getInstance().apply {
+        time = initialDate ?: Date()
+    }.run {
+        Triple(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DAY_OF_MONTH))
+    }
+
+    return DatePickerDialog(
+        context, { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            val date = Calendar.getInstance().apply {
+                set(Calendar.YEAR, year)
+                set(Calendar.MONTH, month)
+                set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            }.time
+
+            onDateSelected(date)
+
+        }, initYear, initMonth, initDayOfMonth
+    ).apply {
+        val datePicker = datePicker
+
+        minDate?.let { date ->
+            datePicker.minDate = date.time
+        }
+
+        maxDate?.let { date ->
+            datePicker.maxDate = date.time
+        }
+    }
 }

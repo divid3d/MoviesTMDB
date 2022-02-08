@@ -23,7 +23,11 @@ interface TmdbApi {
         voteAverageMin: Float,
         @FloatRange(from = 0.0)
         @Query("vote_average.lte")
-        voteAverageMax: Float
+        voteAverageMax: Float,
+        @Query("release_date.gte")
+        fromReleaseDate: DateParam?,
+        @Query("release_date.lte")
+        toReleaseDate: DateParam?
     ): MoviesResponse
 
     @GET("movie/popular")

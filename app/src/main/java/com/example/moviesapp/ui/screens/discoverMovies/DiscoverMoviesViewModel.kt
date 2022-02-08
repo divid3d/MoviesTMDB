@@ -83,7 +83,8 @@ class DiscoverMoviesViewModel @Inject constructor(
             sortOrder = sortOrder,
             genresParam = GenresParam(filterState.selectedGenres),
             voteRange = filterState.voteRange.current,
-            onlyWithPosters = filterState.showOnlyWithPoster
+            onlyWithPosters = filterState.showOnlyWithPoster,
+            releaseDateRange = filterState.releaseDateRange
         )
             .cachedIn(viewModelScope)
             .combine(config) { pagingData, config ->

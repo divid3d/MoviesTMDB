@@ -3,10 +3,7 @@ package com.example.moviesapp.data
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.moviesapp.api.TmdbApiHelper
-import com.example.moviesapp.model.GenresParam
-import com.example.moviesapp.model.Movie
-import com.example.moviesapp.model.SortOrder
-import com.example.moviesapp.model.SortType
+import com.example.moviesapp.model.*
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -17,7 +14,12 @@ class DiscoverMoviesDataSource(
     private val genresParam: GenresParam = GenresParam(genres = emptyList()),
     private val voteRange: ClosedFloatingPointRange<Float> = 0f..10f,
     private val onlyWithPosters: Boolean = false,
+    private val releaseDateRange: ReleaseDateRange
 ) : PagingSource<Int, Movie>() {
+
+    private val fromReleaseDate = releaseDateRange.from?.let { date -> DateParam(date) }
+    private val toReleaseDate = releaseDateRange.to?.let { date -> DateParam(date) }
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         return try {
             val nextPage = params.key ?: 1
@@ -27,7 +29,9 @@ class DiscoverMoviesDataSource(
                 page = nextPage,
                 sortTypeParam = sortTypeParam,
                 genresParam = genresParam,
-                voteRange = voteRange
+                voteRange = voteRange,
+                fromReleaseDate = fromReleaseDate,
+                toReleaseDate = toReleaseDate
             )
 
             val currentPage = movieResponse.page
