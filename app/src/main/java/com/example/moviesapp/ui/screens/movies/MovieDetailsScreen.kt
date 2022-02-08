@@ -204,7 +204,8 @@ fun MovieDetailsScreen(
                             .padding(vertical = MaterialTheme.spacing.small)
                             .animateContentSize(),
                         title = collection.name,
-                        list = collection.parts
+                        list = collection.parts.sortedBy { part -> part.releaseDate },
+                        selectedId = movieId
                     ) { id ->
                         if (movieId != id) {
                             navigator.navigate(

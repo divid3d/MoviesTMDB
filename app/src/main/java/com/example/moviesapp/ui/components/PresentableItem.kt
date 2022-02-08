@@ -1,9 +1,6 @@
 package com.example.moviesapp.ui.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -43,6 +40,7 @@ fun PresentableItem(
     modifier: Modifier = Modifier,
     size: Size = MaterialTheme.sizes.presentableItemSmall,
     presentableState: PresentableItemState,
+    selected: Boolean = false,
     showTitle: Boolean = true,
     showScore: Boolean = false,
     showAdult: Boolean = false,
@@ -56,7 +54,11 @@ fun PresentableItem(
             .graphicsLayer {
                 transformations()
             },
-        shape = MaterialTheme.shapes.medium
+        shape = MaterialTheme.shapes.medium,
+        border = if (selected) BorderStroke(
+            width = 2.dp,
+            color = Color.White
+        ) else null
     ) {
         when (presentableState) {
             is PresentableItemState.Loading -> {
