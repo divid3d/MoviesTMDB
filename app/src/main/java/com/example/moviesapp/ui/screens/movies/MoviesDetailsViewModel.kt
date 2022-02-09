@@ -156,15 +156,17 @@ class MoviesDetailsViewModel @Inject constructor(
             _movieDetails.collectLatest { details ->
                 while (isActive) {
                     details?.runtime?.let { runtime ->
-                        runtime.minutes.toComponents { hours, minutes, _, _ ->
-                            val watchAtTime = Calendar.getInstance().apply {
-                                time = Date()
+                        if (runtime > 0) {
+                            runtime.minutes.toComponents { hours, minutes, _, _ ->
+                                val watchAtTime = Calendar.getInstance().apply {
+                                    time = Date()
 
-                                add(Calendar.HOUR, hours.toInt())
-                                add(Calendar.MINUTE, minutes)
-                            }.time
+                                    add(Calendar.HOUR, hours.toInt())
+                                    add(Calendar.MINUTE, minutes)
+                                }.time
 
-                            _watchAtTime.emit(watchAtTime)
+                                _watchAtTime.emit(watchAtTime)
+                            }
                         }
                     }
 
