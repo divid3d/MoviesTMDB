@@ -57,7 +57,7 @@ fun PresentableItem(
         shape = MaterialTheme.shapes.medium,
         border = if (selected) BorderStroke(
             width = 2.dp,
-            color = Color.White
+            color = MaterialTheme.colors.primary.copy(0.5f)
         ) else null
     ) {
         when (presentableState) {
@@ -194,7 +194,7 @@ fun ResultPresentableItem(
                     overflow = TextOverflow.Ellipsis,
                     style = TextStyle(
                         color = Color.White,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 12.sp
                     )
                 )

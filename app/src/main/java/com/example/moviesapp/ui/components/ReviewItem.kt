@@ -112,7 +112,7 @@ fun ReviewItem(
                         text = review.authorDetails.username,
                         style = TextStyle(
                             color = Color.White,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
                             fontSize = 16.sp
                         ),
                         maxLines = 1,

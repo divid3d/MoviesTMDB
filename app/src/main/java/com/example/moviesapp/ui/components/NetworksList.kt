@@ -89,7 +89,7 @@ fun NetworkChip(
             text = network.name,
             style = TextStyle(
                 color = Color.White,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 fontSize = 12.sp
             ),
             maxLines = 1,
