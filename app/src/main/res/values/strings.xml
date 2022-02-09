@@ -17,6 +17,7 @@
     <string name="search_label">Search</string>
 
     <string name="now_playing_movies">Now playing</string>
+    <string name="explore_movies">Explore</string>
     <string name="popular_movies">Popular</string>
     <string name="upcoming_movies">Upcoming</string>
     <string name="top_rated_movies">Top rated</string>
@@ -106,5 +107,17 @@
     <string name="sort_type_vote_average_label">Score</string>
     <string name="sort_type_title_label">Title</string>
     <string name="sort_type_vote_count_label">Vote count</string>
+
+    <string name="date_range_selector_from_label">From</string>
+    <string name="date_range_selector_to_label">To</string>
+    <string name="date_range_selector_select_hint">Select</string>
+
+    <string name="movie_filter_bottom_sheet_genres_section_label">Movie genres</string>
+    <string name="movie_filter_bottom_sheet_score_section_label">Average score</string>
+    <string name="movie_filter_bottom_sheet_date_section_label">Release date</string>
+    <string name="movie_filter_bottom_sheet_other_section_label">Others</string>
+    <string name="movie_filter_bottom_sheet_posters_switch_text">Only with posters</string>
+    <string name="movie_filter_bottom_sheet_clear_button_label">Clear</string>
+    <string name="movie_filter_bottom_sheet_save_button_label">Save</string>
 
 </resources>

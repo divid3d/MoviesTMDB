@@ -57,7 +57,7 @@ fun PresentableItem(
         shape = MaterialTheme.shapes.medium,
         border = if (selected) BorderStroke(
             width = 2.dp,
-            color = MaterialTheme.colors.primary.copy(0.5f)
+            color = MaterialTheme.colors.primary
         ) else null
     ) {
         when (presentableState) {

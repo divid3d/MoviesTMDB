@@ -10,10 +10,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.moviesapp.R
 import com.example.moviesapp.model.FilterState
 import com.example.moviesapp.ui.theme.spacing
 
@@ -68,7 +70,7 @@ fun FilterModalBottomSheetContent(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
             ) {
                 Text(
-                    text = "Gatunki filmowe",
+                    text = stringResource(R.string.movie_filter_bottom_sheet_genres_section_label),
                     style = TextStyle(
                         color = Color.White,
                         fontSize = 16.sp,
@@ -100,7 +102,7 @@ fun FilterModalBottomSheetContent(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
             ) {
                 Text(
-                    text = "Oceny",
+                    text = stringResource(R.string.movie_filter_bottom_sheet_score_section_label),
                     style = TextStyle(
                         color = Color.White,
                         fontSize = 16.sp,
@@ -119,51 +121,67 @@ fun FilterModalBottomSheetContent(
                     }
                 )
             }
-        }
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-        ) {
-            Text(
-                text = "Data wydania",
-                style = TextStyle(
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            )
-
-            ReleaseDateSelector(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                fromDate = currentFilterState.releaseDateRange.from,
-                toDate = currentFilterState.releaseDateRange.to,
-                onFromDateChanged = { date ->
-                    currentFilterState = currentFilterState.copy(
-                        releaseDateRange = currentFilterState.releaseDateRange.copy(
-                            from = date
-                        )
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+            ) {
+                Text(
+                    text = stringResource(R.string.sort_type_release_date_label),
+                    style = TextStyle(
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
                     )
-                },
-                onToDateChanged = { date ->
-                    currentFilterState = currentFilterState.copy(
-                        releaseDateRange = currentFilterState.releaseDateRange.copy(
-                            to = date
-                        )
-                    )
-                }
-            )
-        }
+                )
 
-        LabeledSwitch(
-            modifier = Modifier.fillMaxWidth(),
-            checked = currentFilterState.showOnlyWithPoster,
-            onCheckedChanged = { show ->
-                currentFilterState = currentFilterState.copy(
-                    showOnlyWithPoster = show
+                DateRangeSelector(
+                    modifier = Modifier.fillMaxWidth(),
+                    fromDate = currentFilterState.releaseDateRange.from,
+                    toDate = currentFilterState.releaseDateRange.to,
+                    onFromDateChanged = { date ->
+                        currentFilterState = currentFilterState.copy(
+                            releaseDateRange = currentFilterState.releaseDateRange.copy(
+                                from = date
+                            )
+                        )
+                    },
+                    onToDateChanged = { date ->
+                        currentFilterState = currentFilterState.copy(
+                            releaseDateRange = currentFilterState.releaseDateRange.copy(
+                                to = date
+                            )
+                        )
+                    }
                 )
             }
-        )
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+            ) {
+                Text(
+                    text = stringResource(R.string.movie_filter_bottom_sheet_other_section_label),
+                    style = TextStyle(
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+
+                LabeledSwitch(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = stringResource(R.string.movie_filter_bottom_sheet_posters_switch_text),
+                    checked = currentFilterState.showOnlyWithPoster,
+                    onCheckedChanged = { show ->
+                        currentFilterState = currentFilterState.copy(
+                            showOnlyWithPoster = show
+                        )
+                    }
+                )
+            }
+        }
+
 
         Spacer(modifier = Modifier.weight(1f))
         Column(
@@ -175,13 +193,13 @@ fun FilterModalBottomSheetContent(
                 onClick = {
                     currentFilterState = currentFilterState.clear()
                 }) {
-                Text(text = "Wyczyść")
+                Text(text = stringResource(R.string.movie_filter_bottom_sheet_clear_button_label))
             }
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = enableSaveButton,
                 onClick = { onSaveFilterClick(currentFilterState) }) {
-                Text(text = "Zapisz")
+                Text(text = stringResource(R.string.movie_filter_bottom_sheet_save_button_label))
             }
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))

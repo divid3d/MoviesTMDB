@@ -17,6 +17,7 @@
     <string name="search_label">Szukaj</string>
 
     <string name="now_playing_movies">Teraz grane</string>
+    <string name="explore_movies">Odkrywaj</string>
     <string name="popular_movies">Popularne</string>
     <string name="upcoming_movies">Nadchodzące</string>
     <string name="top_rated_movies">Najwyżej oceniane</string>
@@ -106,5 +107,17 @@
     <string name="sort_type_vote_average_label">Ocena</string>
     <string name="sort_type_title_label">Tytuł</string>
     <string name="sort_type_vote_count_label">Liczba ocen</string>
+
+    <string name="date_range_selector_from_label">Od</string>
+    <string name="date_range_selector_to_label">Do</string>
+    <string name="date_range_selector_select_hint">Wybierz</string>
+
+    <string name="movie_filter_bottom_sheet_genres_section_label">Gatunki filmowe</string>
+    <string name="movie_filter_bottom_sheet_score_section_label">Średnia ocena</string>
+    <string name="movie_filter_bottom_sheet_date_section_label">Data wydania</string>
+    <string name="movie_filter_bottom_sheet_other_section_label">Inne</string>
+    <string name="movie_filter_bottom_sheet_posters_switch_text">Tylko z plakatami</string>
+    <string name="movie_filter_bottom_sheet_clear_button_label">Wyczyść</string>
+    <string name="movie_filter_bottom_sheet_save_button_label">Zapisz</string>
 
 </resources>

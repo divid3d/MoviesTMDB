@@ -106,7 +106,7 @@ fun DiscoverMoviesScreen(
             FilterModalBottomSheetContent(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.8f)
+                    .fillMaxHeight(0.9f)
                     .padding(MaterialTheme.spacing.medium),
                 sheetState = sheetState,
                 filterState = filterState,

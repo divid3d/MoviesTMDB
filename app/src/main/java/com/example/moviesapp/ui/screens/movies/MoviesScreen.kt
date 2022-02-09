@@ -133,7 +133,7 @@ fun MoviesScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
-                title = "Odkrywaj",
+                title = stringResource(R.string.explore_movies),
                 state = discover,
                 onPresentableClick = navigateToMovieDetails,
                 onMoreClick = navigateToDiscoverMovies
