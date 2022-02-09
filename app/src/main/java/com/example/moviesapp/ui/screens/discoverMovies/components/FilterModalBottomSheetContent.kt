@@ -167,6 +167,20 @@ fun FilterModalBottomSheetContent(
                                 to = date
                             )
                         )
+                    },
+                    onFromDateClearClicked = {
+                        currentFilterState = currentFilterState.copy(
+                            releaseDateRange = currentFilterState.releaseDateRange.copy(
+                                from = null
+                            )
+                        )
+                    },
+                    onToDateClearClicked = {
+                        currentFilterState = currentFilterState.copy(
+                            releaseDateRange = currentFilterState.releaseDateRange.copy(
+                                to = null
+                            )
+                        )
                     }
                 )
             }

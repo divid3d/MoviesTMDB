@@ -1,17 +1,21 @@
 package com.example.moviesapp.ui.screens.discoverMovies.components
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -34,7 +38,9 @@ fun DateRangeSelector(
     fromDate: Date?,
     toDate: Date?,
     onFromDateChanged: (Date) -> Unit = {},
-    onToDateChanged: (Date) -> Unit = {}
+    onToDateChanged: (Date) -> Unit = {},
+    onFromDateClearClicked: () -> Unit = {},
+    onToDateClearClicked: () -> Unit = {}
 ) {
     val spacing = MaterialTheme.spacing.medium
 
@@ -67,7 +73,8 @@ fun DateRangeSelector(
                 },
             initialDate = fromDate,
             maxDate = toDate,
-            onDateChanged = onFromDateChanged
+            onDateChanged = onFromDateChanged,
+            onClearClicked = onFromDateClearClicked
         )
 
         DateChip(
@@ -84,7 +91,8 @@ fun DateRangeSelector(
                 },
             initialDate = toDate,
             minDate = fromDate,
-            onDateChanged = onToDateChanged
+            onDateChanged = onToDateChanged,
+            onClearClicked = onToDateClearClicked
         )
 
         Text(
@@ -111,13 +119,15 @@ fun DateRangeSelector(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DateChip(
     modifier: Modifier = Modifier,
     initialDate: Date?,
     minDate: Date? = null,
     maxDate: Date? = null,
-    onDateChanged: (Date) -> Unit = {}
+    onDateChanged: (Date) -> Unit = {},
+    onClearClicked: () -> Unit = {}
 ) {
     val context = LocalContext.current
 
@@ -159,6 +169,19 @@ fun DateChip(
                 overflow = TextOverflow.Ellipsis,
                 color = if (initialDate != null) Color.White else Color.White.copy(0.5f)
             )
+            AnimatedVisibility(
+                visible = initialDate != null,
+                enter = fadeIn() + scaleIn(),
+                exit = fadeOut() + scaleOut()
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .clickable { onClearClicked() },
+                    imageVector = Icons.Filled.Clear,
+                    contentDescription = null
+                )
+            }
         }
 
     }
