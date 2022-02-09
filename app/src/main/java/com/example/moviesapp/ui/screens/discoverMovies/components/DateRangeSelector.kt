@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.moviesapp.R
@@ -146,11 +147,14 @@ fun DateChip(
                 painter = painterResource(R.drawable.ic_baseline_calendar_today_24),
                 contentDescription = null,
             )
-            Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
             Text(
                 modifier = Modifier.weight(1f),
                 text = initialDate?.formatted()
                     ?: stringResource(R.string.date_range_selector_select_hint),
+                style = TextStyle(
+                    fontSize = 12.sp
+                ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 color = if (initialDate != null) Color.White else Color.White.copy(0.5f)

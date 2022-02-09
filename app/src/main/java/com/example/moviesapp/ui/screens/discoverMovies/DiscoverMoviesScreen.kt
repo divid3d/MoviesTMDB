@@ -34,6 +34,7 @@ import com.example.moviesapp.ui.screens.discoverMovies.components.FilterFloating
 import com.example.moviesapp.ui.screens.discoverMovies.components.FilterModalBottomSheetContent
 import com.example.moviesapp.ui.screens.discoverMovies.components.SortTypeDropDown
 import com.example.moviesapp.ui.theme.spacing
+import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -107,7 +108,7 @@ fun DiscoverMoviesScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.9f)
-                    .padding(MaterialTheme.spacing.medium),
+                    .navigationBarsPadding(),
                 sheetState = sheetState,
                 filterState = filterState,
                 onCloseClick = {

@@ -7,14 +7,12 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.moviesapp.R
 import com.example.moviesapp.model.FilterState
 import com.example.moviesapp.ui.theme.spacing
@@ -34,8 +32,24 @@ fun FilterModalBottomSheetContent(
 
     val enableSaveButton = currentFilterState != filterState
 
+    var genresSectionExpanded by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var voteRangeSectionExpanded by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var dateSectionExpanded by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var otherSectionExpanded by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(top = MaterialTheme.spacing.medium),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -62,23 +76,25 @@ fun FilterModalBottomSheetContent(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1f)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
         ) {
-            Column(
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            ExpandableSection(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                label = stringResource(R.string.movie_filter_bottom_sheet_genres_section_label),
+                expanded = genresSectionExpanded,
+                onClick = { genresSectionExpanded = !genresSectionExpanded }
             ) {
-                Text(
-                    text = stringResource(R.string.movie_filter_bottom_sheet_genres_section_label),
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                )
                 GenresSelector(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            top = MaterialTheme.spacing.extraSmall,
+                            start = MaterialTheme.spacing.medium,
+                            end = MaterialTheme.spacing.medium
+                        ),
                     genres = currentFilterState.availableGenres,
                     selectedGenres = currentFilterState.selectedGenres,
                     onGenreClick = { genre ->
@@ -97,20 +113,20 @@ fun FilterModalBottomSheetContent(
                 )
             }
 
-            Column(
+            ExpandableSection(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                label = stringResource(R.string.movie_filter_bottom_sheet_score_section_label),
+                expanded = voteRangeSectionExpanded,
+                onClick = { voteRangeSectionExpanded = !voteRangeSectionExpanded }
             ) {
-                Text(
-                    text = stringResource(R.string.movie_filter_bottom_sheet_score_section_label),
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                )
                 VoteRangeSlider(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            top = MaterialTheme.spacing.extraSmall,
+                            start = MaterialTheme.spacing.medium,
+                            end = MaterialTheme.spacing.medium
+                        ),
                     voteRange = currentFilterState.voteRange,
                     onCurrentVoteRangeChange = { voteRange ->
                         currentFilterState = currentFilterState.copy(
@@ -122,21 +138,20 @@ fun FilterModalBottomSheetContent(
                 )
             }
 
-            Column(
+            ExpandableSection(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                label = stringResource(R.string.movie_filter_bottom_sheet_date_section_label),
+                expanded = dateSectionExpanded,
+                onClick = { dateSectionExpanded = !dateSectionExpanded }
             ) {
-                Text(
-                    text = stringResource(R.string.sort_type_release_date_label),
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-
                 DateRangeSelector(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            top = MaterialTheme.spacing.extraSmall,
+                            start = MaterialTheme.spacing.medium,
+                            end = MaterialTheme.spacing.medium
+                        ),
                     fromDate = currentFilterState.releaseDateRange.from,
                     toDate = currentFilterState.releaseDateRange.to,
                     onFromDateChanged = { date ->
@@ -156,21 +171,20 @@ fun FilterModalBottomSheetContent(
                 )
             }
 
-            Column(
+            ExpandableSection(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                label = stringResource(R.string.movie_filter_bottom_sheet_other_section_label),
+                expanded = otherSectionExpanded,
+                onClick = { otherSectionExpanded = !otherSectionExpanded }
             ) {
-                Text(
-                    text = stringResource(R.string.movie_filter_bottom_sheet_other_section_label),
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-
                 LabeledSwitch(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            top = MaterialTheme.spacing.extraSmall,
+                            start = MaterialTheme.spacing.medium,
+                            end = MaterialTheme.spacing.medium
+                        ),
                     label = stringResource(R.string.movie_filter_bottom_sheet_posters_switch_text),
                     checked = currentFilterState.showOnlyWithPoster,
                     onCheckedChanged = { show ->
@@ -182,26 +196,29 @@ fun FilterModalBottomSheetContent(
             }
         }
 
-
-        Spacer(modifier = Modifier.weight(1f))
         Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = MaterialTheme.spacing.small),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
         ) {
             OutlinedButton(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = MaterialTheme.spacing.medium),
                 onClick = {
                     currentFilterState = currentFilterState.clear()
                 }) {
                 Text(text = stringResource(R.string.movie_filter_bottom_sheet_clear_button_label))
             }
             Button(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = MaterialTheme.spacing.medium),
                 enabled = enableSaveButton,
                 onClick = { onSaveFilterClick(currentFilterState) }) {
                 Text(text = stringResource(R.string.movie_filter_bottom_sheet_save_button_label))
             }
         }
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
     }
 }
