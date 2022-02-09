@@ -6,12 +6,16 @@ data class FilterState(
     val selectedGenres: List<Genre> = emptyList(),
     val availableGenres: List<Genre> = emptyList(),
     val showOnlyWithPoster: Boolean = false,
+    val showOnlyWithScore: Boolean = false,
+    val showOnlyWithOverview: Boolean = false,
     val voteRange: VoteRange = VoteRange(),
     val releaseDateRange: ReleaseDateRange = ReleaseDateRange()
 ) {
     fun clear(): FilterState = copy(
         selectedGenres = emptyList(),
         showOnlyWithPoster = false,
+        showOnlyWithScore = false,
+        showOnlyWithOverview = false,
         voteRange = VoteRange(),
         releaseDateRange = ReleaseDateRange()
     )

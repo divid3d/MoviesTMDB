@@ -193,6 +193,40 @@ fun FilterModalBottomSheetContent(
                         )
                     }
                 )
+
+                LabeledSwitch(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            top = MaterialTheme.spacing.extraSmall,
+                            start = MaterialTheme.spacing.medium,
+                            end = MaterialTheme.spacing.medium
+                        ),
+                    label = "Tylko z ocenami",
+                    checked = currentFilterState.showOnlyWithScore,
+                    onCheckedChanged = { show ->
+                        currentFilterState = currentFilterState.copy(
+                            showOnlyWithScore = show
+                        )
+                    }
+                )
+
+                LabeledSwitch(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            top = MaterialTheme.spacing.extraSmall,
+                            start = MaterialTheme.spacing.medium,
+                            end = MaterialTheme.spacing.medium
+                        ),
+                    label = "Tylko z opisem",
+                    checked = currentFilterState.showOnlyWithOverview,
+                    onCheckedChanged = { show ->
+                        currentFilterState = currentFilterState.copy(
+                            showOnlyWithOverview = show
+                        )
+                    }
+                )
             }
         }
 

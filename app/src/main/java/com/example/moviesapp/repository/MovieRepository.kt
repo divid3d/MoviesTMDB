@@ -28,6 +28,8 @@ class MovieRepository @Inject constructor(
         genresParam: GenresParam = GenresParam(genres = emptyList()),
         voteRange: ClosedFloatingPointRange<Float> = 0f..10f,
         onlyWithPosters: Boolean = false,
+        onlyWithScore: Boolean = false,
+        onlyWithOverview: Boolean = false,
         releaseDateRange: ReleaseDateRange = ReleaseDateRange()
     ): Flow<PagingData<Movie>> =
         Pager(
@@ -40,6 +42,8 @@ class MovieRepository @Inject constructor(
                 genresParam = genresParam,
                 voteRange = voteRange,
                 onlyWithPosters = onlyWithPosters,
+                onlyWithScore = onlyWithScore,
+                onlyWithOverview = onlyWithOverview,
                 releaseDateRange = releaseDateRange
             )
         }.flow.flowOn(defaultDispatcher)

@@ -61,8 +61,13 @@ fun ExpandableSection(
             )
         }
 
-        AnimatedVisibility(visible = expanded) {
-            content()
+        AnimatedVisibility(
+            modifier = Modifier.fillMaxWidth(),
+            visible = expanded
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                content()
+            }
         }
     }
 }
