@@ -9,6 +9,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.sp
 import com.example.moviesapp.ui.theme.spacing
 
 @Composable
@@ -27,7 +29,8 @@ fun LabeledSwitch(
             modifier = Modifier
                 .weight(1f)
                 .padding(end = MaterialTheme.spacing.medium),
-            text = label
+            text = label,
+            style = TextStyle(fontSize = 14.sp)
         )
         Switch(checked = checked, onCheckedChange = onCheckedChanged)
     }

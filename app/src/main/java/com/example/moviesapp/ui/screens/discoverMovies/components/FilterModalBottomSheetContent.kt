@@ -87,6 +87,12 @@ fun FilterModalBottomSheetContent(
                 expanded = genresSectionExpanded,
                 onClick = { genresSectionExpanded = !genresSectionExpanded }
             ) {
+                InfoText(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = MaterialTheme.spacing.medium),
+                    text = stringResource(R.string.movie_filter_bottom_sheet_genres_info_label)
+                )
                 GenresSelector(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -119,6 +125,12 @@ fun FilterModalBottomSheetContent(
                 expanded = voteRangeSectionExpanded,
                 onClick = { voteRangeSectionExpanded = !voteRangeSectionExpanded }
             ) {
+                InfoText(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = MaterialTheme.spacing.medium),
+                    text = stringResource(R.string.movie_filter_bottom_sheet_score_info_label)
+                )
                 VoteRangeSlider(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -144,6 +156,12 @@ fun FilterModalBottomSheetContent(
                 expanded = dateSectionExpanded,
                 onClick = { dateSectionExpanded = !dateSectionExpanded }
             ) {
+                InfoText(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = MaterialTheme.spacing.medium),
+                    text = stringResource(R.string.movie_filter_bottom_sheet_date_info_label)
+                )
                 DateRangeSelector(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -191,6 +209,12 @@ fun FilterModalBottomSheetContent(
                 expanded = otherSectionExpanded,
                 onClick = { otherSectionExpanded = !otherSectionExpanded }
             ) {
+                InfoText(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = MaterialTheme.spacing.medium),
+                    text = stringResource(R.string.movie_filter_bottom_sheet_other_info_label)
+                )
                 LabeledSwitch(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -216,7 +240,7 @@ fun FilterModalBottomSheetContent(
                             start = MaterialTheme.spacing.medium,
                             end = MaterialTheme.spacing.medium
                         ),
-                    label = "Tylko z ocenami",
+                    label = stringResource(R.string.movie_filter_bottom_sheet_scores_switch_text),
                     checked = currentFilterState.showOnlyWithScore,
                     onCheckedChanged = { show ->
                         currentFilterState = currentFilterState.copy(
@@ -233,7 +257,7 @@ fun FilterModalBottomSheetContent(
                             start = MaterialTheme.spacing.medium,
                             end = MaterialTheme.spacing.medium
                         ),
-                    label = "Tylko z opisem",
+                    label = stringResource(R.string.movie_filter_bottom_sheet_overview_switch_text),
                     checked = currentFilterState.showOnlyWithOverview,
                     onCheckedChanged = { show ->
                         currentFilterState = currentFilterState.copy(

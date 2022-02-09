@@ -116,8 +116,14 @@
     <string name="movie_filter_bottom_sheet_score_section_label">Średnia ocena</string>
     <string name="movie_filter_bottom_sheet_date_section_label">Data wydania</string>
     <string name="movie_filter_bottom_sheet_other_section_label">Inne</string>
-    <string name="movie_filter_bottom_sheet_posters_switch_text">Tylko z plakatami</string>
+    <string name="movie_filter_bottom_sheet_posters_switch_text">Tylko z plakatem</string>
+    <string name="movie_filter_bottom_sheet_scores_switch_text">Tylko z oceną</string>
+    <string name="movie_filter_bottom_sheet_overview_switch_text">Tylko z opisem</string>
     <string name="movie_filter_bottom_sheet_clear_button_label">Wyczyść</string>
     <string name="movie_filter_bottom_sheet_save_button_label">Zapisz</string>
+    <string name="movie_filter_bottom_sheet_genres_info_label">Wybierz jeden lub więcej gatunków filmowych</string>
+    <string name="movie_filter_bottom_sheet_score_info_label">Ustaw zakres ocen</string>
+    <string name="movie_filter_bottom_sheet_date_info_label">Ustaw zakres dat wydania</string>
+    <string name="movie_filter_bottom_sheet_other_info_label">Dostosuj dodatkowe filtry</string>
 
 </resources>

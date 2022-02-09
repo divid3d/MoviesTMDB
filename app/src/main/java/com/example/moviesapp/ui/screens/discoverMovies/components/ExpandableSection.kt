@@ -49,7 +49,7 @@ fun ExpandableSection(
                 text = label,
                 style = TextStyle(
                     color = Color.White,
-                    fontSize = 16.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
             )
