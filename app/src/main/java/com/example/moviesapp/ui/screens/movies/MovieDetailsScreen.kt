@@ -165,7 +165,7 @@ fun MovieDetailsScreen(
                             modifier = Modifier.fillMaxWidth(),
                             infoTexts = details.run {
                                 listOfNotNull(
-                                    releaseDate.yearString(),
+                                    releaseDate?.yearString(),
                                     runtime?.formattedRuntime(),
                                     watchAtTimeString
                                 )

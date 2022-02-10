@@ -24,6 +24,7 @@ import com.example.moviesapp.ui.theme.spacing
 fun ExpandableSection(
     modifier: Modifier = Modifier,
     label: String,
+    infoText: String? = null,
     expanded: Boolean,
     onClick: () -> Unit = {},
     content: @Composable ColumnScope.() -> Unit = {}
@@ -42,17 +43,32 @@ fun ExpandableSection(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
+            Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(end = MaterialTheme.spacing.medium),
-                text = label,
-                style = TextStyle(
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
+                    .padding(end = MaterialTheme.spacing.medium)
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = label,
+                    style = TextStyle(
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 )
-            )
+                AnimatedVisibility(
+                    visible = expanded
+                ) {
+                    infoText?.let { text ->
+                        InfoText(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = text
+                        )
+                    }
+                }
+            }
+
             Icon(
                 modifier = Modifier.rotate(iconRotation),
                 imageVector = Icons.Filled.ArrowDropDown,

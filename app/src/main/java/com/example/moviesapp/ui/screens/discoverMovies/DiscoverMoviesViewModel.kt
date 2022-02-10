@@ -84,6 +84,8 @@ class DiscoverMoviesViewModel @Inject constructor(
             genresParam = GenresParam(filterState.selectedGenres),
             voteRange = filterState.voteRange.current,
             onlyWithPosters = filterState.showOnlyWithPoster,
+            onlyWithScore = filterState.showOnlyWithScore,
+            onlyWithOverview = filterState.showOnlyWithOverview,
             releaseDateRange = filterState.releaseDateRange
         )
             .cachedIn(viewModelScope)

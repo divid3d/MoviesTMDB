@@ -45,7 +45,7 @@ data class MovieDetails(
     val productionCountries: List<ProductionCountry>,
 
     @Json(name = "release_date")
-    val releaseDate: Date,
+    val releaseDate: Date?,
 
     val revenue: Int,
 

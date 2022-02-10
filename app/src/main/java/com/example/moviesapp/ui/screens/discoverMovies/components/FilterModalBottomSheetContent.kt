@@ -84,15 +84,10 @@ fun FilterModalBottomSheetContent(
             ExpandableSection(
                 modifier = Modifier.fillMaxWidth(),
                 label = stringResource(R.string.movie_filter_bottom_sheet_genres_section_label),
+                infoText = stringResource(R.string.movie_filter_bottom_sheet_genres_info_label),
                 expanded = genresSectionExpanded,
                 onClick = { genresSectionExpanded = !genresSectionExpanded }
             ) {
-                InfoText(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = MaterialTheme.spacing.medium),
-                    text = stringResource(R.string.movie_filter_bottom_sheet_genres_info_label)
-                )
                 GenresSelector(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -122,15 +117,10 @@ fun FilterModalBottomSheetContent(
             ExpandableSection(
                 modifier = Modifier.fillMaxWidth(),
                 label = stringResource(R.string.movie_filter_bottom_sheet_score_section_label),
+                infoText = stringResource(R.string.movie_filter_bottom_sheet_score_info_label),
                 expanded = voteRangeSectionExpanded,
                 onClick = { voteRangeSectionExpanded = !voteRangeSectionExpanded }
             ) {
-                InfoText(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = MaterialTheme.spacing.medium),
-                    text = stringResource(R.string.movie_filter_bottom_sheet_score_info_label)
-                )
                 VoteRangeSlider(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -153,15 +143,10 @@ fun FilterModalBottomSheetContent(
             ExpandableSection(
                 modifier = Modifier.fillMaxWidth(),
                 label = stringResource(R.string.movie_filter_bottom_sheet_date_section_label),
+                infoText = stringResource(R.string.movie_filter_bottom_sheet_date_info_label),
                 expanded = dateSectionExpanded,
                 onClick = { dateSectionExpanded = !dateSectionExpanded }
             ) {
-                InfoText(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = MaterialTheme.spacing.medium),
-                    text = stringResource(R.string.movie_filter_bottom_sheet_date_info_label)
-                )
                 DateRangeSelector(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -206,15 +191,10 @@ fun FilterModalBottomSheetContent(
             ExpandableSection(
                 modifier = Modifier.fillMaxWidth(),
                 label = stringResource(R.string.movie_filter_bottom_sheet_other_section_label),
+                infoText = stringResource(R.string.movie_filter_bottom_sheet_other_info_label),
                 expanded = otherSectionExpanded,
                 onClick = { otherSectionExpanded = !otherSectionExpanded }
             ) {
-                InfoText(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = MaterialTheme.spacing.medium),
-                    text = stringResource(R.string.movie_filter_bottom_sheet_other_info_label)
-                )
                 LabeledSwitch(
                     modifier = Modifier
                         .fillMaxWidth()
