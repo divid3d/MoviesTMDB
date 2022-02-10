@@ -86,6 +86,21 @@
     <string name="status_released_label">Released</string>
     <string name="status_cancelled_label">Cancelled</string>
 
+    <string name="tv_series_status_returning_label">Returning series</string>
+    <string name="tv_series_status_planned_label">Planned</string>
+    <string name="tv_series_status_in_production_label">In production</string>
+    <string name="tv_series_status_ended_label">Ended</string>
+    <string name="tv_series_status_cancelled_label">Cancelled</string>
+    <string name="tv_series_status_pilot_label">Pilot</string>
+
+    <string name="tv_series_type_documentary_label">Documentary</string>
+    <string name="tv_series_type_news_label">News</string>
+    <string name="tv_series_type_miniseries_label">Miniseries</string>
+    <string name="tv_series_type_reality_label">Reality</string>
+    <string name="tv_series_type_scripted_label">Scripted</string>
+    <string name="tv_series_type_talk_show_label">Talk show</string>
+    <string name="tv_series_type_video_label">Video</string>
+
     <string name="season_details_appbar_label">Season details</string>
     <string name="season_details_episodes_count_label">Episodes count</string>
     <string name="season_details_air_date_label">Air date</string>

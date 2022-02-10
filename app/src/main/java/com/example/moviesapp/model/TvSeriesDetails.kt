@@ -72,11 +72,11 @@ data class TvSeriesDetails(
     @Json(name = "spoken_languages")
     val spokenLanguages: List<SpokenLanguage>,
 
-    val status: String,
+    val status: TvSeriesStatus,
 
     val tagline: String,
 
-    val type: String,
+    val type: TvType,
 
     @Json(name = "vote_average")
     override val voteAverage: Float,

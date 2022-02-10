@@ -100,12 +100,12 @@ fun TvSeriesDetailsScreen(
                     tvSeriesDetails?.let { details ->
                         LabeledText(
                             label = stringResource(R.string.tv_series_details_type),
-                            text = details.type
+                            text = stringResource(details.type.getLabel())
                         )
 
                         LabeledText(
                             label = stringResource(R.string.tv_series_details_status),
-                            text = details.status
+                            text = stringResource(details.status.getLabel())
                         )
 
                         LabeledText(
@@ -241,11 +241,11 @@ fun TvSeriesDetailsScreen(
                             seasons = seasons
                         ) { seasonNumber ->
                             tvSeriesDetails?.id?.let { id ->
-
                                 val seasonInfo = SeasonInfo(
                                     tvSeriesId = id,
                                     seasonNumber = seasonNumber
                                 )
+
                                 navigator.navigate(
                                     SeasonDetailsScreenDestination(
                                         seasonInfo = seasonInfo,
