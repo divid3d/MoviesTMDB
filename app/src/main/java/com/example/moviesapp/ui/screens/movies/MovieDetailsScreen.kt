@@ -131,13 +131,6 @@ fun MovieDetailsScreen(
                                 text = details.revenue.formattedMoney()
                             )
                         }
-
-                        if (details.genres.isNotEmpty()) {
-                            GenresSection(
-                                modifier = Modifier.padding(top = MaterialTheme.spacing.small),
-                                genres = details.genres
-                            )
-                        }
                     }
                 }
             }
@@ -170,6 +163,12 @@ fun MovieDetailsScreen(
                                     watchAtTimeString
                                 )
                             }
+                        )
+                    }
+
+                    if (details.genres.isNotEmpty()) {
+                        GenresSection(
+                            genres = details.genres
                         )
                     }
 

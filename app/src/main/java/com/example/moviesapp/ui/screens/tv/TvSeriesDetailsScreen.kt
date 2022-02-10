@@ -112,13 +112,6 @@ fun TvSeriesDetailsScreen(
                             label = stringResource(R.string.tv_series_details_in_production),
                             text = stringResource(if (details.inProduction) R.string.yes else R.string.no)
                         )
-
-                        if (details.genres.isNotEmpty()) {
-                            GenresSection(
-                                modifier = Modifier.padding(top = MaterialTheme.spacing.small),
-                                genres = details.genres
-                            )
-                        }
                     }
                 }
             }
@@ -160,6 +153,13 @@ fun TvSeriesDetailsScreen(
                                     )
                                 )
                             }
+                        )
+                    }
+
+                    if (details.genres.isNotEmpty()) {
+                        GenresSection(
+                            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
+                            genres = details.genres
                         )
                     }
 
