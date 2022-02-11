@@ -38,7 +38,7 @@ data class PersonDetails(
     val homepage: String?,
 
     @Json(name = "imdb_id")
-    val imdbId: String,
+    val imdbId: String?,
 
     @Transient
     val profileUrl: String? = null,
