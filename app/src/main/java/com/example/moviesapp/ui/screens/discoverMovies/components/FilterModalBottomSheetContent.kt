@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.moviesapp.R
 import com.example.moviesapp.model.FilterState
+import com.example.moviesapp.ui.components.SectionDivider
 import com.example.moviesapp.ui.theme.spacing
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -77,8 +78,7 @@ fun FilterModalBottomSheetContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
+                .verticalScroll(rememberScrollState())
         ) {
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             ExpandableSection(
@@ -86,7 +86,10 @@ fun FilterModalBottomSheetContent(
                 label = stringResource(R.string.movie_filter_bottom_sheet_genres_section_label),
                 infoText = stringResource(R.string.movie_filter_bottom_sheet_genres_info_label),
                 expanded = genresSectionExpanded,
-                onClick = { genresSectionExpanded = !genresSectionExpanded }
+                onClick = { genresSectionExpanded = !genresSectionExpanded },
+                trailing = {
+                    SectionDivider(modifier = Modifier.fillMaxWidth())
+                }
             ) {
                 GenresSelector(
                     modifier = Modifier
@@ -94,7 +97,7 @@ fun FilterModalBottomSheetContent(
                         .padding(
                             top = MaterialTheme.spacing.extraSmall,
                             start = MaterialTheme.spacing.medium,
-                            end = MaterialTheme.spacing.medium
+                            end = MaterialTheme.spacing.medium,
                         ),
                     genres = currentFilterState.availableGenres,
                     selectedGenres = currentFilterState.selectedGenres,
@@ -112,6 +115,8 @@ fun FilterModalBottomSheetContent(
                         )
                     }
                 )
+
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             }
 
             ExpandableSection(
@@ -119,7 +124,10 @@ fun FilterModalBottomSheetContent(
                 label = stringResource(R.string.movie_filter_bottom_sheet_score_section_label),
                 infoText = stringResource(R.string.movie_filter_bottom_sheet_score_info_label),
                 expanded = voteRangeSectionExpanded,
-                onClick = { voteRangeSectionExpanded = !voteRangeSectionExpanded }
+                onClick = { voteRangeSectionExpanded = !voteRangeSectionExpanded },
+                trailing = {
+                    SectionDivider(modifier = Modifier.fillMaxWidth())
+                }
             ) {
                 VoteRangeSlider(
                     modifier = Modifier
@@ -138,6 +146,8 @@ fun FilterModalBottomSheetContent(
                         )
                     }
                 )
+
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             }
 
             ExpandableSection(
@@ -145,7 +155,10 @@ fun FilterModalBottomSheetContent(
                 label = stringResource(R.string.movie_filter_bottom_sheet_date_section_label),
                 infoText = stringResource(R.string.movie_filter_bottom_sheet_date_info_label),
                 expanded = dateSectionExpanded,
-                onClick = { dateSectionExpanded = !dateSectionExpanded }
+                onClick = { dateSectionExpanded = !dateSectionExpanded },
+                trailing = {
+                    SectionDivider(modifier = Modifier.fillMaxWidth())
+                }
             ) {
                 DateRangeSelector(
                     modifier = Modifier
@@ -186,6 +199,8 @@ fun FilterModalBottomSheetContent(
                         )
                     }
                 )
+
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             }
 
             ExpandableSection(

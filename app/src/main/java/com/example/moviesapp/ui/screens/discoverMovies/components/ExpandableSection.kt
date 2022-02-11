@@ -27,6 +27,7 @@ fun ExpandableSection(
     infoText: String? = null,
     expanded: Boolean,
     onClick: () -> Unit = {},
+    trailing: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     val iconRotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
@@ -85,5 +86,7 @@ fun ExpandableSection(
                 content()
             }
         }
+
+        trailing()
     }
 }
