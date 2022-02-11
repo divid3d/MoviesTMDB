@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import coil.compose.LocalImageLoader
 import com.example.moviesapp.model.SnackBarEvent
+import com.example.moviesapp.other.safeNavigate
 import com.example.moviesapp.ui.components.BottomBar
 import com.example.moviesapp.ui.screens.NavGraphs
 import com.example.moviesapp.ui.screens.destinations.FavouritesScreenDestination
@@ -61,9 +62,14 @@ class MainActivity : ComponentActivity() {
                 mutableStateOf(null)
             }
 
+            var backQueueRoutes: List<String?> by rememberSaveable {
+                mutableStateOf(emptyList())
+            }
+
             navController.apply {
                 addOnDestinationChangedListener { controller, _, _ ->
                     currentRoute = controller.currentBackStackEntry?.destination?.route
+                    backQueueRoutes = controller.backQueue.map { entry -> entry.destination.route }
                 }
                 addOnDestinationChangedListener { _, _, _ ->
                     keyboardController?.hide()
@@ -115,10 +121,12 @@ class MainActivity : ComponentActivity() {
                             bottomBar = {
                                 BottomBar(
                                     modifier = Modifier.navigationBarsPadding(),
-                                    navController = navController,
-                                    visible = showBottomBar,
-                                    currentRoute = currentRoute
-                                )
+                                    currentRoute = currentRoute,
+                                    backQueueRoutes = backQueueRoutes,
+                                    visible = showBottomBar
+                                ) { route ->
+                                    navController.safeNavigate(route)
+                                }
                             }
                         ) { innerPadding ->
                             Surface(

@@ -16,9 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.example.moviesapp.R
-import com.example.moviesapp.other.safeNavigate
 import com.example.moviesapp.ui.screens.destinations.FavouritesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
@@ -28,10 +26,23 @@ import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 @Composable
 fun BottomBar(
     modifier: Modifier = Modifier,
-    navController: NavController,
+    currentRoute: String? = null,
+    backQueueRoutes: List<String?> = emptyList(),
     visible: Boolean = true,
-    currentRoute: String? = null
+    onItemClicked: (String) -> Unit = {}
 ) {
+    val routes = buildList {
+        addAll(backQueueRoutes)
+        add(currentRoute)
+    }
+
+    val selectedRoute = when {
+        SearchScreenDestination.route in routes -> SearchScreenDestination.route
+        FavouritesScreenDestination.route in routes -> FavouritesScreenDestination.route
+        TvScreenDestination.route in routes -> TvScreenDestination.route
+        else -> MoviesScreenDestination.route
+    }
+
     AnimatedVisibility(
         visible = visible,
         enter = slideInVertically { it },
@@ -41,9 +52,9 @@ fun BottomBar(
             modifier = modifier
         ) {
             BottomBarNavigationItem(
-                selected = currentRoute == MoviesScreenDestination.route,
+                selected = selectedRoute == MoviesScreenDestination.route,
                 onClick = {
-                    navController.safeNavigate(MoviesScreenDestination.route)
+                    onItemClicked(MoviesScreenDestination.route)
                 },
                 label = stringResource(R.string.movies_label),
                 contentDescription = "movies",
@@ -51,18 +62,18 @@ fun BottomBar(
                 selectedIcon = R.drawable.ic_baseline_movie_24
             )
             BottomBarNavigationItem(
-                selected = currentRoute == TvScreenDestination.route,
+                selected = selectedRoute == TvScreenDestination.route,
                 onClick = {
-                    navController.safeNavigate(TvScreenDestination.route)
+                    onItemClicked(TvScreenDestination.route)
                 },
                 label = stringResource(R.string.tv_series_label),
                 contentDescription = "tv series",
                 selectedIcon = R.drawable.ic_outline_tv_24
             )
             BottomBarNavigationItem(
-                selected = currentRoute == FavouritesScreenDestination.route,
+                selected = selectedRoute == FavouritesScreenDestination.route,
                 onClick = {
-                    navController.safeNavigate(FavouritesScreenDestination.route)
+                    onItemClicked(FavouritesScreenDestination.route)
                 },
                 label = stringResource(R.string.favourites_label),
                 contentDescription = "favourites",
@@ -70,9 +81,9 @@ fun BottomBar(
                 selectedIcon = R.drawable.ic_heart
             )
             BottomBarNavigationItem(
-                selected = currentRoute == SearchScreenDestination.route,
+                selected = selectedRoute == SearchScreenDestination.route,
                 onClick = {
-                    navController.safeNavigate(SearchScreenDestination.route)
+                    onItemClicked(SearchScreenDestination.route)
                 },
                 label = stringResource(R.string.search_label),
                 contentDescription = "search",

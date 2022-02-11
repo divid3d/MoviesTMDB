@@ -10,8 +10,8 @@ fun NavController.safeNavigate(route: String) {
         return
     }
 
-    val isInBackstack = backQueue.map { entry -> entry.destination }
-        .any { navDestination -> navDestination.route == route }
+    val isInBackstack = backQueue.map { entry -> entry.destination.route }
+        .any { it == route }
 
     if (isInBackstack) {
         popBackStack(
