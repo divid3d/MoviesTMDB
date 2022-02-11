@@ -141,4 +141,6 @@
     <string name="movie_filter_bottom_sheet_date_info_label">Ustaw zakres dat wydania</string>
     <string name="movie_filter_bottom_sheet_other_info_label">Dostosuj dodatkowe filtry</string>
 
+    <string name="person_details_screen_appbar_label">Szczegóły osoby</string>
+
 </resources>

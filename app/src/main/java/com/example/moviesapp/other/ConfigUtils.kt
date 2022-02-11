@@ -188,3 +188,33 @@ fun Part.appendUrls(
     )
 }
 
+fun PersonDetails.appendUrls(
+    config: Config?
+): PersonDetails {
+    val profileUrl = config?.getImageUrl(profilePath, size = "w185")
+
+    return copy(
+        profileUrl = profileUrl
+    )
+}
+
+fun CombinedCreditsCast.appendUrls(
+    config: Config?
+): CombinedCreditsCast {
+    val posterUrl = config?.getImageUrl(posterPath)
+
+    return copy(
+        posterUrl = posterUrl
+    )
+}
+
+fun CombinedCreditsCrew.appendUrls(
+    config: Config?
+): CombinedCreditsCrew {
+    val posterUrl = config?.getImageUrl(posterPath)
+
+    return copy(
+        posterUrl = posterUrl
+    )
+}
+

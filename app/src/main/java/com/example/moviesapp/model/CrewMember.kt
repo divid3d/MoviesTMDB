@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class CrewMember(
-    val id: Int,
+    override val id: Int,
 
     val adult: Boolean,
 

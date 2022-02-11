@@ -216,5 +216,17 @@ interface TmdbApi {
         @Query("language") isoCode: String
     ): Call<GenresResponse>
 
+    @GET("person/{person_id}")
+    fun getPersonDetails(
+        @Path("person_id") personId: Int,
+        @Query("language") isoCode: String
+    ): Call<PersonDetails>
+
+    @GET("person/{person_id}/combined_credits")
+    fun getCombinedCredits(
+        @Path("person_id") personId: Int,
+        @Query("language") isoCode: String
+    ): Call<CombinedCredits>
+
 }
 

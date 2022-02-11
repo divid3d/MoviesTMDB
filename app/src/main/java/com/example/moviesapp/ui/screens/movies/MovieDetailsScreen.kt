@@ -34,10 +34,7 @@ import com.example.moviesapp.other.timeString
 import com.example.moviesapp.other.yearString
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
-import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
-import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
-import com.example.moviesapp.ui.screens.destinations.RelatedMoviesDestination
-import com.example.moviesapp.ui.screens.destinations.ReviewsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.screens.reviews.ReviewsScreenNavArgs
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
@@ -228,7 +225,14 @@ fun MovieDetailsScreen(
                         title = "Obsada",
                         members = castMembers,
                         contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                    )
+                    ) { personId ->
+                        navigator.navigate(
+                            PersonDetailsScreenDestination(
+                                personId = personId,
+                                startRoute = startRoute
+                            )
+                        )
+                    }
 
                     SectionDivider(
                         modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
@@ -246,7 +250,14 @@ fun MovieDetailsScreen(
                         title = "Ekipa filmowa",
                         members = crewMembers,
                         contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                    )
+                    ) { personId ->
+                        navigator.navigate(
+                            PersonDetailsScreenDestination(
+                                personId = personId,
+                                startRoute = startRoute
+                            )
+                        )
+                    }
 
                     SectionDivider(
                         modifier = Modifier.padding(top = MaterialTheme.spacing.medium)

@@ -141,4 +141,6 @@
     <string name="movie_filter_bottom_sheet_date_info_label">Set release date range</string>
     <string name="movie_filter_bottom_sheet_other_info_label">Customize other filters</string>
 
+    <string name="person_details_screen_appbar_label">Person details</string>
+
 </resources>

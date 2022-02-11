@@ -3,6 +3,7 @@ package com.example.moviesapp.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
@@ -10,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -29,7 +31,8 @@ import com.example.moviesapp.ui.theme.spacing
 @Composable
 fun MemberResultChip(
     modifier: Modifier = Modifier,
-    member: Member
+    member: Member,
+    onClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier,
@@ -41,7 +44,9 @@ fun MemberResultChip(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = MaterialTheme.colors.surface, shape = CircleShape)
-                    .aspectRatio(1f),
+                    .aspectRatio(1f)
+                    .clip(CircleShape)
+                    .clickable { onClick() },
                 painter = rememberImagePainter(
                     data = member.profileUrl,
                     builder = {
@@ -53,7 +58,7 @@ fun MemberResultChip(
                 contentScale = ContentScale.FillBounds
             )
         } else {
-            MemberNoPhotoChip()
+            MemberNoPhotoChip(onClick = { onClick() })
         }
 
         member.firstLine?.let { firstLine ->
@@ -92,7 +97,8 @@ fun MemberResultChip(
 
 @Composable
 fun MemberNoPhotoChip(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     Box(
         modifier = modifier
@@ -103,7 +109,9 @@ fun MemberNoPhotoChip(
                 width = 1.dp,
                 color = MaterialTheme.colors.primary.copy(alpha = 0.5f),
                 shape = CircleShape
-            ),
+            )
+            .clip(CircleShape)
+            .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Image(

@@ -108,4 +108,8 @@ interface TmdbApiHelper {
 
     fun getTvSeriesGenres(isoCode: String = "pl-PL"): Call<GenresResponse>
 
+    fun getPersonDetails(personId: Int, isoCode: String = "pl-PL"): Call<PersonDetails>
+
+    fun getCombinedCredits(personId: Int, isoCode: String = "pl-PL"): Call<CombinedCredits>
+
 }

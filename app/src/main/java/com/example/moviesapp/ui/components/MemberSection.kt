@@ -15,7 +15,8 @@ fun MemberSection(
     modifier: Modifier = Modifier,
     title: String? = null,
     members: List<Member>,
-    contentPadding: PaddingValues
+    contentPadding: PaddingValues,
+    onMemberClick: (Int) -> Unit = {}
 ) {
     Column(modifier = modifier) {
         title?.let { title ->
@@ -36,7 +37,8 @@ fun MemberSection(
             items(members) { member ->
                 MemberResultChip(
                     modifier = Modifier.width(64.dp),
-                    member = member
+                    member = member,
+                    onClick = { onMemberClick(member.id) }
                 )
             }
         }

@@ -167,4 +167,10 @@ class TmdbApiHelperImpl @Inject constructor(
     override fun getTvSeriesGenres(isoCode: String): Call<GenresResponse> =
         tmdbApi.getTvSeriesGenres(isoCode)
 
+    override fun getPersonDetails(personId: Int, isoCode: String): Call<PersonDetails> =
+        tmdbApi.getPersonDetails(personId, isoCode)
+
+    override fun getCombinedCredits(personId: Int, isoCode: String): Call<CombinedCredits> =
+        tmdbApi.getCombinedCredits(personId, isoCode)
+
 }
