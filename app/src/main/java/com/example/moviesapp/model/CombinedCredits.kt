@@ -12,40 +12,54 @@ data class CombinedCredits(
 
 @JsonClass(generateAdapter = true)
 data class CombinedCreditsCast(
-    val id: Int,
+    override val id: Int,
 
     val name: String?,
 
-    val character: String,
+    val character: String?,
 
-    val title: String?,
+    override val title: String?,
 
     @Json(name = "media_type")
-    val mediaType: MediaType,
+    override val mediaType: MediaType,
 
     @Json(name = "poster_path")
     val posterPath: String?,
 
     @Transient
-    val posterUrl: String? = null
-)
+    override val posterUrl: String? = null
+) : CreditsPresentable {
+    override val infoText: String?
+        get() = character
+}
 
 @JsonClass(generateAdapter = true)
 data class CombinedCreditsCrew(
-    val id: Int,
+    override val id: Int,
 
     val department: String,
 
     val job: String,
 
-    val title: String?,
+    override val title: String?,
 
     @Json(name = "media_type")
-    val mediaType: MediaType,
+    override val mediaType: MediaType,
 
     @Json(name = "poster_path")
     val posterPath: String?,
 
     @Transient
-    val posterUrl: String? = null
-)
+    override val posterUrl: String? = null
+) : CreditsPresentable {
+    override val infoText: String?
+        get() = job
+}
+
+interface CreditsPresentable {
+    val id: Int
+    val posterUrl: String?
+    val infoText: String?
+    val title: String?
+    val mediaType: MediaType
+}

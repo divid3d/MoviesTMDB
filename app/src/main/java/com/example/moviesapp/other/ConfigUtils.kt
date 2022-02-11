@@ -211,7 +211,7 @@ fun CombinedCreditsCast.appendUrls(
 fun CombinedCreditsCrew.appendUrls(
     config: Config?
 ): CombinedCreditsCrew {
-    val posterUrl = config?.getImageUrl(posterPath)
+    val posterUrl = config?.getImageUrl(posterPath, size = "original")
 
     return copy(
         posterUrl = posterUrl

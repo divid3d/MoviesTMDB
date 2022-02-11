@@ -16,14 +16,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.moviesapp.R
+import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.other.formatted
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.ExpandableText
+import com.example.moviesapp.ui.components.LabeledText
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
+import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
+import com.example.moviesapp.ui.screens.person.components.CreditsList
+import com.example.moviesapp.ui.screens.person.components.PersonProfileImage
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
 import com.ramcosta.composedestinations.annotation.Destination
@@ -53,14 +62,35 @@ fun PersonDetailsScreen(
     }
 
     if (showErrorDialog) {
-        ErrorDialog(
-            onDismissRequest = {
-                showErrorDialog = false
-            },
-            onConfirmClick = {
-                showErrorDialog = false
+        ErrorDialog(onDismissRequest = {
+            showErrorDialog = false
+        }, onConfirmClick = {
+            showErrorDialog = false
+        })
+    }
+
+    val navigateToDetails = { mediaType: MediaType, id: Int ->
+        val destination = when (mediaType) {
+            MediaType.Movie -> {
+                MovieDetailsScreenDestination(
+                    movieId = id,
+                    startRoute = startRoute
+                )
             }
-        )
+
+            MediaType.Tv -> {
+                TvSeriesDetailsScreenDestination(
+                    tvSeriesId = id,
+                    startRoute = startRoute
+                )
+            }
+
+            else -> null
+        }
+
+        if (destination != null) {
+            navigator.navigate(destination)
+        }
     }
 
     Box(
@@ -73,27 +103,76 @@ fun PersonDetailsScreen(
                 .padding(top = 56.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            details?.let { details ->
-                Text(text = details.name)
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+            ) {
+                details?.let { details ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = MaterialTheme.spacing.medium)
+                            .padding(horizontal = MaterialTheme.spacing.medium)
+                    ) {
+                        PersonProfileImage(
+                            profileUrl = details.profileUrl
+                        )
+                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                        ) {
+                            LabeledText(label = "Known for", text = details.knownFor)
 
-                Text(text = details.knownFor)
+                            details.birthPlace?.let { birthplace ->
+                                LabeledText(label = "Birthplace", text = birthplace)
+                            }
 
-                Text(text = details.birthPlace.orEmpty())
+                            details.birthday?.let { date ->
+                                LabeledText(label = "Birthsday", text = date.formatted())
+                            }
 
-                Text(text = details.birthday?.formatted().orEmpty())
+                            details.deathDate?.let { date ->
+                                Text(text = date.formatted())
+                            }
+                        }
+                    }
 
-                Text(text = details.deathDate?.formatted().orEmpty())
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = MaterialTheme.spacing.medium),
+                        text = details.name,
+                        style = TextStyle(
+                            color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold
+                        )
+                    )
 
-                ExpandableText(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = details.biography
-                )
+                    ExpandableText(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = MaterialTheme.spacing.medium),
+                        text = details.biography
+                    )
+                }
             }
+
+            CreditsList(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Grał w",
+                list = cast
+            ) { mediaType, id -> navigateToDetails(mediaType, id) }
+
+            CreditsList(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Uczestniczył w",
+                list = crew
+            ) { mediaType, id -> navigateToDetails(mediaType, id) }
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
         }
-
-
-        AppBar(
-            modifier = Modifier.align(Alignment.TopCenter),
+        
+        AppBar(modifier = Modifier.align(Alignment.TopCenter),
             title = stringResource(R.string.person_details_screen_appbar_label),
             backgroundColor = Color.Black.copy(0.7f),
             action = {
@@ -107,11 +186,9 @@ fun PersonDetailsScreen(
             },
             trailing = {
                 Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
-                    IconButton(
-                        onClick = {
-                            navigator.popBackStack(startRoute, inclusive = false)
-                        }
-                    ) {
+                    IconButton(onClick = {
+                        navigator.popBackStack(startRoute, inclusive = false)
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.Close,
                             contentDescription = "close",
@@ -119,8 +196,7 @@ fun PersonDetailsScreen(
                         )
                     }
                 }
-            }
-        )
+            })
     }
 
 }
