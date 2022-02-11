@@ -220,6 +220,10 @@ fun TvSeriesDetailsScreen(
             tvSeriesDetails?.creators?.let { creators ->
                 if (creators.isNotEmpty()) {
                     MemberSection(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = MaterialTheme.spacing.small)
+                            .animateContentSize(),
                         title = "Twórcy",
                         members = creators,
                         contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
