@@ -11,15 +11,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Network
+import com.example.moviesapp.other.ImageUrlParser
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
@@ -66,17 +67,17 @@ fun NetworkChip(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
     ) {
-        if (network.logoUrl != null) {
-            Image(
-                modifier = Modifier.height(40.dp),
-                painter = rememberImagePainter(
-                    data = network.logoUrl,
-                    builder = {
-                        crossfade(true)
-                    }
-                ),
-                contentDescription = network.name
-            )
+        if (network.logoPath != null) {
+            TmdbImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp),
+                imagePath = network.logoPath,
+                imageType = ImageUrlParser.ImageType.Logo,
+                contentScale = ContentScale.Fit
+            ) {
+                crossfade(true)
+            }
         } else {
             Image(
                 painter = painterResource(R.drawable.ic_outline_no_photography_24),

@@ -19,8 +19,5 @@ data class Image(
     val voteAverage: Float,
 
     @Json(name = "vote_count")
-    val voteCount: Int,
-
-    @Transient
-    val fileUrl: String? = null
+    val voteCount: Int
 )

@@ -20,40 +20,17 @@ data class RecentlyBrowsedMovie(
     override val backdropPath: String?,
 
     @ColumnInfo(name = "added_date")
-    val addedDate: Date?,
-
-    @Transient
-    override val posterUrl: String? = null,
-
-    @Transient
-    override val backdropUrl: String? = null,
-
-    ) : Presentable {
-    constructor(
-        id: Int,
-        posterPath: String?,
-        title: String,
-        backdropPath: String?,
-        addedDate: Date?
-    ) : this(
-        id,
-        posterPath,
-        title,
-        backdropPath,
-        addedDate,
-        null,
-        null
-    )
-
+    val addedDate: Date?
+) : Presentable {
     override val adult: Boolean?
         get() = null
 
     override val overview: String?
         get() = null
+
     override val voteAverage: Float
         get() = 0f
+
     override val voteCount: Int
         get() = 0
-
-
 }

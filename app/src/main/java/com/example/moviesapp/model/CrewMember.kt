@@ -29,9 +29,7 @@ data class CrewMember(
 
     val department: String,
 
-    val job: String,
-
-    override val profileUrl: String? = null
+    val job: String
 ) : Member {
     override val firstLine: String
         get() = name

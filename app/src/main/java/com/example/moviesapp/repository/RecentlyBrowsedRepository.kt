@@ -38,8 +38,6 @@ class RecentlyBrowsedRepository @Inject constructor(
                     posterPath = posterPath,
                     title = title,
                     backdropPath = backdropPath,
-                    posterUrl = posterUrl,
-                    backdropUrl = backdropUrl,
                     addedDate = Date()
                 )
             }

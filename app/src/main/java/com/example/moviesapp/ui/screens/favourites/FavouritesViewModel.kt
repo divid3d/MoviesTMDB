@@ -5,10 +5,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.example.moviesapp.model.Config
 import com.example.moviesapp.model.FavouriteType
 import com.example.moviesapp.model.Presentable
-import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +19,6 @@ class FavouritesViewModel @Inject constructor(
     private val configRepository: ConfigRepository,
     private val favouritesRepository: FavouritesRepository
 ) : ViewModel() {
-    private val config: StateFlow<Config?> = configRepository.config
 
     private val _selectedFavouriteType: MutableStateFlow<FavouriteType> =
         MutableStateFlow(FavouriteType.Movie)
@@ -31,16 +28,12 @@ class FavouritesViewModel @Inject constructor(
     private val favouriteMovies: Flow<PagingData<Presentable>> =
         favouritesRepository.favouriteMovies()
             .cachedIn(viewModelScope)
-            .combine(config) { pagingData, config ->
-                pagingData.map { favouriteMovie -> favouriteMovie.appendUrls(config) }
-            }
+            .map { data -> data.map { movie -> movie } }
 
     private val favouriteTvSeries: Flow<PagingData<Presentable>> =
         favouritesRepository.favouritesTvSeries()
             .cachedIn(viewModelScope)
-            .combine(config) { pagingData, config ->
-                pagingData.map { favouriteTvSeries -> favouriteTvSeries.appendUrls(config) }
-            }
+            .map { data -> data.map { movie -> movie } }
 
     val favourites: Flow<PagingData<Presentable>> = combine(
         _selectedFavouriteType, favouriteMovies, favouriteTvSeries

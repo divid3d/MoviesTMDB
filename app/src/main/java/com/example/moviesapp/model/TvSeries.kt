@@ -39,16 +39,11 @@ data class TvSeries(
     override val voteCount: Int,
 
     @Json(name = "vote_average")
-    override val voteAverage: Float,
-
-    @Transient
-    override val posterUrl: String? = null,
-
-    @Transient
-    override val backdropUrl: String? = null
+    override val voteAverage: Float
 ) : Presentable {
     override val adult: Boolean?
         get() = null
+
     override val title: String
         get() = name.orEmpty()
 }

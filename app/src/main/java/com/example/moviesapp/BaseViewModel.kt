@@ -10,7 +10,7 @@ open class BaseViewModel : ViewModel() {
     val error: StateFlow<String?> =
         _error.asSharedFlow().stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
-    fun onError(error: String?) {
+    fun onError(error: String? = null) {
         viewModelScope.launch {
             _error.emit(error)
         }

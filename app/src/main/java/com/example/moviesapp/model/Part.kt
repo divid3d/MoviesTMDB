@@ -36,14 +36,8 @@ data class Part(
     override val voteAverage: Float,
 
     @Json(name = "vote_count")
-    override val voteCount: Int,
-
-    @Transient
-    override val posterUrl: String? = null,
-
-    ) : Presentable {
+    override val voteCount: Int
+) : Presentable {
     override val backdropPath: String?
-        get() = null
-    override val backdropUrl: String?
         get() = null
 }

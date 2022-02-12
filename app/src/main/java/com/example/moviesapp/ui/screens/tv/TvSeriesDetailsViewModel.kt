@@ -4,22 +4,16 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.filter
 import androidx.paging.map
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
-import com.example.moviesapp.model.Config
 import com.example.moviesapp.model.Image
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.TvSeriesDetails
-import com.example.moviesapp.other.appendUrl
-import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.other.asFlow
-import com.example.moviesapp.other.getImageUrl
-import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import com.example.moviesapp.repository.TvSeriesRepository
@@ -30,14 +24,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TvSeriesDetailsViewModel @Inject constructor(
-    private val configRepository: ConfigRepository,
     private val tvSeriesRepository: TvSeriesRepository,
     private val favouritesRepository: FavouritesRepository,
     private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
-    private val config: StateFlow<Config?> = configRepository.config
     private val favouriteTvSeriesIds: Flow<List<Int>> =
         favouritesRepository.getFavouriteTvSeriesIds()
 
@@ -50,33 +42,18 @@ class TvSeriesDetailsViewModel @Inject constructor(
     private val _tvSeriesBackdrops: MutableStateFlow<List<Image>?> = MutableStateFlow(null)
     private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    val tvSeriesDetails: StateFlow<TvSeriesDetails?> = combine(
-        _tvSeriesDetails, config
-    ) { details, config ->
-        val posterUrl = config?.getImageUrl(details?.posterPath)
-        val backdropUrl = config?.getImageUrl(details?.backdropPath)
-
-        details?.copy(
-            creators = details.creators.map { creator -> creator.appendUrls(config) },
-            lastEpisodeToAir = details.lastEpisodeToAir.appendUrls(config),
-            seasons = details.seasons.map { season -> season.appendUrl(config) },
-            networks = details.networks.map { network -> network.appendUrls(config) },
-            posterUrl = posterUrl,
-            backdropUrl = backdropUrl
-        )
-    }
-        .onEach { tvSeriesDetails ->
-            tvSeriesDetails?.let { details ->
-                recentlyBrowsedRepository.addRecentlyBrowsedTvSeries(details)
+    val tvSeriesDetails: StateFlow<TvSeriesDetails?> =
+        _tvSeriesDetails
+            .onEach { tvSeriesDetails ->
+                tvSeriesDetails?.let { details ->
+                    recentlyBrowsedRepository.addRecentlyBrowsedTvSeries(details)
+                }
             }
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
-    val backdrops: StateFlow<List<Image>> = combine(
-        _tvSeriesBackdrops, config
-    ) { backdrops, config ->
-        backdrops?.map { backdrop -> backdrop.appendUrls(config) } ?: emptyList()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
+    val backdrops: StateFlow<List<Image>> =
+        _tvSeriesBackdrops.map { backdrops -> backdrops ?: emptyList() }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
 
     val isFavourite: StateFlow<Boolean> = combine(
         tvSeriesId, favouriteTvSeriesIds
@@ -93,19 +70,11 @@ class TvSeriesDetailsViewModel @Inject constructor(
                 tvSeriesId?.let { id ->
                     similarTvSeries = tvSeriesRepository.similarTvSeries(id)
                         .cachedIn(viewModelScope)
-                        .combine(config) { moviePagingData, config ->
-                            moviePagingData
-                                .filter { tvSeries -> tvSeries.id != id }
-                                .map { tvSeries -> tvSeries.appendUrls(config) }
-                        }
+                        .map { data -> data.map { tvSeries -> tvSeries } }
 
                     tvSeriesRecommendations = tvSeriesRepository.tvSeriesRecommendations(id)
                         .cachedIn(viewModelScope)
-                        .combine(config) { moviePagingData, config ->
-                            moviePagingData
-                                .filter { tvSeries -> tvSeries.id != id }
-                                .map { tvSeries -> tvSeries.appendUrls(config) }
-                        }
+                        .map { data -> data.map { tvSeries -> tvSeries } }
 
                     getTvSeriesInfo(id)
                 }

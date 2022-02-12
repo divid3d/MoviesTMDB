@@ -7,7 +7,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.moviesapp.model.*
-import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +23,6 @@ class DiscoverMoviesViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val config = configRepository.config
     private val availableMovieGenres = configRepository.movieGenres
 
     private val _sortType: MutableStateFlow<SortType> = MutableStateFlow(SortType.Popularity)
@@ -45,9 +43,7 @@ class DiscoverMoviesViewModel @Inject constructor(
     var movies: Flow<PagingData<Presentable>> =
         movieRepository.discoverMovies()
             .cachedIn(viewModelScope)
-            .combine(config) { pagingData, config ->
-                pagingData.map { movie -> movie.appendUrls(config) }
-            }
+            .map { data -> data.map { movie -> movie } }
 
     fun onSortTypeChange(sortType: SortType) {
         viewModelScope.launch {
@@ -89,9 +85,7 @@ class DiscoverMoviesViewModel @Inject constructor(
             releaseDateRange = filterState.releaseDateRange
         )
             .cachedIn(viewModelScope)
-            .combine(config) { pagingData, config ->
-                pagingData.map { movie -> movie.appendUrls(config) }
-            }
+            .map { data -> data.map { movie -> movie } }
     }
 
 }

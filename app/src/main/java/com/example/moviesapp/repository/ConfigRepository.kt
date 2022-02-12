@@ -21,7 +21,6 @@ class ConfigRepository @Inject constructor(
     private val apiHelper: TmdbApiHelper
 ) {
     private val _config: MutableStateFlow<Config?> = MutableStateFlow(null)
-    val config: StateFlow<Config?> = _config.asStateFlow()
 
     val imageUrlParser: Flow<ImageUrlParser?> = _config.map { config ->
         if (config != null) {

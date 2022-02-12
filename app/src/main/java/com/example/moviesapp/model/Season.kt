@@ -21,21 +21,20 @@ data class Season(
     val seasonNumber: Int,
 
     @Json(name = "poster_path")
-    override val posterPath: String?,
-
-    @Transient
-    override val posterUrl: String? = null
+    override val posterPath: String?
 ) : Presentable {
     override val adult: Boolean?
         get() = null
+
     override val title: String
         get() = name
+
     override val backdropPath: String?
         get() = null
+
     override val voteAverage: Float
         get() = 0f
-    override val backdropUrl: String?
-        get() = null
+
     override val voteCount: Int
         get() = 0
 }

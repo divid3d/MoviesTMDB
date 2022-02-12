@@ -13,8 +13,5 @@ data class Network(
     val logoPath: String?,
 
     @Json(name = "origin_country")
-    val originCountry: String,
-
-    @Transient
-    val logoUrl: String? = null
+    val originCountry: String
 )

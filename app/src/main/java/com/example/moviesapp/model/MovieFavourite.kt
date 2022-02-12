@@ -2,7 +2,6 @@ package com.example.moviesapp.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import java.util.*
 
@@ -31,39 +30,8 @@ data class MovieFavourite(
     override val voteCount: Int,
 
     @ColumnInfo(name = "added_date")
-    val addedDate: Date?,
-
-    @Ignore
-    override val backdropUrl: String?,
-
-    @Ignore
-    override val posterUrl: String?,
-
-    ) : Presentable {
-    constructor(
-        id: Int,
-        backdropPath: String?,
-        posterPath: String?,
-        title: String,
-        originalTitle: String,
-        overview: String,
-        voteAverage: Float,
-        voteCount: Int,
-        addedDate: Date
-    ) : this(
-        id,
-        backdropPath,
-        posterPath,
-        title,
-        originalTitle,
-        overview,
-        voteAverage,
-        voteCount,
-        addedDate,
-        null,
-        null
-    )
-
+    val addedDate: Date?
+) : Presentable {
     override val adult: Boolean?
         get() = null
 }

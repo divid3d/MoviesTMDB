@@ -7,13 +7,10 @@ import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
-import com.example.moviesapp.model.Config
 import com.example.moviesapp.model.Image
 import com.example.moviesapp.model.SeasonDetails
 import com.example.moviesapp.model.SeasonInfo
-import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.other.asFlow
-import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.TvSeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,22 +20,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SeasonDetailsViewModel @Inject constructor(
-    private val configRepository: ConfigRepository,
     private val tvSeriesRepository: TvSeriesRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
-
-    private val config: StateFlow<Config?> = configRepository.config
 
     private val seasonInfo: Flow<SeasonInfo?> =
         savedStateHandle.getLiveData<SeasonInfo>("seasonInfo").asFlow()
 
     private val _seasonDetails: MutableStateFlow<SeasonDetails?> = MutableStateFlow(null)
-    val seasonDetails: StateFlow<SeasonDetails?> = combine(
-        _seasonDetails, config
-    ) { details, config ->
-        details?.appendUrls(config)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+    val seasonDetails: StateFlow<SeasonDetails?> =
+        _seasonDetails.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     val episodeCount: StateFlow<Int?> = _seasonDetails.map { details ->
         details?.episodes?.count()
@@ -46,17 +37,8 @@ class SeasonDetailsViewModel @Inject constructor(
 
     private val _episodesStills: MutableStateFlow<Map<Int, List<Image>>> =
         MutableStateFlow(emptyMap())
-    val episodeStills: StateFlow<Map<Int, List<Image>>> = combine(
-        _episodesStills, config
-    ) { stills, config ->
-        stills.map { (episodeNumber, stills) ->
-            episodeNumber to stills.map { image ->
-                image.appendUrls(
-                    config
-                )
-            }
-        }.toMap()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyMap())
+    val episodeStills: StateFlow<Map<Int, List<Image>>> =
+        _episodesStills.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyMap())
 
     init {
         viewModelScope.launch(Dispatchers.IO) {

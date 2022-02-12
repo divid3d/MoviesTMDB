@@ -1,6 +1,5 @@
 package com.example.moviesapp.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,10 +9,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
 import coil.size.OriginalSize
 import coil.size.Scale
 import com.example.moviesapp.model.Image
+import com.example.moviesapp.other.ImageUrlParser
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
@@ -23,34 +22,31 @@ import com.google.accompanist.pager.rememberPagerState
 @Composable
 fun StillBrowser(
     modifier: Modifier = Modifier,
-    stillUrls: List<Image>
+    stillPaths: List<Image>
 ) {
     val pagerState = rememberPagerState()
 
     Column(modifier = modifier) {
         HorizontalPager(
             modifier = Modifier.fillMaxWidth(),
-            count = stillUrls.count(),
+            count = stillPaths.count(),
             state = pagerState
         ) { page ->
-            val stillImage = stillUrls.getOrNull(page)
+            val stillImage = stillPaths.getOrNull(page)
 
-            Image(
-                painter = rememberImagePainter(
-                    data = stillImage?.fileUrl,
-                    builder = {
-                        size(OriginalSize)
-                        scale(Scale.FIT)
-                        crossfade(true)
-                    }
-                ),
-                contentScale = ContentScale.FillWidth,
-                contentDescription = null,
+            TmdbImage(
                 modifier = Modifier.fillMaxWidth(),
-            )
+                imagePath = stillImage?.filePath,
+                imageType = ImageUrlParser.ImageType.Still,
+                contentScale = ContentScale.FillWidth
+            ) {
+                size(OriginalSize)
+                scale(Scale.FIT)
+                crossfade(true)
+            }
         }
 
-        if (stillUrls.count() > 1) {
+        if (stillPaths.count() > 1) {
             HorizontalPagerIndicator(
                 pagerState = pagerState,
                 activeColor = MaterialTheme.colors.primary,

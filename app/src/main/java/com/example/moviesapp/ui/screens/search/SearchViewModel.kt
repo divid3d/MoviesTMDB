@@ -1,13 +1,10 @@
 package com.example.moviesapp.ui.screens.search
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import androidx.paging.map
+import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.model.SearchResult
-import com.example.moviesapp.other.appendUrls
-import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.DeviceRepository
 import com.example.moviesapp.repository.SearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,16 +18,13 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val configRepository: ConfigRepository,
     private val deviceRepository: DeviceRepository,
     private val searchRepository: SearchRepository,
     private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val queryDelay = 500.milliseconds
     private val minQueryLength = 3
-
-    private val config = configRepository.config
 
     val voiceSearchAvailable: StateFlow<Boolean> = deviceRepository.speechToTextAvailable
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
@@ -85,11 +79,6 @@ class SearchViewModel @Inject constructor(
                 _queryLoading.emit(true)
 
                 val response = searchRepository.multiSearch(query = query)
-                    .combine(config) { moviePagingData, config ->
-                        moviePagingData.map { searchResult ->
-                            searchResult.appendUrls(config)
-                        }
-                    }
 
                 _searchState.emit(
                     SearchState.Result(
@@ -98,7 +87,7 @@ class SearchViewModel @Inject constructor(
                     )
                 )
             } catch (e: CancellationException) {
-
+                onError()
             } finally {
                 withContext(NonCancellable) {
                     _queryLoading.emit(false)

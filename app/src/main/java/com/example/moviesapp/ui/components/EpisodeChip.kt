@@ -94,7 +94,7 @@ fun EpisodeChip(
                     if (stills.isNotEmpty()) {
                         StillBrowser(
                             modifier = Modifier.fillMaxWidth(),
-                            stillUrls = stills
+                            stillPaths = stills
                         )
                     }
                 }

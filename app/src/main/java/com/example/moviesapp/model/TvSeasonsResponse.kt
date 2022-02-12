@@ -20,21 +20,20 @@ data class TvSeasonsResponse(
     @Json(name = "season_number")
     val seasonNumber: Int,
 
-    val episodes: List<Episode>,
-
-    @Transient
-    override val posterUrl: String? = null
+    val episodes: List<Episode>
 ) : Presentable {
     override val adult: Boolean?
         get() = null
+
     override val title: String
         get() = name
+
     override val backdropPath: String?
         get() = null
+
     override val voteAverage: Float
         get() = 0f
-    override val backdropUrl: String?
-        get() = null
+
     override val voteCount: Int
         get() = 0
 }

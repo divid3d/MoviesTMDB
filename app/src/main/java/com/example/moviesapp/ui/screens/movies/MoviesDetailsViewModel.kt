@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.filter
 import androidx.paging.map
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.api.onException
@@ -12,10 +11,7 @@ import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
-import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.other.asFlow
-import com.example.moviesapp.other.getImageUrl
-import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.MovieRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
@@ -33,14 +29,11 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 @HiltViewModel
 class MoviesDetailsViewModel @Inject constructor(
-    private val configRepository: ConfigRepository,
     private val movieRepository: MovieRepository,
     private val favouritesRepository: FavouritesRepository,
     private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
-
-    private val config: StateFlow<Config?> = configRepository.config
     private val favouritesMoviesIdsFlow: Flow<List<Int>> =
         favouritesRepository.getFavouritesMoviesIds()
 
@@ -58,29 +51,16 @@ class MoviesDetailsViewModel @Inject constructor(
     var similarMoviesPagingDataFlow: Flow<PagingData<Presentable>>? = null
     var moviesRecommendationPagingDataFlow: Flow<PagingData<Presentable>>? = null
 
-    val movieDetails: StateFlow<MovieDetails?> = combine(
-        _movieDetails, config
-    ) { movieDetails, config ->
-        val posterUrl = config?.getImageUrl(movieDetails?.posterPath)
-        val backdropUrl = config?.getImageUrl(movieDetails?.backdropPath)
-
-        movieDetails?.copy(
-            posterUrl = posterUrl,
-            backdropUrl = backdropUrl,
-        )
-    }
-        .onEach { movieDetails ->
+    val movieDetails: StateFlow<MovieDetails?> =
+        _movieDetails.onEach { movieDetails ->
             movieDetails?.let { details ->
                 recentlyBrowsedRepository.addRecentlyBrowsedMovie(details)
             }
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
-    val backdrops: StateFlow<List<Image>> = combine(
-        _movieBackdrops, config
-    ) { backdrops, config ->
-        backdrops?.map { backdrop -> backdrop.appendUrls(config) } ?: emptyList()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
+    val backdrops: StateFlow<List<Image>?> =
+        _movieBackdrops.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
 
     val isFavourite: StateFlow<Boolean> = combine(
         movieId,
@@ -89,34 +69,11 @@ class MoviesDetailsViewModel @Inject constructor(
         id in favouritesIds
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
 
-    val movieCollection: StateFlow<MovieCollection?> = combine(
-        _movieCollection, config
-    ) { collection, config ->
-        collection?.copy(
-            parts = collection.parts.map { part -> part.appendUrls(config) }
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+    val movieCollection: StateFlow<MovieCollection?> =
+        _movieCollection.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
-    val credits: StateFlow<Credits?> = combine(
-        _credits, config
-    ) { credits, config ->
-        val cast = credits?.cast?.map { member ->
-            val profileUrl = config?.getImageUrl(member.profilePath, size = "w185")
-
-            member.copy(profileUrl = profileUrl)
-        }
-
-        val crew = credits?.crew?.map { member ->
-            val profileUrl = config?.getImageUrl(member.profilePath, size = "w185")
-
-            member.copy(profileUrl = profileUrl)
-        }
-
-        credits?.copy(
-            cast = cast,
-            crew = crew
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+    val credits: StateFlow<Credits?> =
+        _credits.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
 
     val hasReviews: StateFlow<Boolean> = _hasReviews.asStateFlow()
@@ -128,20 +85,12 @@ class MoviesDetailsViewModel @Inject constructor(
                 movieId?.let { id ->
                     similarMoviesPagingDataFlow = movieRepository.similarMovies(id)
                         .cachedIn(viewModelScope)
-                        .combine(config) { moviePagingData, config ->
-                            moviePagingData
-                                .filter { movie -> movie.id != movieId }
-                                .map { movie -> movie.appendUrls(config) }
-                        }
+                        .map { data -> data.map { movie -> movie } }
 
                     moviesRecommendationPagingDataFlow =
                         movieRepository.moviesRecommendations(movieId)
                             .cachedIn(viewModelScope)
-                            .combine(config) { moviePagingData, config ->
-                                moviePagingData
-                                    .filter { movie -> movie.id != movieId }
-                                    .map { movie -> movie.appendUrls(config) }
-                            }
+                            .map { data -> data.map { movie -> movie } }
 
                     getMovieInfo(id)
                 }

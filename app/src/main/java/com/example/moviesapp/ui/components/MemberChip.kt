@@ -38,7 +38,7 @@ fun MemberResultChip(
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (member.profileUrl != null) {
+        if (member.profilePath != null) {
             TmdbImage(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -49,7 +49,7 @@ fun MemberResultChip(
                     .aspectRatio(1f)
                     .clip(CircleShape)
                     .clickable { onClick() },
-                imagePath = member.profileUrl,
+                imagePath = member.profilePath,
                 imageType = ImageUrlParser.ImageType.Profile
             ) {
                 transformations(CircleCropTransformation())

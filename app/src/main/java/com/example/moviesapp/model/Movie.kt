@@ -40,11 +40,5 @@ data class Movie(
     val video: Boolean,
 
     @Json(name = "vote_average")
-    override val voteAverage: Float,
-
-    @Transient
-    override val posterUrl: String? = null,
-
-    @Transient
-    override val backdropUrl: String? = null
+    override val voteAverage: Float
 ) : Presentable

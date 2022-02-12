@@ -7,10 +7,11 @@ import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
-import com.example.moviesapp.model.*
-import com.example.moviesapp.other.appendUrls
+import com.example.moviesapp.model.CombinedCredits
+import com.example.moviesapp.model.CombinedCreditsCast
+import com.example.moviesapp.model.CombinedCreditsCrew
+import com.example.moviesapp.model.PersonDetails
 import com.example.moviesapp.other.asFlow
-import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.PersonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -20,34 +21,27 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PersonDetailsViewModel @Inject constructor(
-    private val configRepository: ConfigRepository,
     private val personRepository: PersonRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
-    private val config: StateFlow<Config?> = configRepository.config
     private val personId: Flow<Int?> = savedStateHandle.getLiveData<Int>("personId").asFlow()
 
     private val _personDetails: MutableStateFlow<PersonDetails?> = MutableStateFlow(null)
-    val personDetails: StateFlow<PersonDetails?> = combine(
-        _personDetails, config
-    ) { details, config ->
-        details?.appendUrls(config)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+    val personDetails: StateFlow<PersonDetails?> =
+        _personDetails.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     private val _combinedCredits: MutableStateFlow<CombinedCredits?> = MutableStateFlow(null)
 
-    val cast: StateFlow<List<CombinedCreditsCast>> = combine(
-        _combinedCredits, config
-    ) { credits, config ->
-        credits?.cast?.map { cast -> cast.appendUrls(config) } ?: emptyList()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
+    val cast: StateFlow<List<CombinedCreditsCast>> =
+        _combinedCredits
+            .map { credits -> credits?.cast ?: emptyList() }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
 
-    val crew: StateFlow<List<CombinedCreditsCrew>> = combine(
-        _combinedCredits, config
-    ) { credits, config ->
-        credits?.crew?.map { crew -> crew.appendUrls(config) } ?: emptyList()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
+    val crew: StateFlow<List<CombinedCreditsCrew>> =
+        _combinedCredits
+            .map { credits -> credits?.crew ?: emptyList() }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
 
     init {
         viewModelScope.launch(Dispatchers.IO) {

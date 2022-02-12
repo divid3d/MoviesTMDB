@@ -9,25 +9,20 @@ import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.model.TvSeriesRelationInfo
-import com.example.moviesapp.other.appendUrls
 import com.example.moviesapp.other.asFlow
-import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.TvSeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RelatedTvSeriesViewModel @Inject constructor(
     private val tvSeriesRepository: TvSeriesRepository,
-    private val configRepository: ConfigRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
-
-    private val config = configRepository.config
 
     var tvSeries: Flow<PagingData<Presentable>>? = null
 
@@ -43,9 +38,7 @@ class RelatedTvSeriesViewModel @Inject constructor(
 
                         tvSeries = tvSeriesRepository.similarTvSeries(id)
                             .cachedIn(viewModelScope)
-                            .combine(config) { pagingData, config ->
-                                pagingData.map { movie -> movie.appendUrls(config) }
-                            }
+                            .map { data -> data.map { movie -> movie } }
                     }
 
                     RelationType.Recommended -> {
@@ -53,9 +46,7 @@ class RelatedTvSeriesViewModel @Inject constructor(
 
                         tvSeries = tvSeriesRepository.tvSeriesRecommendations(id)
                             .cachedIn(viewModelScope)
-                            .combine(config) { pagingData, config ->
-                                pagingData.map { movie -> movie.appendUrls(config) }
-                            }
+                            .map { data -> data.map { movie -> movie } }
                     }
                     else -> Unit
                 }

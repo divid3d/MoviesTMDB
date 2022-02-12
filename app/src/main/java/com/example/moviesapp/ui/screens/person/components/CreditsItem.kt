@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -21,11 +20,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
 import coil.size.OriginalSize
 import coil.size.Scale
 import com.example.moviesapp.R
 import com.example.moviesapp.model.CreditsPresentable
+import com.example.moviesapp.other.ImageUrlParser
+import com.example.moviesapp.ui.components.TmdbImage
 import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.Size
 import com.example.moviesapp.ui.theme.sizes
@@ -54,20 +54,16 @@ fun CreditsItem(
             shape = MaterialTheme.shapes.medium,
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
-                if (creditsPresentable.posterUrl != null) {
-                    Image(
+                if (creditsPresentable.posterPath != null) {
+                    TmdbImage(
                         modifier = Modifier.fillMaxSize(),
-                        painter = rememberImagePainter(
-                            data = creditsPresentable.posterUrl,
-                            builder = {
-                                size(OriginalSize)
-                                scale(Scale.FILL)
-                                crossfade(true)
-                            }
-                        ),
-                        contentDescription = null,
-                        contentScale = ContentScale.FillBounds
-                    )
+                        imagePath = creditsPresentable.posterPath,
+                        imageType = ImageUrlParser.ImageType.Profile
+                    ) {
+                        size(OriginalSize)
+                        scale(Scale.FILL)
+                        crossfade(true)
+                    }
                 } else {
                     Box(
                         modifier = modifier

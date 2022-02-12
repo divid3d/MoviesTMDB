@@ -66,12 +66,6 @@ data class MovieDetails(
     override val voteAverage: Float,
 
     @Json(name = "vote_count")
-    override val voteCount: Int,
-
-    @Transient
-    override val posterUrl: String? = null,
-
-    @Transient
-    override val backdropUrl: String? = null
+    override val voteCount: Int
 ) : Presentable
 

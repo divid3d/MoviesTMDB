@@ -32,10 +32,7 @@ data class CastMember(
     @Json(name = "credit_id")
     val creditId: String,
 
-    val order: Int,
-
-    @Transient
-    override val profileUrl: String? = null
+    val order: Int
 ) : Member {
     override val firstLine: String
         get() = name

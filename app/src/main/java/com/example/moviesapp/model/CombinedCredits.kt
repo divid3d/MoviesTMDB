@@ -24,10 +24,7 @@ data class CombinedCreditsCast(
     override val mediaType: MediaType,
 
     @Json(name = "poster_path")
-    val posterPath: String?,
-
-    @Transient
-    override val posterUrl: String? = null
+    override val posterPath: String?
 ) : CreditsPresentable {
     override val infoText: String?
         get() = character
@@ -47,18 +44,15 @@ data class CombinedCreditsCrew(
     override val mediaType: MediaType,
 
     @Json(name = "poster_path")
-    val posterPath: String?,
-
-    @Transient
-    override val posterUrl: String? = null
+    override val posterPath: String?
 ) : CreditsPresentable {
-    override val infoText: String?
+    override val infoText: String
         get() = job
 }
 
 interface CreditsPresentable {
     val id: Int
-    val posterUrl: String?
+    val posterPath: String?
     val infoText: String?
     val title: String?
     val mediaType: MediaType

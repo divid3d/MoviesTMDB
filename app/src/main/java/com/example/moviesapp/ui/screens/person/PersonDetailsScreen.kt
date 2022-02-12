@@ -115,7 +115,7 @@ fun PersonDetailsScreen(
                             .padding(horizontal = MaterialTheme.spacing.medium)
                     ) {
                         PersonProfileImage(
-                            profileUrl = details.profileUrl
+                            profilePath = details.profilePath
                         )
                         Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
                         Column(
