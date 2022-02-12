@@ -17,19 +17,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
 import coil.size.OriginalSize
 import coil.size.Scale
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.PresentableItemState
+import com.example.moviesapp.other.ImageUrlParser
 import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.Size
 import com.example.moviesapp.ui.theme.sizes
@@ -147,7 +146,6 @@ fun ResultPresentableItem(
     showAdult: Boolean = false,
     onClick: (() -> Unit)? = null
 ) {
-
     val hasPoster by derivedStateOf {
         presentable.posterPath != null
     }
@@ -159,19 +157,15 @@ fun ResultPresentableItem(
         )
     ) {
         if (hasPoster) {
-            Image(
+            TmdbImage(
                 modifier = Modifier.matchParentSize(),
-                painter = rememberImagePainter(
-                    data = presentable.posterUrl,
-                    builder = {
-                        size(OriginalSize)
-                        scale(Scale.FILL)
-                        crossfade(true)
-                    }
-                ),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds
-            )
+                imagePath = presentable.posterPath,
+                imageType = ImageUrlParser.ImageType.Poster
+            ) {
+                size(OriginalSize)
+                scale(Scale.FILL)
+                crossfade(true)
+            }
         } else {
             NoPhotoPresentableItem(
                 modifier = Modifier.fillMaxSize()

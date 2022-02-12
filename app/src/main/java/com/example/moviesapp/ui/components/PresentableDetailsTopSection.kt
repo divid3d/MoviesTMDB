@@ -18,11 +18,12 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
 import coil.transform.BlurTransformation
 import com.example.moviesapp.model.Image
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.PresentableItemState
+import com.example.moviesapp.other.ImageUrlParser
+import com.example.moviesapp.other.getMaxSizeInt
 import com.example.moviesapp.ui.theme.sizes
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
@@ -40,24 +41,24 @@ fun PresentableDetailsTopSection(
         presentable?.let { PresentableItemState.Result(it) } ?: PresentableItemState.Loading
     }
 
-    val availableBackdropUrls: List<String> by derivedStateOf {
+    val availableBackdropPaths: List<String> by derivedStateOf {
         buildList {
-            add(presentable?.backdropUrl)
-            addAll(backdrops.map { backdrop -> backdrop.fileUrl })
+            add(presentable?.backdropPath)
+            addAll(backdrops.map { backdrop -> backdrop.filePath })
         }.filterNotNull()
     }
 
-    var currentBackdropUrlIndex by remember(availableBackdropUrls) {
+    var currentBackdropPathIndex by remember(availableBackdropPaths) {
         mutableStateOf(0)
     }
 
-    val currentBackdropUrl by derivedStateOf {
-        availableBackdropUrls.getOrNull(currentBackdropUrlIndex)
+    val currentBackdropPath by derivedStateOf {
+        availableBackdropPaths.getOrNull(currentBackdropPathIndex)
     }
 
-    val backdropScale = remember(currentBackdropUrl) { Animatable(1f) }
+    val backdropScale = remember(currentBackdropPath) { Animatable(1f) }
 
-    LaunchedEffect(currentBackdropUrl) {
+    LaunchedEffect(currentBackdropPath) {
         val result = backdropScale.animateTo(
             targetValue = 1.6f,
             animationSpec = tween(durationMillis = 10000, easing = LinearEasing)
@@ -65,40 +66,49 @@ fun PresentableDetailsTopSection(
 
         when (result.endReason) {
             AnimationEndReason.Finished -> {
-                val backdropCount = availableBackdropUrls.count()
-                val nextIndex = currentBackdropUrlIndex + 1
+                val backdropCount = availableBackdropPaths.count()
+                val nextIndex = currentBackdropPathIndex + 1
 
-                currentBackdropUrlIndex = if (nextIndex >= backdropCount) 0 else nextIndex
+                currentBackdropPathIndex = if (nextIndex >= backdropCount) 0 else nextIndex
             }
             else -> Unit
         }
     }
 
     Box(modifier = modifier.clip(RectangleShape)) {
-        Crossfade(
-            modifier = Modifier.matchParentSize(),
-            targetState = currentBackdropUrl
-        ) { url ->
-            Image(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .scale(backdropScale.value),
-                painter = rememberImagePainter(
-                    data = url,
+        BoxWithConstraints(modifier = Modifier.matchParentSize()) {
+            val (maxWidth, maxHeight) = getMaxSizeInt()
+
+            Crossfade(
+                modifier = Modifier.fillMaxSize(),
+                targetState = currentBackdropPath
+            ) { path ->
+                val backgroundPainter = rememberTmdbImagePainter(
+                    path = path,
+                    type = ImageUrlParser.ImageType.Backdrop,
+                    preferredSize = android.util.Size(maxWidth, maxHeight),
                     builder = {
                         fadeIn(animationSpec = spring())
                         transformations(
                             BlurTransformation(
                                 context = context,
-                                radius = 24f,
-                                sampling = 3f
+                                radius = 16f,
+                                sampling = 6f
                             )
                         )
                     }
-                ),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds
-            )
+                )
+
+                Image(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .scale(backdropScale.value),
+                    painter = backgroundPainter,
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds
+                )
+            }
+
         }
         Box(
             modifier = Modifier

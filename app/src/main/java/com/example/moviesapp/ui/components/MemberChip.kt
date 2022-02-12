@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -22,10 +21,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Member
+import com.example.moviesapp.other.ImageUrlParser
 import com.example.moviesapp.ui.theme.spacing
 
 @Composable
@@ -40,23 +39,22 @@ fun MemberResultChip(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (member.profileUrl != null) {
-            Image(
+            TmdbImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = MaterialTheme.colors.surface, shape = CircleShape)
+                    .background(
+                        color = MaterialTheme.colors.surface,
+                        shape = CircleShape
+                    )
                     .aspectRatio(1f)
                     .clip(CircleShape)
                     .clickable { onClick() },
-                painter = rememberImagePainter(
-                    data = member.profileUrl,
-                    builder = {
-                        transformations(CircleCropTransformation())
-                        crossfade(true)
-                    }
-                ),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds
-            )
+                imagePath = member.profileUrl,
+                imageType = ImageUrlParser.ImageType.Profile
+            ) {
+                transformations(CircleCropTransformation())
+                crossfade(true)
+            }
         } else {
             MemberNoPhotoChip(onClick = { onClick() })
         }

@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import coil.compose.LocalImageLoader
 import com.example.moviesapp.model.SnackBarEvent
+import com.example.moviesapp.other.ImageUrlParser
 import com.example.moviesapp.other.safeNavigate
 import com.example.moviesapp.ui.components.BottomBar
 import com.example.moviesapp.ui.screens.NavGraphs
@@ -35,6 +36,7 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
 
+val LocalImageUrlParser = staticCompositionLocalOf<ImageUrlParser?> { null }
 
 @AndroidEntryPoint
 @OptIn(InternalCoroutinesApi::class, ExperimentalComposeUiApi::class)
@@ -50,6 +52,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val context = LocalContext.current
             val keyboardController = LocalSoftwareKeyboardController.current
+            val imageUrlParser by mainViewModel.imageUrlParser.collectAsState()
 
             val snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
             val snackBarEvent: SnackBarEvent? by mainViewModel.networkSnackBarEvent.collectAsState()
@@ -112,7 +115,10 @@ class MainActivity : ComponentActivity() {
                 )
             }
 
-            CompositionLocalProvider(LocalImageLoader provides ImageLoader(context)) {
+            CompositionLocalProvider(
+                LocalImageLoader provides ImageLoader(context),
+                LocalImageUrlParser provides imageUrlParser
+            ) {
                 MoviesAppTheme {
                     // A surface container using the 'background' color from the theme
                     ProvideWindowInsets {

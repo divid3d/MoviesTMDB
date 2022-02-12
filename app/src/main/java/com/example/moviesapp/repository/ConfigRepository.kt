@@ -5,12 +5,11 @@ import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.Config
 import com.example.moviesapp.model.Genre
+import com.example.moviesapp.other.ImageUrlParser
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,6 +22,12 @@ class ConfigRepository @Inject constructor(
 ) {
     private val _config: MutableStateFlow<Config?> = MutableStateFlow(null)
     val config: StateFlow<Config?> = _config.asStateFlow()
+
+    val imageUrlParser: Flow<ImageUrlParser?> = _config.map { config ->
+        if (config != null) {
+            ImageUrlParser(config.imagesConfig)
+        } else null
+    }.flowOn(defaultDispatcher)
 
     private val _movieGenres: MutableStateFlow<List<Genre>> = MutableStateFlow(emptyList())
     val movieGenres: StateFlow<List<Genre>> = _movieGenres.asStateFlow()

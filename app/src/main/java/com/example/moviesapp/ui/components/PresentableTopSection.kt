@@ -30,10 +30,11 @@ import androidx.core.graphics.luminance
 import androidx.paging.compose.LazyPagingItems
 import androidx.palette.graphics.Palette
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
 import coil.transform.BlurTransformation
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.PresentableItemState
+import com.example.moviesapp.other.ImageUrlParser
+import com.example.moviesapp.other.getMaxSizeInt
 import com.example.moviesapp.ui.theme.Size
 import com.example.moviesapp.ui.theme.sizes
 import com.example.moviesapp.ui.theme.spacing
@@ -79,46 +80,53 @@ fun PresentableTopSection(
     }
 
     Box(modifier = modifier.clip(RectangleShape)) {
-        Crossfade(
-            modifier = Modifier.matchParentSize(),
-            targetState = selectedPresentable
-        ) { movie ->
-            val backgroundPainter = rememberImagePainter(
-                data = movie?.backdropUrl,
-                builder = {
-                    transformations(
-                        BlurTransformation(
-                            context = context,
-                            radius = 16f,
-                            sampling = 2f
+        BoxWithConstraints(modifier = Modifier.matchParentSize()) {
+            val (maxWidth, maxHeight) = getMaxSizeInt()
+
+            Crossfade(
+                modifier = Modifier.fillMaxSize(),
+                targetState = selectedPresentable
+            ) { movie ->
+                val backgroundPainter = rememberTmdbImagePainter(
+                    path = movie?.backdropPath,
+                    type = ImageUrlParser.ImageType.Backdrop,
+                    preferredSize = android.util.Size(maxWidth, maxHeight),
+                    builder = {
+                        transformations(
+                            BlurTransformation(
+                                context = context,
+                                radius = 16f,
+                                sampling = 6f
+                            )
                         )
-                    )
-                },
-            )
+                    }
+                )
 
-            val backgroundPainterState = backgroundPainter.state
+                val backgroundPainterState = backgroundPainter.state
 
-            LaunchedEffect(backgroundPainterState) {
-                val drawable = backgroundPainter.run {
-                    imageLoader.execute(request).drawable
-                }
-                val bitmap = drawable?.toBitmap()
+                LaunchedEffect(backgroundPainterState) {
+                    val drawable = backgroundPainter.run {
+                        imageLoader.execute(request).drawable
+                    }
+                    val bitmap = drawable?.toBitmap()
 
-                isDark = bitmap?.let {
-                    Palette.from(it).generate().dominantSwatch?.run {
-                        rgb.luminance < 0.5
+                    isDark = bitmap?.let {
+                        Palette.from(it).generate().dominantSwatch?.run {
+                            rgb.luminance < 0.5
+                        } ?: true
                     } ?: true
-                } ?: true
+                }
+
+                Image(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .scale(backdropScale.value),
+                    painter = backgroundPainter,
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds
+                )
             }
 
-            Image(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .scale(backdropScale.value),
-                painter = backgroundPainter,
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds
-            )
         }
         Box(
             modifier = Modifier

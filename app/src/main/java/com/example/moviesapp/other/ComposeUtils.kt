@@ -63,6 +63,11 @@ fun BoxWithConstraintsScope.getMaxSize(): Pair<Float, Float> {
     return LocalDensity.current.run { maxWidth.toPx() to maxHeight.toPx() }
 }
 
+@Composable
+fun BoxWithConstraintsScope.getMaxSizeInt(): Pair<Int, Int> {
+    return LocalDensity.current.run { maxWidth.toPx().toInt() to maxHeight.toPx().toInt() }
+}
+
 @ExperimentalFoundationApi
 fun <T : Any> LazyGridScope.items(
     lazyPagingItems: LazyPagingItems<T>,
