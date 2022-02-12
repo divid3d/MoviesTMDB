@@ -27,6 +27,7 @@ class TvSeriesRepository @Inject constructor(
         ) {
             TvSeriesResponseDataSource(
                 language = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
                 apiHelperMethod = apiHelper::getTopRatedTvSeries
             )
         }.flow.flowOn(defaultDispatcher)
@@ -37,6 +38,7 @@ class TvSeriesRepository @Inject constructor(
         ) {
             TvSeriesResponseDataSource(
                 language = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
                 apiHelperMethod = apiHelper::getOnTheAirTvSeries
             )
         }.flow.flowOn(defaultDispatcher)
@@ -47,6 +49,7 @@ class TvSeriesRepository @Inject constructor(
         ) {
             TvSeriesResponseDataSource(
                 language = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
                 apiHelperMethod = apiHelper::getTrendingTvSeries
             )
         }.flow.flowOn(defaultDispatcher)
@@ -57,6 +60,7 @@ class TvSeriesRepository @Inject constructor(
         ) {
             TvSeriesResponseDataSource(
                 language = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
                 apiHelperMethod = apiHelper::getPopularTvSeries
             )
         }.flow.flowOn(defaultDispatcher)
@@ -67,6 +71,7 @@ class TvSeriesRepository @Inject constructor(
         ) {
             TvSeriesResponseDataSource(
                 language = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
                 apiHelperMethod = apiHelper::getAiringTodayTvSeries
             )
         }.flow.flowOn(defaultDispatcher)
@@ -80,6 +85,8 @@ class TvSeriesRepository @Inject constructor(
         ) {
             TvSeriesDetailsResponseDataSource(
                 tvSeriesId = tvSeriesId,
+                language = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
                 apiHelperMethod = apiHelper::getSimilarTvSeries
             )
         }.flow.flowOn(defaultDispatcher)
@@ -94,6 +101,7 @@ class TvSeriesRepository @Inject constructor(
             TvSeriesDetailsResponseDataSource(
                 tvSeriesId = tvSeriesId,
                 language = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
                 apiHelperMethod = apiHelper::getTvSeriesRecommendations
             )
         }.flow.flowOn(defaultDispatcher)

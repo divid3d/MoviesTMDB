@@ -39,6 +39,7 @@ class MovieRepository @Inject constructor(
             DiscoverMoviesDataSource(
                 apiHelper = apiHelper,
                 language = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
                 sortType = sortType,
                 sortOrder = sortOrder,
                 genresParam = genresParam,
@@ -56,6 +57,7 @@ class MovieRepository @Inject constructor(
         ) {
             MovieResponseDataSource(
                 language = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
                 apiHelperMethod = apiHelper::getPopularMovies
             )
         }.flow.flowOn(defaultDispatcher)
@@ -66,6 +68,7 @@ class MovieRepository @Inject constructor(
         ) {
             MovieResponseDataSource(
                 language = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
                 apiHelperMethod = apiHelper::getUpcomingMovies
             )
         }.flow.flowOn(defaultDispatcher)
@@ -76,6 +79,7 @@ class MovieRepository @Inject constructor(
         ) {
             MovieResponseDataSource(
                 language = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
                 apiHelperMethod = apiHelper::getTrendingMovies
             )
         }.flow.flowOn(defaultDispatcher)
@@ -86,6 +90,7 @@ class MovieRepository @Inject constructor(
         ) {
             MovieResponseDataSource(
                 language = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
                 apiHelperMethod = apiHelper::getTopRatedMovies
             )
         }.flow.flowOn(defaultDispatcher)
@@ -96,6 +101,7 @@ class MovieRepository @Inject constructor(
         ) {
             MovieResponseDataSource(
                 language = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
                 apiHelperMethod = apiHelper::getNowPlayingMovies
             )
         }.flow.flowOn(defaultDispatcher)

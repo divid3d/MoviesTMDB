@@ -16,6 +16,7 @@ interface TmdbApi {
     suspend fun discoverMovies(
         @Query("page") page: Int,
         @Query("language") isoCode: String,
+        @Query("region") region: String,
         @Query("sort_by") type: SortTypeParam,
         @Query("with_genres") genres: GenresParam,
         @FloatRange(from = 0.0)
@@ -33,49 +34,57 @@ interface TmdbApi {
     @GET("movie/popular")
     suspend fun getPopularMovies(
         @Query("page") page: Int,
-        @Query("language") isoCode: String
+        @Query("language") isoCode: String,
+        @Query("region") region: String
     ): MoviesResponse
 
     @GET("movie/upcoming")
     suspend fun getUpcomingMovies(
         @Query("page") page: Int,
-        @Query("language") isoCode: String
+        @Query("language") isoCode: String,
+        @Query("region") region: String
     ): MoviesResponse
 
     @GET("movie/top_rated")
     suspend fun getTopRatedMovies(
         @Query("page") page: Int,
-        @Query("language") isoCode: String
+        @Query("language") isoCode: String,
+        @Query("region") region: String
     ): MoviesResponse
 
     @GET("movie/now_playing")
     suspend fun getNowPlayingMovies(
         @Query("page") page: Int,
-        @Query("language") isoCode: String
+        @Query("language") isoCode: String,
+        @Query("region") region: String
     ): MoviesResponse
 
     @GET("tv/top_rated")
     suspend fun getTopRatedTvSeries(
         @Query("page") page: Int,
-        @Query("language") isoCode: String
+        @Query("language") isoCode: String,
+        @Query("region") region: String
     ): TvSeriesResponse
 
     @GET("tv/on_the_air")
     suspend fun getOnTheAirTvSeries(
         @Query("page") page: Int,
-        @Query("language") isoCode: String
+        @Query("language") isoCode: String,
+        @Query("region") region: String
     ): TvSeriesResponse
 
     @GET("tv/popular")
     suspend fun getPopularTvSeries(
         @Query("page") page: Int,
-        @Query("language") isoCode: String
+        @Query("language") isoCode: String,
+        @Query("region") region: String
     ): TvSeriesResponse
 
     @GET("tv/airing_today")
     suspend fun getAiringTodayTvSeries(
         @Query("page") page: Int,
-        @Query("language") isoCode: String
+        @Query("language") isoCode: String,
+        @Query("region") region: String
     ): TvSeriesResponse
 
     @GET("movie/{movie_id}")
@@ -100,28 +109,32 @@ interface TmdbApi {
     suspend fun getSimilarMovies(
         @Path("movie_id") movieId: Int,
         @Query("page") page: Int,
-        @Query("language") isoCode: String
+        @Query("language") isoCode: String,
+        @Query("region") region: String
     ): MoviesResponse
 
     @GET("tv/{tv_id}/similar")
     suspend fun getSimilarTvSeries(
         @Path("tv_id") tvSeriesId: Int,
         @Query("page") page: Int,
-        @Query("language") isoCode: String
+        @Query("language") isoCode: String,
+        @Query("region") region: String
     ): TvSeriesResponse
 
     @GET("movie/{movie_id}/recommendations")
     suspend fun getMoviesRecommendations(
         @Path("movie_id") movieId: Int,
         @Query("page") page: Int,
-        @Query("language") isoCode: String
+        @Query("language") isoCode: String,
+        @Query("region") region: String
     ): MoviesResponse
 
     @GET("tv/{tv_id}/recommendations")
     suspend fun getTvSeriesRecommendations(
         @Path("tv_id") tvSeriesId: Int,
         @Query("page") page: Int,
-        @Query("language") isoCode: String
+        @Query("language") isoCode: String,
+        @Query("region") region: String
     ): TvSeriesResponse
 
     @GET("tv/{tv_id}/season/{season_number}")
@@ -135,6 +148,7 @@ interface TmdbApi {
     suspend fun multiSearch(
         @Query("page") page: Int,
         @Query("language") isoCode: String,
+        @Query("region") region: String,
         @Query("query") query: String,
         @Query("year") year: Int?,
         @Query("include_adult") includeAdult: Boolean,
@@ -144,13 +158,15 @@ interface TmdbApi {
     @GET("trending/movie/week")
     suspend fun getTrendingMovies(
         @Query("page") page: Int,
-        @Query("language") isoCode: String
+        @Query("language") isoCode: String,
+        @Query("region") region: String
     ): MoviesResponse
 
     @GET("trending/tv/week")
     suspend fun getTrendingTvSeries(
         @Query("page") page: Int,
-        @Query("language") isoCode: String
+        @Query("language") isoCode: String,
+        @Query("region") region: String
     ): TvSeriesResponse
 
     @GET("tv/{tv_id}/season/{season_number}")

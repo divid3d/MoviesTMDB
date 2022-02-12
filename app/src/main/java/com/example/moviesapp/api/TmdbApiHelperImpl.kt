@@ -12,6 +12,7 @@ class TmdbApiHelperImpl @Inject constructor(
     override suspend fun discoverMovies(
         page: Int,
         isoCode: String,
+        region: String,
         sortTypeParam: SortTypeParam,
         genresParam: GenresParam,
         voteRange: ClosedFloatingPointRange<Float>,
@@ -21,6 +22,7 @@ class TmdbApiHelperImpl @Inject constructor(
         tmdbApi.discoverMovies(
             page,
             isoCode,
+            region,
             sortTypeParam,
             genresParam,
             voteAverageMin = voteRange.start,
@@ -29,29 +31,61 @@ class TmdbApiHelperImpl @Inject constructor(
             toReleaseDate = toReleaseDate
         )
 
-    override suspend fun getPopularMovies(page: Int, isoCode: String): MoviesResponse =
-        tmdbApi.getPopularMovies(page, isoCode)
+    override suspend fun getPopularMovies(
+        page: Int,
+        isoCode: String,
+        region: String
+    ): MoviesResponse =
+        tmdbApi.getPopularMovies(page, isoCode, region)
 
-    override suspend fun getUpcomingMovies(page: Int, isoCode: String): MoviesResponse =
-        tmdbApi.getUpcomingMovies(page, isoCode)
+    override suspend fun getUpcomingMovies(
+        page: Int,
+        isoCode: String,
+        region: String
+    ): MoviesResponse =
+        tmdbApi.getUpcomingMovies(page, isoCode, region)
 
-    override suspend fun getTopRatedMovies(page: Int, isoCode: String): MoviesResponse =
-        tmdbApi.getTopRatedMovies(page, isoCode)
+    override suspend fun getTopRatedMovies(
+        page: Int,
+        isoCode: String,
+        region: String
+    ): MoviesResponse =
+        tmdbApi.getTopRatedMovies(page, isoCode, region)
 
-    override suspend fun getNowPlayingMovies(page: Int, isoCode: String): MoviesResponse =
-        tmdbApi.getNowPlayingMovies(page, isoCode)
+    override suspend fun getNowPlayingMovies(
+        page: Int,
+        isoCode: String,
+        region: String
+    ): MoviesResponse =
+        tmdbApi.getNowPlayingMovies(page, isoCode, region)
 
-    override suspend fun getTopRatedTvSeries(page: Int, isoCode: String): TvSeriesResponse =
-        tmdbApi.getTopRatedTvSeries(page, isoCode)
+    override suspend fun getTopRatedTvSeries(
+        page: Int,
+        isoCode: String,
+        region: String
+    ): TvSeriesResponse =
+        tmdbApi.getTopRatedTvSeries(page, isoCode, region)
 
-    override suspend fun getOnTheAirTvSeries(page: Int, isoCode: String): TvSeriesResponse =
-        tmdbApi.getOnTheAirTvSeries(page, isoCode)
+    override suspend fun getOnTheAirTvSeries(
+        page: Int,
+        isoCode: String,
+        region: String
+    ): TvSeriesResponse =
+        tmdbApi.getOnTheAirTvSeries(page, isoCode, region)
 
-    override suspend fun getPopularTvSeries(page: Int, isoCode: String): TvSeriesResponse =
-        tmdbApi.getPopularTvSeries(page, isoCode)
+    override suspend fun getPopularTvSeries(
+        page: Int,
+        isoCode: String,
+        region: String
+    ): TvSeriesResponse =
+        tmdbApi.getPopularTvSeries(page, isoCode, region)
 
-    override suspend fun getAiringTodayTvSeries(page: Int, isoCode: String): TvSeriesResponse =
-        tmdbApi.getAiringTodayTvSeries(page, isoCode)
+    override suspend fun getAiringTodayTvSeries(
+        page: Int,
+        isoCode: String,
+        region: String
+    ): TvSeriesResponse =
+        tmdbApi.getAiringTodayTvSeries(page, isoCode, region)
 
     override fun getMovieDetails(movieId: Int, isoCode: String): Call<MovieDetails> =
         tmdbApi.getMovieDetails(movieId, isoCode)
@@ -65,30 +99,34 @@ class TmdbApiHelperImpl @Inject constructor(
     override suspend fun getSimilarMovies(
         movieId: Int,
         page: Int,
-        isoCode: String
+        isoCode: String,
+        region: String
     ): MoviesResponse =
-        tmdbApi.getSimilarMovies(movieId, page, isoCode)
+        tmdbApi.getSimilarMovies(movieId, page, isoCode, region)
 
     override suspend fun getMoviesRecommendations(
         movieId: Int,
         page: Int,
-        isoCode: String
+        isoCode: String,
+        region: String
     ): MoviesResponse =
-        tmdbApi.getMoviesRecommendations(movieId, page, isoCode)
+        tmdbApi.getMoviesRecommendations(movieId, page, isoCode, region)
 
     override suspend fun getSimilarTvSeries(
         tvSeriesId: Int,
         page: Int,
-        isoCode: String
+        isoCode: String,
+        region: String
     ): TvSeriesResponse =
-        tmdbApi.getSimilarTvSeries(tvSeriesId, page, isoCode)
+        tmdbApi.getSimilarTvSeries(tvSeriesId, page, isoCode, region)
 
     override suspend fun getTvSeriesRecommendations(
         tvSeriesId: Int,
         page: Int,
-        isoCode: String
+        isoCode: String,
+        region: String
     ): TvSeriesResponse =
-        tmdbApi.getTvSeriesRecommendations(tvSeriesId, page, isoCode)
+        tmdbApi.getTvSeriesRecommendations(tvSeriesId, page, isoCode, region)
 
     override fun getTvSeasons(
         tvSeriesId: Int,
@@ -100,6 +138,7 @@ class TmdbApiHelperImpl @Inject constructor(
     override suspend fun multiSearch(
         page: Int,
         isoCode: String,
+        region: String,
         query: String,
         includeAdult: Boolean,
         year: Int?,
@@ -107,17 +146,26 @@ class TmdbApiHelperImpl @Inject constructor(
     ): SearchResponse = tmdbApi.multiSearch(
         page = page,
         isoCode = isoCode,
+        region = region,
         query = query,
         includeAdult = includeAdult,
         year = year,
         releaseYear = releaseYear
     )
 
-    override suspend fun getTrendingMovies(page: Int, isoCode: String): MoviesResponse =
-        tmdbApi.getTrendingMovies(page, isoCode)
+    override suspend fun getTrendingMovies(
+        page: Int,
+        isoCode: String,
+        region: String
+    ): MoviesResponse =
+        tmdbApi.getTrendingMovies(page, isoCode, region)
 
-    override suspend fun getTrendingTvSeries(page: Int, isoCode: String): TvSeriesResponse =
-        tmdbApi.getTrendingTvSeries(page, isoCode)
+    override suspend fun getTrendingTvSeries(
+        page: Int,
+        isoCode: String,
+        region: String
+    ): TvSeriesResponse =
+        tmdbApi.getTrendingTvSeries(page, isoCode, region)
 
     override fun getSeasonDetails(
         tvSeriesId: Int,

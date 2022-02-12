@@ -15,14 +15,16 @@ class MultiSearchResponseDataSource(
     private val includeAdult: Boolean,
     private val year: Int? = null,
     private val releaseYear: Int? = null,
-    private val language: String = DeviceLanguage.default.languageCode
+    private val language: String = DeviceLanguage.default.languageCode,
+    private val region: String = DeviceLanguage.default.region
 ) : PagingSource<Int, SearchResult>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SearchResult> {
         return try {
             val nextPage = params.key ?: 1
             val movieResponse = apiHelper.multiSearch(
                 page = nextPage,
-                isoCode = "pl-PL",
+                isoCode = language,
+                region = region,
                 query = query,
                 includeAdult = includeAdult,
                 year = year,

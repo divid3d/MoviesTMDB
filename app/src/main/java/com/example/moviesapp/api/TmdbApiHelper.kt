@@ -10,6 +10,7 @@ interface TmdbApiHelper {
     suspend fun discoverMovies(
         page: Int,
         isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region,
         sortTypeParam: SortTypeParam = SortTypeParam.PopularityDesc,
         genresParam: GenresParam = GenresParam(genres = emptyList()),
         voteRange: ClosedFloatingPointRange<Float> = 0f..10f,
@@ -19,42 +20,50 @@ interface TmdbApiHelper {
 
     suspend fun getPopularMovies(
         page: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
     ): MoviesResponse
 
     suspend fun getUpcomingMovies(
         page: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
     ): MoviesResponse
 
     suspend fun getTopRatedMovies(
         page: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
     ): MoviesResponse
 
     suspend fun getNowPlayingMovies(
         page: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
     ): MoviesResponse
 
     suspend fun getTopRatedTvSeries(
         page: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
     ): TvSeriesResponse
 
     suspend fun getOnTheAirTvSeries(
         page: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
     ): TvSeriesResponse
 
     suspend fun getPopularTvSeries(
         page: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
     ): TvSeriesResponse
 
     suspend fun getAiringTodayTvSeries(
         page: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
     ): TvSeriesResponse
 
     fun getMovieDetails(
@@ -75,25 +84,29 @@ interface TmdbApiHelper {
     suspend fun getSimilarMovies(
         movieId: Int,
         page: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
     ): MoviesResponse
 
     suspend fun getMoviesRecommendations(
         movieId: Int,
         page: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
     ): MoviesResponse
 
     suspend fun getSimilarTvSeries(
         tvSeriesId: Int,
         page: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
     ): TvSeriesResponse
 
     suspend fun getTvSeriesRecommendations(
         tvSeriesId: Int,
         page: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
     ): TvSeriesResponse
 
     fun getTvSeasons(
@@ -105,6 +118,7 @@ interface TmdbApiHelper {
     suspend fun multiSearch(
         page: Int,
         isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region,
         query: String,
         includeAdult: Boolean = false,
         year: Int? = null,
@@ -113,12 +127,14 @@ interface TmdbApiHelper {
 
     suspend fun getTrendingMovies(
         page: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
     ): MoviesResponse
 
     suspend fun getTrendingTvSeries(
         page: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
     ): TvSeriesResponse
 
     fun getSeasonDetails(
