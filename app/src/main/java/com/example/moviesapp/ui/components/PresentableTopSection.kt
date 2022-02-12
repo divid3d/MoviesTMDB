@@ -50,7 +50,7 @@ import kotlin.math.absoluteValue
 fun PresentableTopSection(
     modifier: Modifier = Modifier,
     title: String,
-    state: LazyPagingItems<Presentable>,
+    state: LazyPagingItems<out Presentable>,
     onPresentableClick: (Int) -> Unit = {}
 ) {
     val context = LocalContext.current

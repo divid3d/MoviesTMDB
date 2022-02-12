@@ -45,7 +45,6 @@ class SearchViewModel @Inject constructor(
 
     private var queryJob: Job? = null
 
-
     fun onQueryChange(query: String) {
         viewModelScope.launch {
             _query.emit(query)

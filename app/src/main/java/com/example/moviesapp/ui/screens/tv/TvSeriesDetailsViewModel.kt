@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
@@ -12,7 +11,7 @@ import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Image
-import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.model.TvSeries
 import com.example.moviesapp.model.TvSeriesDetails
 import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.DeviceRepository
@@ -43,8 +42,8 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
     private val tvSeriesId: Flow<Int?> = savedStateHandle.getLiveData<Int>("tvSeriesId").asFlow()
 
-    var similarTvSeries: Flow<PagingData<Presentable>>? = null
-    var tvSeriesRecommendations: Flow<PagingData<Presentable>>? = null
+    var similarTvSeries: Flow<PagingData<TvSeries>>? = null
+    var tvSeriesRecommendations: Flow<PagingData<TvSeries>>? = null
     private val _tvSeriesBackdrops: MutableStateFlow<List<Image>?> = MutableStateFlow(null)
     private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
@@ -78,16 +77,15 @@ class TvSeriesDetailsViewModel @Inject constructor(
                         tvSeriesRepository.similarTvSeries(
                             tvSeriesId = id,
                             deviceLanguage = deviceLanguage
-                        ).cachedIn(viewModelScope)
-                    }.flattenMerge().map { data -> data.map { tvSeries -> tvSeries } }
+                        )
+                    }.flattenMerge().cachedIn(viewModelScope)
 
                     tvSeriesRecommendations = deviceLanguage.map { deviceLanguage ->
                         tvSeriesRepository.tvSeriesRecommendations(
                             tvSeriesId = id,
                             deviceLanguage = deviceLanguage
-                        ).cachedIn(viewModelScope)
-                    }.flattenMerge().map { data -> data.map { tvSeries -> tvSeries } }
-
+                        )
+                    }.flattenMerge().cachedIn(viewModelScope)
 
                     deviceLanguage.collectLatest { deviceLanguage ->
                         getTvSeriesInfo(

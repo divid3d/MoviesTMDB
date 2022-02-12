@@ -43,12 +43,9 @@ class DiscoverMoviesViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), FilterState())
 
 
-    var movies: Flow<PagingData<Presentable>> = deviceLanguage.map { deviceLanguage ->
-        movieRepository
-            .discoverMovies(deviceLanguage = deviceLanguage)
-            .cachedIn(viewModelScope)
-    }.flattenMerge().map { data -> data.map { movie -> movie } }
-
+    var movies: Flow<PagingData<Movie>> = deviceLanguage.map { deviceLanguage ->
+        movieRepository.discoverMovies(deviceLanguage = deviceLanguage)
+    }.flattenMerge().cachedIn(viewModelScope)
 
     fun onSortTypeChange(sortType: SortType) {
         viewModelScope.launch {
@@ -90,8 +87,8 @@ class DiscoverMoviesViewModel @Inject constructor(
                 onlyWithScore = filterState.showOnlyWithScore,
                 onlyWithOverview = filterState.showOnlyWithOverview,
                 releaseDateRange = filterState.releaseDateRange
-            ).cachedIn(viewModelScope)
-        }.flattenMerge().map { data -> data.map { movie -> movie } }
+            )
+        }.flattenMerge().map { data -> data.map { movie -> movie } }.cachedIn(viewModelScope)
     }
 
 }

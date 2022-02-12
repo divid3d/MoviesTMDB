@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
 fun PresentableSection(
     modifier: Modifier = Modifier,
     title: String,
-    state: LazyPagingItems<Presentable>,
+    state: LazyPagingItems<out Presentable>,
     scrollToBeginningItemsStart: Int = 30,
     showMoreButton: Boolean = true,
     onMoreClick: () -> Unit = {},

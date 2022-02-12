@@ -4,11 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.model.DeviceLanguage
-import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.RelationType
+import com.example.moviesapp.model.TvSeries
 import com.example.moviesapp.model.TvSeriesRelationInfo
 import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.DeviceRepository
@@ -31,7 +30,7 @@ class RelatedTvSeriesViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
-    var tvSeries: Flow<PagingData<Presentable>>? = null
+    var tvSeries: Flow<PagingData<TvSeries>>? = null
 
     private val movieRelationType: Flow<TvSeriesRelationInfo?> = savedStateHandle
         .getLiveData("tvSeriesRelationInfo", null).asFlow()
@@ -47,8 +46,8 @@ class RelatedTvSeriesViewModel @Inject constructor(
                             tvSeriesRepository.similarTvSeries(
                                 tvSeriesId = id,
                                 deviceLanguage = deviceLanguage
-                            ).cachedIn(viewModelScope)
-                        }.flattenMerge().map { data -> data.map { movie -> movie } }
+                            )
+                        }.flattenMerge().cachedIn(viewModelScope)
                     }
 
                     RelationType.Recommended -> {
@@ -58,8 +57,8 @@ class RelatedTvSeriesViewModel @Inject constructor(
                             tvSeriesRepository.tvSeriesRecommendations(
                                 tvSeriesId = id,
                                 deviceLanguage = deviceLanguage
-                            ).cachedIn(viewModelScope)
-                        }.flattenMerge().map { data -> data.map { movie -> movie } }
+                            )
+                        }.flattenMerge().cachedIn(viewModelScope)
                     }
                     else -> Unit
                 }

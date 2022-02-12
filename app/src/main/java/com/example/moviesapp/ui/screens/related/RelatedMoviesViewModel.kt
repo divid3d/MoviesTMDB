@@ -4,11 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.model.DeviceLanguage
+import com.example.moviesapp.model.Movie
 import com.example.moviesapp.model.MovieRelationInfo
-import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.DeviceRepository
@@ -31,7 +30,7 @@ class RelatedMoviesViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
-    var movies: Flow<PagingData<Presentable>>? = null
+    var movies: Flow<PagingData<Movie>>? = null
 
     private val movieRelationType: Flow<MovieRelationInfo?> = savedStateHandle
         .getLiveData("movieRelationInfo", null).asFlow()
@@ -47,8 +46,8 @@ class RelatedMoviesViewModel @Inject constructor(
                             movieRepository.similarMovies(
                                 movieId = id,
                                 deviceLanguage = deviceLanguage
-                            ).cachedIn(viewModelScope)
-                        }.flattenMerge().map { data -> data.map { movie -> movie } }
+                            )
+                        }.flattenMerge().cachedIn(viewModelScope)
                     }
 
                     RelationType.Recommended -> {
@@ -58,8 +57,8 @@ class RelatedMoviesViewModel @Inject constructor(
                             movieRepository.moviesRecommendations(
                                 movieId = id,
                                 deviceLanguage = deviceLanguage
-                            ).cachedIn(viewModelScope)
-                        }.flattenMerge().map { data -> data.map { movie -> movie } }
+                            )
+                        }.flattenMerge().cachedIn(viewModelScope)
                     }
                     else -> Unit
                 }

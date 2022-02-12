@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
@@ -53,8 +52,8 @@ class MoviesDetailsViewModel @Inject constructor(
     private val _movieCollection: MutableStateFlow<MovieCollection?> = MutableStateFlow(null)
     private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    var similarMoviesPagingDataFlow: Flow<PagingData<Presentable>>? = null
-    var moviesRecommendationPagingDataFlow: Flow<PagingData<Presentable>>? = null
+    var similarMoviesPagingDataFlow: Flow<PagingData<Movie>>? = null
+    var moviesRecommendationPagingDataFlow: Flow<PagingData<Movie>>? = null
 
     val movieDetails: StateFlow<MovieDetails?> =
         _movieDetails.onEach { movieDetails ->
@@ -89,17 +88,15 @@ class MoviesDetailsViewModel @Inject constructor(
             movieId.collectLatest { movieId ->
                 movieId?.let { id ->
                     similarMoviesPagingDataFlow = deviceLanguage.map { deviceLanguage ->
-                        movieRepository
-                            .similarMovies(movieId = id, deviceLanguage = deviceLanguage)
-                            .cachedIn(viewModelScope)
-                    }.flattenMerge().map { data -> data.map { movie -> movie } }
+                        movieRepository.similarMovies(movieId = id, deviceLanguage = deviceLanguage)
+                    }.flattenMerge().cachedIn(viewModelScope)
 
                     moviesRecommendationPagingDataFlow = deviceLanguage.map { deviceLanguage ->
                         movieRepository.moviesRecommendations(
                             movieId = movieId,
                             deviceLanguage = deviceLanguage
-                        ).cachedIn(viewModelScope)
-                    }.flattenMerge().map { data -> data.map { movie -> movie } }
+                        )
+                    }.flattenMerge().cachedIn(viewModelScope)
 
                     deviceLanguage.collectLatest { deviceLanguage ->
                         getMovieInfo(

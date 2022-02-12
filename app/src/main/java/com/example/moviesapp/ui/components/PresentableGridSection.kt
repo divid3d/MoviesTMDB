@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 fun PresentableGridSection(
     modifier: Modifier = Modifier,
     gridState: LazyListState = rememberLazyListState(),
-    state: LazyPagingItems<Presentable>,
+    state: LazyPagingItems<out Presentable>,
     contentPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.default),
     scrollToBeginningItemsStart: Int = 30,
     onPresentableClick: (Int) -> Unit = {}

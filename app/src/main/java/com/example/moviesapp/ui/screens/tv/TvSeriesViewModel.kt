@@ -5,9 +5,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
-import androidx.paging.map
 import com.example.moviesapp.model.DeviceLanguage
-import com.example.moviesapp.model.Presentable
+import com.example.moviesapp.model.RecentlyBrowsedTvSeries
+import com.example.moviesapp.model.TvSeries
+import com.example.moviesapp.model.TvSeriesFavourite
 import com.example.moviesapp.repository.DeviceRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
@@ -30,10 +31,9 @@ class TvSeriesViewModel @Inject constructor(
 
     private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
 
-    val onTheAir: Flow<PagingData<Presentable>> = deviceLanguage.map { deviceLanguage ->
+    val onTheAir: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
         tvSeriesRepository
             .onTheAirTvSeries(deviceLanguage = deviceLanguage)
-            .cachedIn(viewModelScope)
     }.flattenMerge().map { pagingData ->
         pagingData
             .filter { tvSeries ->
@@ -41,41 +41,27 @@ class TvSeriesViewModel @Inject constructor(
                     !backdropPath.isNullOrEmpty() && !posterPath.isNullOrEmpty() && title.isNotEmpty() && overview.isNotEmpty()
                 }
             }
-            .map { tvSeries -> tvSeries }
-    }
+    }.cachedIn(viewModelScope)
 
-    val popular: Flow<PagingData<Presentable>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository
-            .popularTvSeries(deviceLanguage = deviceLanguage)
-            .cachedIn(viewModelScope)
-    }.flattenMerge().map { data -> data.map { tvSeries -> tvSeries } }
+    val popular: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
+        tvSeriesRepository.popularTvSeries(deviceLanguage = deviceLanguage)
+    }.flattenMerge().cachedIn(viewModelScope)
 
-    val topRated: Flow<PagingData<Presentable>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository
-            .topRatedTvSeries(deviceLanguage = deviceLanguage)
-            .cachedIn(viewModelScope)
-    }.flattenMerge().map { data -> data.map { tvSeries -> tvSeries } }
+    val topRated: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
+        tvSeriesRepository.topRatedTvSeries(deviceLanguage = deviceLanguage)
+    }.flattenMerge().cachedIn(viewModelScope)
 
-    val trending: Flow<PagingData<Presentable>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository
-            .trendingTvSeries(deviceLanguage = deviceLanguage)
-            .cachedIn(viewModelScope)
-    }.flattenMerge().map { data -> data.map { tvSeries -> tvSeries } }
+    val trending: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
+        tvSeriesRepository.trendingTvSeries(deviceLanguage = deviceLanguage)
+    }.flattenMerge().cachedIn(viewModelScope)
 
-    val airingToday: Flow<PagingData<Presentable>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository
-            .airingTodayTvSeries(deviceLanguage = deviceLanguage)
-            .cachedIn(viewModelScope)
-    }.flattenMerge().map { data -> data.map { tvSeries -> tvSeries } }
+    val airingToday: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
+        tvSeriesRepository.airingTodayTvSeries(deviceLanguage = deviceLanguage)
+    }.flattenMerge().cachedIn(viewModelScope)
 
-    val favourites: Flow<PagingData<Presentable>> =
-        favouritesRepository.favouritesTvSeries()
-            .cachedIn(viewModelScope)
-            .map { data -> data.map { tvSeries -> tvSeries } }
+    val favourites: Flow<PagingData<TvSeriesFavourite>> =
+        favouritesRepository.favouritesTvSeries().cachedIn(viewModelScope)
 
-    val recentlyBrowsed: Flow<PagingData<Presentable>> =
-        recentlyBrowsedRepository.recentlyBrowsedTvSeries()
-            .cachedIn(viewModelScope)
-            .map { data -> data.map { tvSeries -> tvSeries } }
-
+    val recentlyBrowsed: Flow<PagingData<RecentlyBrowsedTvSeries>> =
+        recentlyBrowsedRepository.recentlyBrowsedTvSeries().cachedIn(viewModelScope)
 }
