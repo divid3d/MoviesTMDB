@@ -6,9 +6,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.MovieType
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.other.asFlow
+import com.example.moviesapp.repository.DeviceRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.MovieRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
@@ -22,10 +24,13 @@ import javax.inject.Inject
 @HiltViewModel
 class BrowseMoviesViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
+    private val deviceRepository: DeviceRepository,
     private val favouritesRepository: FavouritesRepository,
     private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
 
     var movies: Flow<PagingData<Presentable>>? = null
 
@@ -35,26 +40,24 @@ class BrowseMoviesViewModel @Inject constructor(
             MovieType.valueOf(value)
         }
 
-    private val topRated: Flow<PagingData<Presentable>> =
-        movieRepository.topRatedMovies().map { data -> data.map { movie -> movie } }
+    private val topRated: Flow<PagingData<Presentable>> = deviceLanguage.map { deviceLanguage ->
+        movieRepository.topRatedMovies(deviceLanguage = deviceLanguage)
+    }.flattenMerge().map { data -> data.map { movie -> movie } }
 
+    private val upcoming: Flow<PagingData<Presentable>> = deviceLanguage.map { deviceLanguage ->
+        movieRepository.upcomingMovies(deviceLanguage = deviceLanguage)
+    }.flattenMerge().map { data -> data.map { movie -> movie } }
 
-    private val upcoming: Flow<PagingData<Presentable>> =
-        movieRepository.upcomingMovies().map { data -> data.map { movie -> movie } }
-
+    private val trending: Flow<PagingData<Presentable>> = deviceLanguage.map { deviceLanguage ->
+        movieRepository.trendingMovies(deviceLanguage = deviceLanguage)
+    }.flattenMerge().map { data -> data.map { movie -> movie } }
 
     private val favourites: Flow<PagingData<Presentable>> =
         favouritesRepository.favouriteMovies().map { data -> data.map { movie -> movie } }
 
-
     private val recentlyBrowsed: Flow<PagingData<Presentable>> =
         recentlyBrowsedRepository.recentlyBrowsedMovies()
             .map { data -> data.map { movie -> movie } }
-
-
-    private val trending: Flow<PagingData<Presentable>> =
-        movieRepository.trendingMovies().map { data -> data.map { movie -> movie } }
-
 
     val favouriteMoviesCount: StateFlow<Int> = favouritesRepository.getFavouriteMoviesCount()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), 0)

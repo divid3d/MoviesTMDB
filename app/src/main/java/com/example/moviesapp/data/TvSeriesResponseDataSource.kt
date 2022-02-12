@@ -2,18 +2,20 @@ package com.example.moviesapp.data
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.TvSeries
 import com.example.moviesapp.model.TvSeriesResponse
 import retrofit2.HttpException
 import java.io.IOException
 
 class TvSeriesResponseDataSource(
-    private inline val apiHelperMethod: suspend (Int) -> TvSeriesResponse
+    private val language: String = DeviceLanguage.default.languageCode,
+    private inline val apiHelperMethod: suspend (Int, String) -> TvSeriesResponse
 ) : PagingSource<Int, TvSeries>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TvSeries> {
         return try {
             val nextPage = params.key ?: 1
-            val movieResponse = apiHelperMethod(nextPage)
+            val movieResponse = apiHelperMethod(nextPage, language)
 
             val currentPage = movieResponse.page
             val totalPages = movieResponse.totalPages

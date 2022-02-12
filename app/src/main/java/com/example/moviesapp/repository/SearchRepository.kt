@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.data.MultiSearchResponseDataSource
+import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.SearchResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,8 @@ class SearchRepository @Inject constructor(
         query: String,
         includeAdult: Boolean = false,
         year: Int? = null,
-        releaseYear: Int? = null
+        releaseYear: Int? = null,
+        deviceLanguage: DeviceLanguage = DeviceLanguage.default
     ): Flow<PagingData<SearchResult>> =
         Pager(
             PagingConfig(pageSize = 20)
@@ -32,7 +34,8 @@ class SearchRepository @Inject constructor(
                 query = query,
                 includeAdult = includeAdult,
                 year = year,
-                releaseYear = releaseYear
+                releaseYear = releaseYear,
+                language = deviceLanguage.languageCode
             )
         }.flow.flowOn(defaultDispatcher)
 }

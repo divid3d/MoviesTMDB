@@ -7,10 +7,12 @@ import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
+import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Image
 import com.example.moviesapp.model.SeasonDetails
 import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.other.asFlow
+import com.example.moviesapp.repository.DeviceRepository
 import com.example.moviesapp.repository.TvSeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -20,10 +22,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SeasonDetailsViewModel @Inject constructor(
+    private val deviceRepository: DeviceRepository,
     private val tvSeriesRepository: TvSeriesRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
+    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
     private val seasonInfo: Flow<SeasonInfo?> =
         savedStateHandle.getLiveData<SeasonInfo>("seasonInfo").asFlow()
 
@@ -44,23 +48,26 @@ class SeasonDetailsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             seasonInfo.collectLatest { seasonInfo ->
                 seasonInfo?.let { info ->
-                    tvSeriesRepository.seasonDetails(
-                        tvSeriesId = info.tvSeriesId,
-                        seasonNumber = info.seasonNumber
-                    ).request { response ->
-                        response.onSuccess {
-                            viewModelScope.launch {
-                                val seasonDetails = data
-                                _seasonDetails.emit(seasonDetails)
+                    deviceLanguage.collectLatest { deviceLanguage ->
+                        tvSeriesRepository.seasonDetails(
+                            tvSeriesId = info.tvSeriesId,
+                            seasonNumber = info.seasonNumber,
+                            deviceLanguage = deviceLanguage
+                        ).request { response ->
+                            response.onSuccess {
+                                viewModelScope.launch {
+                                    val seasonDetails = data
+                                    _seasonDetails.emit(seasonDetails)
+                                }
                             }
-                        }
 
-                        response.onFailure {
-                            onError(message)
-                        }
+                            response.onFailure {
+                                onError(message)
+                            }
 
-                        response.onException {
-                            onError(message)
+                            response.onException {
+                                onError(message)
+                            }
                         }
                     }
                 }

@@ -7,11 +7,9 @@ import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
-import com.example.moviesapp.model.CombinedCredits
-import com.example.moviesapp.model.CombinedCreditsCast
-import com.example.moviesapp.model.CombinedCreditsCrew
-import com.example.moviesapp.model.PersonDetails
+import com.example.moviesapp.model.*
 import com.example.moviesapp.other.asFlow
+import com.example.moviesapp.repository.DeviceRepository
 import com.example.moviesapp.repository.PersonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,10 +19,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PersonDetailsViewModel @Inject constructor(
+    private val deviceRepository: DeviceRepository,
     private val personRepository: PersonRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
+    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
     private val personId: Flow<Int?> = savedStateHandle.getLiveData<Int>("personId").asFlow()
 
     private val _personDetails: MutableStateFlow<PersonDetails?> = MutableStateFlow(null)
@@ -47,35 +47,46 @@ class PersonDetailsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             personId.collectLatest { personId ->
                 personId?.let { id ->
-                    personRepository.getPersonDetails(id).request { response ->
-                        response.onSuccess {
-                            viewModelScope.launch {
-                                _personDetails.emit(data)
+                    deviceLanguage.collectLatest { deviceLanguage ->
+                        personRepository.getPersonDetails(
+                            personId = id,
+                            deviceLanguage = deviceLanguage
+                        ).request { response ->
+                            response.onSuccess {
+                                viewModelScope.launch {
+                                    _personDetails.emit(data)
+                                }
+                            }
+
+                            response.onFailure {
+                                onError(message)
+                            }
+
+                            response.onException {
+                                onError(message)
                             }
                         }
 
-                        response.onFailure {
-                            onError(message)
-                        }
-
-                        response.onException {
-                            onError(message)
-                        }
+                        getPersonInfo(
+                            personId = id,
+                            deviceLanguage = deviceLanguage
+                        )
                     }
-
-                    getPersonInfo(id)
                 }
             }
         }
     }
 
-    private fun getPersonInfo(personId: Int) {
-        getCombinedCredits(personId)
+    private fun getPersonInfo(personId: Int, deviceLanguage: DeviceLanguage) {
+        getCombinedCredits(personId, deviceLanguage)
     }
 
-    private fun getCombinedCredits(personId: Int) {
+    private fun getCombinedCredits(personId: Int, deviceLanguage: DeviceLanguage) {
         viewModelScope.launch(Dispatchers.IO) {
-            personRepository.getCombinedCredits(personId).request { response ->
+            personRepository.getCombinedCredits(
+                personId = personId,
+                deviceLanguage = deviceLanguage
+            ).request { response ->
                 response.onSuccess {
                     viewModelScope.launch {
                         _combinedCredits.emit(data)

@@ -23,6 +23,7 @@ class MovieRepository @Inject constructor(
     private val apiHelper: TmdbApiHelper
 ) {
     fun discoverMovies(
+        deviceLanguage: DeviceLanguage = DeviceLanguage.default,
         sortType: SortType = SortType.Popularity,
         sortOrder: SortOrder = SortOrder.Desc,
         genresParam: GenresParam = GenresParam(genres = emptyList()),
@@ -37,6 +38,7 @@ class MovieRepository @Inject constructor(
         ) {
             DiscoverMoviesDataSource(
                 apiHelper = apiHelper,
+                language = deviceLanguage.languageCode,
                 sortType = sortType,
                 sortOrder = sortOrder,
                 genresParam = genresParam,
@@ -48,65 +50,94 @@ class MovieRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun popularMovies(): Flow<PagingData<Movie>> =
+    fun popularMovies(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
-            MovieResponseDataSource(apiHelper::getPopularMovies)
+            MovieResponseDataSource(
+                language = deviceLanguage.languageCode,
+                apiHelperMethod = apiHelper::getPopularMovies
+            )
         }.flow.flowOn(defaultDispatcher)
 
-    fun upcomingMovies(): Flow<PagingData<Movie>> =
+    fun upcomingMovies(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
-            MovieResponseDataSource(apiHelper::getUpcomingMovies)
+            MovieResponseDataSource(
+                language = deviceLanguage.languageCode,
+                apiHelperMethod = apiHelper::getUpcomingMovies
+            )
         }.flow.flowOn(defaultDispatcher)
 
-    fun trendingMovies(): Flow<PagingData<Movie>> =
+    fun trendingMovies(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
-            MovieResponseDataSource(apiHelper::getTrendingMovies)
+            MovieResponseDataSource(
+                language = deviceLanguage.languageCode,
+                apiHelperMethod = apiHelper::getTrendingMovies
+            )
         }.flow.flowOn(defaultDispatcher)
 
-    fun topRatedMovies(): Flow<PagingData<Movie>> =
+    fun topRatedMovies(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
-            MovieResponseDataSource(apiHelper::getTopRatedMovies)
+            MovieResponseDataSource(
+                language = deviceLanguage.languageCode,
+                apiHelperMethod = apiHelper::getTopRatedMovies
+            )
         }.flow.flowOn(defaultDispatcher)
 
-    fun nowPlayingMovies(): Flow<PagingData<Movie>> =
+    fun nowPlayingMovies(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
-            MovieResponseDataSource(apiHelper::getNowPlayingMovies)
+            MovieResponseDataSource(
+                language = deviceLanguage.languageCode,
+                apiHelperMethod = apiHelper::getNowPlayingMovies
+            )
         }.flow.flowOn(defaultDispatcher)
 
-    fun similarMovies(movieId: Int): Flow<PagingData<Movie>> =
+    fun similarMovies(
+        movieId: Int,
+        deviceLanguage: DeviceLanguage = DeviceLanguage.default
+    ): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
             MovieDetailsResponseDataSource(
                 movieId = movieId,
+                language = deviceLanguage.languageCode,
                 apiHelperMethod = apiHelper::getSimilarMovies
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun moviesRecommendations(movieId: Int): Flow<PagingData<Movie>> =
+    fun moviesRecommendations(
+        movieId: Int,
+        deviceLanguage: DeviceLanguage = DeviceLanguage.default
+    ): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
             MovieDetailsResponseDataSource(
                 movieId = movieId,
+                language = deviceLanguage.languageCode,
                 apiHelperMethod = apiHelper::getMoviesRecommendations
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun movieDetails(movieId: Int, isoCode: String = "pl-PL"): Call<MovieDetails> =
+    fun movieDetails(
+        movieId: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): Call<MovieDetails> =
         apiHelper.getMovieDetails(movieId, isoCode)
 
-    fun movieCredits(movieId: Int, isoCode: String = "pl-PL"): Call<Credits> =
+    fun movieCredits(
+        movieId: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): Call<Credits> =
         apiHelper.getMovieCredits(movieId, isoCode)
 
     fun movieImages(
@@ -125,6 +156,9 @@ class MovieRepository @Inject constructor(
 
     fun movieReview(movieId: Int): Call<ReviewsResponse> = apiHelper.getMovieReview(movieId)
 
-    fun collection(collectionId: Int): Call<CollectionResponse> =
-        apiHelper.getCollection(collectionId)
+    fun collection(
+        collectionId: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): Call<CollectionResponse> =
+        apiHelper.getCollection(collectionId, isoCode)
 }

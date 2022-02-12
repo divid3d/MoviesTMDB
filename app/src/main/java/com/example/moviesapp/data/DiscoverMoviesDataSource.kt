@@ -9,6 +9,7 @@ import java.io.IOException
 
 class DiscoverMoviesDataSource(
     private val apiHelper: TmdbApiHelper,
+    private val language: String = DeviceLanguage.default.languageCode,
     private val sortType: SortType = SortType.Popularity,
     private val sortOrder: SortOrder = SortOrder.Desc,
     private val genresParam: GenresParam = GenresParam(genres = emptyList()),
@@ -29,6 +30,7 @@ class DiscoverMoviesDataSource(
 
             val movieResponse = apiHelper.discoverMovies(
                 page = nextPage,
+                isoCode = language,
                 sortTypeParam = sortTypeParam,
                 genresParam = genresParam,
                 voteRange = voteRange,

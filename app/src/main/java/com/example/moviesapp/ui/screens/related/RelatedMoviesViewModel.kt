@@ -6,24 +6,31 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.moviesapp.BaseViewModel
+import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.MovieRelationInfo
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.other.asFlow
+import com.example.moviesapp.repository.DeviceRepository
 import com.example.moviesapp.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class RelatedMoviesViewModel @Inject constructor(
+    private val deviceRepository: DeviceRepository,
     private val movieRepository: MovieRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
+    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
     var movies: Flow<PagingData<Presentable>>? = null
 
     private val movieRelationType: Flow<MovieRelationInfo?> = savedStateHandle
@@ -36,17 +43,23 @@ class RelatedMoviesViewModel @Inject constructor(
                     RelationType.Similar -> {
                         val id = relationType.movieId
 
-                        movies = movieRepository.similarMovies(id)
-                            .cachedIn(viewModelScope)
-                            .map { data -> data.map { movie -> movie } }
+                        movies = deviceLanguage.map { deviceLanguage ->
+                            movieRepository.similarMovies(
+                                movieId = id,
+                                deviceLanguage = deviceLanguage
+                            ).cachedIn(viewModelScope)
+                        }.flattenMerge().map { data -> data.map { movie -> movie } }
                     }
 
                     RelationType.Recommended -> {
                         val id = relationType.movieId
 
-                        movies = movieRepository.moviesRecommendations(id)
-                            .cachedIn(viewModelScope)
-                            .map { data -> data.map { movie -> movie } }
+                        movies = deviceLanguage.map { deviceLanguage ->
+                            movieRepository.moviesRecommendations(
+                                movieId = id,
+                                deviceLanguage = deviceLanguage
+                            ).cachedIn(viewModelScope)
+                        }.flattenMerge().map { data -> data.map { movie -> movie } }
                     }
                     else -> Unit
                 }

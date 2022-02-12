@@ -9,7 +9,7 @@ interface TmdbApiHelper {
 
     suspend fun discoverMovies(
         page: Int,
-        isoCode: String = "pl-PL",
+        isoCode: String = DeviceLanguage.default.languageCode,
         sortTypeParam: SortTypeParam = SortTypeParam.PopularityDesc,
         genresParam: GenresParam = GenresParam(genres = emptyList()),
         voteRange: ClosedFloatingPointRange<Float> = 0f..10f,
@@ -17,71 +17,114 @@ interface TmdbApiHelper {
         toReleaseDate: DateParam? = null
     ): MoviesResponse
 
-    suspend fun getPopularMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
+    suspend fun getPopularMovies(
+        page: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): MoviesResponse
 
-    suspend fun getUpcomingMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
+    suspend fun getUpcomingMovies(
+        page: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): MoviesResponse
 
-    suspend fun getTopRatedMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
+    suspend fun getTopRatedMovies(
+        page: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): MoviesResponse
 
-    suspend fun getNowPlayingMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
+    suspend fun getNowPlayingMovies(
+        page: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): MoviesResponse
 
-    suspend fun getTopRatedTvSeries(page: Int, isoCode: String = "pl-PL"): TvSeriesResponse
+    suspend fun getTopRatedTvSeries(
+        page: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): TvSeriesResponse
 
-    suspend fun getOnTheAirTvSeries(page: Int, isoCode: String = "pl-PL"): TvSeriesResponse
+    suspend fun getOnTheAirTvSeries(
+        page: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): TvSeriesResponse
 
-    suspend fun getPopularTvSeries(page: Int, isoCode: String = "pl-PL"): TvSeriesResponse
+    suspend fun getPopularTvSeries(
+        page: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): TvSeriesResponse
 
-    suspend fun getAiringTodayTvSeries(page: Int, isoCode: String = "pl-PL"): TvSeriesResponse
+    suspend fun getAiringTodayTvSeries(
+        page: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): TvSeriesResponse
 
-    fun getMovieDetails(movieId: Int, isoCode: String = "pl-PL"): Call<MovieDetails>
+    fun getMovieDetails(
+        movieId: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): Call<MovieDetails>
 
-    fun getTvSeriesDetails(tvSeriesId: Int, isoCode: String = "pl-PL"): Call<TvSeriesDetails>
+    fun getTvSeriesDetails(
+        tvSeriesId: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): Call<TvSeriesDetails>
 
-    fun getMovieCredits(movieId: Int, isoCode: String = "pl-PL"): Call<Credits>
+    fun getMovieCredits(
+        movieId: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): Call<Credits>
 
-    suspend fun getSimilarMovies(movieId: Int, page: Int, isoCode: String = "pl-PL"): MoviesResponse
+    suspend fun getSimilarMovies(
+        movieId: Int,
+        page: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): MoviesResponse
 
     suspend fun getMoviesRecommendations(
         movieId: Int,
         page: Int,
-        isoCode: String = "pl-PL"
+        isoCode: String = DeviceLanguage.default.languageCode
     ): MoviesResponse
 
     suspend fun getSimilarTvSeries(
         tvSeriesId: Int,
         page: Int,
-        isoCode: String = "pl-PL"
+        isoCode: String = DeviceLanguage.default.languageCode
     ): TvSeriesResponse
 
     suspend fun getTvSeriesRecommendations(
         tvSeriesId: Int,
         page: Int,
-        isoCode: String = "pl-PL"
+        isoCode: String = DeviceLanguage.default.languageCode
     ): TvSeriesResponse
 
     fun getTvSeasons(
         tvSeriesId: Int,
         seasonNumber: Int,
-        isoCode: String = "pl-PL"
+        isoCode: String = DeviceLanguage.default.languageCode
     ): Call<TvSeasonsResponse>
 
     suspend fun multiSearch(
         page: Int,
-        isoCode: String = "pl-PL",
+        isoCode: String = DeviceLanguage.default.languageCode,
         query: String,
         includeAdult: Boolean = false,
         year: Int? = null,
         releaseYear: Int? = null
     ): SearchResponse
 
-    suspend fun getTrendingMovies(page: Int, isoCode: String = "pl-PL"): MoviesResponse
+    suspend fun getTrendingMovies(
+        page: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): MoviesResponse
 
-    suspend fun getTrendingTvSeries(page: Int, isoCode: String = "pl-PL"): TvSeriesResponse
+    suspend fun getTrendingTvSeries(
+        page: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): TvSeriesResponse
 
     fun getSeasonDetails(
         tvSeriesId: Int,
         seasonNumber: Int,
-        isoCode: String = "pl-PL"
+        isoCode: String = DeviceLanguage.default.languageCode
     ): Call<SeasonDetails>
 
     fun getMovieImages(movieId: Int): Call<ImagesResponse>
@@ -102,14 +145,23 @@ interface TmdbApiHelper {
 
     fun getTvSeriesReview(tvSeriesId: Int): Call<ReviewsResponse>
 
-    fun getCollection(collectionId: Int, isoCode: String = "pl-PL"): Call<CollectionResponse>
+    fun getCollection(
+        collectionId: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): Call<CollectionResponse>
 
-    fun getMoviesGenres(isoCode: String = "pl-PL"): Call<GenresResponse>
+    fun getMoviesGenres(isoCode: String = DeviceLanguage.default.languageCode): Call<GenresResponse>
 
-    fun getTvSeriesGenres(isoCode: String = "pl-PL"): Call<GenresResponse>
+    fun getTvSeriesGenres(isoCode: String = DeviceLanguage.default.languageCode): Call<GenresResponse>
 
-    fun getPersonDetails(personId: Int, isoCode: String = "pl-PL"): Call<PersonDetails>
+    fun getPersonDetails(
+        personId: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): Call<PersonDetails>
 
-    fun getCombinedCredits(personId: Int, isoCode: String = "pl-PL"): Call<CombinedCredits>
+    fun getCombinedCredits(
+        personId: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): Call<CombinedCredits>
 
 }

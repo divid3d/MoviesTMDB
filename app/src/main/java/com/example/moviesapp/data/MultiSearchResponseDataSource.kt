@@ -3,6 +3,7 @@ package com.example.moviesapp.data
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.moviesapp.api.TmdbApiHelper
+import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.model.SearchResult
 import retrofit2.HttpException
@@ -13,7 +14,8 @@ class MultiSearchResponseDataSource(
     private val query: String,
     private val includeAdult: Boolean,
     private val year: Int? = null,
-    private val releaseYear: Int? = null
+    private val releaseYear: Int? = null,
+    private val language: String = DeviceLanguage.default.languageCode
 ) : PagingSource<Int, SearchResult>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SearchResult> {
         return try {

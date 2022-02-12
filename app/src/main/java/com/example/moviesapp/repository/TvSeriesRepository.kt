@@ -21,42 +21,60 @@ class TvSeriesRepository @Inject constructor(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val apiHelper: TmdbApiHelper
 ) {
-    fun topRatedTvSeries(): Flow<PagingData<TvSeries>> =
+    fun topRatedTvSeries(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
-            TvSeriesResponseDataSource(apiHelper::getTopRatedTvSeries)
+            TvSeriesResponseDataSource(
+                language = deviceLanguage.languageCode,
+                apiHelperMethod = apiHelper::getTopRatedTvSeries
+            )
         }.flow.flowOn(defaultDispatcher)
 
-    fun onTheAirTvSeries(): Flow<PagingData<TvSeries>> =
+    fun onTheAirTvSeries(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
-            TvSeriesResponseDataSource(apiHelper::getOnTheAirTvSeries)
+            TvSeriesResponseDataSource(
+                language = deviceLanguage.languageCode,
+                apiHelperMethod = apiHelper::getOnTheAirTvSeries
+            )
         }.flow.flowOn(defaultDispatcher)
 
-    fun trendingTvSeries(): Flow<PagingData<TvSeries>> =
+    fun trendingTvSeries(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
-            TvSeriesResponseDataSource(apiHelper::getTrendingTvSeries)
+            TvSeriesResponseDataSource(
+                language = deviceLanguage.languageCode,
+                apiHelperMethod = apiHelper::getTrendingTvSeries
+            )
         }.flow.flowOn(defaultDispatcher)
 
-    fun popularTvSeries(): Flow<PagingData<TvSeries>> =
+    fun popularTvSeries(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
-            TvSeriesResponseDataSource(apiHelper::getPopularTvSeries)
+            TvSeriesResponseDataSource(
+                language = deviceLanguage.languageCode,
+                apiHelperMethod = apiHelper::getPopularTvSeries
+            )
         }.flow.flowOn(defaultDispatcher)
 
-    fun airingTodayTvSeries(): Flow<PagingData<TvSeries>> =
+    fun airingTodayTvSeries(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
-            TvSeriesResponseDataSource(apiHelper::getAiringTodayTvSeries)
+            TvSeriesResponseDataSource(
+                language = deviceLanguage.languageCode,
+                apiHelperMethod = apiHelper::getAiringTodayTvSeries
+            )
         }.flow.flowOn(defaultDispatcher)
 
-    fun similarTvSeries(tvSeriesId: Int): Flow<PagingData<TvSeries>> =
+    fun similarTvSeries(
+        tvSeriesId: Int,
+        deviceLanguage: DeviceLanguage = DeviceLanguage.default
+    ): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
@@ -66,25 +84,32 @@ class TvSeriesRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun tvSeriesRecommendations(tvSeriesId: Int): Flow<PagingData<TvSeries>> =
+    fun tvSeriesRecommendations(
+        tvSeriesId: Int,
+        deviceLanguage: DeviceLanguage = DeviceLanguage.default
+    ): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
             TvSeriesDetailsResponseDataSource(
                 tvSeriesId = tvSeriesId,
+                language = deviceLanguage.languageCode,
                 apiHelperMethod = apiHelper::getTvSeriesRecommendations
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun getTvSeriesDetails(tvSeriesId: Int, isoCode: String = "pl-PL"): Call<TvSeriesDetails> =
-        apiHelper.getTvSeriesDetails(tvSeriesId, isoCode)
+    fun getTvSeriesDetails(
+        tvSeriesId: Int,
+        deviceLanguage: DeviceLanguage = DeviceLanguage.default
+    ): Call<TvSeriesDetails> =
+        apiHelper.getTvSeriesDetails(tvSeriesId, deviceLanguage.languageCode)
 
     fun getTvSeason(
         tvSeriesId: Int,
         seasonNumber: Int,
-        isoCode: String = "pl-PL"
+        deviceLanguage: DeviceLanguage = DeviceLanguage.default
     ): Call<TvSeasonsResponse> =
-        apiHelper.getTvSeasons(tvSeriesId, seasonNumber, isoCode)
+        apiHelper.getTvSeasons(tvSeriesId, seasonNumber, deviceLanguage.languageCode)
 
     fun tvSeriesImages(
         tvSeriesId: Int
@@ -92,8 +117,10 @@ class TvSeriesRepository @Inject constructor(
 
     fun seasonDetails(
         tvSeriesId: Int,
-        seasonNumber: Int
-    ): Call<SeasonDetails> = apiHelper.getSeasonDetails(tvSeriesId, seasonNumber)
+        seasonNumber: Int,
+        deviceLanguage: DeviceLanguage = DeviceLanguage.default
+    ): Call<SeasonDetails> =
+        apiHelper.getSeasonDetails(tvSeriesId, seasonNumber, deviceLanguage.languageCode)
 
     fun episodeImages(
         tvSeriesId: Int,

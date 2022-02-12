@@ -12,10 +12,12 @@ import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
 import com.example.moviesapp.other.asFlow
+import com.example.moviesapp.repository.DeviceRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.MovieRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
@@ -26,14 +28,17 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, FlowPreview::class)
 @HiltViewModel
 class MoviesDetailsViewModel @Inject constructor(
+    private val deviceRepository: DeviceRepository,
     private val movieRepository: MovieRepository,
     private val favouritesRepository: FavouritesRepository,
     private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
+
+    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
     private val favouritesMoviesIdsFlow: Flow<List<Int>> =
         favouritesRepository.getFavouritesMoviesIds()
 
@@ -83,16 +88,25 @@ class MoviesDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             movieId.collectLatest { movieId ->
                 movieId?.let { id ->
-                    similarMoviesPagingDataFlow = movieRepository.similarMovies(id)
-                        .cachedIn(viewModelScope)
-                        .map { data -> data.map { movie -> movie } }
-
-                    moviesRecommendationPagingDataFlow =
-                        movieRepository.moviesRecommendations(movieId)
+                    similarMoviesPagingDataFlow = deviceLanguage.map { deviceLanguage ->
+                        movieRepository
+                            .similarMovies(movieId = id, deviceLanguage = deviceLanguage)
                             .cachedIn(viewModelScope)
-                            .map { data -> data.map { movie -> movie } }
+                    }.flattenMerge().map { data -> data.map { movie -> movie } }
 
-                    getMovieInfo(id)
+                    moviesRecommendationPagingDataFlow = deviceLanguage.map { deviceLanguage ->
+                        movieRepository.moviesRecommendations(
+                            movieId = movieId,
+                            deviceLanguage = deviceLanguage
+                        ).cachedIn(viewModelScope)
+                    }.flattenMerge().map { data -> data.map { movie -> movie } }
+
+                    deviceLanguage.collectLatest { deviceLanguage ->
+                        getMovieInfo(
+                            movieId = id,
+                            deviceLanguage = deviceLanguage
+                        )
+                    }
                 }
             }
         }
@@ -133,22 +147,28 @@ class MoviesDetailsViewModel @Inject constructor(
         favouritesRepository.unlikeMovie(movieDetails)
     }
 
-    private fun getMovieInfo(movieId: Int) {
-        getMovieDetails(movieId)
+    private fun getMovieInfo(movieId: Int, deviceLanguage: DeviceLanguage) {
+        getMovieDetails(movieId, deviceLanguage)
         getMovieImages(movieId)
-        getMovieCredits(movieId)
+        getMovieCredits(movieId, deviceLanguage)
         getMovieReview(movieId)
     }
 
-    private fun getMovieDetails(movieId: Int) {
-        movieRepository.movieDetails(movieId).request { response ->
+    private fun getMovieDetails(movieId: Int, deviceLanguage: DeviceLanguage) {
+        movieRepository.movieDetails(
+            movieId = movieId,
+            isoCode = deviceLanguage.languageCode
+        ).request { response ->
             response.onSuccess {
                 viewModelScope.launch {
                     val movieDetails = data
                     _movieDetails.emit(movieDetails)
 
                     data?.collection?.id?.let { collectionId ->
-                        getMovieCollection(collectionId)
+                        getMovieCollection(
+                            collectionId = collectionId,
+                            deviceLanguage = deviceLanguage
+                        )
                     }
                 }
             }
@@ -163,8 +183,11 @@ class MoviesDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun getMovieCredits(movieId: Int) {
-        movieRepository.movieCredits(movieId).request { response ->
+    private fun getMovieCredits(movieId: Int, deviceLanguage: DeviceLanguage) {
+        movieRepository.movieCredits(
+            movieId = movieId,
+            isoCode = deviceLanguage.languageCode
+        ).request { response ->
             response.onSuccess {
                 viewModelScope.launch {
                     val credits = data
@@ -221,8 +244,11 @@ class MoviesDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun getMovieCollection(collectionId: Int) {
-        movieRepository.collection(collectionId).request { response ->
+    private fun getMovieCollection(collectionId: Int, deviceLanguage: DeviceLanguage) {
+        movieRepository.collection(
+            collectionId = collectionId,
+            isoCode = deviceLanguage.languageCode
+        ).request { response ->
             response.onSuccess {
                 viewModelScope.launch {
                     val collectionResponse = data

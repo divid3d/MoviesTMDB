@@ -10,26 +10,32 @@ import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
+import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Image
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.TvSeriesDetails
 import com.example.moviesapp.other.asFlow
+import com.example.moviesapp.repository.DeviceRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import com.example.moviesapp.repository.TvSeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class TvSeriesDetailsViewModel @Inject constructor(
+    private val deviceRepository: DeviceRepository,
     private val tvSeriesRepository: TvSeriesRepository,
     private val favouritesRepository: FavouritesRepository,
     private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
+    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
     private val favouriteTvSeriesIds: Flow<List<Int>> =
         favouritesRepository.getFavouriteTvSeriesIds()
 
@@ -68,15 +74,28 @@ class TvSeriesDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             tvSeriesId.collectLatest { tvSeriesId ->
                 tvSeriesId?.let { id ->
-                    similarTvSeries = tvSeriesRepository.similarTvSeries(id)
-                        .cachedIn(viewModelScope)
-                        .map { data -> data.map { tvSeries -> tvSeries } }
+                    similarTvSeries = deviceLanguage.map { deviceLanguage ->
+                        tvSeriesRepository.similarTvSeries(
+                            tvSeriesId = id,
+                            deviceLanguage = deviceLanguage
+                        ).cachedIn(viewModelScope)
+                    }.flattenMerge().map { data -> data.map { tvSeries -> tvSeries } }
 
-                    tvSeriesRecommendations = tvSeriesRepository.tvSeriesRecommendations(id)
-                        .cachedIn(viewModelScope)
-                        .map { data -> data.map { tvSeries -> tvSeries } }
+                    tvSeriesRecommendations = deviceLanguage.map { deviceLanguage ->
+                        tvSeriesRepository.tvSeriesRecommendations(
+                            tvSeriesId = id,
+                            deviceLanguage = deviceLanguage
+                        ).cachedIn(viewModelScope)
+                    }.flattenMerge().map { data -> data.map { tvSeries -> tvSeries } }
 
-                    getTvSeriesInfo(id)
+
+                    deviceLanguage.collectLatest { deviceLanguage ->
+                        getTvSeriesInfo(
+                            tvSeriesId = id,
+                            deviceLanguage = deviceLanguage
+                        )
+                    }
+
                 }
             }
         }
@@ -90,14 +109,17 @@ class TvSeriesDetailsViewModel @Inject constructor(
         favouritesRepository.unlikeTvSeries(tvSeriesDetails)
     }
 
-    private fun getTvSeriesInfo(tvSeriesId: Int) {
-        getTvSeriesDetails(tvSeriesId)
+    private fun getTvSeriesInfo(tvSeriesId: Int, deviceLanguage: DeviceLanguage) {
+        getTvSeriesDetails(tvSeriesId, deviceLanguage)
         getMovieImages(tvSeriesId)
         getTvSeriesReview(tvSeriesId)
     }
 
-    private fun getTvSeriesDetails(tvSeriesId: Int) {
-        tvSeriesRepository.getTvSeriesDetails(tvSeriesId).request { response ->
+    private fun getTvSeriesDetails(tvSeriesId: Int, deviceLanguage: DeviceLanguage) {
+        tvSeriesRepository.getTvSeriesDetails(
+            tvSeriesId = tvSeriesId,
+            deviceLanguage = deviceLanguage
+        ).request { response ->
             response.onSuccess {
                 viewModelScope.launch {
                     val tvSeriesDetails = data

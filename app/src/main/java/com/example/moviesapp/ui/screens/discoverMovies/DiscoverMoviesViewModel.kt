@@ -8,6 +8,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.moviesapp.model.*
 import com.example.moviesapp.repository.ConfigRepository
+import com.example.moviesapp.repository.DeviceRepository
 import com.example.moviesapp.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -19,10 +20,12 @@ import javax.inject.Inject
 @HiltViewModel
 class DiscoverMoviesViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
+    private val deviceRepository: DeviceRepository,
     private val configRepository: ConfigRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
     private val availableMovieGenres = configRepository.movieGenres
 
     private val _sortType: MutableStateFlow<SortType> = MutableStateFlow(SortType.Popularity)
@@ -40,10 +43,12 @@ class DiscoverMoviesViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), FilterState())
 
 
-    var movies: Flow<PagingData<Presentable>> =
-        movieRepository.discoverMovies()
+    var movies: Flow<PagingData<Presentable>> = deviceLanguage.map { deviceLanguage ->
+        movieRepository
+            .discoverMovies(deviceLanguage = deviceLanguage)
             .cachedIn(viewModelScope)
-            .map { data -> data.map { movie -> movie } }
+    }.flattenMerge().map { data -> data.map { movie -> movie } }
+
 
     fun onSortTypeChange(sortType: SortType) {
         viewModelScope.launch {
@@ -74,18 +79,19 @@ class DiscoverMoviesViewModel @Inject constructor(
         val sortOrder = _sortOrder.value
         val filterState = _filterState.value
 
-        movies = movieRepository.discoverMovies(
-            sortType = sortType,
-            sortOrder = sortOrder,
-            genresParam = GenresParam(filterState.selectedGenres),
-            voteRange = filterState.voteRange.current,
-            onlyWithPosters = filterState.showOnlyWithPoster,
-            onlyWithScore = filterState.showOnlyWithScore,
-            onlyWithOverview = filterState.showOnlyWithOverview,
-            releaseDateRange = filterState.releaseDateRange
-        )
-            .cachedIn(viewModelScope)
-            .map { data -> data.map { movie -> movie } }
+        movies = deviceLanguage.map { deviceLanguage ->
+            movieRepository.discoverMovies(
+                deviceLanguage = deviceLanguage,
+                sortType = sortType,
+                sortOrder = sortOrder,
+                genresParam = GenresParam(filterState.selectedGenres),
+                voteRange = filterState.voteRange.current,
+                onlyWithPosters = filterState.showOnlyWithPoster,
+                onlyWithScore = filterState.showOnlyWithScore,
+                onlyWithOverview = filterState.showOnlyWithOverview,
+                releaseDateRange = filterState.releaseDateRange
+            ).cachedIn(viewModelScope)
+        }.flattenMerge().map { data -> data.map { movie -> movie } }
     }
 
 }

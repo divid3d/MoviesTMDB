@@ -12,7 +12,7 @@ class TmdbApiHelperImpl @Inject constructor(
     override suspend fun discoverMovies(
         page: Int,
         isoCode: String,
-        sortType: SortTypeParam,
+        sortTypeParam: SortTypeParam,
         genresParam: GenresParam,
         voteRange: ClosedFloatingPointRange<Float>,
         fromReleaseDate: DateParam?,
@@ -21,7 +21,7 @@ class TmdbApiHelperImpl @Inject constructor(
         tmdbApi.discoverMovies(
             page,
             isoCode,
-            sortType,
+            sortTypeParam,
             genresParam,
             voteAverageMin = voteRange.start,
             voteAverageMax = voteRange.endInclusive,

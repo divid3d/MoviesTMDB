@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.example.moviesapp.BaseViewModel
+import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.SearchResult
 import com.example.moviesapp.repository.DeviceRepository
 import com.example.moviesapp.repository.SearchRepository
@@ -23,6 +24,7 @@ class SearchViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
+    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
     private val queryDelay = 500.milliseconds
     private val minQueryLength = 3
 
@@ -42,6 +44,7 @@ class SearchViewModel @Inject constructor(
     val queryLoading: StateFlow<Boolean> = _queryLoading.asStateFlow()
 
     private var queryJob: Job? = null
+
 
     fun onQueryChange(query: String) {
         viewModelScope.launch {
@@ -71,6 +74,7 @@ class SearchViewModel @Inject constructor(
         onQueryChange("")
     }
 
+    @OptIn(FlowPreview::class)
     private fun createQueryJob(query: String): Job {
         return viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -78,7 +82,12 @@ class SearchViewModel @Inject constructor(
 
                 _queryLoading.emit(true)
 
-                val response = searchRepository.multiSearch(query = query)
+                val response = deviceLanguage.map { deviceLanguage ->
+                    searchRepository.multiSearch(
+                        query = query,
+                        deviceLanguage = deviceLanguage
+                    )
+                }.flattenMerge()
 
                 _searchState.emit(
                     SearchState.Result(
@@ -86,8 +95,8 @@ class SearchViewModel @Inject constructor(
                         data = response
                     )
                 )
-            } catch (e: CancellationException) {
-                onError()
+            } catch (_: CancellationException) {
+
             } finally {
                 withContext(NonCancellable) {
                     _queryLoading.emit(false)
