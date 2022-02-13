@@ -43,6 +43,12 @@ class PersonDetailsViewModel @Inject constructor(
             .map { credits -> credits?.crew ?: emptyList() }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
 
+    private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
+    val externalIds: StateFlow<List<ExternalId>?> =
+        _externalIds.filterNotNull().map { externalIds ->
+            externalIds.toExternalIdList()
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             personId.collectLatest { personId ->
@@ -79,6 +85,7 @@ class PersonDetailsViewModel @Inject constructor(
 
     private fun getPersonInfo(personId: Int, deviceLanguage: DeviceLanguage) {
         getCombinedCredits(personId, deviceLanguage)
+        getExternalIds(personId, deviceLanguage)
     }
 
     private fun getCombinedCredits(personId: Int, deviceLanguage: DeviceLanguage) {
@@ -101,6 +108,50 @@ class PersonDetailsViewModel @Inject constructor(
                     onError(message)
                 }
             }
+        }
+    }
+
+    private fun getExternalIds(personId: Int, deviceLanguage: DeviceLanguage) {
+        viewModelScope.launch(Dispatchers.IO) {
+            personRepository.getExternalIds(
+                personId = personId,
+                deviceLanguage = deviceLanguage
+            ).request { response ->
+                response.onSuccess {
+                    viewModelScope.launch {
+                        _externalIds.emit(data)
+                    }
+                }
+
+                response.onFailure {
+                    onError(message)
+                }
+
+                response.onException {
+                    onError(message)
+                }
+            }
+        }
+    }
+
+}
+
+fun ExternalIds.toExternalIdList(): List<ExternalId> {
+    return buildList {
+        facebookId?.let { id ->
+            add(ExternalId.Facebook(id))
+        }
+
+        instagramId?.let { id ->
+            add(ExternalId.Instagram(id))
+        }
+
+        twitterId?.let { id ->
+            add(ExternalId.Twitter(id))
+        }
+
+        imdbId?.let { id ->
+            add(ExternalId.Imdb(id))
         }
     }
 }

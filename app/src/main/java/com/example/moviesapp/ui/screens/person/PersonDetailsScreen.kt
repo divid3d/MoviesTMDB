@@ -32,6 +32,7 @@ import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestinati
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.person.components.CreditsList
+import com.example.moviesapp.ui.screens.person.components.ExternalIdsSection
 import com.example.moviesapp.ui.screens.person.components.PersonProfileImage
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
@@ -47,6 +48,7 @@ fun PersonDetailsScreen(
     startRoute: String = MoviesScreenDestination.route
 ) {
     val details by viewModel.personDetails.collectAsState()
+    val externalIds by viewModel.externalIds.collectAsState()
     val cast by viewModel.cast.collectAsState()
     val crew by viewModel.crew.collectAsState()
 
@@ -154,6 +156,14 @@ fun PersonDetailsScreen(
                             .padding(horizontal = MaterialTheme.spacing.medium),
                         text = details.biography
                     )
+
+                    externalIds?.let { ids ->
+                        ExternalIdsSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                            externalIds = ids
+                        )
+                    }
                 }
             }
 
@@ -171,7 +181,7 @@ fun PersonDetailsScreen(
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
         }
-        
+
         AppBar(modifier = Modifier.align(Alignment.TopCenter),
             title = stringResource(R.string.person_details_screen_appbar_label),
             backgroundColor = Color.Black.copy(0.7f),

@@ -184,4 +184,9 @@ interface TmdbApiHelper {
         movieId: Int
     ): Call<MovieWatchProvidersResponse>
 
+    fun getExternalIds(
+        personId: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): Call<ExternalIds>
+
 }
