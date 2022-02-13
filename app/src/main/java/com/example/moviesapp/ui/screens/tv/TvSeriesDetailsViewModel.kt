@@ -44,7 +44,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
     var similarTvSeries: Flow<PagingData<TvSeries>>? = null
     var tvSeriesRecommendations: Flow<PagingData<TvSeries>>? = null
-    private val _tvSeriesBackdrops: MutableStateFlow<List<Image>?> = MutableStateFlow(null)
+    private val _tvSeriesBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
     private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     val tvSeriesDetails: StateFlow<TvSeriesDetails?> =
@@ -56,9 +56,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
-    val backdrops: StateFlow<List<Image>> =
-        _tvSeriesBackdrops.map { backdrops -> backdrops ?: emptyList() }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
+    val backdrops: StateFlow<List<Image>> = _tvSeriesBackdrops.asStateFlow()
 
     val isFavourite: StateFlow<Boolean> = combine(
         tvSeriesId, favouriteTvSeriesIds
@@ -140,7 +138,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
             response.onSuccess {
                 viewModelScope.launch {
                     val imagesResponse = data
-                    _tvSeriesBackdrops.emit(imagesResponse?.backdrops)
+                    _tvSeriesBackdrops.emit(imagesResponse?.backdrops ?: emptyList())
                 }
             }
 

@@ -107,7 +107,7 @@ fun MovieDetailsScreen(
             PresentableDetailsTopSection(
                 modifier = Modifier.fillMaxWidth(),
                 presentable = movieDetails,
-                backdrops = backdrops ?: emptyList()
+                backdrops = backdrops
             ) {
                 movieDetails?.let { details ->
                     Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {

@@ -48,7 +48,7 @@ class MoviesDetailsViewModel @Inject constructor(
 
     private val _movieDetails: MutableStateFlow<MovieDetails?> = MutableStateFlow(null)
     private val _credits: MutableStateFlow<Credits?> = MutableStateFlow(null)
-    private val _movieBackdrops: MutableStateFlow<List<Image>?> = MutableStateFlow(null)
+    private val _movieBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
     private val _movieCollection: MutableStateFlow<MovieCollection?> = MutableStateFlow(null)
     private val _watchProviders: MutableStateFlow<MovieWatchProviders?> = MutableStateFlow(null)
     private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -64,8 +64,7 @@ class MoviesDetailsViewModel @Inject constructor(
         }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
-    val backdrops: StateFlow<List<Image>?> =
-        _movieBackdrops.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
+    val backdrops: StateFlow<List<Image>> = _movieBackdrops.asStateFlow()
 
     val isFavourite: StateFlow<Boolean> = combine(
         movieId,
@@ -210,7 +209,7 @@ class MoviesDetailsViewModel @Inject constructor(
             response.onSuccess {
                 viewModelScope.launch {
                     val imagesResponse = data
-                    _movieBackdrops.emit(imagesResponse?.backdrops)
+                    _movieBackdrops.emit(imagesResponse?.backdrops ?: emptyList())
                 }
             }
 

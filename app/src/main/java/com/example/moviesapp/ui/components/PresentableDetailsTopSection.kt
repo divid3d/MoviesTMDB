@@ -1,8 +1,9 @@
 package com.example.moviesapp.ui.components
 
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.*
-import androidx.compose.animation.fadeIn
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationEndReason
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,6 +19,8 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import coil.size.OriginalSize
+import coil.size.Scale
 import coil.transform.BlurTransformation
 import com.example.moviesapp.model.Image
 import com.example.moviesapp.model.Presentable
@@ -41,14 +44,13 @@ fun PresentableDetailsTopSection(
         presentable?.let { PresentableItemState.Result(it) } ?: PresentableItemState.Loading
     }
 
-    val availableBackdropPaths: List<String> by derivedStateOf {
-        buildList {
-            add(presentable?.backdropPath)
-            addAll(backdrops.map { backdrop -> backdrop.filePath })
-        }.filterNotNull()
+    val availableBackdropPaths by remember(backdrops) {
+        mutableStateOf(
+            backdrops.map { backdrops -> backdrops.filePath }
+        )
     }
 
-    var currentBackdropPathIndex by remember(availableBackdropPaths) {
+    var currentBackdropPathIndex by remember {
         mutableStateOf(0)
     }
 
@@ -79,23 +81,21 @@ fun PresentableDetailsTopSection(
         BoxWithConstraints(modifier = Modifier.matchParentSize()) {
             val (maxWidth, maxHeight) = getMaxSizeInt()
 
-            Crossfade(
-                modifier = Modifier.fillMaxSize(),
-                targetState = currentBackdropPath
-            ) { path ->
                 val backgroundPainter = rememberTmdbImagePainter(
-                    path = path,
+                    path = currentBackdropPath,
                     type = ImageUrlParser.ImageType.Backdrop,
                     preferredSize = android.util.Size(maxWidth, maxHeight),
                     builder = {
-                        fadeIn(animationSpec = spring())
+                        size(OriginalSize)
+                        scale(Scale.FILL)
                         transformations(
                             BlurTransformation(
                                 context = context,
-                                radius = 16f,
+                                radius = 18f,
                                 sampling = 6f
                             )
                         )
+                        crossfade(true)
                     }
                 )
 
@@ -107,8 +107,6 @@ fun PresentableDetailsTopSection(
                     contentDescription = null,
                     contentScale = ContentScale.FillBounds
                 )
-            }
-
         }
         Box(
             modifier = Modifier
