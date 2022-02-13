@@ -180,4 +180,8 @@ interface TmdbApiHelper {
         isoCode: String = DeviceLanguage.default.languageCode
     ): Call<CombinedCredits>
 
+    fun getMovieWatchProviders(
+        movieId: Int
+    ): Call<MovieWatchProvidersResponse>
+
 }

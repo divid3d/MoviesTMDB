@@ -25,6 +25,7 @@
     <string name="favourite_movies">Favourites</string>
     <string name="recently_browsed_movies">Recently browsed</string>
     <string name="trending_movies">Trending</string>
+    <string name="available_at">Available at</string>
 
     <string name="now_airing_tv_series">Now airing</string>
     <string name="top_rated_tv_series">Top rated</string>
@@ -142,5 +143,9 @@
     <string name="movie_filter_bottom_sheet_other_info_label">Customize other filters</string>
 
     <string name="person_details_screen_appbar_label">Person details</string>
+
+    <string name="movie_provider_type_rent_label">Rent</string>
+    <string name="movie_provider_type_buy_label">Buy</string>
+    <string name="movie_provider_type_stream_label">Stream</string>
 
 </resources>

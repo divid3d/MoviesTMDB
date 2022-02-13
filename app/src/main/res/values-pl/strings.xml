@@ -25,6 +25,7 @@
     <string name="recently_browsed_movies">Ostatnio przegądane</string>
     <string name="trending_movies">Zyskujące na popularności</string>
     <string name="movies_more">więcej</string>
+    <string name="available_at">Dostępny na</string>
 
     <string name="now_airing_tv_series">Na antenie</string>
     <string name="top_rated_tv_series">Najwyżej oceniane</string>
@@ -142,5 +143,9 @@
     <string name="movie_filter_bottom_sheet_other_info_label">Dostosuj dodatkowe filtry</string>
 
     <string name="person_details_screen_appbar_label">Szczegóły osoby</string>
+
+    <string name="movie_provider_type_rent_label">Wypożycz</string>
+    <string name="movie_provider_type_buy_label">Kup</string>
+    <string name="movie_provider_type_stream_label">Streaming</string>
 
 </resources>

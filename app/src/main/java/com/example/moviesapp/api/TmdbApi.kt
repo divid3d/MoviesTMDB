@@ -244,5 +244,9 @@ interface TmdbApi {
         @Query("language") isoCode: String
     ): Call<CombinedCredits>
 
+    @GET("movie/{movie_id}/watch/providers")
+    fun getMovieWatchProviders(
+        @Path("movie_id") movieId: Int
+    ): Call<MovieWatchProvidersResponse>
 }
 

@@ -167,4 +167,7 @@ class MovieRepository @Inject constructor(
         isoCode: String = DeviceLanguage.default.languageCode
     ): Call<CollectionResponse> =
         apiHelper.getCollection(collectionId, isoCode)
+
+    fun watchProviders(movieId: Int): Call<MovieWatchProvidersResponse> =
+        apiHelper.getMovieWatchProviders(movieId)
 }

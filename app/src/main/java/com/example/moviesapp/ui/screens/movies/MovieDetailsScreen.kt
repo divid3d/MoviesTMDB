@@ -55,6 +55,7 @@ fun MovieDetailsScreen(
     val watchAtTime by viewModel.watchAtTime.collectAsState()
 
     val credits by viewModel.credits.collectAsState()
+    val watchProviders by viewModel.watchProviders.collectAsState()
     val backdrops by viewModel.backdrops.collectAsState()
     val movieCollection by viewModel.movieCollection.collectAsState()
 
@@ -213,6 +214,17 @@ fun MovieDetailsScreen(
                         }
                     }
                 }
+            }
+
+            watchProviders?.let { providers ->
+                MoviesWatchProvidersSection(
+                    modifier = Modifier
+                        .padding(top = MaterialTheme.spacing.small)
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    watchProviders = providers,
+                    title = stringResource(R.string.available_at)
+                )
             }
 
             credits?.cast?.let { castMembers ->

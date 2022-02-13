@@ -1,34 +1,27 @@
-package com.example.moviesapp.ui.screens.discoverMovies.components
+package com.example.moviesapp.ui.components
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import com.example.moviesapp.model.SortType
+import com.example.moviesapp.model.MovieWatchProviderType
 
 @Composable
-fun SortTypeDropDown(
+fun MovieWatchProviderTypeDropdown(
     modifier: Modifier = Modifier,
     expanded: Boolean,
     onDismissRequest: () -> Unit = {},
-    selectedSortType: SortType,
-    onSortTypeSelected: (SortType) -> Unit = {}
+    availableTypes: List<MovieWatchProviderType>,
+    selectedType: MovieWatchProviderType,
+    onTypeSelected: (MovieWatchProviderType) -> Unit = {}
 ) {
-    val items = SortType.values().map { type -> type to type.getLabelResId() }
+    val items = availableTypes.map { type -> type to type.getLabelResId() }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(Alignment.TopEnd)
-    ) {
+    if (items.isNotEmpty()) {
         DropdownMenu(
             modifier = modifier,
             expanded = expanded,
@@ -36,11 +29,11 @@ fun SortTypeDropDown(
         ) {
             items.forEach { (type, labelResId) ->
                 DropdownMenuItem(
-                    onClick = { onSortTypeSelected(type) })
+                    onClick = { onTypeSelected(type) })
                 {
                     Text(
                         text = stringResource(labelResId),
-                        color = if (type == selectedSortType) MaterialTheme.colors.primary else Color.White
+                        color = if (type == selectedType) MaterialTheme.colors.primary else Color.White
                     )
                 }
             }

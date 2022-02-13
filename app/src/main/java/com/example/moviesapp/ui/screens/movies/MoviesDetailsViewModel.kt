@@ -50,6 +50,7 @@ class MoviesDetailsViewModel @Inject constructor(
     private val _credits: MutableStateFlow<Credits?> = MutableStateFlow(null)
     private val _movieBackdrops: MutableStateFlow<List<Image>?> = MutableStateFlow(null)
     private val _movieCollection: MutableStateFlow<MovieCollection?> = MutableStateFlow(null)
+    private val _watchProviders: MutableStateFlow<MovieWatchProviders?> = MutableStateFlow(null)
     private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     var similarMoviesPagingDataFlow: Flow<PagingData<Movie>>? = null
@@ -79,6 +80,7 @@ class MoviesDetailsViewModel @Inject constructor(
     val credits: StateFlow<Credits?> =
         _credits.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
+    val watchProviders: StateFlow<MovieWatchProviders?> = _watchProviders.asStateFlow()
 
     val hasReviews: StateFlow<Boolean> = _hasReviews.asStateFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
@@ -147,6 +149,7 @@ class MoviesDetailsViewModel @Inject constructor(
     private fun getMovieInfo(movieId: Int, deviceLanguage: DeviceLanguage) {
         getMovieDetails(movieId, deviceLanguage)
         getMovieImages(movieId)
+        getWatchProviders(movieId, deviceLanguage)
         getMovieCredits(movieId, deviceLanguage)
         getMovieReview(movieId)
     }
@@ -261,6 +264,29 @@ class MoviesDetailsViewModel @Inject constructor(
 
                         _movieCollection.emit(movieCollection)
                     }
+                }
+            }
+
+            response.onFailure {
+                onError(message)
+            }
+
+            response.onException {
+                onError(message)
+            }
+        }
+    }
+
+    private fun getWatchProviders(movieId: Int, deviceLanguage: DeviceLanguage) {
+        movieRepository.watchProviders(
+            movieId = movieId,
+        ).request { response ->
+            response.onSuccess {
+                viewModelScope.launch {
+                    val results = data?.results
+                    val watchProviders = results?.getOrElse(deviceLanguage.region) { null }
+
+                    _watchProviders.emit(watchProviders)
                 }
             }
 

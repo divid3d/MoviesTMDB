@@ -15,7 +15,7 @@ enum class SortType {
     }
 
     @StringRes
-    fun getLabel(): Int = when (this) {
+    fun getLabelResId(): Int = when (this) {
         Popularity -> R.string.sort_type_popularity_label
         ReleaseDate -> R.string.sort_type_release_date_label
         VoteAverage -> R.string.sort_type_vote_average_label
