@@ -12,7 +12,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -32,7 +35,7 @@ import com.example.moviesapp.ui.components.PresentableGridSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.discoverMovies.components.FilterFloatingButton
 import com.example.moviesapp.ui.screens.discoverMovies.components.FilterModalBottomSheetContent
-import com.example.moviesapp.ui.screens.discoverMovies.components.SortTypeDropDown
+import com.example.moviesapp.ui.screens.discoverMovies.components.SortTypeDropdownButton
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.navigationBarsWithImePadding
@@ -59,8 +62,6 @@ fun DiscoverMoviesScreen(
     val sortOrder by viewModel.sortOrder.collectAsState()
     val filterState by viewModel.filterState.collectAsState()
 
-    var showSortTypeDropdown by remember { mutableStateOf(false) }
-
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -82,21 +83,6 @@ fun DiscoverMoviesScreen(
             sheetState.hide()
         }
     }
-
-    SortTypeDropDown(
-        expanded = showSortTypeDropdown,
-        onDismissRequest = {
-            showSortTypeDropdown = false
-        },
-        selectedSortType = sortType,
-        onSortTypeSelected = { type ->
-            showSortTypeDropdown = false
-
-            if (type != sortType) {
-                viewModel.onSortTypeChange(type)
-            }
-        }
-    )
 
     ModalBottomSheetLayout(
         modifier = Modifier.fillMaxSize(),
@@ -142,17 +128,6 @@ fun DiscoverMoviesScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             IconButton(
-                                onClick = {
-                                    showSortTypeDropdown = true
-                                }
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.ic_baseline_sort_24),
-                                    contentDescription = "sort type",
-                                    colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
-                                )
-                            }
-                            IconButton(
                                 modifier = Modifier.rotate(orderIconRotation),
                                 onClick = {
                                     val order =
@@ -165,6 +140,12 @@ fun DiscoverMoviesScreen(
                                     contentDescription = "sort order",
                                     colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
                                 )
+                            }
+
+                            SortTypeDropdownButton(
+                                selectedType = sortType
+                            ) { type ->
+                                viewModel.onSortTypeChange(type)
                             }
                         }
                     })
@@ -230,3 +211,4 @@ fun DiscoverMoviesScreen(
         }
     }
 }
+
