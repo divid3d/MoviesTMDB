@@ -9,10 +9,7 @@ import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
-import com.example.moviesapp.model.DeviceLanguage
-import com.example.moviesapp.model.Image
-import com.example.moviesapp.model.TvSeries
-import com.example.moviesapp.model.TvSeriesDetails
+import com.example.moviesapp.model.*
 import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.DeviceRepository
 import com.example.moviesapp.repository.FavouritesRepository
@@ -45,6 +42,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
     var similarTvSeries: Flow<PagingData<TvSeries>>? = null
     var tvSeriesRecommendations: Flow<PagingData<TvSeries>>? = null
     private val _tvSeriesBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
+    private val _watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
     private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     val tvSeriesDetails: StateFlow<TvSeriesDetails?> =
@@ -63,6 +61,8 @@ class TvSeriesDetailsViewModel @Inject constructor(
     ) { id, favouritesId ->
         id in favouritesId
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
+
+    val watchProviders: StateFlow<WatchProviders?> = _watchProviders.asStateFlow()
 
     val hasReviews: StateFlow<Boolean> = _hasReviews.asStateFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
@@ -108,6 +108,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
     private fun getTvSeriesInfo(tvSeriesId: Int, deviceLanguage: DeviceLanguage) {
         getTvSeriesDetails(tvSeriesId, deviceLanguage)
         getMovieImages(tvSeriesId)
+        getWatchProviders(tvSeriesId, deviceLanguage)
         getTvSeriesReview(tvSeriesId)
     }
 
@@ -159,6 +160,29 @@ class TvSeriesDetailsViewModel @Inject constructor(
                     val hasReviews = (data?.totalResults ?: 0) > 1
 
                     _hasReviews.emit(hasReviews)
+                }
+            }
+
+            response.onFailure {
+                onError(message)
+            }
+
+            response.onException {
+                onError(message)
+            }
+        }
+    }
+
+    private fun getWatchProviders(tvSeriesId: Int, deviceLanguage: DeviceLanguage) {
+        tvSeriesRepository.watchProviders(
+            tvSeriesId = tvSeriesId,
+        ).request { response ->
+            response.onSuccess {
+                viewModelScope.launch {
+                    val results = data?.results
+                    val watchProviders = results?.getOrElse(deviceLanguage.region) { null }
+
+                    _watchProviders.emit(watchProviders)
                 }
             }
 

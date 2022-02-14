@@ -168,6 +168,6 @@ class MovieRepository @Inject constructor(
     ): Call<CollectionResponse> =
         apiHelper.getCollection(collectionId, isoCode)
 
-    fun watchProviders(movieId: Int): Call<MovieWatchProvidersResponse> =
+    fun watchProviders(movieId: Int): Call<WatchProvidersResponse> =
         apiHelper.getMovieWatchProviders(movieId)
 }

@@ -9,14 +9,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.moviesapp.model.MovieWatchProviderType
-import com.example.moviesapp.model.MovieWatchProviders
+import com.example.moviesapp.model.WatchProviders
 import com.example.moviesapp.ui.theme.spacing
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MoviesWatchProvidersSection(
+fun WatchProvidersSection(
     modifier: Modifier = Modifier,
-    watchProviders: MovieWatchProviders,
+    watchProviders: WatchProviders,
     title: String
 ) {
     val stream = watchProviders.flatrate?.sortedBy { provider ->

@@ -53,6 +53,7 @@ fun TvSeriesDetailsScreen(
     val similar = viewModel.similarTvSeries?.collectAsLazyPagingItems()
     val recommendations = viewModel.tvSeriesRecommendations?.collectAsLazyPagingItems()
     val backdrops by viewModel.backdrops.collectAsState()
+    val watchProviders by viewModel.watchProviders.collectAsState()
     val hasReviews by viewModel.hasReviews.collectAsState()
 
     val otherOriginalTitle: Boolean by derivedStateOf {
@@ -188,33 +189,15 @@ fun TvSeriesDetailsScreen(
                 }
             }
 
-            tvSeriesDetails?.networks?.let { networks ->
-                if (networks.isNotEmpty()) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = MaterialTheme.spacing.medium)
-                            .animateContentSize()
-                    ) {
-                        SectionLabel(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = MaterialTheme.spacing.medium),
-                            text = stringResource(R.string.tv_series_details_networks)
-                        )
-                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-                        NetworksList(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = MaterialTheme.spacing.medium),
-                            networks = networks
-                        )
-
-                        SectionDivider(
-                            modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
-                        )
-                    }
-                }
+            watchProviders?.let { providers ->
+                WatchProvidersSection(
+                    modifier = Modifier
+                        .padding(top = MaterialTheme.spacing.small)
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    watchProviders = providers,
+                    title = stringResource(R.string.available_at)
+                )
             }
 
             tvSeriesDetails?.creators?.let { creators ->

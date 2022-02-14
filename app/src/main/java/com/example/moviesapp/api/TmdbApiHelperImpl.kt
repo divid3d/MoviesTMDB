@@ -221,8 +221,11 @@ class TmdbApiHelperImpl @Inject constructor(
     override fun getCombinedCredits(personId: Int, isoCode: String): Call<CombinedCredits> =
         tmdbApi.getCombinedCredits(personId, isoCode)
 
-    override fun getMovieWatchProviders(movieId: Int): Call<MovieWatchProvidersResponse> =
+    override fun getMovieWatchProviders(movieId: Int): Call<WatchProvidersResponse> =
         tmdbApi.getMovieWatchProviders(movieId)
+
+    override fun getTvSeriesWatchProviders(tvSeriesId: Int): Call<WatchProvidersResponse> =
+        tmdbApi.getTvSeriesWatchProviders(tvSeriesId)
 
     override fun getExternalIds(personId: Int, isoCode: String): Call<ExternalIds> =
         tmdbApi.getExternalIds(personId, isoCode)

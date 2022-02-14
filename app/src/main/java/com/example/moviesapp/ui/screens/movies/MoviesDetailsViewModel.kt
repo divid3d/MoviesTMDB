@@ -50,7 +50,7 @@ class MoviesDetailsViewModel @Inject constructor(
     private val _credits: MutableStateFlow<Credits?> = MutableStateFlow(null)
     private val _movieBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
     private val _movieCollection: MutableStateFlow<MovieCollection?> = MutableStateFlow(null)
-    private val _watchProviders: MutableStateFlow<MovieWatchProviders?> = MutableStateFlow(null)
+    private val _watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
     private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     var similarMoviesPagingDataFlow: Flow<PagingData<Movie>>? = null
@@ -79,7 +79,7 @@ class MoviesDetailsViewModel @Inject constructor(
     val credits: StateFlow<Credits?> =
         _credits.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
-    val watchProviders: StateFlow<MovieWatchProviders?> = _watchProviders.asStateFlow()
+    val watchProviders: StateFlow<WatchProviders?> = _watchProviders.asStateFlow()
 
     val hasReviews: StateFlow<Boolean> = _hasReviews.asStateFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)

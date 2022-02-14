@@ -217,7 +217,7 @@ fun MovieDetailsScreen(
             }
 
             watchProviders?.let { providers ->
-                MoviesWatchProvidersSection(
+                WatchProvidersSection(
                     modifier = Modifier
                         .padding(top = MaterialTheme.spacing.small)
                         .fillMaxWidth()

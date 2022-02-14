@@ -4,13 +4,13 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class MovieWatchProvidersResponse(
+data class WatchProvidersResponse(
     val id: Int,
-    val results: Map<String, MovieWatchProviders>
+    val results: Map<String, WatchProviders>
 )
 
 @JsonClass(generateAdapter = true)
-data class MovieWatchProviders(
+data class WatchProviders(
     val link: String,
 
     val rent: List<ProviderSource>?,

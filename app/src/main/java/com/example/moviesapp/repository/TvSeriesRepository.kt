@@ -149,4 +149,7 @@ class TvSeriesRepository @Inject constructor(
     fun tvSeriesReview(tvSeriesId: Int): Call<ReviewsResponse> =
         apiHelper.getTvSeriesReview(tvSeriesId)
 
+    fun watchProviders(tvSeriesId: Int): Call<WatchProvidersResponse> =
+        apiHelper.getTvSeriesWatchProviders(tvSeriesId)
+
 }
