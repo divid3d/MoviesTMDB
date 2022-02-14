@@ -17,8 +17,8 @@ enum class TvSeriesStatus(val value: String) {
     @Json(name = "Ended")
     Ended("Ended"),
 
-    @Json(name = "Cancelled")
-    Cancelled("Cancelled"),
+    @Json(name = "Canceled")
+    Canceled("Canceled"),
 
     @Json(name = "Pilot")
     Pilot("Pilot");
@@ -29,7 +29,7 @@ enum class TvSeriesStatus(val value: String) {
         Planned -> R.string.tv_series_status_planned_label
         InProduction -> R.string.tv_series_status_in_production_label
         Ended -> R.string.tv_series_status_ended_label
-        Cancelled -> R.string.tv_series_status_cancelled_label
+        Canceled -> R.string.tv_series_status_cancelled_label
         Pilot -> R.string.tv_series_status_pilot_label
     }
 }
