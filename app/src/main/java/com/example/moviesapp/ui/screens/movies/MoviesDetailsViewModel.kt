@@ -16,11 +16,8 @@ import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.MovieRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.minutes
@@ -78,6 +75,12 @@ class MoviesDetailsViewModel @Inject constructor(
 
     val credits: StateFlow<Credits?> =
         _credits.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+
+    private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
+    val externalIds: StateFlow<List<ExternalId>?> =
+        _externalIds.filterNotNull().map { externalIds ->
+            externalIds.toExternalIdList(type = ExternalContentType.Movie)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     val watchProviders: StateFlow<WatchProviders?> = _watchProviders.asStateFlow()
 
@@ -148,6 +151,7 @@ class MoviesDetailsViewModel @Inject constructor(
     private fun getMovieInfo(movieId: Int, deviceLanguage: DeviceLanguage) {
         getMovieDetails(movieId, deviceLanguage)
         getMovieImages(movieId)
+        getExternalIds(movieId)
         getWatchProviders(movieId, deviceLanguage)
         getMovieCredits(movieId, deviceLanguage)
         getMovieReview(movieId)
@@ -298,4 +302,27 @@ class MoviesDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    private fun getExternalIds(movieId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            movieRepository.getExternalIds(
+                movieId = movieId
+            ).request { response ->
+                response.onSuccess {
+                    viewModelScope.launch {
+                        _externalIds.emit(data)
+                    }
+                }
+
+                response.onFailure {
+                    onError(message)
+                }
+
+                response.onException {
+                    onError(message)
+                }
+            }
+        }
+    }
+
 }

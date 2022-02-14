@@ -170,4 +170,7 @@ class MovieRepository @Inject constructor(
 
     fun watchProviders(movieId: Int): Call<WatchProvidersResponse> =
         apiHelper.getMovieWatchProviders(movieId)
+
+    fun getExternalIds(movieId: Int) = apiHelper.getMovieExternalIds(movieId)
+
 }

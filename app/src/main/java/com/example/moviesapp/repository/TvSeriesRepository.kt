@@ -152,4 +152,6 @@ class TvSeriesRepository @Inject constructor(
     fun watchProviders(tvSeriesId: Int): Call<WatchProvidersResponse> =
         apiHelper.getTvSeriesWatchProviders(tvSeriesId)
 
+    fun getExternalIds(tvSeriesId: Int) = apiHelper.getTvSeriesExternalIds(tvSeriesId)
+
 }

@@ -46,7 +46,7 @@ class PersonDetailsViewModel @Inject constructor(
     private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
     val externalIds: StateFlow<List<ExternalId>?> =
         _externalIds.filterNotNull().map { externalIds ->
-            externalIds.toExternalIdList()
+            externalIds.toExternalIdList(type = ExternalContentType.Person)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     init {
@@ -134,24 +134,4 @@ class PersonDetailsViewModel @Inject constructor(
         }
     }
 
-}
-
-fun ExternalIds.toExternalIdList(): List<ExternalId> {
-    return buildList {
-        facebookId?.let { id ->
-            add(ExternalId.Facebook(id))
-        }
-
-        instagramId?.let { id ->
-            add(ExternalId.Instagram(id))
-        }
-
-        twitterId?.let { id ->
-            add(ExternalId.Twitter(id))
-        }
-
-        imdbId?.let { id ->
-            add(ExternalId.Imdb(id))
-        }
-    }
 }

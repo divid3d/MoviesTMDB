@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -29,10 +30,12 @@ import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.model.TvSeriesRelationInfo
+import com.example.moviesapp.other.openExternalId
 import com.example.moviesapp.other.yearRangeString
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.*
+import com.example.moviesapp.ui.screens.person.components.ExternalIdsSection
 import com.example.moviesapp.ui.screens.reviews.ReviewsScreenNavArgs
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
@@ -47,6 +50,8 @@ fun TvSeriesDetailsScreen(
     tvSeriesId: Int,
     startRoute: String = TvScreenDestination.route
 ) {
+    val context = LocalContext.current
+
     val tvSeriesDetails by viewModel.tvSeriesDetails.collectAsState()
     val isFavourite by viewModel.isFavourite.collectAsState()
 
@@ -54,6 +59,7 @@ fun TvSeriesDetailsScreen(
     val recommendations = viewModel.tvSeriesRecommendations?.collectAsLazyPagingItems()
     val backdrops by viewModel.backdrops.collectAsState()
     val watchProviders by viewModel.watchProviders.collectAsState()
+    val externalIds by viewModel.externalIds.collectAsState()
     val hasReviews by viewModel.hasReviews.collectAsState()
 
     val otherOriginalTitle: Boolean by derivedStateOf {
@@ -185,6 +191,19 @@ fun TvSeriesDetailsScreen(
 
                     SectionDivider(
                         modifier = Modifier.padding(top = MaterialTheme.spacing.large)
+                    )
+                }
+            }
+
+            externalIds?.let { ids ->
+                ExternalIdsSection(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                    externalIds = ids
+                ) { externalId ->
+                    openExternalId(
+                        context = context,
+                        externalId = externalId
                     )
                 }
             }

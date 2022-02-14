@@ -16,6 +16,6 @@ class PersonRepository @Inject constructor(
         apiHelper.getCombinedCredits(personId, deviceLanguage.languageCode)
 
     fun getExternalIds(personId: Int, deviceLanguage: DeviceLanguage = DeviceLanguage.default) =
-        apiHelper.getExternalIds(personId, deviceLanguage.languageCode)
+        apiHelper.getPersonExternalIds(personId, deviceLanguage.languageCode)
 
 }

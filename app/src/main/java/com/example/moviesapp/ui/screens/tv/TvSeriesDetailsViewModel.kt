@@ -16,6 +16,7 @@ import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import com.example.moviesapp.repository.TvSeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -64,6 +65,12 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
     val watchProviders: StateFlow<WatchProviders?> = _watchProviders.asStateFlow()
 
+    private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
+    val externalIds: StateFlow<List<ExternalId>?> =
+        _externalIds.filterNotNull().map { externalIds ->
+            externalIds.toExternalIdList(type = ExternalContentType.Tv)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+
     val hasReviews: StateFlow<Boolean> = _hasReviews.asStateFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
 
@@ -108,6 +115,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
     private fun getTvSeriesInfo(tvSeriesId: Int, deviceLanguage: DeviceLanguage) {
         getTvSeriesDetails(tvSeriesId, deviceLanguage)
         getMovieImages(tvSeriesId)
+        getExternalIds(tvSeriesId)
         getWatchProviders(tvSeriesId, deviceLanguage)
         getTvSeriesReview(tvSeriesId)
     }
@@ -192,6 +200,28 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
             response.onException {
                 onError(message)
+            }
+        }
+    }
+
+    private fun getExternalIds(tvSeriesId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            tvSeriesRepository.getExternalIds(
+                tvSeriesId = tvSeriesId
+            ).request { response ->
+                response.onSuccess {
+                    viewModelScope.launch {
+                        _externalIds.emit(data)
+                    }
+                }
+
+                response.onFailure {
+                    onError(message)
+                }
+
+                response.onException {
+                    onError(message)
+                }
             }
         }
     }

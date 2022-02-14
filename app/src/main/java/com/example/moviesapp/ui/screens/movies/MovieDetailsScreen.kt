@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -28,13 +29,11 @@ import com.example.moviesapp.R
 import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.model.MovieRelationInfo
 import com.example.moviesapp.model.RelationType
-import com.example.moviesapp.other.formattedMoney
-import com.example.moviesapp.other.formattedRuntime
-import com.example.moviesapp.other.timeString
-import com.example.moviesapp.other.yearString
+import com.example.moviesapp.other.*
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.*
+import com.example.moviesapp.ui.screens.person.components.ExternalIdsSection
 import com.example.moviesapp.ui.screens.reviews.ReviewsScreenNavArgs
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
@@ -49,6 +48,8 @@ fun MovieDetailsScreen(
     movieId: Int,
     startRoute: String = MoviesScreenDestination.route
 ) {
+    val context = LocalContext.current
+
     val movieDetails by viewModel.movieDetails.collectAsState()
     val isFavourite by viewModel.isFavourite.collectAsState()
 
@@ -58,6 +59,7 @@ fun MovieDetailsScreen(
     val watchProviders by viewModel.watchProviders.collectAsState()
     val backdrops by viewModel.backdrops.collectAsState()
     val movieCollection by viewModel.movieCollection.collectAsState()
+    val externalIds by viewModel.externalIds.collectAsState()
 
     val similarMoviesState = viewModel.similarMoviesPagingDataFlow?.collectAsLazyPagingItems()
     val moviesRecommendationState =
@@ -192,27 +194,16 @@ fun MovieDetailsScreen(
                 )
             }
 
-            movieCollection?.let { collection ->
-                if (collection.parts.isNotEmpty()) {
-                    PresentableListSection(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colors.surface)
-                            .padding(vertical = MaterialTheme.spacing.small)
-                            .animateContentSize(),
-                        title = collection.name,
-                        list = collection.parts.sortedBy { part -> part.releaseDate },
-                        selectedId = movieId
-                    ) { id ->
-                        if (movieId != id) {
-                            navigator.navigate(
-                                MovieDetailsScreenDestination(
-                                    movieId = id,
-                                    startRoute = startRoute
-                                )
-                            )
-                        }
-                    }
+            externalIds?.let { ids ->
+                ExternalIdsSection(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                    externalIds = ids
+                ) { externalId ->
+                    openExternalId(
+                        context = context,
+                        externalId = externalId
+                    )
                 }
             }
 
@@ -277,6 +268,29 @@ fun MovieDetailsScreen(
                 }
             }
 
+            movieCollection?.let { collection ->
+                if (collection.parts.isNotEmpty()) {
+                    PresentableListSection(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colors.surface)
+                            .padding(vertical = MaterialTheme.spacing.small)
+                            .animateContentSize(),
+                        title = collection.name,
+                        list = collection.parts.sortedBy { part -> part.releaseDate },
+                        selectedId = movieId
+                    ) { id ->
+                        if (movieId != id) {
+                            navigator.navigate(
+                                MovieDetailsScreenDestination(
+                                    movieId = id,
+                                    startRoute = startRoute
+                                )
+                            )
+                        }
+                    }
+                }
+            }
 
             similarMoviesState?.let { lazyPagingItems ->
                 PresentableSection(

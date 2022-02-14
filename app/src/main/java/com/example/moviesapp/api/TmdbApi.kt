@@ -254,8 +254,18 @@ interface TmdbApi {
         @Path("tv_id") tvSeriesId: Int
     ): Call<WatchProvidersResponse>
 
+    @GET("movie/{movie_id}/external_ids")
+    fun getMovieExternalIds(
+        @Path("movie_id") movieId: Int,
+    ): Call<ExternalIds>
+
+    @GET("tv/{tv_id}/external_ids")
+    fun getTvSeriesExternalIds(
+        @Path("tv_id") tvSeriesId: Int,
+    ): Call<ExternalIds>
+
     @GET("person/{person_id}/external_ids")
-    fun getExternalIds(
+    fun getPersonExternalIds(
         @Path("person_id") personId: Int,
         @Query("language") isoCode: String
     ): Call<ExternalIds>

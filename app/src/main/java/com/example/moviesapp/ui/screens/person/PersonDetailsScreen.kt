@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -24,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.other.formatted
+import com.example.moviesapp.other.openExternalId
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.ExpandableText
 import com.example.moviesapp.ui.components.LabeledText
@@ -47,6 +49,8 @@ fun PersonDetailsScreen(
     navigator: DestinationsNavigator,
     startRoute: String = MoviesScreenDestination.route
 ) {
+    val context = LocalContext.current
+
     val details by viewModel.personDetails.collectAsState()
     val externalIds by viewModel.externalIds.collectAsState()
     val cast by viewModel.cast.collectAsState()
@@ -162,7 +166,12 @@ fun PersonDetailsScreen(
                             modifier = Modifier.fillMaxWidth(),
                             contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
                             externalIds = ids
-                        )
+                        ) { externalId ->
+                            openExternalId(
+                                context = context,
+                                externalId = externalId
+                            )
+                        }
                     }
                 }
             }
