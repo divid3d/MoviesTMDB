@@ -10,7 +10,7 @@ import com.example.moviesapp.model.Movie
 import com.example.moviesapp.model.MovieRelationInfo
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.other.asFlow
-import com.example.moviesapp.repository.DeviceRepository
+import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -24,12 +24,12 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class RelatedMoviesViewModel @Inject constructor(
-    private val deviceRepository: DeviceRepository,
+    private val configRepository: ConfigRepository,
     private val movieRepository: MovieRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
+    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
     var movies: Flow<PagingData<Movie>>? = null
 
     private val movieRelationType: Flow<MovieRelationInfo?> = savedStateHandle

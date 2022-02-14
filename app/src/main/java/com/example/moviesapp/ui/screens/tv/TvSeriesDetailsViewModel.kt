@@ -11,7 +11,7 @@ import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
 import com.example.moviesapp.other.asFlow
-import com.example.moviesapp.repository.DeviceRepository
+import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import com.example.moviesapp.repository.TvSeriesRepository
@@ -24,14 +24,14 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class TvSeriesDetailsViewModel @Inject constructor(
-    private val deviceRepository: DeviceRepository,
+    private val configRepository: ConfigRepository,
     private val tvSeriesRepository: TvSeriesRepository,
     private val favouritesRepository: FavouritesRepository,
     private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
+    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
     private val favouriteTvSeriesIds: Flow<List<Int>> =
         favouritesRepository.getFavouriteTvSeriesIds()
 

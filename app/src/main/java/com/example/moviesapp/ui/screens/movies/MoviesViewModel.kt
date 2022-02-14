@@ -9,7 +9,7 @@ import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Movie
 import com.example.moviesapp.model.MovieFavourite
 import com.example.moviesapp.model.RecentlyBrowsedMovie
-import com.example.moviesapp.repository.DeviceRepository
+import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.MovieRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
@@ -24,12 +24,12 @@ import javax.inject.Inject
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
     private val favouritesRepository: FavouritesRepository,
-    private val deviceRepository: DeviceRepository,
+    private val configRepository: ConfigRepository,
     private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
     private val movieRepository: MovieRepository
 ) : ViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
+    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
     val discover: Flow<PagingData<Movie>> = deviceLanguage.map { deviceLanguage ->
         movieRepository

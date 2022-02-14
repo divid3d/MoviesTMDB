@@ -8,7 +8,6 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.moviesapp.model.*
 import com.example.moviesapp.repository.ConfigRepository
-import com.example.moviesapp.repository.DeviceRepository
 import com.example.moviesapp.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -20,13 +19,12 @@ import javax.inject.Inject
 @HiltViewModel
 class DiscoverMoviesViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
-    private val deviceRepository: DeviceRepository,
     private val configRepository: ConfigRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
-    private val availableMovieGenres = configRepository.movieGenres
+    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
+    private val availableMovieGenres = configRepository.getMovieGenres()
 
     private val _sortType: MutableStateFlow<SortType> = MutableStateFlow(SortType.Popularity)
     val sortType: StateFlow<SortType> = _sortType.asStateFlow()

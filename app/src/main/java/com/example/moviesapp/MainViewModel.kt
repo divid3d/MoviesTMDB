@@ -17,8 +17,7 @@ class MainViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private val connectionStatus = networkStatusTracker.connectionStatus
-
-
+    
 //    private val snackBarEventChannel = Channel<SnackBarEvent?>(Channel.BUFFERED)
 //    val snackBarEventFlow: StateFlow<SnackBarEvent?> = snackBarEventChannel.receiveAsFlow()
 //        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
@@ -32,6 +31,6 @@ class MainViewModel @Inject constructor(
         .distinctUntilChanged()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
-    val imageUrlParser: StateFlow<ImageUrlParser?> = configRepository.imageUrlParser
+    val imageUrlParser: StateFlow<ImageUrlParser?> = configRepository.getImageUrlParser()
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 }

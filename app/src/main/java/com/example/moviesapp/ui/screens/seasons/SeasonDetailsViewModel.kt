@@ -12,7 +12,7 @@ import com.example.moviesapp.model.Image
 import com.example.moviesapp.model.SeasonDetails
 import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.other.asFlow
-import com.example.moviesapp.repository.DeviceRepository
+import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.TvSeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,12 +22,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SeasonDetailsViewModel @Inject constructor(
-    private val deviceRepository: DeviceRepository,
+    private val configRepository: ConfigRepository,
     private val tvSeriesRepository: TvSeriesRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
+    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
     private val seasonInfo: Flow<SeasonInfo?> =
         savedStateHandle.getLiveData<SeasonInfo>("seasonInfo").asFlow()
 

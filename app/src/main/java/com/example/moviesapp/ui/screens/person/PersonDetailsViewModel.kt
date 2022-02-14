@@ -9,7 +9,7 @@ import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
 import com.example.moviesapp.other.asFlow
-import com.example.moviesapp.repository.DeviceRepository
+import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.PersonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,12 +19,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PersonDetailsViewModel @Inject constructor(
-    private val deviceRepository: DeviceRepository,
+    private val configRepository: ConfigRepository,
     private val personRepository: PersonRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
+    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
     private val personId: Flow<Int?> = savedStateHandle.getLiveData<Int>("personId").asFlow()
 
     private val _personDetails: MutableStateFlow<PersonDetails?> = MutableStateFlow(null)

@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.SearchResult
-import com.example.moviesapp.repository.DeviceRepository
+import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.SearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -19,16 +19,16 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val deviceRepository: DeviceRepository,
+    private val configRepository: ConfigRepository,
     private val searchRepository: SearchRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
+    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
     private val queryDelay = 500.milliseconds
     private val minQueryLength = 3
 
-    val voiceSearchAvailable: StateFlow<Boolean> = deviceRepository.speechToTextAvailable
+    val voiceSearchAvailable: StateFlow<Boolean> = configRepository.getSpeechToTextAvailable()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
 
     private val _query: MutableStateFlow<String?> = MutableStateFlow(null)

@@ -1,67 +1,25 @@
 package com.example.moviesapp.repository
 
-import com.example.moviesapp.api.TmdbApiHelper
-import com.example.moviesapp.api.onSuccess
-import com.example.moviesapp.api.request
-import com.example.moviesapp.model.Config
+import com.example.moviesapp.data.ConfigDataSource
+import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Genre
 import com.example.moviesapp.other.ImageUrlParser
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class ConfigRepository @Inject constructor(
-    private val externalScope: CoroutineScope,
-    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val apiHelper: TmdbApiHelper
+    private val configDataSource: ConfigDataSource
 ) {
-    private val _config: MutableStateFlow<Config?> = MutableStateFlow(null)
 
-    val imageUrlParser: Flow<ImageUrlParser?> = _config.map { config ->
-        if (config != null) {
-            ImageUrlParser(config.imagesConfig)
-        } else null
-    }.flowOn(defaultDispatcher)
+    fun getSpeechToTextAvailable(): Flow<Boolean> = configDataSource.speechToTextAvailable
 
-    private val _movieGenres: MutableStateFlow<List<Genre>> = MutableStateFlow(emptyList())
-    val movieGenres: StateFlow<List<Genre>> = _movieGenres.asStateFlow()
+    fun getDeviceLanguage(): Flow<DeviceLanguage> = configDataSource.deviceLanguage
 
-    private val _tvSeriesGenres: MutableStateFlow<List<Genre>> = MutableStateFlow(emptyList())
-    val tvSeriesGenres: StateFlow<List<Genre>> = _tvSeriesGenres.asStateFlow()
+    fun getImageUrlParser(): Flow<ImageUrlParser?> = configDataSource.imageUrlParser
 
-    fun init() {
-        apiHelper.getConfig().request { response ->
-            response.onSuccess {
-                externalScope.launch(defaultDispatcher) {
-                    val config = data
-                    _config.emit(config)
-                }
-            }
-        }
+    fun getMovieGenres(): Flow<List<Genre>> = configDataSource.movieGenres
 
-        apiHelper.getMoviesGenres().request { response ->
-            response.onSuccess {
-                externalScope.launch(defaultDispatcher) {
-                    val movieGenres = data?.genres
-
-                    _movieGenres.emit(movieGenres ?: emptyList())
-                }
-            }
-        }
-
-        apiHelper.getTvSeriesGenres().request { response ->
-            response.onSuccess {
-                externalScope.launch(defaultDispatcher) {
-                    val tvSeriesGenres = data?.genres
-
-                    _tvSeriesGenres.emit(tvSeriesGenres ?: emptyList())
-                }
-            }
-        }
-    }
+    fun getTvSeriesGenres(): Flow<List<Genre>> = configDataSource.tvSeriesGenres
 }

@@ -8,7 +8,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.moviesapp.model.*
 import com.example.moviesapp.other.asFlow
-import com.example.moviesapp.repository.DeviceRepository
+import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.MovieRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
@@ -22,13 +22,13 @@ import javax.inject.Inject
 @HiltViewModel
 class BrowseMoviesViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
-    private val deviceRepository: DeviceRepository,
+    private val configRepository: ConfigRepository,
     private val favouritesRepository: FavouritesRepository,
     private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
+    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
     var movies: Flow<PagingData<Presentable>>? = null
 

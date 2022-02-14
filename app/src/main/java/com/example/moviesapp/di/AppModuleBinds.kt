@@ -13,5 +13,5 @@ abstract class AppModuleBinds {
 
     @Binds
     @IntoSet
-    abstract fun provideConfigRepositoryInitializer(initializer: ConfigRepositoryInitializer): AppInitializer
+    abstract fun provideConfigRepositoryInitializer(initializer: ConfigDataSourceInitializer): AppInitializer
 }

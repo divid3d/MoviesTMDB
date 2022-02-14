@@ -9,7 +9,7 @@ import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.RecentlyBrowsedTvSeries
 import com.example.moviesapp.model.TvSeries
 import com.example.moviesapp.model.TvSeriesFavourite
-import com.example.moviesapp.repository.DeviceRepository
+import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import com.example.moviesapp.repository.TvSeriesRepository
@@ -24,12 +24,12 @@ import javax.inject.Inject
 @HiltViewModel
 class TvSeriesViewModel @Inject constructor(
     private val tvSeriesRepository: TvSeriesRepository,
-    private val deviceRepository: DeviceRepository,
+    private val configRepository: ConfigRepository,
     private val favouritesRepository: FavouritesRepository,
     private val recentlyBrowsedRepository: RecentlyBrowsedRepository
 ) : ViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
+    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
     val onTheAir: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
         tvSeriesRepository

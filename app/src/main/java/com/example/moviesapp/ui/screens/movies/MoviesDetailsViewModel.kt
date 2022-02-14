@@ -11,7 +11,7 @@ import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
 import com.example.moviesapp.other.asFlow
-import com.example.moviesapp.repository.DeviceRepository
+import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.MovieRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
@@ -30,14 +30,14 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class, FlowPreview::class)
 @HiltViewModel
 class MoviesDetailsViewModel @Inject constructor(
-    private val deviceRepository: DeviceRepository,
+    private val configRepository: ConfigRepository,
     private val movieRepository: MovieRepository,
     private val favouritesRepository: FavouritesRepository,
     private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = deviceRepository.deviceLanguage
+    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
     private val favouritesMoviesIdsFlow: Flow<List<Int>> =
         favouritesRepository.getFavouritesMoviesIds()
 
