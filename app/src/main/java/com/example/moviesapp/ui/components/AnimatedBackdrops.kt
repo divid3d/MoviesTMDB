@@ -43,7 +43,6 @@ fun AnimatedBackdrops(
             animationSpec = tween(1000),
             targetState = currentBackdropPath
         ) { path ->
-
             val backgroundPainter = rememberTmdbImagePainter(
                 path = path,
                 type = ImageUrlParser.ImageType.Backdrop,

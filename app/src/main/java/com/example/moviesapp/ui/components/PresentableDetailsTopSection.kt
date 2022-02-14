@@ -11,6 +11,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.example.moviesapp.model.Image
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.PresentableItemState
@@ -53,30 +55,51 @@ fun PresentableDetailsTopSection(
                     )
                 )
         )
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
                 .padding(top = 56.dp)
         ) {
-            Row(
+            ConstraintLayout(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(MaterialTheme.spacing.medium),
-                verticalAlignment = Alignment.Top
+                    .padding(MaterialTheme.spacing.medium)
             ) {
+                val (presentableRef, contentRef) = createRefs()
+
                 PresentableItem(
+                    modifier = Modifier.constrainAs(presentableRef) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                    },
                     size = MaterialTheme.sizes.presentableItemBig,
                     showScore = true,
                     showTitle = false,
                     showAdult = true,
                     presentableState = presentableItemState
                 )
-                Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
-                Column(modifier = Modifier.weight(1f)) {
+
+                Column(
+                    modifier = Modifier
+                        .constrainAs(contentRef) {
+                            start.linkTo(presentableRef.end)
+                            end.linkTo(parent.end)
+                            top.linkTo(presentableRef.top)
+                            bottom.linkTo(presentableRef.bottom)
+
+                            height = Dimension.fillToConstraints
+                            width = Dimension.fillToConstraints
+                        }
+                        .padding(start = MaterialTheme.spacing.medium)
+                ) {
                     content()
                 }
             }
+
+            Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
+
         }
     }
 }

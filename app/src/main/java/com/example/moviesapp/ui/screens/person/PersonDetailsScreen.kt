@@ -21,6 +21,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MediaType
@@ -28,13 +30,13 @@ import com.example.moviesapp.other.formatted
 import com.example.moviesapp.other.openExternalId
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.ExpandableText
+import com.example.moviesapp.ui.components.ExternalIdsSection
 import com.example.moviesapp.ui.components.LabeledText
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.person.components.CreditsList
-import com.example.moviesapp.ui.screens.person.components.ExternalIdsSection
 import com.example.moviesapp.ui.screens.person.components.PersonProfileImage
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
@@ -114,32 +116,67 @@ fun PersonDetailsScreen(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
             ) {
                 details?.let { details ->
-                    Row(
+
+                    ConstraintLayout(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = MaterialTheme.spacing.medium)
-                            .padding(horizontal = MaterialTheme.spacing.medium)
+                            .padding(MaterialTheme.spacing.medium)
                     ) {
+                        val (profileImageRef, contentRef) = createRefs()
+
                         PersonProfileImage(
+                            modifier = Modifier.constrainAs(profileImageRef) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                            },
                             profilePath = details.profilePath
                         )
-                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
+
                         Column(
-                            modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                            modifier = Modifier
+                                .constrainAs(contentRef) {
+                                    start.linkTo(profileImageRef.end)
+                                    end.linkTo(parent.end)
+                                    top.linkTo(profileImageRef.top)
+                                    bottom.linkTo(profileImageRef.bottom)
+
+                                    height = Dimension.fillToConstraints
+                                    width = Dimension.fillToConstraints
+                                }
+                                .padding(start = MaterialTheme.spacing.medium)
                         ) {
-                            LabeledText(label = "Known for", text = details.knownFor)
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                            ) {
+                                LabeledText(label = "Known for", text = details.knownFor)
 
-                            details.birthPlace?.let { birthplace ->
-                                LabeledText(label = "Birthplace", text = birthplace)
-                            }
+                                details.birthPlace?.let { birthplace ->
+                                    LabeledText(label = "Birthplace", text = birthplace)
+                                }
 
-                            details.birthday?.let { date ->
-                                LabeledText(label = "Birthsday", text = date.formatted())
-                            }
+                                details.birthday?.let { date ->
+                                    LabeledText(label = "Birthsday", text = date.formatted())
+                                }
 
-                            details.deathDate?.let { date ->
-                                Text(text = date.formatted())
+                                details.deathDate?.let { date ->
+                                    Text(text = date.formatted())
+                                }
+
+                                Spacer(modifier = Modifier.weight(1f))
+
+                                externalIds?.let { ids ->
+                                    ExternalIdsSection(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        externalIds = ids
+                                    ) { externalId ->
+                                        openExternalId(
+                                            context = context,
+                                            externalId = externalId
+                                        )
+                                    }
+                                }
+
                             }
                         }
                     }
@@ -160,19 +197,6 @@ fun PersonDetailsScreen(
                             .padding(horizontal = MaterialTheme.spacing.medium),
                         text = details.biography
                     )
-
-                    externalIds?.let { ids ->
-                        ExternalIdsSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                            externalIds = ids
-                        ) { externalId ->
-                            openExternalId(
-                                context = context,
-                                externalId = externalId
-                            )
-                        }
-                    }
                 }
             }
 

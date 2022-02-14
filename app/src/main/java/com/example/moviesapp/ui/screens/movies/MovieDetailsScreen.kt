@@ -33,7 +33,6 @@ import com.example.moviesapp.other.*
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.*
-import com.example.moviesapp.ui.screens.person.components.ExternalIdsSection
 import com.example.moviesapp.ui.screens.reviews.ReviewsScreenNavArgs
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
@@ -112,7 +111,9 @@ fun MovieDetailsScreen(
                 backdrops = backdrops
             ) {
                 movieDetails?.let { details ->
-                    Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                    ) {
                         LabeledText(
                             label = stringResource(R.string.movie_details_status),
                             text = stringResource(details.status.getLabel())
@@ -132,6 +133,21 @@ fun MovieDetailsScreen(
                             )
                         }
                     }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    externalIds?.let { ids ->
+                        ExternalIdsSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            externalIds = ids
+                        ) { externalId ->
+                            openExternalId(
+                                context = context,
+                                externalId = externalId
+                            )
+                        }
+                    }
+
                 }
             }
 
@@ -192,19 +208,6 @@ fun MovieDetailsScreen(
                 SectionDivider(
                     modifier = Modifier.padding(top = MaterialTheme.spacing.large)
                 )
-            }
-
-            externalIds?.let { ids ->
-                ExternalIdsSection(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                    externalIds = ids
-                ) { externalId ->
-                    openExternalId(
-                        context = context,
-                        externalId = externalId
-                    )
-                }
             }
 
             watchProviders?.let { providers ->
