@@ -1,10 +1,5 @@
 package com.example.moviesapp.ui.components
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationEndReason
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -12,21 +7,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.size.OriginalSize
-import coil.size.Scale
-import coil.transform.BlurTransformation
 import com.example.moviesapp.model.Image
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.PresentableItemState
-import com.example.moviesapp.other.ImageUrlParser
-import com.example.moviesapp.other.getMaxSizeInt
 import com.example.moviesapp.ui.theme.sizes
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
@@ -38,8 +25,6 @@ fun PresentableDetailsTopSection(
     backdrops: List<Image> = emptyList(),
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
-    val context = LocalContext.current
-
     val presentableItemState by derivedStateOf {
         presentable?.let { PresentableItemState.Result(it) } ?: PresentableItemState.Loading
     }
@@ -50,64 +35,13 @@ fun PresentableDetailsTopSection(
         )
     }
 
-    var currentBackdropPathIndex by remember {
-        mutableStateOf(0)
-    }
-
-    val currentBackdropPath by derivedStateOf {
-        availableBackdropPaths.getOrNull(currentBackdropPathIndex)
-    }
-
-    val backdropScale = remember(currentBackdropPath) { Animatable(1f) }
-
-    LaunchedEffect(currentBackdropPath) {
-        val result = backdropScale.animateTo(
-            targetValue = 1.6f,
-            animationSpec = tween(durationMillis = 10000, easing = LinearEasing)
-        )
-
-        when (result.endReason) {
-            AnimationEndReason.Finished -> {
-                val backdropCount = availableBackdropPaths.count()
-                val nextIndex = currentBackdropPathIndex + 1
-
-                currentBackdropPathIndex = if (nextIndex >= backdropCount) 0 else nextIndex
-            }
-            else -> Unit
-        }
-    }
 
     Box(modifier = modifier.clip(RectangleShape)) {
-        BoxWithConstraints(modifier = Modifier.matchParentSize()) {
-            val (maxWidth, maxHeight) = getMaxSizeInt()
+        AnimatedBackdrops(
+            modifier = Modifier.matchParentSize(),
+            paths = availableBackdropPaths
+        )
 
-                val backgroundPainter = rememberTmdbImagePainter(
-                    path = currentBackdropPath,
-                    type = ImageUrlParser.ImageType.Backdrop,
-                    preferredSize = android.util.Size(maxWidth, maxHeight),
-                    builder = {
-                        size(OriginalSize)
-                        scale(Scale.FILL)
-                        transformations(
-                            BlurTransformation(
-                                context = context,
-                                radius = 18f,
-                                sampling = 6f
-                            )
-                        )
-                        crossfade(true)
-                    }
-                )
-
-                Image(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .scale(backdropScale.value),
-                    painter = backgroundPainter,
-                    contentDescription = null,
-                    contentScale = ContentScale.FillBounds
-                )
-        }
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
