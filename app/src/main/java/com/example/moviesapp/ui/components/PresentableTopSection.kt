@@ -30,6 +30,7 @@ import androidx.core.graphics.luminance
 import androidx.paging.compose.LazyPagingItems
 import androidx.palette.graphics.Palette
 import coil.annotation.ExperimentalCoilApi
+import coil.compose.ImagePainter
 import coil.transform.BlurTransformation
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.PresentableItemState
@@ -69,16 +70,7 @@ fun PresentableTopSection(
         if (snapshot.isNotEmpty()) snapshot.getOrNull(pagerState.currentPage) else null
     }
 
-    val backdropScale = remember(selectedPresentable) { Animatable(1f) }
-
     val itemHeight = density.run { MaterialTheme.sizes.presentableItemBig.height.toPx() }
-
-    LaunchedEffect(selectedPresentable) {
-        backdropScale.animateTo(
-            targetValue = 2f,
-            animationSpec = tween(durationMillis = 10000, easing = LinearEasing)
-        )
-    }
 
     Box(modifier = modifier.clip(RectangleShape)) {
         BoxWithConstraints(modifier = Modifier
@@ -94,6 +86,8 @@ fun PresentableTopSection(
                 modifier = Modifier.fillMaxSize(),
                 targetState = selectedPresentable
             ) { movie ->
+                val backdropScale = remember { Animatable(1f) }
+
                 val backgroundPainter = rememberTmdbImagePainter(
                     path = movie?.backdropPath,
                     type = ImageUrlParser.ImageType.Backdrop,
@@ -112,10 +106,16 @@ fun PresentableTopSection(
                 val backgroundPainterState = backgroundPainter.state
 
                 LaunchedEffect(backgroundPainterState) {
-                    val drawable = backgroundPainter.run {
-                        imageLoader.execute(request).drawable
+                    if (backgroundPainterState is ImagePainter.State.Success) {
+                        backdropScale.animateTo(
+                            targetValue = 1.6f,
+                            animationSpec = tween(durationMillis = 10000, easing = LinearEasing)
+                        )
                     }
-                    val bitmap = drawable?.toBitmap()
+
+                    val bitmap = backgroundPainter.run {
+                        imageLoader.execute(request).drawable?.toBitmap()
+                    }
 
                     isDark = bitmap?.let {
                         Palette.from(it).generate().dominantSwatch?.run {
