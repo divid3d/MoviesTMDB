@@ -10,12 +10,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.moviesapp.model.Image
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.PresentableItemState
+import com.example.moviesapp.other.BottomRoundedArcShape
 import com.example.moviesapp.ui.theme.sizes
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
@@ -37,10 +39,14 @@ fun PresentableDetailsTopSection(
         )
     }
 
-
     Box(modifier = modifier.clip(RectangleShape)) {
         AnimatedBackdrops(
-            modifier = Modifier.matchParentSize(),
+            modifier = Modifier
+                .matchParentSize()
+                .graphicsLayer {
+                    clip = true
+                    shape = BottomRoundedArcShape()
+                },
             paths = availableBackdropPaths
         )
 
@@ -48,10 +54,13 @@ fun PresentableDetailsTopSection(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .height(128.dp)
+                .height(126.dp)
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, MaterialTheme.colors.background),
+                        colors = listOf(
+                            Color.Transparent,
+                            MaterialTheme.colors.background
+                        ),
                     )
                 )
         )

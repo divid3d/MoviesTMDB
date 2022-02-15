@@ -33,6 +33,7 @@ import coil.annotation.ExperimentalCoilApi
 import coil.transform.BlurTransformation
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.PresentableItemState
+import com.example.moviesapp.other.BottomRoundedArcShape
 import com.example.moviesapp.other.ImageUrlParser
 import com.example.moviesapp.other.getMaxSizeInt
 import com.example.moviesapp.ui.theme.Size
@@ -80,7 +81,13 @@ fun PresentableTopSection(
     }
 
     Box(modifier = modifier.clip(RectangleShape)) {
-        BoxWithConstraints(modifier = Modifier.matchParentSize()) {
+        BoxWithConstraints(modifier = Modifier
+            .matchParentSize()
+            .graphicsLayer {
+                clip = true
+                shape = BottomRoundedArcShape()
+            }
+        ) {
             val (maxWidth, maxHeight) = getMaxSizeInt()
 
             Crossfade(
@@ -117,6 +124,17 @@ fun PresentableTopSection(
                     } ?: true
                 }
 
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .height(128.dp)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, MaterialTheme.colors.background),
+                            )
+                        )
+                )
                 Image(
                     modifier = Modifier
                         .fillMaxSize()
@@ -126,25 +144,28 @@ fun PresentableTopSection(
                     contentScale = ContentScale.FillBounds
                 )
             }
-
         }
+
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .height(128.dp)
+                .height(126.dp)
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, MaterialTheme.colors.background),
+                        colors = listOf(
+                            Color.Transparent,
+                            MaterialTheme.colors.background
+                        ),
                     )
                 )
         )
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-        )
-        {
+        ) {
             Text(
                 modifier = Modifier
                     .padding(horizontal = MaterialTheme.spacing.medium)
