@@ -9,6 +9,7 @@ import com.example.moviesapp.data.MovieDetailsResponseDataSource
 import com.example.moviesapp.data.MovieResponseDataSource
 import com.example.moviesapp.data.ReviewsDataSource
 import com.example.moviesapp.model.*
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -20,6 +21,7 @@ import javax.inject.Singleton
 @Singleton
 class MovieRepository @Inject constructor(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val crashlytics: FirebaseCrashlytics,
     private val apiHelper: TmdbApiHelper
 ) {
     fun discoverMovies(
@@ -47,7 +49,8 @@ class MovieRepository @Inject constructor(
                 onlyWithPosters = onlyWithPosters,
                 onlyWithScore = onlyWithScore,
                 onlyWithOverview = onlyWithOverview,
-                releaseDateRange = releaseDateRange
+                releaseDateRange = releaseDateRange,
+                firebaseCrashlytics = crashlytics
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -58,7 +61,8 @@ class MovieRepository @Inject constructor(
             MovieResponseDataSource(
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getPopularMovies
+                apiHelperMethod = apiHelper::getPopularMovies,
+                firebaseCrashlytics = crashlytics
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -69,7 +73,8 @@ class MovieRepository @Inject constructor(
             MovieResponseDataSource(
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getUpcomingMovies
+                apiHelperMethod = apiHelper::getUpcomingMovies,
+                firebaseCrashlytics = crashlytics
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -80,7 +85,8 @@ class MovieRepository @Inject constructor(
             MovieResponseDataSource(
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getTrendingMovies
+                apiHelperMethod = apiHelper::getTrendingMovies,
+                firebaseCrashlytics = crashlytics
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -91,7 +97,8 @@ class MovieRepository @Inject constructor(
             MovieResponseDataSource(
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getTopRatedMovies
+                apiHelperMethod = apiHelper::getTopRatedMovies,
+                firebaseCrashlytics = crashlytics
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -102,7 +109,8 @@ class MovieRepository @Inject constructor(
             MovieResponseDataSource(
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getNowPlayingMovies
+                apiHelperMethod = apiHelper::getNowPlayingMovies,
+                firebaseCrashlytics = crashlytics
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -116,7 +124,8 @@ class MovieRepository @Inject constructor(
             MovieDetailsResponseDataSource(
                 movieId = movieId,
                 language = deviceLanguage.languageCode,
-                apiHelperMethod = apiHelper::getSimilarMovies
+                apiHelperMethod = apiHelper::getSimilarMovies,
+                firebaseCrashlytics = crashlytics
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -130,7 +139,8 @@ class MovieRepository @Inject constructor(
             MovieDetailsResponseDataSource(
                 movieId = movieId,
                 language = deviceLanguage.languageCode,
-                apiHelperMethod = apiHelper::getMoviesRecommendations
+                apiHelperMethod = apiHelper::getMoviesRecommendations,
+                firebaseCrashlytics = crashlytics
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -156,7 +166,8 @@ class MovieRepository @Inject constructor(
         ) {
             ReviewsDataSource(
                 mediaId = movieId,
-                apiHelperMethod = apiHelper::getMovieReviews
+                apiHelperMethod = apiHelper::getMovieReviews,
+                firebaseCrashlytics = crashlytics
             )
         }.flow.flowOn(defaultDispatcher)
 

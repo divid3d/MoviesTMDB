@@ -14,4 +14,8 @@ abstract class AppModuleBinds {
     @Binds
     @IntoSet
     abstract fun provideConfigRepositoryInitializer(initializer: ConfigDataSourceInitializer): AppInitializer
+
+    @Binds
+    @IntoSet
+    abstract fun provideFirebaseInitializer(initializer: FirebaseInitializer): AppInitializer
 }

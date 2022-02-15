@@ -5,12 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.speech.RecognizerIntent
 import com.example.moviesapp.api.TmdbApiHelper
+import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.Config
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Genre
 import com.example.moviesapp.other.ImageUrlParser
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +29,8 @@ class ConfigDataSource @Inject constructor(
     private val context: Context,
     private val externalScope: CoroutineScope,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val apiHelper: TmdbApiHelper
+    private val apiHelper: TmdbApiHelper,
+    private val crashlytics: FirebaseCrashlytics
 ) {
     private val _config: MutableStateFlow<Config?> = MutableStateFlow(null)
 
@@ -75,6 +78,10 @@ class ConfigDataSource @Inject constructor(
                     val config = data
                     _config.emit(config)
                 }
+            }
+
+            response.onException {
+                crashlytics.recordException(exception)
             }
         }
 

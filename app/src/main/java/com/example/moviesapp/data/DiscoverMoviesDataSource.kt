@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.model.*
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -18,7 +19,8 @@ class DiscoverMoviesDataSource(
     private val onlyWithPosters: Boolean = false,
     private val onlyWithScore: Boolean = false,
     private val onlyWithOverview: Boolean = false,
-    private val releaseDateRange: ReleaseDateRange
+    private val releaseDateRange: ReleaseDateRange,
+    private val firebaseCrashlytics: FirebaseCrashlytics
 ) : PagingSource<Int, Movie>() {
 
     private val fromReleaseDate = releaseDateRange.from?.let { date -> DateParam(date) }
@@ -58,12 +60,20 @@ class DiscoverMoviesDataSource(
                 nextKey = if (currentPage + 1 > totalPages) null else currentPage + 1
             )
         } catch (e: IOException) {
-            return LoadResult.Error(e)
+            LoadResult.Error(e)
         } catch (e: HttpException) {
-            return LoadResult.Error(e)
+            LoadResult.Error(e)
+        } catch (e: Exception) {
+            firebaseCrashlytics.recordException(e)
+            LoadResult.Error(e)
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Movie>): Int? = null
+    override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+        return state.anchorPosition?.let { anchorPosition ->
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+        }
+    }
 
 }

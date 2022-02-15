@@ -13,7 +13,7 @@ data class MovieDetails(
     @Json(name = "backdrop_path")
     override val backdropPath: String?,
 
-    val budget: Int,
+    val budget: Long,
 
     val genres: List<Genre>,
 
@@ -47,7 +47,7 @@ data class MovieDetails(
     @Json(name = "release_date")
     val releaseDate: Date?,
 
-    val revenue: Int,
+    val revenue: Long,
 
     val runtime: Int?,
 

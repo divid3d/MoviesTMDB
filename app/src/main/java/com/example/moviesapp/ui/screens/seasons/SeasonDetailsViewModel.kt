@@ -14,6 +14,7 @@ import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.TvSeriesRepository
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -22,6 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SeasonDetailsViewModel @Inject constructor(
+    private val firebaseCrashlytics: FirebaseCrashlytics,
     private val configRepository: ConfigRepository,
     private val tvSeriesRepository: TvSeriesRepository,
     private val savedStateHandle: SavedStateHandle
@@ -66,7 +68,8 @@ class SeasonDetailsViewModel @Inject constructor(
                             }
 
                             response.onException {
-                                onError(message)
+                                onError()
+                                firebaseCrashlytics.recordException(exception)
                             }
                         }
                     }
@@ -105,7 +108,8 @@ class SeasonDetailsViewModel @Inject constructor(
                             }
 
                             response.onException {
-                                onError(message)
+                                onError()
+                                firebaseCrashlytics.recordException(exception)
                             }
                         }
                     }

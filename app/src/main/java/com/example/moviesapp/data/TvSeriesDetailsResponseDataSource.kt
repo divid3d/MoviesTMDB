@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.TvSeries
 import com.example.moviesapp.model.TvSeriesResponse
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -12,8 +13,10 @@ class TvSeriesDetailsResponseDataSource(
     private val tvSeriesId: Int,
     private val language: String = DeviceLanguage.default.languageCode,
     private val region: String = DeviceLanguage.default.region,
-    private inline val apiHelperMethod: suspend (Int, Int, String, String) -> TvSeriesResponse
+    private inline val apiHelperMethod: suspend (Int, Int, String, String) -> TvSeriesResponse,
+    private val firebaseCrashlytics: FirebaseCrashlytics
 ) : PagingSource<Int, TvSeries>() {
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TvSeries> {
         return try {
             val nextPage = params.key ?: 1
@@ -28,9 +31,12 @@ class TvSeriesDetailsResponseDataSource(
                 nextKey = if (currentPage + 1 > totalPages) null else currentPage + 1
             )
         } catch (e: IOException) {
-            return LoadResult.Error(e)
+            LoadResult.Error(e)
         } catch (e: HttpException) {
-            return LoadResult.Error(e)
+            LoadResult.Error(e)
+        } catch (e: Exception) {
+            firebaseCrashlytics.recordException(e)
+            LoadResult.Error(e)
         }
     }
 

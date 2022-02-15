@@ -21,7 +21,7 @@ fun Float.singleDecimalPlaceFormatted(): String {
     return String.format("%.1f", this)
 }
 
-fun Int.formattedMoney(): String {
+fun Long.formattedMoney(): String {
     return NumberFormat.getCurrencyInstance(Locale.US).apply {
         maximumFractionDigits = 0
     }.format(this).replace(",", " ")

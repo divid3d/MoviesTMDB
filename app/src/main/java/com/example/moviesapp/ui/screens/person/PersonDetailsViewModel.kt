@@ -11,6 +11,7 @@ import com.example.moviesapp.model.*
 import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.PersonRepository
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -19,6 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PersonDetailsViewModel @Inject constructor(
+    private val firebaseCrashlytics: FirebaseCrashlytics,
     private val configRepository: ConfigRepository,
     private val personRepository: PersonRepository,
     private val savedStateHandle: SavedStateHandle
@@ -69,7 +71,8 @@ class PersonDetailsViewModel @Inject constructor(
                             }
 
                             response.onException {
-                                onError(message)
+                                onError()
+                                firebaseCrashlytics.recordException(exception)
                             }
                         }
 
@@ -105,7 +108,8 @@ class PersonDetailsViewModel @Inject constructor(
                 }
 
                 response.onException {
-                    onError(message)
+                    onError()
+                    firebaseCrashlytics.recordException(exception)
                 }
             }
         }
@@ -128,7 +132,8 @@ class PersonDetailsViewModel @Inject constructor(
                 }
 
                 response.onException {
-                    onError(message)
+                    onError()
+                    firebaseCrashlytics.recordException(exception)
                 }
             }
         }

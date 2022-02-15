@@ -7,6 +7,7 @@ import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.data.MultiSearchResponseDataSource
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.SearchResult
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +18,8 @@ import javax.inject.Singleton
 @Singleton
 class SearchRepository @Inject constructor(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val apiHelper: TmdbApiHelper
+    private val apiHelper: TmdbApiHelper,
+    private val crashlytics: FirebaseCrashlytics
 ) {
     fun multiSearch(
         query: String,
@@ -35,7 +37,8 @@ class SearchRepository @Inject constructor(
                 includeAdult = includeAdult,
                 year = year,
                 releaseYear = releaseYear,
-                language = deviceLanguage.languageCode
+                language = deviceLanguage.languageCode,
+                firebaseCrashlytics = crashlytics
             )
         }.flow.flowOn(defaultDispatcher)
 }

@@ -5,13 +5,15 @@ import androidx.paging.PagingState
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Movie
 import com.example.moviesapp.model.MoviesResponse
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import retrofit2.HttpException
 import java.io.IOException
 
 class MovieResponseDataSource(
     private val language: String = DeviceLanguage.default.languageCode,
     private val region: String = DeviceLanguage.default.region,
-    private inline val apiHelperMethod: suspend (Int, String, String) -> MoviesResponse
+    private inline val apiHelperMethod: suspend (Int, String, String) -> MoviesResponse,
+    private val firebaseCrashlytics: FirebaseCrashlytics
 ) : PagingSource<Int, Movie>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         return try {
@@ -27,12 +29,20 @@ class MovieResponseDataSource(
                 nextKey = if (currentPage + 1 > totalPages) null else currentPage + 1
             )
         } catch (e: IOException) {
-            return LoadResult.Error(e)
+            LoadResult.Error(e)
         } catch (e: HttpException) {
-            return LoadResult.Error(e)
+            LoadResult.Error(e)
+        } catch (e: Exception) {
+            firebaseCrashlytics.recordException(e)
+            LoadResult.Error(e)
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Movie>): Int? = null
+    override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+        return state.anchorPosition?.let { anchorPosition ->
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+        }
+    }
 
 }

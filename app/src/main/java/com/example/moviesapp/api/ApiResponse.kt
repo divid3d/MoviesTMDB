@@ -15,9 +15,7 @@ sealed class ApiResponse<out T> {
     }
 
 
-    class Exception<T>(throwable: Throwable) : ApiResponse<T>() {
-        val message: String? = throwable.localizedMessage
-    }
+    class Exception<T>(val exception: Throwable) : ApiResponse<T>()
 }
 
 fun <T> ApiResponse<T>.onSuccess(onResult: ApiResponse.Success<T>.() -> Unit): ApiResponse<T> {
