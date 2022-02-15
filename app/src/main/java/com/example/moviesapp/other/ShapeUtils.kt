@@ -9,7 +9,9 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 
 class BottomRoundedArcShape(
-    @FloatRange(from = 0.0, to = 1.0) private val ratio: Float = 0f,
+    @FloatRange(from = 0.0, to = 1.0)
+    private val ratio: Float = 0f,
+    @FloatRange(from = 0.0, to = 1.0)
     private val edgeHeightRatio: Float = 0.9f,
 ) : Shape {
     override fun createOutline(
