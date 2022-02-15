@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.components
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -20,13 +21,28 @@ import com.google.accompanist.insets.statusBarsPadding
 fun AppBar(
     modifier: Modifier = Modifier,
     title: String?,
+    scrollState: ScrollState? = null,
+    transparentScrollValueLimit: Float? = null,
     backgroundColor: Color = Color.Black,
     action: @Composable () -> Unit = {},
     trailing: @Composable () -> Unit = {}
 ) {
+    val alphaDelta = 1f - backgroundColor.alpha
+
+    val currentScrollValue = scrollState?.value
+
+    val alpha = if (currentScrollValue != null && transparentScrollValueLimit != null) {
+        (backgroundColor.alpha + (currentScrollValue / transparentScrollValueLimit) * alphaDelta).coerceIn(
+            backgroundColor.alpha,
+            1f
+        )
+    } else {
+        backgroundColor.alpha
+    }
+
     Row(
         modifier = modifier
-            .background(backgroundColor)
+            .background(backgroundColor.copy(alpha))
             .fillMaxWidth()
             .statusBarsPadding(),
         verticalAlignment = Alignment.CenterVertically

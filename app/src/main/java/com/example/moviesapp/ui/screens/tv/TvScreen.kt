@@ -5,11 +5,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -34,6 +35,8 @@ fun TvScreen(
     viewModel: TvSeriesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
+    val density = LocalDensity.current
+
     val topRated = viewModel.topRated.collectAsLazyPagingItems()
     val onTheAir = viewModel.onTheAir.collectAsLazyPagingItems()
     val trending = viewModel.trending.collectAsLazyPagingItems()
@@ -41,6 +44,11 @@ fun TvScreen(
     val airingToday = viewModel.airingToday.collectAsLazyPagingItems()
     val favourites = viewModel.favourites.collectAsLazyPagingItems()
     val recentlyBrowsed = viewModel.recentlyBrowsed.collectAsLazyPagingItems()
+
+    val scrollState = rememberScrollState()
+    var topSectionHeight: Float? by remember { mutableStateOf(null) }
+    val appbarHeight = density.run { 56.dp.toPx() }
+    val topSectionScrollLimitValue: Float? = topSectionHeight?.minus(appbarHeight)
 
     val isRefreshing by derivedStateOf {
         listOf(
@@ -89,13 +97,18 @@ fun TvScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(scrollState),
         ) {
             PresentableTopSection(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .onGloballyPositioned { coordinates ->
+                        topSectionHeight = coordinates.size.height.toFloat()
+                    },
                 title = stringResource(R.string.now_airing_tv_series),
                 state = onTheAir,
+                scrollState = scrollState,
+                scrollValueLimit = topSectionScrollLimitValue,
                 onPresentableClick = navigateToTvSeriesDetails
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))

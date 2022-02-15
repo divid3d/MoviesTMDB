@@ -17,11 +17,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -50,6 +53,7 @@ fun TvSeriesDetailsScreen(
     startRoute: String = TvScreenDestination.route
 ) {
     val context = LocalContext.current
+    val density = LocalDensity.current
 
     val tvSeriesDetails by viewModel.tvSeriesDetails.collectAsState()
     val isFavourite by viewModel.isFavourite.collectAsState()
@@ -69,6 +73,10 @@ fun TvSeriesDetailsScreen(
 
     var showErrorDialog by remember { mutableStateOf(false) }
     val error: String? by viewModel.error.collectAsState()
+
+    var topSectionHeight: Float? by remember { mutableStateOf(null) }
+    val appbarHeight = density.run { 56.dp.toPx() }
+    val topSectionScrollLimitValue: Float? = topSectionHeight?.minus(appbarHeight)
 
     LaunchedEffect(error) {
         showErrorDialog = error != null
@@ -98,9 +106,15 @@ fun TvSeriesDetailsScreen(
                 .verticalScroll(scrollState)
         ) {
             PresentableDetailsTopSection(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onGloballyPositioned { coordinates ->
+                        topSectionHeight = coordinates.size.height.toFloat()
+                    },
                 presentable = tvSeriesDetails,
-                backdrops = backdrops
+                backdrops = backdrops,
+                scrollState = scrollState,
+                scrollValueLimit = topSectionScrollLimitValue
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
                     tvSeriesDetails?.let { details ->
@@ -353,6 +367,8 @@ fun TvSeriesDetailsScreen(
             modifier = Modifier.align(Alignment.TopCenter),
             title = stringResource(R.string.tv_series_details_label),
             backgroundColor = Color.Black.copy(0.7f),
+            scrollState = scrollState,
+            transparentScrollValueLimit = topSectionScrollLimitValue,
             action = {
                 IconButton(onClick = { navigator.navigateUp() }) {
                     Icon(

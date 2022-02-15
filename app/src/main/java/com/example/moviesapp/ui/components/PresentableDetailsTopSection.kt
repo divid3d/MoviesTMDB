@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.components
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -27,6 +28,8 @@ fun PresentableDetailsTopSection(
     modifier: Modifier = Modifier,
     presentable: Presentable?,
     backdrops: List<Image> = emptyList(),
+    scrollState: ScrollState? = null,
+    scrollValueLimit: Float? = null,
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     val presentableItemState by derivedStateOf {
@@ -39,13 +42,23 @@ fun PresentableDetailsTopSection(
         )
     }
 
+    val currentScrollValue = scrollState?.value
+
+    val ratio = if (currentScrollValue != null && scrollValueLimit != null) {
+        (currentScrollValue / scrollValueLimit).coerceIn(0f, 1f)
+    } else {
+        0f
+    }
+
     Box(modifier = modifier.clip(RectangleShape)) {
         AnimatedBackdrops(
             modifier = Modifier
                 .matchParentSize()
                 .graphicsLayer {
                     clip = true
-                    shape = BottomRoundedArcShape()
+                    shape = BottomRoundedArcShape(
+                        ratio = ratio
+                    )
                 },
             paths = availableBackdropPaths
         )

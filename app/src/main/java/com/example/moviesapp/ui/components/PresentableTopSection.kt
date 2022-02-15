@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -53,12 +54,14 @@ fun PresentableTopSection(
     modifier: Modifier = Modifier,
     title: String,
     state: LazyPagingItems<out Presentable>,
+    scrollState: ScrollState? = null,
+    scrollValueLimit: Float? = null,
     onPresentableClick: (Int) -> Unit = {}
 ) {
     val context = LocalContext.current
+    val density = LocalDensity.current
 
     val pagerState = rememberPagerState()
-    val density = LocalDensity.current
 
     var isDark by remember { mutableStateOf(true) }
 
@@ -70,15 +73,26 @@ fun PresentableTopSection(
         if (snapshot.isNotEmpty()) snapshot.getOrNull(pagerState.currentPage) else null
     }
 
+    val currentScrollValue = scrollState?.value
+
+    val ratio = if (currentScrollValue != null && scrollValueLimit != null) {
+        (currentScrollValue / scrollValueLimit).coerceIn(0f, 1f)
+    } else {
+        0f
+    }
+
     val itemHeight = density.run { MaterialTheme.sizes.presentableItemBig.height.toPx() }
 
     Box(modifier = modifier.clip(RectangleShape)) {
-        BoxWithConstraints(modifier = Modifier
-            .matchParentSize()
-            .graphicsLayer {
-                clip = true
-                shape = BottomRoundedArcShape()
-            }
+        BoxWithConstraints(
+            modifier = Modifier
+                .matchParentSize()
+                .graphicsLayer {
+                    clip = true
+                    shape = BottomRoundedArcShape(
+                        ratio = ratio
+                    )
+                }
         ) {
             val (maxWidth, maxHeight) = getMaxSizeInt()
 
