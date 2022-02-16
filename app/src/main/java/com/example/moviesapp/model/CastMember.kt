@@ -27,7 +27,7 @@ data class CastMember(
     @Json(name = "cast_id")
     val castId: Int,
 
-    val character: String,
+    val character: String?,
 
     @Json(name = "credit_id")
     val creditId: String,
@@ -36,7 +36,7 @@ data class CastMember(
 ) : Member {
     override val firstLine: String
         get() = name
-    override val secondLine: String
+    override val secondLine: String?
         get() = character
 }
 
