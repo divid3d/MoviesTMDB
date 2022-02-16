@@ -61,6 +61,7 @@ fun TvSeriesDetailsScreen(
     val similar = viewModel.similarTvSeries?.collectAsLazyPagingItems()
     val recommendations = viewModel.tvSeriesRecommendations?.collectAsLazyPagingItems()
     val backdrops by viewModel.backdrops.collectAsState()
+    val nextEpisodeDaysRemaining by viewModel.nextEpisodeDaysRemaining.collectAsState()
     val watchProviders by viewModel.watchProviders.collectAsState()
     val externalIds by viewModel.externalIds.collectAsState()
     val hasReviews by viewModel.hasReviews.collectAsState()
@@ -180,11 +181,21 @@ fun TvSeriesDetailsScreen(
                                 .fillMaxWidth()
                                 .padding(horizontal = MaterialTheme.spacing.medium),
                             infoTexts = details.run {
-                                listOf(
+                                listOfNotNull(
                                     yearRangeString(
                                         from = firstAirDate,
                                         to = lastAirDate
-                                    )
+                                    ),
+                                    nextEpisodeDaysRemaining?.let { days ->
+                                        when (days) {
+                                            0L -> stringResource(R.string.next_episode_today_text)
+                                            1L -> stringResource(R.string.next_episode_tomorrow_text)
+                                            else -> stringResource(
+                                                R.string.next_episode_days_text,
+                                                days
+                                            )
+                                        }
+                                    }
                                 )
                             }
                         )

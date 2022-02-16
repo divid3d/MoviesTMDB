@@ -4,6 +4,10 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
+    <string name="next_episode_today_text">New episode today</string>
+    <string name="next_episode_tomorrow_text">New episode tomorrow</string>
+    <string name="next_episode_days_text" formatted="true">New episode in %d days</string>
+
     <string name="exit_dialog_info">Are you sure you want to leave application?</string>
     <string name="exit_dialog_confirm_button_label">Confirm</string>
     <string name="exit_dialog_cancel_button_label">Cancel</string>

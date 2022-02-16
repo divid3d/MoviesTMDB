@@ -21,6 +21,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @OptIn(FlowPreview::class)
@@ -44,7 +46,9 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
     var similarTvSeries: Flow<PagingData<TvSeries>>? = null
     var tvSeriesRecommendations: Flow<PagingData<TvSeries>>? = null
+
     private val _tvSeriesBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
+    private val _nextEpisodeDaysRemaining: MutableStateFlow<Long?> = MutableStateFlow(null)
     private val _watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
     private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
@@ -65,6 +69,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
         id in favouritesId
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
 
+    val nextEpisodeDaysRemaining: StateFlow<Long?> = _nextEpisodeDaysRemaining.asStateFlow()
     val watchProviders: StateFlow<WatchProviders?> = _watchProviders.asStateFlow()
 
     private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
@@ -131,6 +136,10 @@ class TvSeriesDetailsViewModel @Inject constructor(
                 viewModelScope.launch {
                     val tvSeriesDetails = data
                     _tvSeriesDetails.emit(tvSeriesDetails)
+
+                    tvSeriesDetails?.nextEpisodeToAir?.airDate?.let { date ->
+                        getNextEpisodeDaysRemaining(date)
+                    }
                 }
             }
 
@@ -231,6 +240,13 @@ class TvSeriesDetailsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private suspend fun getNextEpisodeDaysRemaining(nextEpisodeAirDate: Date) {
+        val millionSeconds = nextEpisodeAirDate.time - Calendar.getInstance().timeInMillis
+        val daysDiff = TimeUnit.MILLISECONDS.toDays(millionSeconds)
+
+        _nextEpisodeDaysRemaining.emit(if (daysDiff < 0) 0 else daysDiff)
     }
 
 }
