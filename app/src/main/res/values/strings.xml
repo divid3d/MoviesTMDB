@@ -57,6 +57,7 @@
     <string name="tv_series_details_recommendations">Recommendations</string>
     <string name="tv_series_details_networks">Available on</string>
     <string name="tv_series_details_seasons">Seasons</string>
+    <string name="tv_series_details_creators">Seasons</string>
 
     <string name="all_movies_top_rated_label">Top rated movies</string>
     <string name="all_movies_upcoming_label">Upcoming movies</string>

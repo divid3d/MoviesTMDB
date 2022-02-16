@@ -240,10 +240,12 @@ fun TvSeriesDetailsScreen(
                             .fillMaxWidth()
                             .padding(vertical = MaterialTheme.spacing.small)
                             .animateContentSize(),
-                        title = "Twórcy",
+                        title = stringResource(R.string.tv_series_details_creators),
                         members = creators,
                         contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                    )
+                    ) { creatorId ->
+                        navigator.navigate(PersonDetailsScreenDestination(creatorId))
+                    }
                 }
             }
 

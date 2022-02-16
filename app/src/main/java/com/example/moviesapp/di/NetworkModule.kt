@@ -89,7 +89,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideTmdbApi(retorfit: Retrofit): TmdbApi = retorfit.create(TmdbApi::class.java)
+    fun provideTmdbApi(retrofit: Retrofit): TmdbApi = retrofit.create(TmdbApi::class.java)
 
     @Singleton
     @Provides

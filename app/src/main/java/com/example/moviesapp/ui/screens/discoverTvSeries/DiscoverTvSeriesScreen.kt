@@ -33,7 +33,7 @@ import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.FilterEmptyState
 import com.example.moviesapp.ui.components.FilterFloatingButton
 import com.example.moviesapp.ui.components.PresentableGridSection
-import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.discoverMovies.components.SortTypeDropdownButton
 import com.example.moviesapp.ui.screens.discoverTvSeries.components.FilterTvSeriesModalBottomSheetContent
 import com.example.moviesapp.ui.theme.spacing
@@ -163,9 +163,9 @@ fun DiscoverTvSeriesScreen(
                                 vertical = MaterialTheme.spacing.medium,
                             ),
                             state = movies
-                        ) { movieId ->
+                        ) { tvSeriesId ->
                             navigator.navigate(
-                                MovieDetailsScreenDestination(movieId)
+                                TvSeriesDetailsScreenDestination(tvSeriesId)
                             )
                         }
                     } else {
