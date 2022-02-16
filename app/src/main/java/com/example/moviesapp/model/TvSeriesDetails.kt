@@ -43,7 +43,7 @@ data class TvSeriesDetails(
     val networks: List<Network>,
 
     @Json(name = "number_of_episodes")
-    val numberOfEpisodes: Int,
+    val numberOfEpisodes: Int?,
 
     @Json(name = "number_of_seasons")
     val numberOfSeasons: Int,
