@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.moviesapp.R
 import com.example.moviesapp.model.FilterState
+import com.example.moviesapp.ui.components.ProvidersSourceList
 import com.example.moviesapp.ui.components.SectionDivider
 import com.example.moviesapp.ui.theme.spacing
 
@@ -34,6 +35,10 @@ fun FilterModalBottomSheetContent(
     val enableSaveButton = currentFilterState != filterState
 
     var genresSectionExpanded by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var watchProvidersSectionExpanded by rememberSaveable {
         mutableStateOf(false)
     }
 
@@ -81,6 +86,7 @@ fun FilterModalBottomSheetContent(
                 .verticalScroll(rememberScrollState())
         ) {
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
             ExpandableSection(
                 modifier = Modifier.fillMaxWidth(),
                 label = stringResource(R.string.movie_filter_bottom_sheet_genres_section_label),
@@ -115,6 +121,43 @@ fun FilterModalBottomSheetContent(
                         )
                     }
                 )
+
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            }
+
+            ExpandableSection(
+                modifier = Modifier.fillMaxWidth(),
+                label = "Dostępność",
+                infoText = "Wybierz jedno lub więcej źródeł",
+                expanded = watchProvidersSectionExpanded,
+                onClick = { watchProvidersSectionExpanded = !watchProvidersSectionExpanded },
+                trailing = {
+                    SectionDivider(modifier = Modifier.fillMaxWidth())
+                }
+            ) {
+                ProvidersSourceList(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            top = MaterialTheme.spacing.extraSmall,
+                            start = MaterialTheme.spacing.medium,
+                            end = MaterialTheme.spacing.medium
+                        ),
+                    availableProvidersSources = currentFilterState.availableWatchProviders,
+                    selectedProvidersSources = currentFilterState.selectedWatchProviders
+                ) { selectedProvider ->
+                    val selectedProviders = currentFilterState.selectedWatchProviders.run {
+                        if (selectedProvider in this) {
+                            minus(selectedProvider)
+                        } else {
+                            plus(selectedProvider)
+                        }
+                    }
+
+                    currentFilterState = currentFilterState.copy(
+                        selectedWatchProviders = selectedProviders
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             }

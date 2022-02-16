@@ -95,7 +95,7 @@ class ConfigDataSource @Inject constructor(
             }
         }
 
-        externalScope.launch {
+        externalScope.launch(defaultDispatcher) {
             deviceLanguage.collectLatest { deviceLanguage ->
                 apiHelper.getMoviesGenres(isoCode = deviceLanguage.languageCode)
                     .request { response ->
@@ -105,6 +105,10 @@ class ConfigDataSource @Inject constructor(
 
                                 _movieGenres.emit(movieGenres ?: emptyList())
                             }
+                        }
+
+                        response.onException {
+                            crashlytics.recordException(exception)
                         }
                     }
 
@@ -116,6 +120,10 @@ class ConfigDataSource @Inject constructor(
 
                                 _tvSeriesGenres.emit(tvSeriesGenres ?: emptyList())
                             }
+                        }
+
+                        response.onException {
+                            crashlytics.recordException(exception)
                         }
                     }
 
@@ -132,6 +140,10 @@ class ConfigDataSource @Inject constructor(
                             _movieWatchProviders.emit(watchProviders ?: emptyList())
                         }
                     }
+
+                    response.onException {
+                        crashlytics.recordException(exception)
+                    }
                 }
 
                 apiHelper.getAllTvSeriesWatchProviders(
@@ -146,6 +158,10 @@ class ConfigDataSource @Inject constructor(
 
                             _tvSeriesWatchProviders.emit(watchProviders ?: emptyList())
                         }
+                    }
+
+                    response.onException {
+                        crashlytics.recordException(exception)
                     }
                 }
             }

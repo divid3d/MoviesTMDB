@@ -5,6 +5,8 @@ import java.util.*
 data class FilterState(
     val selectedGenres: List<Genre> = emptyList(),
     val availableGenres: List<Genre> = emptyList(),
+    val selectedWatchProviders: List<ProviderSource> = emptyList(),
+    val availableWatchProviders: List<ProviderSource> = emptyList(),
     val showOnlyWithPoster: Boolean = false,
     val showOnlyWithScore: Boolean = false,
     val showOnlyWithOverview: Boolean = false,
@@ -13,6 +15,7 @@ data class FilterState(
 ) {
     fun clear(): FilterState = copy(
         selectedGenres = emptyList(),
+        selectedWatchProviders = emptyList(),
         showOnlyWithPoster = false,
         showOnlyWithScore = false,
         showOnlyWithOverview = false,

@@ -1,12 +1,15 @@
 package com.example.moviesapp.ui.components
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,16 +23,37 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.moviesapp.R
 import com.example.moviesapp.other.ImageUrlParser
+import com.example.moviesapp.other.grayScale
+import com.example.moviesapp.ui.theme.White500
 import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun LogoChip(
     modifier: Modifier = Modifier,
     logoPath: String? = null,
-    text: String
+    text: String,
+    selected: Boolean = true,
+    onClick: (() -> Unit)? = null
 ) {
+    val borderColor by animateColorAsState(
+        targetValue = if (selected) {
+            MaterialTheme.colors.primary.copy(0.5f)
+        } else {
+            Color.Gray.copy(0.5f)
+        }
+    )
+
+    val textColor by animateColorAsState(
+        targetValue = if (selected) {
+            Color.White
+        } else {
+            White500
+        }
+    )
+
     Column(
         modifier = modifier
+            .clickable(enabled = onClick != null, onClick = { onClick?.invoke() })
             .width(80.dp)
             .background(
                 color = MaterialTheme.colors.surface,
@@ -37,7 +61,7 @@ fun LogoChip(
             )
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colors.primary.copy(0.5f),
+                color = borderColor,
                 shape = MaterialTheme.shapes.small
             )
             .padding(MaterialTheme.spacing.small),
@@ -51,7 +75,8 @@ fun LogoChip(
                     .height(40.dp),
                 imagePath = logoPath,
                 imageType = ImageUrlParser.ImageType.Logo,
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.Fit,
+                colorFilter = if (selected) null else ColorFilter.grayScale()
             ) {
                 crossfade(true)
             }
@@ -59,14 +84,16 @@ fun LogoChip(
             Image(
                 painter = painterResource(R.drawable.ic_outline_no_photography_24),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(MaterialTheme.colors.primary.copy(0.3f))
+                colorFilter = if (selected) {
+                    ColorFilter.tint(MaterialTheme.colors.primary.copy(0.3f))
+                } else ColorFilter.grayScale()
             )
         }
 
         Text(
             text = text,
             style = TextStyle(
-                color = Color.White,
+                color = textColor,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 12.sp
             ),

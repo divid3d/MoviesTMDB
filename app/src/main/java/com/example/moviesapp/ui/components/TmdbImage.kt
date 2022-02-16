@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.ImagePainter
 import coil.compose.LocalImageLoader
@@ -44,6 +45,7 @@ fun TmdbImage(
     imageType: ImageUrlParser.ImageType,
     strategy: ImageUrlParser.MatchingStrategy = ImageUrlParser.MatchingStrategy.FirstBiggerWidth,
     contentScale: ContentScale = ContentScale.FillBounds,
+    colorFilter: ColorFilter? = null,
     builder: ImageRequest.Builder.() -> Unit = {}
 ) {
     BoxWithConstraints(modifier = modifier) {
@@ -62,6 +64,7 @@ fun TmdbImage(
             modifier = Modifier.fillMaxSize(),
             painter = painter,
             contentDescription = null,
+            colorFilter = colorFilter,
             contentScale = contentScale
         )
     }

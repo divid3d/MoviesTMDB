@@ -13,6 +13,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.platform.LocalDensity
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -88,4 +90,18 @@ fun LazyPagingItems<*>.isEmpty(): Boolean {
 }
 
 fun LazyPagingItems<*>.isNotEmpty(): Boolean = !isEmpty()
+
+
+fun ColorFilter.Companion.grayScale(): ColorFilter {
+    val grayScaleMatrix = ColorMatrix(
+        floatArrayOf(
+            0.33f, 0.33f, 0.33f, 0f, 0f,
+            0.33f, 0.33f, 0.33f, 0f, 0f,
+            0.33f, 0.33f, 0.33f, 0f, 0f,
+            0f, 0f, 0f, 1f, 0f
+        )
+    )
+
+    return colorMatrix(grayScaleMatrix)
+}
 

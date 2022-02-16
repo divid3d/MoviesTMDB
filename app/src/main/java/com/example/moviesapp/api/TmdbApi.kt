@@ -19,6 +19,8 @@ interface TmdbApi {
         @Query("region") region: String,
         @Query("sort_by") type: SortTypeParam,
         @Query("with_genres") genres: GenresParam,
+        @Query("with_watch_providers") watchProviders: WatchProvidersParam,
+        @Query("watch_region") watchRegion: String = region,
         @FloatRange(from = 0.0)
         @Query("vote_average.gte")
         voteAverageMin: Float,
@@ -270,16 +272,16 @@ interface TmdbApi {
         @Query("language") isoCode: String
     ): Call<ExternalIds>
 
-    @GET("watch/providers/movies")
+    @GET("watch/providers/movie")
     fun getAllMoviesWatchProviders(
         @Query("language") isoCode: String,
-        @Query("region") region: String
+        @Query("watch_region") region: String
     ): Call<AllWatchProvidersResponse>
 
     @GET("watch/providers/tv")
     fun getAllTvSeriesWatchProviders(
         @Query("language") isoCode: String,
-        @Query("region") region: String
+        @Query("watch_region") region: String
     ): Call<AllWatchProvidersResponse>
 
 }

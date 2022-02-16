@@ -25,6 +25,7 @@ class DiscoverMoviesViewModel @Inject constructor(
 
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
     private val availableMovieGenres = configRepository.getMovieGenres()
+    private val availableWatchProviders = configRepository.getAllMoviesWatchProviders()
 
     private val _sortType: MutableStateFlow<SortType> = MutableStateFlow(SortType.Popularity)
     val sortType: StateFlow<SortType> = _sortType.asStateFlow()
@@ -35,9 +36,13 @@ class DiscoverMoviesViewModel @Inject constructor(
     private val _filterState: MutableStateFlow<FilterState> = MutableStateFlow(FilterState())
     val filterState: StateFlow<FilterState> = combine(
         _filterState,
-        availableMovieGenres
-    ) { filterState, genres ->
-        filterState.copy(availableGenres = genres)
+        availableMovieGenres,
+        availableWatchProviders
+    ) { filterState, genres, watchProviders ->
+        filterState.copy(
+            availableGenres = genres,
+            availableWatchProviders = watchProviders
+        )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), FilterState())
 
 
@@ -80,6 +85,7 @@ class DiscoverMoviesViewModel @Inject constructor(
                 sortType = sortType,
                 sortOrder = sortOrder,
                 genresParam = GenresParam(filterState.selectedGenres),
+                watchProvidersParam = WatchProvidersParam(filterState.selectedWatchProviders),
                 voteRange = filterState.voteRange.current,
                 onlyWithPosters = filterState.showOnlyWithPoster,
                 onlyWithScore = filterState.showOnlyWithScore,

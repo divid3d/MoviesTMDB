@@ -11,7 +11,6 @@ data class WatchProvidersResponse(
 
 @JsonClass(generateAdapter = true)
 data class AllWatchProvidersResponse(
-    val id: Int,
     val results: List<ProviderSource>
 )
 

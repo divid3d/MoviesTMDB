@@ -15,6 +15,7 @@ class DiscoverMoviesDataSource(
     private val sortType: SortType = SortType.Popularity,
     private val sortOrder: SortOrder = SortOrder.Desc,
     private val genresParam: GenresParam = GenresParam(genres = emptyList()),
+    private val watchProvidersParam: WatchProvidersParam = WatchProvidersParam(watchProviders = emptyList()),
     private val voteRange: ClosedFloatingPointRange<Float> = 0f..10f,
     private val onlyWithPosters: Boolean = false,
     private val onlyWithScore: Boolean = false,
@@ -37,6 +38,7 @@ class DiscoverMoviesDataSource(
                 region = region,
                 sortTypeParam = sortTypeParam,
                 genresParam = genresParam,
+                watchProvidersParam = watchProvidersParam,
                 voteRange = voteRange,
                 fromReleaseDate = fromReleaseDate,
                 toReleaseDate = toReleaseDate
