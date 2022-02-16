@@ -76,7 +76,7 @@ fun WatchProvidersSection(
 
             LazyRow(
                 modifier = modifier,
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
                 contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
             ) {
                 selectedProviders?.let { providers ->

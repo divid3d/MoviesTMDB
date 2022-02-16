@@ -40,7 +40,7 @@ fun SeasonsSection(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = MaterialTheme.spacing.small),
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
                 contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
             ) {
                 items(seasons) { season ->
