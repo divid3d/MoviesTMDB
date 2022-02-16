@@ -270,5 +270,17 @@ interface TmdbApi {
         @Query("language") isoCode: String
     ): Call<ExternalIds>
 
+    @GET("watch/providers/movies")
+    fun getAllMoviesWatchProviders(
+        @Query("language") isoCode: String,
+        @Query("region") region: String
+    ): Call<AllWatchProvidersResponse>
+
+    @GET("watch/providers/tv")
+    fun getAllTvSeriesWatchProviders(
+        @Query("language") isoCode: String,
+        @Query("region") region: String
+    ): Call<AllWatchProvidersResponse>
+
 }
 

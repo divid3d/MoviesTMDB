@@ -201,4 +201,14 @@ interface TmdbApiHelper {
         tvSeriesId: Int
     ): Call<ExternalIds>
 
+    fun getAllMoviesWatchProviders(
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
+    ): Call<AllWatchProvidersResponse>
+
+    fun getAllTvSeriesWatchProviders(
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region
+    ): Call<AllWatchProvidersResponse>
+
 }

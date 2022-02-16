@@ -11,6 +11,7 @@ import com.example.moviesapp.api.request
 import com.example.moviesapp.model.Config
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Genre
+import com.example.moviesapp.model.ProviderSource
 import com.example.moviesapp.other.ImageUrlParser
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -71,6 +72,15 @@ class ConfigDataSource @Inject constructor(
     private val _tvSeriesGenres: MutableStateFlow<List<Genre>> = MutableStateFlow(emptyList())
     val tvSeriesGenres: StateFlow<List<Genre>> = _tvSeriesGenres.asStateFlow()
 
+    private val _movieWatchProviders: MutableStateFlow<List<ProviderSource>> =
+        MutableStateFlow(emptyList())
+    val movieWatchProviders: StateFlow<List<ProviderSource>> = _movieWatchProviders.asStateFlow()
+
+    private val _tvSeriesWatchProviders: MutableStateFlow<List<ProviderSource>> =
+        MutableStateFlow(emptyList())
+    val tvSeriesWatchProviders: StateFlow<List<ProviderSource>> =
+        _tvSeriesWatchProviders.asStateFlow()
+
     fun init() {
         apiHelper.getConfig().request { response ->
             response.onSuccess {
@@ -108,6 +118,36 @@ class ConfigDataSource @Inject constructor(
                             }
                         }
                     }
+
+                apiHelper.getAllMoviesWatchProviders(
+                    isoCode = deviceLanguage.languageCode,
+                    region = deviceLanguage.region
+                ).request { response ->
+                    response.onSuccess {
+                        externalScope.launch(defaultDispatcher) {
+                            val watchProviders = data?.results?.sortedBy { provider ->
+                                provider.displayPriority
+                            }
+
+                            _movieWatchProviders.emit(watchProviders ?: emptyList())
+                        }
+                    }
+                }
+
+                apiHelper.getAllTvSeriesWatchProviders(
+                    isoCode = deviceLanguage.languageCode,
+                    region = deviceLanguage.region
+                ).request { response ->
+                    response.onSuccess {
+                        externalScope.launch(defaultDispatcher) {
+                            val watchProviders = data?.results?.sortedBy { provider ->
+                                provider.displayPriority
+                            }
+
+                            _tvSeriesWatchProviders.emit(watchProviders ?: emptyList())
+                        }
+                    }
+                }
             }
         }
     }

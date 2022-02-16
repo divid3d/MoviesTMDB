@@ -236,4 +236,13 @@ class TmdbApiHelperImpl @Inject constructor(
     override fun getTvSeriesExternalIds(tvSeriesId: Int): Call<ExternalIds> =
         tmdbApi.getTvSeriesExternalIds(tvSeriesId)
 
+    override fun getAllMoviesWatchProviders(
+        isoCode: String,
+        region: String
+    ): Call<AllWatchProvidersResponse> = tmdbApi.getAllMoviesWatchProviders(isoCode, region)
+
+    override fun getAllTvSeriesWatchProviders(
+        isoCode: String,
+        region: String
+    ): Call<AllWatchProvidersResponse> = tmdbApi.getAllTvSeriesWatchProviders(isoCode, region)
 }

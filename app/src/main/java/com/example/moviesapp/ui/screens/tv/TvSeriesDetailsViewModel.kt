@@ -188,7 +188,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
     private fun getWatchProviders(tvSeriesId: Int, deviceLanguage: DeviceLanguage) {
         tvSeriesRepository.watchProviders(
-            tvSeriesId = tvSeriesId,
+            tvSeriesId = tvSeriesId
         ).request { response ->
             response.onSuccess {
                 viewModelScope.launch {
