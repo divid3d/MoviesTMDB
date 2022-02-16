@@ -10,8 +10,10 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import com.example.moviesapp.R
 import com.example.moviesapp.ui.theme.White300
 import com.example.moviesapp.ui.theme.spacing
 
@@ -33,12 +35,12 @@ fun FilterEmptyState(
         )
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         Text(
-            text = "Brak wyników",
+            text = stringResource(R.string.filter_empty_info_text),
             style = TextStyle(color = White300)
         )
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         OutlinedButton(onClick = onFilterButtonClicked) {
-            Text(text = "Zmień filtry")
+            Text(text = stringResource(R.string.filter_empty_button_change_filters_label))
         }
     }
 }

@@ -21,6 +21,7 @@ import com.example.moviesapp.ui.components.PresentableSection
 import com.example.moviesapp.ui.components.PresentableTopSection
 import com.example.moviesapp.ui.components.SectionDivider
 import com.example.moviesapp.ui.screens.destinations.BrowseTvSeriesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.DiscoverTvSeriesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -81,7 +82,7 @@ fun TvScreen(
     }
 
     val navigateToDiscoverTvSeries = {
-        //navigator.navigate(DiscoverMoviesScreenDestination)
+        navigator.navigate(DiscoverTvSeriesScreenDestination)
     }
 
     SwipeRefresh(

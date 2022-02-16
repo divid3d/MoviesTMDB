@@ -95,7 +95,7 @@ fun PresentableScoreItem(
                     startAngle = 0f,
                     sweepAngle = 360f,
                     useCenter = false,
-                    style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
+                    style = Stroke(width = strokeWidth.toPx())
                 )
                 drawArc(
                     color = indicatorColor,

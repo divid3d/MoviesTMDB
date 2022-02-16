@@ -119,6 +119,8 @@
     <string name="clear_recent_tv_series_dialog_text">Czy na pewno chcesz wyczyścić ostatnio przeglądane seriale?</string>
 
     <string name="discover_movies_appbar_title">Odkrywaj</string>
+    <string name="discover_tv_series_appbar_title">Odkrywaj</string>
+
     <string name="sort_type_popularity_label">Popularność</string>
     <string name="sort_type_release_date_label">Data</string>
     <string name="sort_type_vote_average_label">Ocena</string>
@@ -142,6 +144,27 @@
     <string name="movie_filter_bottom_sheet_score_info_label">Ustaw zakres ocen</string>
     <string name="movie_filter_bottom_sheet_date_info_label">Ustaw zakres dat wydania</string>
     <string name="movie_filter_bottom_sheet_other_info_label">Dostosuj dodatkowe filtry</string>
+    <string name="movie_filter_bottom_sheet_availability_label">Źródła</string>
+    <string name="movie_filter_bottom_sheet_availability_info_label">Wybierz jedno lub więcej źródeł</string>
+
+    <string name="tv_series_filter_bottom_sheet_genres_section_label">Gatunki</string>
+    <string name="tv_series_filter_bottom_sheet_score_section_label">Średnia ocena</string>
+    <string name="tv_series_filter_bottom_sheet_date_section_label">Data emisji</string>
+    <string name="tv_series_filter_bottom_sheet_other_section_label">Inne</string>
+    <string name="tv_series_filter_bottom_sheet_posters_switch_text">Tylko z plakatem</string>
+    <string name="tv_series_filter_bottom_sheet_scores_switch_text">Tylko z oceną</string>
+    <string name="tv_series_filter_bottom_sheet_overview_switch_text">Tylko z opisem</string>
+    <string name="tv_series_filter_bottom_sheet_clear_button_label">Wyczyść</string>
+    <string name="tv_series_filter_bottom_sheet_save_button_label">Zapisz</string>
+    <string name="tv_series_filter_bottom_sheet_genres_info_label">Wybierz jeden lub więcej gatunków</string>
+    <string name="tv_series_filter_bottom_sheet_score_info_label">Ustaw zakres ocen</string>
+    <string name="tv_series_filter_bottom_sheet_date_info_label">Ustaw zakres dat emisji</string>
+    <string name="tv_series_filter_bottom_sheet_other_info_label">Dostosuj dodatkowe filtry</string>
+    <string name="tv_series_filter_bottom_sheet_availability_label">Źródła</string>
+    <string name="tv_series_filter_bottom_sheet_availability_info_label">Wybierz jedno lub więcej źródeł</string>
+
+    <string name="filter_empty_info_text">Nrak wyników</string>
+    <string name="filter_empty_button_change_filters_label">Edytuj filtry</string>
 
     <string name="person_details_screen_appbar_label">Szczegóły osoby</string>
 

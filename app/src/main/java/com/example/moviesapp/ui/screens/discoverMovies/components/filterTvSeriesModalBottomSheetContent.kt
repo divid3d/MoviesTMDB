@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.moviesapp.R
-import com.example.moviesapp.model.FilterState
+import com.example.moviesapp.model.MovieFilterState
 import com.example.moviesapp.ui.components.ProvidersSourceList
 import com.example.moviesapp.ui.components.SectionDivider
 import com.example.moviesapp.ui.theme.spacing
@@ -24,9 +24,9 @@ import com.example.moviesapp.ui.theme.spacing
 fun FilterModalBottomSheetContent(
     modifier: Modifier = Modifier,
     sheetState: ModalBottomSheetState,
-    filterState: FilterState,
+    filterState: MovieFilterState,
     onCloseClick: () -> Unit = {},
-    onSaveFilterClick: (FilterState) -> Unit = {}
+    onSaveFilterClick: (MovieFilterState) -> Unit = {}
 ) {
     var currentFilterState by remember(filterState, sheetState.isVisible) {
         mutableStateOf(filterState)
@@ -127,8 +127,8 @@ fun FilterModalBottomSheetContent(
 
             ExpandableSection(
                 modifier = Modifier.fillMaxWidth(),
-                label = "Dostępność",
-                infoText = "Wybierz jedno lub więcej źródeł",
+                label = stringResource(R.string.movie_filter_bottom_sheet_availability_label),
+                infoText = stringResource(R.string.movie_filter_bottom_sheet_availability_info_label),
                 expanded = watchProvidersSectionExpanded,
                 onClick = { watchProvidersSectionExpanded = !watchProvidersSectionExpanded },
                 trailing = {

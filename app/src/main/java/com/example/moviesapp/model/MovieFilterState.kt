@@ -1,8 +1,6 @@
 package com.example.moviesapp.model
 
-import java.util.*
-
-data class FilterState(
+data class MovieFilterState(
     val selectedGenres: List<Genre> = emptyList(),
     val availableGenres: List<Genre> = emptyList(),
     val selectedWatchProviders: List<ProviderSource> = emptyList(),
@@ -13,7 +11,7 @@ data class FilterState(
     val voteRange: VoteRange = VoteRange(),
     val releaseDateRange: DateRange = DateRange()
 ) {
-    fun clear(): FilterState = copy(
+    fun clear(): MovieFilterState = copy(
         selectedGenres = emptyList(),
         selectedWatchProviders = emptyList(),
         showOnlyWithPoster = false,
@@ -23,14 +21,3 @@ data class FilterState(
         releaseDateRange = DateRange()
     )
 }
-
-
-data class VoteRange(
-    val default: ClosedFloatingPointRange<Float> = 0f..10f,
-    val current: ClosedFloatingPointRange<Float> = default
-)
-
-data class DateRange(
-    val from: Date? = null,
-    val to: Date? = null
-)
