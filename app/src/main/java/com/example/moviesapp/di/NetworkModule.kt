@@ -8,7 +8,6 @@ import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.api.TmdbApiHelperImpl
 import com.example.moviesapp.other.ApiParams
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -76,7 +75,7 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideMoshi(): Moshi = Moshi.Builder()
-        .add(Date::class.java, Rfc3339DateJsonAdapter().nullSafe())
+        .add(Date::class.java, DateJsonAdapter().nullSafe())
         .build()
 
     @Singleton
