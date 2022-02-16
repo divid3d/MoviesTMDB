@@ -18,7 +18,7 @@ class TmdbApiHelperImpl @Inject constructor(
         watchProvidersParam: WatchProvidersParam,
         voteRange: ClosedFloatingPointRange<Float>,
         fromReleaseDate: DateParam?,
-        toReleaseDate: DateParam?,
+        toReleaseDate: DateParam?
     ): MoviesResponse =
         tmdbApi.discoverMovies(
             page,
@@ -31,6 +31,30 @@ class TmdbApiHelperImpl @Inject constructor(
             voteAverageMax = voteRange.endInclusive,
             fromReleaseDate = fromReleaseDate,
             toReleaseDate = toReleaseDate
+        )
+
+    override suspend fun discoverTvSeries(
+        page: Int,
+        isoCode: String,
+        region: String,
+        sortTypeParam: SortTypeParam,
+        genresParam: GenresParam,
+        watchProvidersParam: WatchProvidersParam,
+        voteRange: ClosedFloatingPointRange<Float>,
+        fromAirDate: DateParam?,
+        toAirDate: DateParam?
+    ): TvSeriesResponse =
+        tmdbApi.discoverTvSeries(
+            page,
+            isoCode,
+            region,
+            sortTypeParam,
+            genresParam,
+            watchProvidersParam,
+            voteAverageMin = voteRange.start,
+            voteAverageMax = voteRange.endInclusive,
+            fromAirDate = fromAirDate,
+            toAirDate = toAirDate
         )
 
     override suspend fun getPopularMovies(

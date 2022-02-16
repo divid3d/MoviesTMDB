@@ -11,7 +11,7 @@ data class FilterState(
     val showOnlyWithScore: Boolean = false,
     val showOnlyWithOverview: Boolean = false,
     val voteRange: VoteRange = VoteRange(),
-    val releaseDateRange: ReleaseDateRange = ReleaseDateRange()
+    val releaseDateRange: DateRange = DateRange()
 ) {
     fun clear(): FilterState = copy(
         selectedGenres = emptyList(),
@@ -20,7 +20,7 @@ data class FilterState(
         showOnlyWithScore = false,
         showOnlyWithOverview = false,
         voteRange = VoteRange(),
-        releaseDateRange = ReleaseDateRange()
+        releaseDateRange = DateRange()
     )
 }
 
@@ -30,7 +30,7 @@ data class VoteRange(
     val current: ClosedFloatingPointRange<Float> = default
 )
 
-data class ReleaseDateRange(
+data class DateRange(
     val from: Date? = null,
     val to: Date? = null
 )

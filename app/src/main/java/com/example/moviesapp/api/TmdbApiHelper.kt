@@ -19,6 +19,18 @@ interface TmdbApiHelper {
         toReleaseDate: DateParam? = null
     ): MoviesResponse
 
+    suspend fun discoverTvSeries(
+        page: Int,
+        isoCode: String = DeviceLanguage.default.languageCode,
+        region: String = DeviceLanguage.default.region,
+        sortTypeParam: SortTypeParam = SortTypeParam.PopularityDesc,
+        genresParam: GenresParam = GenresParam(genres = emptyList()),
+        watchProvidersParam: WatchProvidersParam = WatchProvidersParam(watchProviders = emptyList()),
+        voteRange: ClosedFloatingPointRange<Float> = 0f..10f,
+        fromAirDate: DateParam? = null,
+        toAirDate: DateParam? = null
+    ): TvSeriesResponse
+
     suspend fun getPopularMovies(
         page: Int,
         isoCode: String = DeviceLanguage.default.languageCode,

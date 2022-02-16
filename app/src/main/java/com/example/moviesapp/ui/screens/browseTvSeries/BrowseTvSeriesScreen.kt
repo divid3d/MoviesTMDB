@@ -44,7 +44,6 @@ fun BrowseTvSeriesScreen(
     val appbarTitle = when (tvSeriesType) {
         TvSeriesType.TopRated -> stringResource(R.string.all_tv_series_top_rated_label)
         TvSeriesType.AiringToday -> stringResource(R.string.all_tv_series_airing_today_label)
-        TvSeriesType.Popular -> stringResource(R.string.all_tv_series_popular_label)
         TvSeriesType.Favourite -> stringResource(
             R.string.all_tv_series_favourites_label,
             favouriteTvSeriesCount

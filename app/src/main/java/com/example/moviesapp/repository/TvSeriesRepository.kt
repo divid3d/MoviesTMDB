@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.moviesapp.api.TmdbApiHelper
+import com.example.moviesapp.data.DiscoverTvSeriesDataSource
 import com.example.moviesapp.data.ReviewsDataSource
 import com.example.moviesapp.data.TvSeriesDetailsResponseDataSource
 import com.example.moviesapp.data.TvSeriesResponseDataSource
@@ -23,6 +24,38 @@ class TvSeriesRepository @Inject constructor(
     private val apiHelper: TmdbApiHelper,
     private val crashlytics: FirebaseCrashlytics
 ) {
+    fun discoverTvSeries(
+        deviceLanguage: DeviceLanguage = DeviceLanguage.default,
+        sortType: SortType = SortType.Popularity,
+        sortOrder: SortOrder = SortOrder.Desc,
+        genresParam: GenresParam = GenresParam(genres = emptyList()),
+        watchProvidersParam: WatchProvidersParam = WatchProvidersParam(watchProviders = emptyList()),
+        voteRange: ClosedFloatingPointRange<Float> = 0f..10f,
+        onlyWithPosters: Boolean = false,
+        onlyWithScore: Boolean = false,
+        onlyWithOverview: Boolean = false,
+        airDateRange: DateRange = DateRange()
+    ): Flow<PagingData<TvSeries>> =
+        Pager(
+            PagingConfig(pageSize = 20)
+        ) {
+            DiscoverTvSeriesDataSource(
+                apiHelper = apiHelper,
+                language = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
+                sortType = sortType,
+                sortOrder = sortOrder,
+                genresParam = genresParam,
+                watchProvidersParam = watchProvidersParam,
+                voteRange = voteRange,
+                onlyWithPosters = onlyWithPosters,
+                onlyWithScore = onlyWithScore,
+                onlyWithOverview = onlyWithOverview,
+                airDateRange = airDateRange,
+                firebaseCrashlytics = crashlytics
+            )
+        }.flow.flowOn(defaultDispatcher)
+
     fun topRatedTvSeries(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)

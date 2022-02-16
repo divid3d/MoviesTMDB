@@ -34,7 +34,7 @@ class MovieRepository @Inject constructor(
         onlyWithPosters: Boolean = false,
         onlyWithScore: Boolean = false,
         onlyWithOverview: Boolean = false,
-        releaseDateRange: ReleaseDateRange = ReleaseDateRange()
+        releaseDateRange: DateRange = DateRange()
     ): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)

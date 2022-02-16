@@ -43,9 +43,11 @@ class TvSeriesViewModel @Inject constructor(
             }
     }.cachedIn(viewModelScope)
 
-    val popular: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository.popularTvSeries(deviceLanguage = deviceLanguage)
-    }.flattenMerge().cachedIn(viewModelScope)
+    val discover: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
+        tvSeriesRepository
+            .discoverTvSeries(deviceLanguage = deviceLanguage)
+            .cachedIn(viewModelScope)
+    }.flattenMerge()
 
     val topRated: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
         tvSeriesRepository.topRatedTvSeries(deviceLanguage = deviceLanguage)

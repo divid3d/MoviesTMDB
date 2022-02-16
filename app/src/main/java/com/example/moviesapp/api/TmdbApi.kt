@@ -33,6 +33,27 @@ interface TmdbApi {
         toReleaseDate: DateParam?
     ): MoviesResponse
 
+    @GET("discover/tv")
+    suspend fun discoverTvSeries(
+        @Query("page") page: Int,
+        @Query("language") isoCode: String,
+        @Query("region") region: String,
+        @Query("sort_by") type: SortTypeParam,
+        @Query("with_genres") genres: GenresParam,
+        @Query("with_watch_providers") watchProviders: WatchProvidersParam,
+        @Query("watch_region") watchRegion: String = region,
+        @FloatRange(from = 0.0)
+        @Query("vote_average.gte")
+        voteAverageMin: Float,
+        @FloatRange(from = 0.0)
+        @Query("vote_average.lte")
+        voteAverageMax: Float,
+        @Query("first_air_date.gte")
+        fromAirDate: DateParam?,
+        @Query("first_air_date.lte")
+        toAirDate: DateParam?
+    ): TvSeriesResponse
+
     @GET("movie/popular")
     suspend fun getPopularMovies(
         @Query("page") page: Int,

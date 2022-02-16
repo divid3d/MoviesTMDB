@@ -33,7 +33,7 @@ class BrowseTvSeriesViewModel @Inject constructor(
     var tvSeries: Flow<PagingData<Presentable>>? = null
 
     private val tvSeriesType: Flow<TvSeriesType> = savedStateHandle
-        .getLiveData("tvSeriesType", TvSeriesType.Popular.name)
+        .getLiveData("tvSeriesType", TvSeriesType.Trending.name)
         .asFlow().map { value ->
             TvSeriesType.valueOf(value)
         }
@@ -44,10 +44,6 @@ class BrowseTvSeriesViewModel @Inject constructor(
 
     private val airingToday: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
         tvSeriesRepository.airingTodayTvSeries(deviceLanguage = deviceLanguage)
-    }.flattenMerge()
-
-    private val popular: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository.popularTvSeries(deviceLanguage = deviceLanguage)
     }.flattenMerge()
 
     private val trending: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
@@ -69,7 +65,6 @@ class BrowseTvSeriesViewModel @Inject constructor(
                 tvSeries = when (type) {
                     TvSeriesType.TopRated -> topRated
                     TvSeriesType.AiringToday -> airingToday
-                    TvSeriesType.Popular -> popular
                     TvSeriesType.Favourite -> favourites
                     TvSeriesType.RecentlyBrowsed -> recentlyBrowsed
                     TvSeriesType.Trending -> trending

@@ -29,6 +29,7 @@
 
     <string name="now_airing_tv_series">Now airing</string>
     <string name="top_rated_tv_series">Top rated</string>
+    <string name="explore_tv_series">Explore</string>
     <string name="today_airing_tv_series">Today</string>
     <string name="popular_tv_series">Popular</string>
     <string name="favourites_tv_series">Favourites</string>

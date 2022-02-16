@@ -38,9 +38,9 @@ fun TvScreen(
     val density = LocalDensity.current
 
     val topRated = viewModel.topRated.collectAsLazyPagingItems()
+    val discover = viewModel.discover.collectAsLazyPagingItems()
     val onTheAir = viewModel.onTheAir.collectAsLazyPagingItems()
     val trending = viewModel.trending.collectAsLazyPagingItems()
-    val popular = viewModel.popular.collectAsLazyPagingItems()
     val airingToday = viewModel.airingToday.collectAsLazyPagingItems()
     val favourites = viewModel.favourites.collectAsLazyPagingItems()
     val recentlyBrowsed = viewModel.recentlyBrowsed.collectAsLazyPagingItems()
@@ -52,10 +52,10 @@ fun TvScreen(
 
     val isRefreshing by derivedStateOf {
         listOf(
+            discover,
             topRated,
             onTheAir,
             trending,
-            popular,
             airingToday
         ).any { lazyPagingItems -> lazyPagingItems.itemCount > 0 && lazyPagingItems.loadState.refresh is LoadState.Loading }
     }
@@ -64,10 +64,10 @@ fun TvScreen(
 
     val refreshAllPagingData = {
         listOf(
+            discover,
             topRated,
             onTheAir,
             trending,
-            popular,
             airingToday
         ).forEach { lazyPagingItems -> lazyPagingItems.refresh() }
     }
@@ -78,6 +78,10 @@ fun TvScreen(
 
     val navigateToBrowseTvSeries: (TvSeriesType) -> Unit = { type ->
         navigator.navigate(BrowseTvSeriesScreenDestination(type))
+    }
+
+    val navigateToDiscoverTvSeries = {
+        //navigator.navigate(DiscoverMoviesScreenDestination)
     }
 
     SwipeRefresh(
@@ -110,6 +114,22 @@ fun TvScreen(
                 scrollState = scrollState,
                 scrollValueLimit = topSectionScrollLimitValue,
                 onPresentableClick = navigateToTvSeriesDetails
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            PresentableSection(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                title = stringResource(R.string.explore_tv_series),
+                state = discover,
+                onPresentableClick = navigateToTvSeriesDetails,
+                onMoreClick = navigateToDiscoverTvSeries
+            )
+            SectionDivider(
+                modifier = Modifier.padding(
+                    top = MaterialTheme.spacing.medium,
+                    bottom = MaterialTheme.spacing.small
+                )
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             PresentableSection(
@@ -150,21 +170,6 @@ fun TvScreen(
                 state = airingToday,
                 onPresentableClick = navigateToTvSeriesDetails,
                 onMoreClick = { navigateToBrowseTvSeries(TvSeriesType.AiringToday) }
-            )
-            SectionDivider(
-                modifier = Modifier.padding(
-                    top = MaterialTheme.spacing.medium,
-                    bottom = MaterialTheme.spacing.small
-                )
-            )
-            PresentableSection(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                title = stringResource(R.string.popular_tv_series),
-                state = popular,
-                onPresentableClick = navigateToTvSeriesDetails,
-                onMoreClick = { navigateToBrowseTvSeries(TvSeriesType.Popular) }
             )
             if (favourites.isNotEmpty()) {
                 SectionDivider(
