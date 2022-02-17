@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.screens.discoverTvSeries
+package com.example.moviesapp.ui.screens.discover
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
@@ -29,13 +29,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.SortOrder
 import com.example.moviesapp.other.isEmpty
-import com.example.moviesapp.ui.components.AppBar
-import com.example.moviesapp.ui.components.FilterEmptyState
-import com.example.moviesapp.ui.components.FilterFloatingButton
-import com.example.moviesapp.ui.components.PresentableGridSection
-import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
-import com.example.moviesapp.ui.screens.discoverMovies.components.SortTypeDropdownButton
-import com.example.moviesapp.ui.screens.discoverTvSeries.components.FilterTvSeriesModalBottomSheetContent
+import com.example.moviesapp.ui.components.*
+import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.discover.components.FilterMoviesModalBottomSheetContent
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.navigationBarsWithImePadding
@@ -52,8 +48,8 @@ import kotlinx.coroutines.launch
 )
 @Destination
 @Composable
-fun DiscoverTvSeriesScreen(
-    viewModel: DiscoverTvSeriesViewModel = hiltViewModel(),
+fun DiscoverMoviesScreen(
+    viewModel: DiscoverMoviesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
     val movies = viewModel.movies.collectAsLazyPagingItems()
@@ -90,7 +86,7 @@ fun DiscoverTvSeriesScreen(
         scrimColor = Color.Black.copy(0.5f),
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetContent = {
-            FilterTvSeriesModalBottomSheetContent(
+            FilterMoviesModalBottomSheetContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.9f)
@@ -114,7 +110,7 @@ fun DiscoverTvSeriesScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
                 AppBar(
-                    title = stringResource(R.string.discover_tv_series_appbar_title),
+                    title = stringResource(R.string.discover_movies_appbar_title),
                     action = {
                         IconButton(onClick = { navigator.navigateUp() }) {
                             Icon(
@@ -163,9 +159,9 @@ fun DiscoverTvSeriesScreen(
                                 vertical = MaterialTheme.spacing.medium,
                             ),
                             state = movies
-                        ) { tvSeriesId ->
+                        ) { movieId ->
                             navigator.navigate(
-                                TvSeriesDetailsScreenDestination(tvSeriesId)
+                                MovieDetailsScreenDestination(movieId)
                             )
                         }
                     } else {

@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.screens.person
+package com.example.moviesapp.ui.screens.details
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope

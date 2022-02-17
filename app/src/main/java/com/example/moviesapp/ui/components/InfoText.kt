@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.screens.discoverMovies.components
+package com.example.moviesapp.ui.screens.discover.components
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable

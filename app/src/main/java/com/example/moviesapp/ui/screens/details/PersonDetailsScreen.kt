@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.screens.person
+package com.example.moviesapp.ui.screens.details
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
@@ -36,8 +36,8 @@ import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
-import com.example.moviesapp.ui.screens.person.components.CreditsList
-import com.example.moviesapp.ui.screens.person.components.PersonProfileImage
+import com.example.moviesapp.ui.screens.details.components.CreditsList
+import com.example.moviesapp.ui.screens.details.components.PersonProfileImage
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
 import com.ramcosta.composedestinations.annotation.Destination

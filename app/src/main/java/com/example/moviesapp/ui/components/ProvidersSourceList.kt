@@ -32,13 +32,3 @@ fun ProvidersSourceList(
         }
     }
 }
-
-//@Composable
-//private fun ProviderSourceListChip(
-//    modifier: Modifier = Modifier,
-//    selectedProvidersSources: List<ProviderSource>,
-//    availableProvidersSources: List<ProviderSource>,
-//    omProviderSourceSelected: (ProviderSource) -> Unit = {}
-//){
-//
-//}

@@ -24,7 +24,6 @@ import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.PresentableItemState
 import com.example.moviesapp.other.isScrollingTowardsStart
 import com.example.moviesapp.other.items
-import com.example.moviesapp.ui.screens.movies.components.ScrollToTop
 import com.example.moviesapp.ui.theme.sizes
 import com.example.moviesapp.ui.theme.spacing
 import kotlinx.coroutines.launch

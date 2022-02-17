@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.screens.browseTvSeries
+package com.example.moviesapp.ui.screens.browse
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

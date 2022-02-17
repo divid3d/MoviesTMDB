@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.screens.discoverMovies.components
+package com.example.moviesapp.ui.components
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.Image

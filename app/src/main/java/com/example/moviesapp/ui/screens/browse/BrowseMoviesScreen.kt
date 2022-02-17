@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.screens.browseMovies
+package com.example.moviesapp.ui.screens.browse
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn

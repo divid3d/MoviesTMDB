@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.screens.movies
+package com.example.moviesapp.ui.screens.details
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
@@ -30,9 +30,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MediaType
-import com.example.moviesapp.model.MovieRelationInfo
 import com.example.moviesapp.model.RelationType
-import com.example.moviesapp.other.*
+import com.example.moviesapp.model.SeasonInfo
+import com.example.moviesapp.model.TvSeriesRelationInfo
+import com.example.moviesapp.other.openExternalId
+import com.example.moviesapp.other.yearRangeString
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.*
@@ -44,37 +46,28 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun MovieDetailsScreen(
-    viewModel: MoviesDetailsViewModel = hiltViewModel(),
+fun TvSeriesDetailsScreen(
+    viewModel: TvSeriesDetailsViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
-    movieId: Int,
-    startRoute: String = MoviesScreenDestination.route
+    tvSeriesId: Int,
+    startRoute: String = TvScreenDestination.route
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
 
-    val movieDetails by viewModel.movieDetails.collectAsState()
+    val tvSeriesDetails by viewModel.tvSeriesDetails.collectAsState()
     val isFavourite by viewModel.isFavourite.collectAsState()
 
-    val watchAtTime by viewModel.watchAtTime.collectAsState()
-
-    val credits by viewModel.credits.collectAsState()
-    val watchProviders by viewModel.watchProviders.collectAsState()
+    val similar = viewModel.similarTvSeries?.collectAsLazyPagingItems()
+    val recommendations = viewModel.tvSeriesRecommendations?.collectAsLazyPagingItems()
     val backdrops by viewModel.backdrops.collectAsState()
-    val movieCollection by viewModel.movieCollection.collectAsState()
+    val nextEpisodeDaysRemaining by viewModel.nextEpisodeDaysRemaining.collectAsState()
+    val watchProviders by viewModel.watchProviders.collectAsState()
     val externalIds by viewModel.externalIds.collectAsState()
-
-    val similarMoviesState = viewModel.similarMoviesPagingDataFlow?.collectAsLazyPagingItems()
-    val moviesRecommendationState =
-        viewModel.moviesRecommendationPagingDataFlow?.collectAsLazyPagingItems()
     val hasReviews by viewModel.hasReviews.collectAsState()
 
     val otherOriginalTitle: Boolean by derivedStateOf {
-        movieDetails?.run { originalTitle.isNotEmpty() && title != originalTitle } ?: false
-    }
-
-    val watchAtTimeString = watchAtTime?.let { time ->
-        stringResource(R.string.movie_details_watch_at, time.timeString())
+        tvSeriesDetails?.run { !originalName.isNullOrEmpty() && title != originalName } ?: false
     }
 
     val scrollState = rememberScrollState()
@@ -119,78 +112,90 @@ fun MovieDetailsScreen(
                     .onGloballyPositioned { coordinates ->
                         topSectionHeight = coordinates.size.height.toFloat()
                     },
-                presentable = movieDetails,
+                presentable = tvSeriesDetails,
                 backdrops = backdrops,
                 scrollState = scrollState,
                 scrollValueLimit = topSectionScrollLimitValue
             ) {
-                movieDetails?.let { details ->
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                    ) {
+                Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
+                    tvSeriesDetails?.let { details ->
                         LabeledText(
-                            label = stringResource(R.string.movie_details_status),
+                            label = stringResource(R.string.tv_series_details_type),
+                            text = stringResource(details.type.getLabel())
+                        )
+
+                        LabeledText(
+                            label = stringResource(R.string.tv_series_details_status),
                             text = stringResource(details.status.getLabel())
                         )
 
-                        if (details.budget > 0) {
-                            LabeledText(
-                                label = stringResource(R.string.movie_details_budget),
-                                text = details.budget.formattedMoney()
-                            )
-                        }
-
-                        if (details.revenue > 0) {
-                            LabeledText(
-                                label = stringResource(R.string.movie_details_boxoffice),
-                                text = details.revenue.formattedMoney()
-                            )
-                        }
+                        LabeledText(
+                            label = stringResource(R.string.tv_series_details_in_production),
+                            text = stringResource(if (details.inProduction) R.string.yes else R.string.no)
+                        )
                     }
+                }
 
-                    Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(1f))
 
-                    externalIds?.let { ids ->
-                        ExternalIdsSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            externalIds = ids
-                        ) { externalId ->
-                            openExternalId(
-                                context = context,
-                                externalId = externalId
-                            )
-                        }
+                externalIds?.let { ids ->
+                    ExternalIdsSection(
+                        modifier = Modifier.fillMaxWidth(),
+                        externalIds = ids
+                    ) { externalId ->
+                        openExternalId(
+                            context = context,
+                            externalId = externalId
+                        )
                     }
-
                 }
             }
 
-            movieDetails?.let { details ->
+            tvSeriesDetails?.let { details ->
                 Column(
-                    modifier = Modifier
-                        .padding(horizontal = MaterialTheme.spacing.medium)
-                        .animateContentSize(),
+                    modifier = Modifier.animateContentSize(),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                 ) {
                     Column {
                         Text(
-                            text = details.title,
+                            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
+                            text = details.name,
                             style = TextStyle(
                                 color = Color.White,
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold
                             )
                         )
-                        if (otherOriginalTitle) {
-                            Text(text = details.originalTitle)
+                        details.originalName?.let { name ->
+                            if (otherOriginalTitle) {
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = MaterialTheme.spacing.medium),
+                                    text = name
+                                )
+                            }
                         }
                         AdditionalInfoText(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = MaterialTheme.spacing.medium),
                             infoTexts = details.run {
                                 listOfNotNull(
-                                    releaseDate?.yearString(),
-                                    runtime?.formattedRuntime(),
-                                    watchAtTimeString
+                                    yearRangeString(
+                                        from = firstAirDate,
+                                        to = lastAirDate
+                                    ),
+                                    nextEpisodeDaysRemaining?.let { days ->
+                                        when (days) {
+                                            0L -> stringResource(R.string.next_episode_today_text)
+                                            1L -> stringResource(R.string.next_episode_tomorrow_text)
+                                            else -> stringResource(
+                                                R.string.next_episode_days_text,
+                                                days
+                                            )
+                                        }
+                                    }
                                 )
                             }
                         )
@@ -198,14 +203,16 @@ fun MovieDetailsScreen(
 
                     if (details.genres.isNotEmpty()) {
                         GenresSection(
+                            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
                             genres = details.genres
                         )
                     }
 
                     Column {
-                        details.tagline?.let { tagline ->
+                        details.tagline.let { tagline ->
                             if (tagline.isNotEmpty()) {
                                 Text(
+                                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
                                     text = "\"$tagline\"",
                                     style = TextStyle(fontStyle = FontStyle.Italic)
                                 )
@@ -213,15 +220,17 @@ fun MovieDetailsScreen(
                         }
 
                         ExpandableText(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = MaterialTheme.spacing.medium),
                             text = details.overview
                         )
                     }
-                }
 
-                SectionDivider(
-                    modifier = Modifier.padding(top = MaterialTheme.spacing.large)
-                )
+                    SectionDivider(
+                        modifier = Modifier.padding(top = MaterialTheme.spacing.large)
+                    )
+                }
             }
 
             watchProviders?.let { providers ->
@@ -235,104 +244,77 @@ fun MovieDetailsScreen(
                 )
             }
 
-            credits?.cast?.let { castMembers ->
-                if (castMembers.isNotEmpty()) {
+            tvSeriesDetails?.creators?.let { creators ->
+                if (creators.isNotEmpty()) {
                     MemberSection(
                         modifier = Modifier
-                            .padding(top = MaterialTheme.spacing.small)
                             .fillMaxWidth()
+                            .padding(vertical = MaterialTheme.spacing.small)
                             .animateContentSize(),
-                        title = "Obsada",
-                        members = castMembers,
+                        title = stringResource(R.string.tv_series_details_creators),
+                        members = creators,
                         contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                    ) { personId ->
-                        navigator.navigate(
-                            PersonDetailsScreenDestination(
-                                personId = personId,
-                                startRoute = startRoute
-                            )
-                        )
+                    ) { creatorId ->
+                        navigator.navigate(PersonDetailsScreenDestination(creatorId))
                     }
-
-                    SectionDivider(
-                        modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
-                    )
                 }
             }
 
-            credits?.crew?.let { crewMembers ->
-                if (crewMembers.isNotEmpty()) {
-                    MemberSection(
-                        modifier = Modifier
-                            .padding(top = MaterialTheme.spacing.small)
-                            .fillMaxWidth()
-                            .animateContentSize(),
-                        title = "Ekipa filmowa",
-                        members = crewMembers,
-                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                    ) { personId ->
-                        navigator.navigate(
-                            PersonDetailsScreenDestination(
-                                personId = personId,
-                                startRoute = startRoute
-                            )
-                        )
-                    }
-
-                    SectionDivider(
-                        modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
-                    )
-                }
-            }
-
-            movieCollection?.let { collection ->
-                if (collection.parts.isNotEmpty()) {
-                    PresentableListSection(
+            tvSeriesDetails?.seasons?.let { seasons ->
+                if (seasons.isNotEmpty()) {
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.colors.surface)
                             .padding(vertical = MaterialTheme.spacing.small)
-                            .animateContentSize(),
-                        title = collection.name,
-                        list = collection.parts.sortedBy { part -> part.releaseDate },
-                        selectedId = movieId
-                    ) { id ->
-                        if (movieId != id) {
-                            navigator.navigate(
-                                MovieDetailsScreenDestination(
-                                    movieId = id,
-                                    startRoute = startRoute
+                            .animateContentSize()
+                    ) {
+                        SeasonsSection(
+                            title = stringResource(R.string.tv_series_details_seasons),
+                            seasons = seasons
+                        ) { seasonNumber ->
+                            tvSeriesDetails?.id?.let { id ->
+                                val seasonInfo = SeasonInfo(
+                                    tvSeriesId = id,
+                                    seasonNumber = seasonNumber
                                 )
-                            )
+
+                                navigator.navigate(
+                                    SeasonDetailsScreenDestination(
+                                        seasonInfo = seasonInfo,
+                                        startRoute = startRoute
+                                    )
+                                )
+                            }
                         }
                     }
+
+                    SectionDivider()
                 }
             }
 
-            similarMoviesState?.let { lazyPagingItems ->
+            similar?.let { lazyPagingItems ->
                 PresentableSection(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .padding(top = MaterialTheme.spacing.medium)
+                        .fillMaxWidth()
                         .animateContentSize(),
-                    title = stringResource(R.string.movie_details_similar),
+                    title = stringResource(R.string.tv_series_details_similar),
                     state = lazyPagingItems,
                     onMoreClick = {
-                        val movieRelationInfo = MovieRelationInfo(
-                            movieId = movieId,
+                        val tvSeriesRelationInfo = TvSeriesRelationInfo(
+                            tvSeriesId = tvSeriesId,
                             type = RelationType.Similar
                         )
 
                         navigator.navigate(
-                            RelatedMoviesDestination(
-                                movieRelationInfo = movieRelationInfo
-                            )
+                            RelatedTvSeriesDestination(tvSeriesRelationInfo)
                         )
                     }
-                ) { movieId ->
+                ) { tvSeriesId ->
                     navigator.navigate(
-                        MovieDetailsScreenDestination(
-                            movieId = movieId,
+                        TvSeriesDetailsScreenDestination(
+                            tvSeriesId = tvSeriesId,
                             startRoute = startRoute
                         )
                     )
@@ -343,30 +325,28 @@ fun MovieDetailsScreen(
                 )
             }
 
-            moviesRecommendationState?.let { lazyPagingItems ->
+            recommendations?.let { lazyPagingItems ->
                 PresentableSection(
                     modifier = Modifier
+                        .padding(top = MaterialTheme.spacing.medium)
                         .fillMaxWidth()
-                        .padding(top = MaterialTheme.spacing.small)
                         .animateContentSize(),
-                    title = stringResource(R.string.movie_details_recommendations),
+                    title = stringResource(R.string.tv_series_details_recommendations),
                     state = lazyPagingItems,
                     onMoreClick = {
-                        val movieRelationInfo = MovieRelationInfo(
-                            movieId = movieId,
+                        val tvSeriesRelationInfo = TvSeriesRelationInfo(
+                            tvSeriesId = tvSeriesId,
                             type = RelationType.Recommended
                         )
 
                         navigator.navigate(
-                            RelatedMoviesDestination(
-                                movieRelationInfo = movieRelationInfo
-                            )
+                            RelatedTvSeriesDestination(tvSeriesRelationInfo)
                         )
                     }
-                ) { movieId ->
+                ) { tvSeriesId ->
                     navigator.navigate(
-                        MovieDetailsScreenDestination(
-                            movieId = movieId,
+                        TvSeriesDetailsScreenDestination(
+                            tvSeriesId = tvSeriesId,
                             startRoute = startRoute
                         )
                     )
@@ -381,8 +361,8 @@ fun MovieDetailsScreen(
 
                     ReviewSection(modifier = Modifier.fillMaxWidth()) {
                         val args = ReviewsScreenNavArgs(
-                            mediaId = movieId,
-                            type = MediaType.Movie
+                            mediaId = tvSeriesId,
+                            type = MediaType.Tv
                         )
 
                         navigator.navigate(
@@ -398,7 +378,7 @@ fun MovieDetailsScreen(
         }
         AppBar(
             modifier = Modifier.align(Alignment.TopCenter),
-            title = stringResource(R.string.movie_details_label),
+            title = stringResource(R.string.tv_series_details_label),
             backgroundColor = Color.Black.copy(0.7f),
             scrollState = scrollState,
             transparentScrollValueLimit = topSectionScrollLimitValue,
@@ -416,7 +396,7 @@ fun MovieDetailsScreen(
                     LikeButton(
                         isFavourite = isFavourite,
                         onClick = {
-                            movieDetails?.let { details ->
+                            tvSeriesDetails?.let { details ->
                                 if (isFavourite) {
                                     viewModel.onUnlikeClick(details)
                                 } else {

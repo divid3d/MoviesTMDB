@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.screens.discoverMovies.components
+package com.example.moviesapp.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.moviesapp.ui.screens.discover.components.InfoText
 import com.example.moviesapp.ui.theme.spacing
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.screens.discoverMovies.components
+package com.example.moviesapp.ui.screens.discover.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -15,13 +15,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MovieFilterState
-import com.example.moviesapp.ui.components.ProvidersSourceList
-import com.example.moviesapp.ui.components.SectionDivider
+import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.theme.spacing
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FilterModalBottomSheetContent(
+fun FilterMoviesModalBottomSheetContent(
     modifier: Modifier = Modifier,
     sheetState: ModalBottomSheetState,
     filterState: MovieFilterState,

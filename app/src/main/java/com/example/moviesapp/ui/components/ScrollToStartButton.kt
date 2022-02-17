@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.screens.movies.components
+package com.example.moviesapp.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
