@@ -56,8 +56,8 @@ fun PresentableGridSection(
 
     Box(modifier = modifier) {
         LazyVerticalGrid(
-            state = gridState,
             modifier = Modifier.fillMaxSize(),
+            state = gridState,
             contentPadding = contentPadding,
             cells = GridCells.Adaptive(MaterialTheme.sizes.presentableItemSmall.width),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
@@ -67,7 +67,6 @@ fun PresentableGridSection(
                 presentable?.let {
                     PresentableItem(
                         presentableState = PresentableItemState.Result(it),
-                        showScore = false,
                         onClick = { onPresentableClick(it.id) }
                     )
                 }

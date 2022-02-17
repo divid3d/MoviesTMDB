@@ -12,7 +12,7 @@ data class Season(
 
     val name: String,
 
-    override val overview: String,
+    val overview: String,
 
     @Json(name = "episode_count")
     val episodeCount: Int,
@@ -23,18 +23,6 @@ data class Season(
     @Json(name = "poster_path")
     override val posterPath: String?
 ) : Presentable {
-    override val adult: Boolean?
-        get() = null
-
     override val title: String
         get() = name
-
-    override val backdropPath: String?
-        get() = null
-
-    override val voteAverage: Float
-        get() = 0f
-
-    override val voteCount: Int
-        get() = 0
 }

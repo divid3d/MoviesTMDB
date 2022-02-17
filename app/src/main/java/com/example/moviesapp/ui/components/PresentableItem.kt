@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.sp
 import coil.size.OriginalSize
 import coil.size.Scale
 import com.example.moviesapp.R
+import com.example.moviesapp.model.DetailPresentable
+import com.example.moviesapp.model.DetailPresentableItemState
 import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.PresentableItemState
 import com.example.moviesapp.other.ImageUrlParser
@@ -41,8 +43,6 @@ fun PresentableItem(
     presentableState: PresentableItemState,
     selected: Boolean = false,
     showTitle: Boolean = true,
-    showScore: Boolean = false,
-    showAdult: Boolean = false,
     transformations: GraphicsLayerScope.() -> Unit = {},
     onClick: (() -> Unit)? = null
 ) {
@@ -72,6 +72,54 @@ fun PresentableItem(
             }
             is PresentableItemState.Result -> {
                 ResultPresentableItem(
+                    modifier = Modifier.fillMaxSize(),
+                    presentable = presentableState.presentable,
+                    showTitle = showTitle,
+                    onClick = onClick
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun DetailPresentableItem(
+    modifier: Modifier = Modifier,
+    size: Size = MaterialTheme.sizes.presentableItemSmall,
+    presentableState: DetailPresentableItemState,
+    selected: Boolean = false,
+    showTitle: Boolean = true,
+    showScore: Boolean = false,
+    showAdult: Boolean = false,
+    transformations: GraphicsLayerScope.() -> Unit = {},
+    onClick: (() -> Unit)? = null
+) {
+    Card(
+        modifier = modifier
+            .width(size.width)
+            .height(size.height)
+            .graphicsLayer {
+                transformations()
+            },
+        shape = MaterialTheme.shapes.medium,
+        border = if (selected) BorderStroke(
+            width = 2.dp,
+            color = MaterialTheme.colors.primary
+        ) else null
+    ) {
+        when (presentableState) {
+            is DetailPresentableItemState.Loading -> {
+                LoadingPresentableItem(
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            is DetailPresentableItemState.Error -> {
+                ErrorPresentableItem(
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            is DetailPresentableItemState.Result -> {
+                ResultDetailPresentableItem(
                     modifier = Modifier.fillMaxSize(),
                     presentable = presentableState.presentable,
                     showScore = showScore,
@@ -138,9 +186,9 @@ fun LoadingPresentableItem(
 }
 
 @Composable
-fun ResultPresentableItem(
+fun ResultDetailPresentableItem(
     modifier: Modifier = Modifier,
-    presentable: Presentable,
+    presentable: DetailPresentable,
     showScore: Boolean = false,
     showTitle: Boolean = true,
     showAdult: Boolean = false,
@@ -218,5 +266,62 @@ fun ResultPresentableItem(
             )
         }
     }
+}
 
+@Composable
+fun ResultPresentableItem(
+    modifier: Modifier = Modifier,
+    presentable: Presentable,
+    showTitle: Boolean = true,
+    onClick: (() -> Unit)? = null
+) {
+    val hasPoster by derivedStateOf {
+        presentable.posterPath != null
+    }
+
+    Box(modifier = modifier
+        .clickable(
+            enabled = onClick != null,
+            onClick = { onClick?.invoke() }
+        )
+    ) {
+        if (hasPoster) {
+            TmdbImage(
+                modifier = Modifier.matchParentSize(),
+                imagePath = presentable.posterPath,
+                imageType = ImageUrlParser.ImageType.Poster
+            ) {
+                size(OriginalSize)
+                scale(Scale.FILL)
+                crossfade(true)
+            }
+        } else {
+            NoPhotoPresentableItem(
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
+        if (showTitle) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .background(Black500)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(MaterialTheme.spacing.extraSmall),
+                    text = presentable.title,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    style = TextStyle(
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 12.sp
+                    )
+                )
+            }
+        }
+    }
 }

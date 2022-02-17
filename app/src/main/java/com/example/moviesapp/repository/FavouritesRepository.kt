@@ -30,13 +30,9 @@ class FavouritesRepository @Inject constructor(
             val favouriteMovie = movieDetails.run {
                 MovieFavourite(
                     id = id,
-                    backdropPath = backdropPath,
                     posterPath = posterPath,
                     title = title,
                     originalTitle = originalTitle,
-                    overview = overview,
-                    voteAverage = voteAverage,
-                    voteCount = voteCount,
                     addedDate = Date()
                 )
             }
@@ -50,12 +46,8 @@ class FavouritesRepository @Inject constructor(
             val favouriteTvSeries = tvSeriesDetails.run {
                 TvSeriesFavourite(
                     id = id,
-                    backdropPath = backdropPath,
                     posterPath = posterPath,
                     name = name,
-                    overview = overview,
-                    voteAverage = voteAverage,
-                    voteCount = voteCount,
                     addedDate = Date()
                 )
             }

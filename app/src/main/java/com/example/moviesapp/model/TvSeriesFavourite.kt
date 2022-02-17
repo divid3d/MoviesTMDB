@@ -10,27 +10,14 @@ data class TvSeriesFavourite(
     @PrimaryKey
     override val id: Int,
 
-    @ColumnInfo(name = "backdrop_path")
-    override val backdropPath: String?,
-
     @ColumnInfo(name = "poster_path")
     override val posterPath: String?,
 
     val name: String,
 
-    override val overview: String,
-
-    @ColumnInfo(name = "vote_average")
-    override val voteAverage: Float,
-
-    @ColumnInfo(name = "vote_count")
-    override val voteCount: Int,
-
     @ColumnInfo(name = "added_date")
     val addedDate: Date?
 ) : Presentable {
-    override val adult: Boolean?
-        get() = null
 
     override val title: String
         get() = name

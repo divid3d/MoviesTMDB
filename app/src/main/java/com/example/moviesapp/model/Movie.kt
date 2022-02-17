@@ -41,4 +41,4 @@ data class Movie(
 
     @Json(name = "vote_average")
     override val voteAverage: Float
-) : Presentable
+) : DetailPresentable

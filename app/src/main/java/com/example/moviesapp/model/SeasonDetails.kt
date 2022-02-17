@@ -22,12 +22,10 @@ data class SeasonDetails(
 
     @Json(name = "poster_path")
     override val posterPath: String?
-) : Presentable {
+) : DetailPresentable {
+
     override val adult: Boolean?
         get() = null
-
-    override val title: String
-        get() = name
 
     override val backdropPath: String?
         get() = null
@@ -37,4 +35,7 @@ data class SeasonDetails(
 
     override val voteCount: Int
         get() = 0
+
+    override val title: String
+        get() = name
 }

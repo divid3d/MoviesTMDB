@@ -53,7 +53,6 @@ fun PresentableListSection(
                     PresentableItem(
                         presentableState = PresentableItemState.Result(presentable),
                         selected = selectedId == presentable.id,
-                        showScore = false,
                         onClick = { onPresentableClick(presentable.id) }
                     )
                 }

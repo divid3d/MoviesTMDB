@@ -2,10 +2,13 @@ package com.example.moviesapp.model
 
 interface Presentable {
     val id: Int
-    val adult: Boolean?
     val title: String
-    val overview: String?
     val posterPath: String?
+}
+
+interface DetailPresentable : Presentable {
+    val adult: Boolean?
+    val overview: String?
     val backdropPath: String?
     val voteAverage: Float
     val voteCount: Int

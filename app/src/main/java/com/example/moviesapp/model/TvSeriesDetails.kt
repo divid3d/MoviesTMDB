@@ -83,7 +83,7 @@ data class TvSeriesDetails(
 
     @Json(name = "vote_count")
     override val voteCount: Int
-) : Presentable {
+) : DetailPresentable {
     override val adult: Boolean?
         get() = null
 

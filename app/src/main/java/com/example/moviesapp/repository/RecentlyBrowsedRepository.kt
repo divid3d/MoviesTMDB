@@ -37,7 +37,6 @@ class RecentlyBrowsedRepository @Inject constructor(
                     id = id,
                     posterPath = posterPath,
                     title = title,
-                    backdropPath = backdropPath,
                     addedDate = Date()
                 )
             }
@@ -74,7 +73,6 @@ class RecentlyBrowsedRepository @Inject constructor(
                     id = id,
                     posterPath = posterPath,
                     name = title,
-                    backdropPath = backdropPath,
                     addedDate = Date()
                 )
             }

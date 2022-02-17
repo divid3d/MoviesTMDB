@@ -10,9 +10,6 @@ data class MovieFavourite(
     @PrimaryKey
     override val id: Int,
 
-    @ColumnInfo(name = "backdrop_path")
-    override val backdropPath: String?,
-
     @ColumnInfo(name = "poster_path")
     override val posterPath: String?,
 
@@ -21,17 +18,6 @@ data class MovieFavourite(
     @ColumnInfo(name = "original_title")
     val originalTitle: String,
 
-    override val overview: String,
-
-    @ColumnInfo(name = "vote_average")
-    override val voteAverage: Float,
-
-    @ColumnInfo(name = "vote_count")
-    override val voteCount: Int,
-
     @ColumnInfo(name = "added_date")
     val addedDate: Date?
-) : Presentable {
-    override val adult: Boolean?
-        get() = null
-}
+) : Presentable

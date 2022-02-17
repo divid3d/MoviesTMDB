@@ -67,5 +67,5 @@ data class MovieDetails(
 
     @Json(name = "vote_count")
     override val voteCount: Int
-) : Presentable
+) : DetailPresentable
 

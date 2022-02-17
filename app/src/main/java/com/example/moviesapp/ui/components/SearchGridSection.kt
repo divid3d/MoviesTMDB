@@ -67,7 +67,6 @@ fun SearchGridSection(
                 presentable?.let {
                     PresentableItem(
                         presentableState = PresentableItemState.Result(it),
-                        showScore = false,
                         onClick = { onSearchResultClick(it.id, it.mediaType) }
                     )
                 }

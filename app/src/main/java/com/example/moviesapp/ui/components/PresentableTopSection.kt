@@ -33,8 +33,8 @@ import androidx.palette.graphics.Palette
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.transform.BlurTransformation
-import com.example.moviesapp.model.Presentable
-import com.example.moviesapp.model.PresentableItemState
+import com.example.moviesapp.model.DetailPresentable
+import com.example.moviesapp.model.DetailPresentableItemState
 import com.example.moviesapp.other.BottomRoundedArcShape
 import com.example.moviesapp.other.ImageUrlParser
 import com.example.moviesapp.other.getMaxSizeInt
@@ -53,7 +53,7 @@ import kotlin.math.absoluteValue
 fun PresentableTopSection(
     modifier: Modifier = Modifier,
     title: String,
-    state: LazyPagingItems<out Presentable>,
+    state: LazyPagingItems<out DetailPresentable>,
     scrollState: ScrollState? = null,
     scrollValueLimit: Float? = null,
     onPresentableClick: (Int) -> Unit = {}
@@ -206,9 +206,9 @@ fun PresentableTopSection(
                         .padding(MaterialTheme.spacing.medium)
                 ) {
                     val presentable = state[page]
-                    val presentableItemState =
-                        presentable?.let { PresentableItemState.Result(it) }
-                            ?: PresentableItemState.Loading
+                    val presentableItemState = presentable?.let {
+                        DetailPresentableItemState.Result(it)
+                    } ?: DetailPresentableItemState.Loading
 
                     PresentableTopSectionItem(
                         modifier = Modifier.fillMaxWidth(),
@@ -260,7 +260,7 @@ fun PresentableTopSection(
 @Composable
 fun PresentableTopSectionItem(
     modifier: Modifier = Modifier,
-    presentableItemState: PresentableItemState,
+    presentableItemState: DetailPresentableItemState,
     presentableSize: Size = MaterialTheme.sizes.presentableItemBig,
     contentColor: Color = Color.White,
     onPresentableClick: () -> Unit = {},
@@ -272,7 +272,7 @@ fun PresentableTopSectionItem(
     Row(
         modifier = modifier
     ) {
-        PresentableItem(
+        DetailPresentableItem(
             presentableState = presentableItemState,
             size = presentableSize,
             showTitle = false,
@@ -288,7 +288,7 @@ fun PresentableTopSectionItem(
             exit = fadeOut(),
             visible = isSelected
         ) {
-            if (presentableItemState is PresentableItemState.Result) {
+            if (presentableItemState is DetailPresentableItemState.Result) {
                 Column(
                     modifier = modifier
                         .fillMaxWidth()
