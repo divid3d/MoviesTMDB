@@ -50,6 +50,7 @@
     <string name="movie_details_genres">Genres</string>
     <string name="movie_details_similar">Similar</string>
     <string name="movie_details_recommendations">Recommendations</string>
+    <string name="movie_details_videos">Videos</string>
     <string name="movie_details_watch_at">Watch at %s</string>
 
     <string name="tv_series_details_label">Tv series details</string>
@@ -58,6 +59,7 @@
     <string name="tv_series_details_in_production">In production</string>
     <string name="tv_series_details_genres">Genres</string>
     <string name="tv_series_details_similar">Similar</string>
+    <string name="tv_series_details_videos">Videos</string>
     <string name="tv_series_details_recommendations">Recommendations</string>
     <string name="tv_series_details_networks">Available on</string>
     <string name="tv_series_details_seasons">Seasons</string>

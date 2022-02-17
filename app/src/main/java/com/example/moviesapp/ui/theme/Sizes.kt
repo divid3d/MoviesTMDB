@@ -9,7 +9,8 @@ import androidx.compose.ui.unit.dp
 
 data class Sizes(
     val presentableItemSmall: Size = Size(120.dp, 180.dp),
-    val presentableItemBig: Size = Size(160.dp, 240.dp)
+    val presentableItemBig: Size = Size(160.dp, 240.dp),
+    val videoItem: Size = Size(180.dp, 100.dp)
 )
 
 data class Size(val width: Dp, val height: Dp)

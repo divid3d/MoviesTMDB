@@ -224,4 +224,9 @@ interface TmdbApiHelper {
         region: String = DeviceLanguage.default.region
     ): Call<AllWatchProvidersResponse>
 
+    fun getMovieVideos(
+        movieId: Int,
+        isoCode: String = DeviceLanguage.default.languageCode,
+    ): Call<VideosResponse>
+
 }

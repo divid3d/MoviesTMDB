@@ -50,6 +50,7 @@ class MoviesDetailsViewModel @Inject constructor(
     private val _movieBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
     private val _movieCollection: MutableStateFlow<MovieCollection?> = MutableStateFlow(null)
     private val _watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
+    private val _videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
     private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     var similarMoviesPagingDataFlow: Flow<PagingData<Movie>>? = null
@@ -85,6 +86,8 @@ class MoviesDetailsViewModel @Inject constructor(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     val watchProviders: StateFlow<WatchProviders?> = _watchProviders.asStateFlow()
+
+    val videos: StateFlow<List<Video>?> = _videos.asStateFlow()
 
     val hasReviews: StateFlow<Boolean> = _hasReviews.asStateFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
@@ -157,6 +160,7 @@ class MoviesDetailsViewModel @Inject constructor(
         getWatchProviders(movieId, deviceLanguage)
         getMovieCredits(movieId, deviceLanguage)
         getMovieReview(movieId)
+        getMovieVideos(movieId, deviceLanguage)
     }
 
     private fun getMovieDetails(movieId: Int, deviceLanguage: DeviceLanguage) {
@@ -319,6 +323,37 @@ class MoviesDetailsViewModel @Inject constructor(
                 response.onSuccess {
                     viewModelScope.launch {
                         _externalIds.emit(data)
+                    }
+                }
+
+                response.onFailure {
+                    onError(message)
+                }
+
+                response.onException {
+                    onError()
+                    firebaseCrashlytics.recordException(exception)
+                }
+            }
+        }
+    }
+
+    private fun getMovieVideos(movieId: Int, deviceLanguage: DeviceLanguage) {
+        viewModelScope.launch(Dispatchers.IO) {
+            movieRepository.getMovieVideos(
+                movieId = movieId,
+                isoCode = deviceLanguage.languageCode
+            ).request { response ->
+                response.onSuccess {
+                    viewModelScope.launch {
+                        val videos = data?.results?.sortedWith(
+                            compareBy(
+                                { video -> video.official },
+                                { video -> video.publishedAt }
+                            )
+                        )
+
+                        _videos.emit(videos ?: emptyList())
                     }
                 }
 

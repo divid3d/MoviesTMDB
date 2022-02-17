@@ -305,5 +305,10 @@ interface TmdbApi {
         @Query("watch_region") region: String
     ): Call<AllWatchProvidersResponse>
 
+    @GET("movie/{movie_id}/videos")
+    fun getMovieVideos(
+        @Path("movie_id") movieId: Int,
+        @Query("language") isoCode: String
+    ): Call<VideosResponse>
 }
 

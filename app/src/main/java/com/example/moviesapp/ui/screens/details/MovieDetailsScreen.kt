@@ -61,6 +61,7 @@ fun MovieDetailsScreen(
     val credits by viewModel.credits.collectAsState()
     val watchProviders by viewModel.watchProviders.collectAsState()
     val backdrops by viewModel.backdrops.collectAsState()
+    val videos by viewModel.videos.collectAsState()
     val movieCollection by viewModel.movieCollection.collectAsState()
     val externalIds by viewModel.externalIds.collectAsState()
 
@@ -282,6 +283,27 @@ fun MovieDetailsScreen(
                     SectionDivider(
                         modifier = Modifier.padding(top = MaterialTheme.spacing.medium)
                     )
+                }
+            }
+
+            videos?.let { videos ->
+                if (videos.isNotEmpty()) {
+                    VideosSection(
+                        modifier = Modifier
+                            .padding(top = MaterialTheme.spacing.small)
+                            .fillMaxWidth()
+                            .animateContentSize(),
+                        title = stringResource(R.string.movie_details_videos),
+                        videos = videos,
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
+                    ) { video ->
+                        openVideo(
+                            context = context,
+                            video = video
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
                 }
             }
 

@@ -10,6 +10,8 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.CallSuper
 import com.example.moviesapp.model.ExternalContentType
 import com.example.moviesapp.model.ExternalId
+import com.example.moviesapp.model.Video
+import com.example.moviesapp.model.VideoSite
 
 
 open class CaptureSpeechToText : ActivityResultContract<Void?, String?>() {
@@ -125,4 +127,29 @@ private fun openImdbExternalId(context: Context, imdbId: ExternalId.Imdb) {
     } catch (_: Exception) {
 
     }
+}
+
+fun openVideo(context: Context, video: Video) {
+    when (video.site) {
+        VideoSite.YouTube -> openYoutubeVideo(context = context, key = video.key)
+        VideoSite.Vimeo -> openVimeoVideo(context = context, key = video.key)
+    }
+}
+
+private fun openYoutubeVideo(context: Context, key: String) {
+    val url = "https://www.youtube.com/watch?v=$key"
+    val uri = Uri.parse(url)
+
+    val intent = Intent(Intent.ACTION_VIEW, uri)
+
+    context.startActivity(intent)
+}
+
+private fun openVimeoVideo(context: Context, key: String) {
+    val url = "https://vimeo.com/499061484=$key"
+    val uri = Uri.parse(url)
+
+    val intent = Intent(Intent.ACTION_VIEW, uri)
+
+    context.startActivity(intent)
 }

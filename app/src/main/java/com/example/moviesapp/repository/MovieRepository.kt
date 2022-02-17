@@ -186,4 +186,7 @@ class MovieRepository @Inject constructor(
 
     fun getExternalIds(movieId: Int) = apiHelper.getMovieExternalIds(movieId)
 
+    fun getMovieVideos(movieId: Int, isoCode: String = DeviceLanguage.default.languageCode) =
+        apiHelper.getMovieVideos(movieId, isoCode)
+
 }
