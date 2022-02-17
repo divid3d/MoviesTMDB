@@ -7,6 +7,7 @@ import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.model.SearchResult
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import kotlinx.coroutines.CancellationException
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -46,6 +47,8 @@ class MultiSearchResponseDataSource(
                 prevKey = if (nextPage == 1) null else nextPage - 1,
                 nextKey = if (currentPage + 1 > totalPages) null else currentPage + 1
             )
+        } catch (e: CancellationException) {
+            throw  e
         } catch (e: IOException) {
             LoadResult.Error(e)
         } catch (e: HttpException) {

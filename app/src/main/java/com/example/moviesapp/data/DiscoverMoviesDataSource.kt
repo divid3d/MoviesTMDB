@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.model.*
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import kotlinx.coroutines.CancellationException
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -61,6 +62,8 @@ class DiscoverMoviesDataSource(
                 prevKey = if (nextPage == 1) null else nextPage - 1,
                 nextKey = if (currentPage + 1 > totalPages) null else currentPage + 1
             )
+        } catch (e: CancellationException) {
+            throw  e
         } catch (e: IOException) {
             LoadResult.Error(e)
         } catch (e: HttpException) {

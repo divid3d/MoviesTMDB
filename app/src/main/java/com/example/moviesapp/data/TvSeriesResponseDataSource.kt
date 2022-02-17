@@ -6,6 +6,7 @@ import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.TvSeries
 import com.example.moviesapp.model.TvSeriesResponse
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import kotlinx.coroutines.CancellationException
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -28,6 +29,8 @@ class TvSeriesResponseDataSource(
                 prevKey = if (nextPage == 1) null else nextPage - 1,
                 nextKey = if (currentPage + 1 > totalPages) null else currentPage + 1
             )
+        } catch (e: CancellationException) {
+            throw  e
         } catch (e: IOException) {
             LoadResult.Error(e)
         } catch (e: HttpException) {
