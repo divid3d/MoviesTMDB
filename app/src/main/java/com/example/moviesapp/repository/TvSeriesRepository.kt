@@ -197,4 +197,7 @@ class TvSeriesRepository @Inject constructor(
 
     fun getExternalIds(tvSeriesId: Int) = apiHelper.getTvSeriesExternalIds(tvSeriesId)
 
+    fun getTvSeriesVideos(tvSeriesId: Int, isoCode: String = DeviceLanguage.default.languageCode) =
+        apiHelper.getTvSeriesVideos(tvSeriesId, isoCode)
+
 }

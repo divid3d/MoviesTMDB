@@ -229,4 +229,9 @@ interface TmdbApiHelper {
         isoCode: String = DeviceLanguage.default.languageCode,
     ): Call<VideosResponse>
 
+    fun getTvSeriesVideos(
+        tvSeriesId: Int,
+        isoCode: String = DeviceLanguage.default.languageCode,
+    ): Call<VideosResponse>
+
 }

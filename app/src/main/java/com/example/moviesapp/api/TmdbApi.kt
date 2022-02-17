@@ -310,5 +310,12 @@ interface TmdbApi {
         @Path("movie_id") movieId: Int,
         @Query("language") isoCode: String
     ): Call<VideosResponse>
+
+    @GET("tv/{tv_id}/videos")
+    fun getTvSeriesVideos(
+        @Path("tv_id") tvSeriesId: Int,
+        @Query("language") isoCode: String
+    ): Call<VideosResponse>
+
 }
 

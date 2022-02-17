@@ -48,6 +48,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
     var tvSeriesRecommendations: Flow<PagingData<TvSeries>>? = null
 
     private val _tvSeriesBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
+    private val _videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
     private val _nextEpisodeDaysRemaining: MutableStateFlow<Long?> = MutableStateFlow(null)
     private val _watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
     private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -71,6 +72,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
     val nextEpisodeDaysRemaining: StateFlow<Long?> = _nextEpisodeDaysRemaining.asStateFlow()
     val watchProviders: StateFlow<WatchProviders?> = _watchProviders.asStateFlow()
+    val videos: StateFlow<List<Video>?> = _videos.asStateFlow()
 
     private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
     val externalIds: StateFlow<List<ExternalId>?> =
@@ -124,6 +126,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
         getMovieImages(tvSeriesId)
         getExternalIds(tvSeriesId)
         getWatchProviders(tvSeriesId, deviceLanguage)
+        getTvSeriesVideos(tvSeriesId, deviceLanguage)
         getTvSeriesReview(tvSeriesId)
     }
 
@@ -227,6 +230,37 @@ class TvSeriesDetailsViewModel @Inject constructor(
                 response.onSuccess {
                     viewModelScope.launch {
                         _externalIds.emit(data)
+                    }
+                }
+
+                response.onFailure {
+                    onError(message)
+                }
+
+                response.onException {
+                    onError()
+                    firebaseCrashlytics.recordException(exception)
+                }
+            }
+        }
+    }
+
+    private fun getTvSeriesVideos(tvSeriesId: Int, deviceLanguage: DeviceLanguage) {
+        viewModelScope.launch(Dispatchers.IO) {
+            tvSeriesRepository.getTvSeriesVideos(
+                tvSeriesId = tvSeriesId,
+                isoCode = deviceLanguage.languageCode
+            ).request { response ->
+                response.onSuccess {
+                    viewModelScope.launch {
+                        val videos = data?.results?.sortedWith(
+                            compareBy(
+                                { video -> video.official },
+                                { video -> video.publishedAt }
+                            )
+                        )
+
+                        _videos.emit(videos ?: emptyList())
                     }
                 }
 

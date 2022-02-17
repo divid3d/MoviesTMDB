@@ -34,6 +34,7 @@ import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.model.TvSeriesRelationInfo
 import com.example.moviesapp.other.openExternalId
+import com.example.moviesapp.other.openVideo
 import com.example.moviesapp.other.yearRangeString
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
@@ -61,6 +62,7 @@ fun TvSeriesDetailsScreen(
     val similar = viewModel.similarTvSeries?.collectAsLazyPagingItems()
     val recommendations = viewModel.tvSeriesRecommendations?.collectAsLazyPagingItems()
     val backdrops by viewModel.backdrops.collectAsState()
+    val videos by viewModel.videos.collectAsState()
     val nextEpisodeDaysRemaining by viewModel.nextEpisodeDaysRemaining.collectAsState()
     val watchProviders by viewModel.watchProviders.collectAsState()
     val externalIds by viewModel.externalIds.collectAsState()
@@ -257,6 +259,27 @@ fun TvSeriesDetailsScreen(
                     ) { creatorId ->
                         navigator.navigate(PersonDetailsScreenDestination(creatorId))
                     }
+                }
+            }
+
+            videos?.let { videos ->
+                if (videos.isNotEmpty()) {
+                    VideosSection(
+                        modifier = Modifier
+                            .padding(top = MaterialTheme.spacing.small)
+                            .fillMaxWidth()
+                            .animateContentSize(),
+                        title = stringResource(R.string.tv_series_details_videos),
+                        videos = videos,
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
+                    ) { video ->
+                        openVideo(
+                            context = context,
+                            video = video
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
                 }
             }
 
