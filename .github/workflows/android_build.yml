@@ -28,4 +28,4 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build Project
-        run: ./gradlew clean assemble -PfirebasePerformanceInstrumentationEnabled=true
+        run: ./gradlew clean assembleDebug -PfirebasePerformanceInstrumentationEnabled=true
