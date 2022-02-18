@@ -27,5 +27,8 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Build Project
-        run: ./gradlew clean assembleDebug -PfirebasePerformanceInstrumentationEnabled=true
+      - name: Clean project
+        run: ./gradlew clean
+
+      - name: Build project
+        run: ./gradlew assemble -PfirebasePerformanceInstrumentationEnabled=true
