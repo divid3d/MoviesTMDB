@@ -27,9 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.graphics.luminance
 import androidx.paging.compose.LazyPagingItems
-import androidx.palette.graphics.Palette
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.transform.BlurTransformation
@@ -38,6 +36,7 @@ import com.example.moviesapp.model.DetailPresentableItemState
 import com.example.moviesapp.other.BottomRoundedArcShape
 import com.example.moviesapp.other.ImageUrlParser
 import com.example.moviesapp.other.getMaxSizeInt
+import com.example.moviesapp.other.isDark
 import com.example.moviesapp.ui.theme.Size
 import com.example.moviesapp.ui.theme.sizes
 import com.example.moviesapp.ui.theme.spacing
@@ -121,21 +120,13 @@ fun PresentableTopSection(
 
                 LaunchedEffect(backgroundPainterState) {
                     if (backgroundPainterState is ImagePainter.State.Success) {
+                        isDark = backgroundPainterState.result.drawable.toBitmap().run { isDark() }
+
                         backdropScale.animateTo(
                             targetValue = 1.6f,
                             animationSpec = tween(durationMillis = 10000, easing = LinearEasing)
                         )
                     }
-
-                    val bitmap = backgroundPainter.run {
-                        imageLoader.execute(request).drawable?.toBitmap()
-                    }
-
-                    isDark = bitmap?.let {
-                        Palette.from(it).generate().dominantSwatch?.run {
-                            rgb.luminance < 0.5
-                        } ?: true
-                    } ?: true
                 }
 
                 Box(
@@ -149,6 +140,7 @@ fun PresentableTopSection(
                             )
                         )
                 )
+
                 Image(
                     modifier = Modifier
                         .fillMaxSize()
