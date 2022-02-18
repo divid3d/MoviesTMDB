@@ -10,6 +10,13 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+String getTmdbApiKey() {
+    def propFile = rootProject.file("./local.properties")
+    def properties = new Properties()
+    properties.load(new FileInputStream(propFile))
+    return properties['TMDB_API_KEY']
+}
+
 android {
     compileSdk 31
 
@@ -20,7 +27,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        buildConfigField("String", "API_KEY", API_KEY)
+        buildConfigField("String", "TMDB_API_KEY", getTmdbApiKey())
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
