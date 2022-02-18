@@ -347,10 +347,11 @@ class MoviesDetailsViewModel @Inject constructor(
                 response.onSuccess {
                     viewModelScope.launch {
                         val videos = data?.results?.sortedWith(
-                            compareBy(
-                                { video -> video.official },
-                                { video -> video.publishedAt }
-                            )
+                            compareBy<Video> { video ->
+                                video.language == deviceLanguage.languageCode
+                            }.thenByDescending { video ->
+                                video.publishedAt
+                            }
                         )
 
                         _videos.emit(videos ?: emptyList())

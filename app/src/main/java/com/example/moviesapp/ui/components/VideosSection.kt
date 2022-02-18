@@ -1,7 +1,6 @@
 package com.example.moviesapp.ui.components
 
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -20,6 +19,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
+import coil.size.OriginalSize
+import coil.size.Scale
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Video
 import com.example.moviesapp.model.VideoSite
@@ -86,7 +87,9 @@ private fun VideoItem(
                 painter = rememberImagePainter(
                     data = video.getThumbnailUrl(),
                     builder = {
-                        fadeIn()
+                        size(OriginalSize)
+                        scale(Scale.FILL)
+                        crossfade(true)
                     }
                 ),
                 contentScale = ContentScale.FillWidth,

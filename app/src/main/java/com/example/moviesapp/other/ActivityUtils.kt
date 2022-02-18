@@ -146,7 +146,7 @@ private fun openYoutubeVideo(context: Context, key: String) {
 }
 
 private fun openVimeoVideo(context: Context, key: String) {
-    val url = "https://vimeo.com/499061484=$key"
+    val url = "https://vimeo.com/$key"
     val uri = Uri.parse(url)
 
     val intent = Intent(Intent.ACTION_VIEW, uri)
