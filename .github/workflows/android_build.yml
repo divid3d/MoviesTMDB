@@ -13,7 +13,7 @@ jobs:
       - name: Access tmdb api key
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
-        run: echo $TMDB_API_KEY > ./local.properties
+        run: echo APOD_API_KEY=\"$APOD_API_KEY\" >> ./local.properties
 
       - name: Put google-services.json
         env:
