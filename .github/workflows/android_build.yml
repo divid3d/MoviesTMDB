@@ -28,8 +28,26 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Clean project
-        run: ./gradlew clean
-
       - name: Build project
-        run: ./gradlew assemble -PfirebasePerformanceInstrumentationEnabled=true
+        run: ./gradlew clean assembleRelease -PfirebasePerformanceInstrumentationEnabled=true
+
+      - name: Sign APK
+        uses: r0adkll/sign-android-release@v1
+
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: release.apk
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: mapping.txt
+          path: app/build/outputs/mapping/release/mapping.txt
