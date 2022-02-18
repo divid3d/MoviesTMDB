@@ -174,6 +174,12 @@
     <string name="filter_empty_button_change_filters_label">Edytuj filtry</string>
 
     <string name="person_details_screen_appbar_label">Szczegóły osoby</string>
+    <string name="person_details_screen_know_for_label">Znany z</string>
+    <string name="person_details_screen_birthplace">Miejsce urodzenia</string>
+    <string name="person_details_screen_birthday">Data urodzin</string>
+    <string name="person_details_screen_death_date">Data smierci</string>
+    <string name="person_details_screen_cast">Obsada</string>
+    <string name="person_details_screen_crew">Ekipa filmowa</string>
 
     <string name="movie_provider_type_rent_label">Wypożycz</string>
     <string name="movie_provider_type_buy_label">Kup</string>

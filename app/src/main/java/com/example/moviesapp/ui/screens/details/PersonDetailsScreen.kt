@@ -81,15 +81,13 @@ fun PersonDetailsScreen(
         val destination = when (mediaType) {
             MediaType.Movie -> {
                 MovieDetailsScreenDestination(
-                    movieId = id,
-                    startRoute = startRoute
+                    movieId = id, startRoute = startRoute
                 )
             }
 
             MediaType.Tv -> {
                 TvSeriesDetailsScreenDestination(
-                    tvSeriesId = id,
-                    startRoute = startRoute
+                    tvSeriesId = id, startRoute = startRoute
                 )
             }
 
@@ -128,51 +126,58 @@ fun PersonDetailsScreen(
                             modifier = Modifier.constrainAs(profileImageRef) {
                                 top.linkTo(parent.top)
                                 start.linkTo(parent.start)
-                            },
-                            profilePath = details.profilePath
+                            }, profilePath = details.profilePath
                         )
 
-                        Column(
-                            modifier = Modifier
-                                .constrainAs(contentRef) {
-                                    start.linkTo(profileImageRef.end)
-                                    end.linkTo(parent.end)
-                                    top.linkTo(profileImageRef.top)
-                                    bottom.linkTo(profileImageRef.bottom)
+                        Column(modifier = Modifier
+                            .constrainAs(contentRef) {
+                                start.linkTo(profileImageRef.end)
+                                end.linkTo(parent.end)
+                                top.linkTo(profileImageRef.top)
+                                bottom.linkTo(profileImageRef.bottom)
 
-                                    height = Dimension.fillToConstraints
-                                    width = Dimension.fillToConstraints
-                                }
-                                .padding(start = MaterialTheme.spacing.medium)
-                        ) {
+                                height = Dimension.fillToConstraints
+                                width = Dimension.fillToConstraints
+                            }
+                            .padding(start = MaterialTheme.spacing.medium)) {
                             Column(
                                 modifier = Modifier.weight(1f),
                                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                             ) {
-                                LabeledText(label = "Known for", text = details.knownFor)
+                                LabeledText(
+                                    label = stringResource(R.string.person_details_screen_know_for_label),
+                                    text = details.knownFor
+                                )
 
                                 details.birthPlace?.let { birthplace ->
-                                    LabeledText(label = "Birthplace", text = birthplace)
+                                    LabeledText(
+                                        label = stringResource(R.string.person_details_screen_birthplace),
+                                        text = birthplace
+                                    )
                                 }
 
                                 details.birthday?.let { date ->
-                                    LabeledText(label = "Birthsday", text = date.formatted())
+                                    LabeledText(
+                                        label = stringResource(R.string.person_details_screen_birthday),
+                                        text = date.formatted()
+                                    )
                                 }
 
                                 details.deathDate?.let { date ->
-                                    Text(text = date.formatted())
+                                    LabeledText(
+                                        label = stringResource(R.string.person_details_screen_death_date),
+                                        text = date.formatted()
+                                    )
                                 }
 
                                 Spacer(modifier = Modifier.weight(1f))
 
                                 externalIds?.let { ids ->
                                     ExternalIdsSection(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        externalIds = ids
+                                        modifier = Modifier.fillMaxWidth(), externalIds = ids
                                     ) { externalId ->
                                         openExternalId(
-                                            context = context,
-                                            externalId = externalId
+                                            context = context, externalId = externalId
                                         )
                                     }
                                 }
@@ -202,13 +207,13 @@ fun PersonDetailsScreen(
 
             CreditsList(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Grał w",
+                title = stringResource(R.string.person_details_screen_cast),
                 list = cast
             ) { mediaType, id -> navigateToDetails(mediaType, id) }
 
             CreditsList(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Uczestniczył w",
+                title = stringResource(R.string.person_details_screen_crew),
                 list = crew
             ) { mediaType, id -> navigateToDetails(mediaType, id) }
 
