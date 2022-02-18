@@ -1,6 +1,6 @@
 name: Android Build
 
-on: push
+on: pull_request
 
 jobs:
   build:
@@ -13,12 +13,12 @@ jobs:
       - name: Access tmdb api key
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
-        run: echo TMDB_API_KEY="$TMDB_API_KEY" > ./local.properties
+        run: echo TMDB_API_KEY=\"$TMDB_API_KEY\" >> ./local.properties
 
       - name: Put google-services.json
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo GOOGLE_SERVICES_JSON="$GOOGLE_SERVICES_JSON" | base64 -di > ./app/google-services.json
+        run: echo $GOOGLE_SERVICES_JSON | base64 -di > ./app/google-services.json
 
       - name: JDK setup
         uses: actions/setup-java@v1
@@ -28,8 +28,26 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Clean project
-        run: ./gradlew clean
-
       - name: Build project
-        run: ./gradlew assemble -PfirebasePerformanceInstrumentationEnabled=true
+        run: ./gradlew clean assembleRelease -PfirebasePerformanceInstrumentationEnabled=true
+
+      - name: Sign APK
+        uses: r0adkll/sign-android-release@v1
+
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: release.apk
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: mapping.txt
+          path: app/build/outputs/mapping/release/mapping.txt
