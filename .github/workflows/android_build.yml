@@ -13,12 +13,12 @@ jobs:
       - name: Access tmdb api key
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
-        run: echo $TMDB_API_KEY > ./local.properties
+        run: echo TMDB_API_KEY="$TMDB_API_KEY" > ./local.properties
 
       - name: Put google-services.json
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo $GOOGLE_SERVICES_JSON | base64 -di > ./app/google-services.json
+        run: echo GOOGLE_SERVICES_JSON="$GOOGLE_SERVICES_JSON" | base64 -di > ./app/google-services.json
 
       - name: JDK setup
         uses: actions/setup-java@v1
