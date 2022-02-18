@@ -1,14 +1,13 @@
 package com.example.moviesapp.di
 
+import android.annotation.SuppressLint
 import com.squareup.moshi.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
+@SuppressLint("SimpleDateFormat")
 class DateJsonAdapter : JsonAdapter<Date>() {
-    private val serverDateFormat = SimpleDateFormat(ServerFormat, Locale.getDefault())
-    private val isoDateFormat = SimpleDateFormat(IsoFormat, Locale.getDefault())
-
     @FromJson
     override fun fromJson(reader: JsonReader): Date? {
 
@@ -18,18 +17,14 @@ class DateJsonAdapter : JsonAdapter<Date>() {
             return null
         }
 
-        synchronized(serverDateFormat) {
-            val serverFormatDate = serverDateFormat.parseOrNull(dateAsString)
-            if (serverFormatDate != null) {
-                return serverFormatDate
-            }
+        val serverFormatDate = serverDateFormat.parseOrNull(dateAsString)
+        if (serverFormatDate != null) {
+            return serverFormatDate
         }
 
-        synchronized(isoDateFormat) {
-            val isoDate = isoDateFormat.parseOrNull(dateAsString)
-            if (isoDate != null) {
-                return isoDate
-            }
+        val isoDate = isoDateFormat.parseOrNull(dateAsString)
+        if (isoDate != null) {
+            return isoDate
         }
 
         return null
@@ -38,15 +33,13 @@ class DateJsonAdapter : JsonAdapter<Date>() {
     @ToJson
     override fun toJson(writer: JsonWriter, value: Date?) {
         if (value != null) {
-            synchronized(serverDateFormat) {
-                writer.value(value.toString())
-            }
+            writer.value(value.toString())
         }
     }
 
     private companion object {
-        const val ServerFormat = "yyyy-MM-dd"
-        const val IsoFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        val serverDateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val isoDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
     }
 }
 
