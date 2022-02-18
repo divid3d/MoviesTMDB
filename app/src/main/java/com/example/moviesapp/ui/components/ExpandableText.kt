@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
@@ -24,9 +25,10 @@ fun ExpandableText(
     postfixColor: Color = MaterialTheme.colors.primary,
     minLines: Int = 3
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
-    val textLayoutResultState = remember { mutableStateOf<TextLayoutResult?>(null) }
-    var isClickable by remember { mutableStateOf(false) }
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
+    val textLayoutResultState = rememberSaveable { mutableStateOf<TextLayoutResult?>(null) }
+    var isClickable by rememberSaveable { mutableStateOf(false) }
+
     var finalText by remember {
         mutableStateOf(
             buildAnnotatedString {

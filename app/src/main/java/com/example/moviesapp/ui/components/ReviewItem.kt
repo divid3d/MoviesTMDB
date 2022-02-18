@@ -131,12 +131,12 @@ fun ReviewItem(
                 }
             }
 
-            Text(
+            ExpandableText(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = MaterialTheme.spacing.medium),
                 text = review.content,
-                style = TextStyle(color = Color.White, fontSize = 12.sp)
+                minLines = 6
             )
 
             Column(modifier = Modifier.align(Alignment.End)) {
