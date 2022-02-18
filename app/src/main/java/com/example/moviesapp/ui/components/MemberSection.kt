@@ -31,12 +31,12 @@ fun MemberSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = MaterialTheme.spacing.small),
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
             contentPadding = contentPadding
         ) {
             items(members) { member ->
                 MemberResultChip(
-                    modifier = Modifier.width(64.dp),
+                    modifier = Modifier.width(80.dp),
                     member = member,
                     onClick = { onMemberClick(member.id) }
                 )
