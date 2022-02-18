@@ -6,7 +6,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
@@ -25,9 +24,9 @@ fun ExpandableText(
     postfixColor: Color = MaterialTheme.colors.primary,
     minLines: Int = 3
 ) {
-    var isExpanded by rememberSaveable { mutableStateOf(false) }
-    val textLayoutResultState = rememberSaveable { mutableStateOf<TextLayoutResult?>(null) }
-    var isClickable by rememberSaveable { mutableStateOf(false) }
+    var isExpanded by remember { mutableStateOf(false) }
+    val textLayoutResultState = remember { mutableStateOf<TextLayoutResult?>(null) }
+    var isClickable by remember { mutableStateOf(false) }
 
     var finalText by remember {
         mutableStateOf(
@@ -51,28 +50,27 @@ fun ExpandableText(
     LaunchedEffect(textLayoutResult) {
         if (textLayoutResult == null) return@LaunchedEffect
 
-        when {
-            isExpanded -> {
-                finalText = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            color = White,
-                            fontSize = 12.sp
-                        )
-                    ) {
-                        append(text)
-                    }
-                    withStyle(
-                        style = SpanStyle(
-                            color = postfixColor,
-                            fontSize = 12.sp
-                        )
-                    ) {
-                        append("  $postfixText")
-                    }
+        if (isExpanded) {
+            finalText = buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(
+                        color = White,
+                        fontSize = 12.sp
+                    )
+                ) {
+                    append(text)
+                }
+                withStyle(
+                    style = SpanStyle(
+                        color = postfixColor,
+                        fontSize = 12.sp
+                    )
+                ) {
+                    append("  $postfixText")
                 }
             }
-            !isExpanded && textLayoutResult.hasVisualOverflow -> {
+        } else {
+            if (textLayoutResult.hasVisualOverflow) {
                 val lastCharIndex = textLayoutResult.getLineEnd(minLines - 1)
                 val adjustedText = text
                     .substring(startIndex = 0, endIndex = lastCharIndex)

@@ -82,7 +82,12 @@ private fun VideoItem(
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable { onVideoClick() },
-                painter = rememberImagePainter(video.getThumbnailUrl()),
+                painter = rememberImagePainter(
+                    data = video.getThumbnailUrl(),
+                    builder = {
+//                        fadeIn()
+                    }
+                ),
                 contentScale = ContentScale.FillWidth,
                 contentDescription = null
             )
