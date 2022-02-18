@@ -6,6 +6,7 @@ plugins {
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
     id 'com.google.firebase.crashlytics'
+    id 'com.google.firebase.firebase-perf'
     id 'com.google.gms.google-services'
 }
 
@@ -126,13 +127,14 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-perf-ktx'
 
     implementation "io.coil-kt:coil-compose:1.4.0"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.core:core-splashscreen:1.0.0-beta01"
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
     implementation 'androidx.activity:activity-compose:1.4.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

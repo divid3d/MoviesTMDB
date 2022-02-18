@@ -1,6 +1,7 @@
 package com.example.moviesapp.ui.components
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -85,7 +86,7 @@ private fun VideoItem(
                 painter = rememberImagePainter(
                     data = video.getThumbnailUrl(),
                     builder = {
-//                        fadeIn()
+                        fadeIn()
                     }
                 ),
                 contentScale = ContentScale.FillWidth,
