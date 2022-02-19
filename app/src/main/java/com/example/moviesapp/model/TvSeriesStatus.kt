@@ -3,7 +3,9 @@ package com.example.moviesapp.model
 import androidx.annotation.StringRes
 import com.example.moviesapp.R
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = false)
 enum class TvSeriesStatus(val value: String) {
     @Json(name = "Returning Series")
     Returning("Returning Series"),

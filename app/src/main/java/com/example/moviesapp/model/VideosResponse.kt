@@ -34,6 +34,7 @@ data class Video(
     val publishedAt: Date?
 )
 
+@JsonClass(generateAdapter = false)
 enum class VideoSite(val value: String) {
     @Json(name = "YouTube")
     YouTube("YouTube"),

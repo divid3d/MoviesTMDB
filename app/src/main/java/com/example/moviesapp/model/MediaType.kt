@@ -1,7 +1,9 @@
 package com.example.moviesapp.model
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = false)
 enum class MediaType(val value: String) {
     @Json(name = "movie")
     Movie("movie"),
