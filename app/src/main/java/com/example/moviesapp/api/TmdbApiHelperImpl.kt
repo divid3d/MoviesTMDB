@@ -278,4 +278,11 @@ class TmdbApiHelperImpl @Inject constructor(
     override fun getTvSeriesVideos(tvSeriesId: Int, isoCode: String): Call<VideosResponse> =
         tmdbApi.getTvSeriesVideos(tvSeriesId, "en-US")
 
+    override fun getSeasonVideos(
+        tvSeriesId: Int,
+        seasonNumber: Int,
+        isoCode: String
+    ): Call<VideosResponse> =
+        tmdbApi.getSeasonVideos(tvSeriesId, seasonNumber, "en-US")
+
 }

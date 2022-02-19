@@ -7,10 +7,7 @@ import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
-import com.example.moviesapp.model.DeviceLanguage
-import com.example.moviesapp.model.Image
-import com.example.moviesapp.model.SeasonDetails
-import com.example.moviesapp.model.SeasonInfo
+import com.example.moviesapp.model.*
 import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.TvSeriesRepository
@@ -46,6 +43,9 @@ class SeasonDetailsViewModel @Inject constructor(
     val episodeStills: StateFlow<Map<Int, List<Image>>> =
         _episodesStills.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyMap())
 
+    private val _videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
+    val videos: StateFlow<List<Video>?> = _videos.asStateFlow()
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             seasonInfo.collectLatest { seasonInfo ->
@@ -72,6 +72,12 @@ class SeasonDetailsViewModel @Inject constructor(
                                 firebaseCrashlytics.recordException(exception)
                             }
                         }
+
+                        getSeasonVideos(
+                            tvSeriesId = info.tvSeriesId,
+                            seasonNumber = info.seasonNumber,
+                            deviceLanguage = deviceLanguage
+                        )
                     }
                 }
             }
@@ -113,6 +119,40 @@ class SeasonDetailsViewModel @Inject constructor(
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private fun getSeasonVideos(
+        tvSeriesId: Int,
+        seasonNumber: Int,
+        deviceLanguage: DeviceLanguage
+    ) {
+        tvSeriesRepository.seasonVideos(
+            tvSeriesId = tvSeriesId,
+            seasonNumber = seasonNumber
+        ).request { response ->
+            response.onSuccess {
+                viewModelScope.launch {
+                    val videos = data?.results?.sortedWith(
+                        compareBy<Video> { video ->
+                            video.language == deviceLanguage.languageCode
+                        }.thenByDescending { video ->
+                            video.publishedAt
+                        }
+                    )
+
+                    _videos.emit(videos ?: emptyList())
+                }
+
+                response.onFailure {
+                    onError(message)
+                }
+
+                response.onException {
+                    onError()
+                    firebaseCrashlytics.recordException(exception)
                 }
             }
         }

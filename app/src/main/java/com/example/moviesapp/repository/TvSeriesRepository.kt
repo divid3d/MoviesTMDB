@@ -197,7 +197,16 @@ class TvSeriesRepository @Inject constructor(
 
     fun getExternalIds(tvSeriesId: Int) = apiHelper.getTvSeriesExternalIds(tvSeriesId)
 
-    fun getTvSeriesVideos(tvSeriesId: Int, isoCode: String = DeviceLanguage.default.languageCode) =
+    fun tvSeriesVideos(
+        tvSeriesId: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ) =
         apiHelper.getTvSeriesVideos(tvSeriesId, isoCode)
+
+    fun seasonVideos(
+        tvSeriesId: Int,
+        seasonNumber: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ) = apiHelper.getSeasonVideos(tvSeriesId, seasonNumber, isoCode)
 
 }

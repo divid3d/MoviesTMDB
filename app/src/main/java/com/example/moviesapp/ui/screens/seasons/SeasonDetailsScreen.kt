@@ -18,6 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -26,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.moviesapp.R
 import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.other.formatted
+import com.example.moviesapp.other.openVideo
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
@@ -41,7 +43,10 @@ fun SeasonDetailsScreen(
     navigator: DestinationsNavigator,
     startRoute: String = TvScreenDestination.route
 ) {
+    val context = LocalContext.current
+
     val seasonDetails by viewModel.seasonDetails.collectAsState()
+    val videos by viewModel.videos.collectAsState()
     val episodesCount by viewModel.episodeCount.collectAsState()
     val episodeStills by viewModel.episodeStills.collectAsState()
 
@@ -107,13 +112,11 @@ fun SeasonDetailsScreen(
                 }
             }
 
-
             seasonDetails?.let { details ->
                 item {
                     Column(
                         modifier = Modifier
                             .padding(horizontal = MaterialTheme.spacing.medium)
-                            .padding(bottom = MaterialTheme.spacing.large)
                             .animateContentSize(),
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                     ) {
@@ -129,6 +132,31 @@ fun SeasonDetailsScreen(
                             modifier = Modifier.fillMaxSize(),
                             text = details.overview
                         )
+                    }
+                }
+
+                videos?.let { videos ->
+                    if (videos.isNotEmpty()) {
+                        item {
+                            VideosSection(
+                                modifier = Modifier
+                                    .padding(top = MaterialTheme.spacing.small)
+                                    .fillMaxWidth()
+                                    .animateContentSize(),
+                                title = stringResource(R.string.tv_series_details_videos),
+                                videos = videos,
+                                contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
+                            ) { video ->
+                                openVideo(
+                                    context = context,
+                                    video = video
+                                )
+                            }
+                        }
+
+                        item {
+                            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                        }
                     }
                 }
 
