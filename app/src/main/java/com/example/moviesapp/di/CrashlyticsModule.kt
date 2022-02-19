@@ -1,8 +1,6 @@
 package com.example.moviesapp.di
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,5 +15,5 @@ object CrashlyticsModule {
 
     @Provides
     @Singleton
-    fun provideCrashlytics(): FirebaseCrashlytics = Firebase.crashlytics
+    fun provideCrashlytics(): FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 }
