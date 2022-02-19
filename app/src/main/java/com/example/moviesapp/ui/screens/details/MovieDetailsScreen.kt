@@ -21,7 +21,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -176,11 +175,9 @@ fun MovieDetailsScreen(
                     Column {
                         Text(
                             text = details.title,
-                            style = TextStyle(
-                                color = Color.White,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                            color = Color.White,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
                         )
                         if (otherOriginalTitle) {
                             Text(text = details.originalTitle)
@@ -208,7 +205,7 @@ fun MovieDetailsScreen(
                             if (tagline.isNotEmpty()) {
                                 Text(
                                     text = "\"$tagline\"",
-                                    style = TextStyle(fontStyle = FontStyle.Italic)
+                                    fontStyle = FontStyle.Italic
                                 )
                             }
                         }

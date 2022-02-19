@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -234,11 +233,9 @@ fun ResultDetailPresentableItem(
                     text = presentable.title,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    style = TextStyle(
-                        color = Color.White,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 12.sp
-                    )
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 12.sp
                 )
             }
         }
@@ -315,11 +312,9 @@ fun ResultPresentableItem(
                     text = presentable.title,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    style = TextStyle(
-                        color = Color.White,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 12.sp
-                    )
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 12.sp
                 )
             }
         }

@@ -21,7 +21,6 @@ import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.lerp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -177,11 +176,9 @@ fun PresentableTopSection(
                     .padding(horizontal = MaterialTheme.spacing.medium)
                     .padding(top = MaterialTheme.spacing.small),
                 text = title,
-                style = TextStyle(
-                    color = contentColor,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                color = contentColor,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
             )
             HorizontalPager(
                 modifier = Modifier
@@ -288,19 +285,15 @@ fun PresentableTopSectionItem(
                 ) {
                     Text(
                         text = presentableItemState.presentable.title,
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            color = contentColor,
-                            fontWeight = FontWeight.Bold
-                        )
+                        fontSize = 16.sp,
+                        color = contentColor,
+                        fontWeight = FontWeight.Bold
                     )
                     presentableItemState.presentable.overview?.let { overview ->
                         Text(
                             text = overview,
-                            style = TextStyle(
-                                fontSize = 12.sp,
-                                color = contentColor
-                            ),
+                            fontSize = 12.sp,
+                            color = contentColor,
                             maxLines = 5,
                             overflow = TextOverflow.Ellipsis
                         )

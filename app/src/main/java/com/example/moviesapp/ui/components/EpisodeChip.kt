@@ -19,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,13 +60,14 @@ fun EpisodeChip(
                 ) {
                     Text(
                         text = episode.name,
-                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
                     )
 
                     episode.airDate?.let { date ->
                         Text(
                             text = date.formatted(),
-                            style = TextStyle(fontWeight = FontWeight.Thin)
+                            fontWeight = FontWeight.Thin
                         )
                     }
                 }
@@ -89,7 +89,7 @@ fun EpisodeChip(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {
-                    Text(text = episode.overview, style = TextStyle(fontSize = 12.sp))
+                    Text(text = episode.overview, fontSize = 12.sp)
 
                     if (stills.isNotEmpty()) {
                         StillBrowser(

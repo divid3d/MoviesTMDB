@@ -47,7 +47,7 @@ fun MoviesAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composa
     ) {
         MaterialTheme(
             colors = colors,
-            typography = Typography,
+            typography = AppTypography,
             shapes = Shapes,
             content = content
         )

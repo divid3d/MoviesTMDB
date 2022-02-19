@@ -16,7 +16,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -70,11 +69,9 @@ fun MemberResultChip(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = firstLine,
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
-                    ),
+                    color = Color.White,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center
@@ -94,10 +91,8 @@ fun MemberResultChip(
                             secondLineExpanded = !secondLineExpanded
                         },
                     text = secondLine,
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 12.sp
-                    ),
+                    color = Color.White,
+                    fontSize = 12.sp,
                     maxLines = if (secondLineExpanded) Int.MAX_VALUE else 2,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center,

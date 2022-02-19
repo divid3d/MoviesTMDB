@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -110,18 +109,17 @@ fun ReviewItem(
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = review.authorDetails.username,
-                        style = TextStyle(
-                            color = Color.White,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 16.sp
-                        ),
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 16.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                     review.createdAt?.let { date ->
                         Text(
                             text = date.formatted(),
-                            style = TextStyle(color = White500, fontSize = 12.sp)
+                            color = White500,
+                            fontSize = 12.sp
                         )
                     }
                 }
@@ -147,7 +145,8 @@ fun ReviewItem(
                             R.string.review_item_last_modified_text,
                             date.formatted()
                         ),
-                        style = TextStyle(color = White500, fontSize = 12.sp)
+                        color = White500,
+                        fontSize = 12.sp
                     )
                 }
             }

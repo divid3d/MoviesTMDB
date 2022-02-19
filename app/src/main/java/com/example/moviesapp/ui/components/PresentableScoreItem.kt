@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
@@ -114,11 +113,9 @@ fun PresentableScoreItem(
         ) {
             Text(
                 text = scoreText,
-                style = TextStyle(
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 12.sp
-                ),
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 12.sp,
                 maxLines = 1
             )
         }

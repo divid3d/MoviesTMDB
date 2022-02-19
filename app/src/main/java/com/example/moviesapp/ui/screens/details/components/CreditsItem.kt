@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -94,11 +93,9 @@ fun CreditsItem(
                             text = title,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
-                            style = TextStyle(
-                                color = Color.White,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 12.sp
-                            )
+                            color = Color.White,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 12.sp
                         )
                     }
                 }
@@ -109,9 +106,7 @@ fun CreditsItem(
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = text,
-                style = TextStyle(
-                    fontSize = 12.sp
-                ),
+                fontSize = 12.sp,
                 textAlign = TextAlign.Center,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis

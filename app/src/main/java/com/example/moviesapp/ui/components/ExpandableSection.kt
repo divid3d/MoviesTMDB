@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.moviesapp.ui.screens.discover.components.InfoText
@@ -53,11 +52,9 @@ fun ExpandableSection(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = label,
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
                 )
                 AnimatedVisibility(
                     visible = expanded
