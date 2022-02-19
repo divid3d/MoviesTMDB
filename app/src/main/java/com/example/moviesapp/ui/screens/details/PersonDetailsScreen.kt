@@ -1,6 +1,7 @@
 package com.example.moviesapp.ui.screens.details
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -205,17 +206,29 @@ fun PersonDetailsScreen(
                 }
             }
 
-            CreditsList(
-                modifier = Modifier.fillMaxWidth(),
-                title = stringResource(R.string.person_details_screen_cast),
-                list = cast
-            ) { mediaType, id -> navigateToDetails(mediaType, id) }
+            if (cast.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
-            CreditsList(
-                modifier = Modifier.fillMaxWidth(),
-                title = stringResource(R.string.person_details_screen_crew),
-                list = crew
-            ) { mediaType, id -> navigateToDetails(mediaType, id) }
+                CreditsList(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    title = stringResource(R.string.person_details_screen_cast),
+                    list = cast
+                ) { mediaType, id -> navigateToDetails(mediaType, id) }
+            }
+
+            if (crew.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
+                CreditsList(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    title = stringResource(R.string.person_details_screen_crew),
+                    list = crew
+                ) { mediaType, id -> navigateToDetails(mediaType, id) }
+            }
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
         }

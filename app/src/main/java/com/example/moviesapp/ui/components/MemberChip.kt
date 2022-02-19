@@ -4,11 +4,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,22 +24,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.transform.CircleCropTransformation
 import com.example.moviesapp.R
-import com.example.moviesapp.model.Member
 import com.example.moviesapp.other.ImageUrlParser
 import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun MemberResultChip(
     modifier: Modifier = Modifier,
-    member: Member,
+    profilePath: String?,
+    firstLine: String?,
+    secondLine: String?,
     onClick: () -> Unit = {}
 ) {
+    var secondLineExpanded by remember {
+        mutableStateOf(false)
+    }
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (member.profilePath != null) {
+        if (profilePath != null) {
             TmdbImage(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -49,7 +55,7 @@ fun MemberResultChip(
                     .aspectRatio(1f)
                     .clip(CircleShape)
                     .clickable { onClick() },
-                imagePath = member.profilePath,
+                imagePath = profilePath,
                 imageType = ImageUrlParser.ImageType.Profile
             ) {
                 transformations(CircleCropTransformation())
@@ -59,9 +65,10 @@ fun MemberResultChip(
             MemberNoPhotoChip(onClick = { onClick() })
         }
 
-        member.firstLine?.let { firstLine ->
+        firstLine?.let { firstLine ->
             if (firstLine.isNotBlank()) {
                 Text(
+                    modifier = Modifier.fillMaxWidth(),
                     text = firstLine,
                     style = TextStyle(
                         color = Color.White,
@@ -73,20 +80,30 @@ fun MemberResultChip(
                     textAlign = TextAlign.Center
                 )
             }
-
         }
 
-        member.secondLine?.let { secondLine ->
+        secondLine?.let { secondLine ->
             if (secondLine.isNotBlank()) {
                 Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            secondLineExpanded = !secondLineExpanded
+                        },
                     text = secondLine,
                     style = TextStyle(
                         color = Color.White,
                         fontSize = 12.sp
                     ),
-                    maxLines = 1,
+                    maxLines = if (secondLineExpanded) Int.MAX_VALUE else 2,
                     overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    onTextLayout = { result ->
+                        //hasSecondLineOverflow = result.hasVisualOverflow
+                    }
                 )
             }
         }

@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,10 +38,6 @@ fun CreditsItem(
     size: Size = MaterialTheme.sizes.presentableItemSmall,
     onClick: () -> Unit = {}
 ) {
-    var infoText by remember(creditsPresentable) {
-        mutableStateOf(creditsPresentable.infoText)
-    }
-
     Column(
         modifier = Modifier.width(size.width),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
@@ -109,7 +105,7 @@ fun CreditsItem(
             }
         }
 
-        infoText?.let { text ->
+        creditsPresentable.infoText?.let { text ->
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = text,
@@ -118,15 +114,8 @@ fun CreditsItem(
                 ),
                 textAlign = TextAlign.Center,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                onTextLayout = { result ->
-                    if (result.lineCount < 2) {
-                        infoText = infoText?.plus("\n")
-                    }
-                }
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
-
-
 }

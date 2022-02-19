@@ -18,6 +18,8 @@ fun MemberSection(
     contentPadding: PaddingValues,
     onMemberClick: (Int) -> Unit = {}
 ) {
+    val membersGroups = members.groupBy { member -> member.id }.toList()
+
     Column(modifier = modifier) {
         title?.let { title ->
             SectionLabel(
@@ -34,11 +36,19 @@ fun MemberSection(
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
             contentPadding = contentPadding
         ) {
-            items(members) { member ->
+
+            items(membersGroups) { (id, members) ->
+                val profilePath = members.firstNotNullOfOrNull { member -> member.profilePath }
+                val firstLine = members.firstNotNullOfOrNull { member -> member.firstLine }
+                val secondLine = members.mapNotNull { member -> member.secondLine }
+                    .joinToString(separator = ", ")
+
                 MemberResultChip(
                     modifier = Modifier.width(80.dp),
-                    member = member,
-                    onClick = { onMemberClick(member.id) }
+                    profilePath = profilePath,
+                    firstLine = firstLine,
+                    secondLine = secondLine,
+                    onClick = { onMemberClick(id) }
                 )
             }
         }
