@@ -9,7 +9,6 @@ import com.example.moviesapp.data.ReviewsDataSource
 import com.example.moviesapp.data.TvSeriesDetailsResponseDataSource
 import com.example.moviesapp.data.TvSeriesResponseDataSource
 import com.example.moviesapp.model.*
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -21,8 +20,7 @@ import javax.inject.Singleton
 @Singleton
 class TvSeriesRepository @Inject constructor(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val apiHelper: TmdbApiHelper,
-    private val crashlytics: FirebaseCrashlytics
+    private val apiHelper: TmdbApiHelper
 ) {
     fun discoverTvSeries(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default,
@@ -51,8 +49,7 @@ class TvSeriesRepository @Inject constructor(
                 onlyWithPosters = onlyWithPosters,
                 onlyWithScore = onlyWithScore,
                 onlyWithOverview = onlyWithOverview,
-                airDateRange = airDateRange,
-                firebaseCrashlytics = crashlytics
+                airDateRange = airDateRange
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -63,8 +60,7 @@ class TvSeriesRepository @Inject constructor(
             TvSeriesResponseDataSource(
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getTopRatedTvSeries,
-                firebaseCrashlytics = crashlytics
+                apiHelperMethod = apiHelper::getTopRatedTvSeries
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -75,8 +71,7 @@ class TvSeriesRepository @Inject constructor(
             TvSeriesResponseDataSource(
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getOnTheAirTvSeries,
-                firebaseCrashlytics = crashlytics
+                apiHelperMethod = apiHelper::getOnTheAirTvSeries
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -87,8 +82,7 @@ class TvSeriesRepository @Inject constructor(
             TvSeriesResponseDataSource(
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getTrendingTvSeries,
-                firebaseCrashlytics = crashlytics
+                apiHelperMethod = apiHelper::getTrendingTvSeries
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -99,8 +93,7 @@ class TvSeriesRepository @Inject constructor(
             TvSeriesResponseDataSource(
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getPopularTvSeries,
-                firebaseCrashlytics = crashlytics
+                apiHelperMethod = apiHelper::getPopularTvSeries
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -111,8 +104,7 @@ class TvSeriesRepository @Inject constructor(
             TvSeriesResponseDataSource(
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getAiringTodayTvSeries,
-                firebaseCrashlytics = crashlytics
+                apiHelperMethod = apiHelper::getAiringTodayTvSeries
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -127,8 +119,7 @@ class TvSeriesRepository @Inject constructor(
                 tvSeriesId = tvSeriesId,
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getSimilarTvSeries,
-                firebaseCrashlytics = crashlytics
+                apiHelperMethod = apiHelper::getSimilarTvSeries
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -143,8 +134,7 @@ class TvSeriesRepository @Inject constructor(
                 tvSeriesId = tvSeriesId,
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getTvSeriesRecommendations,
-                firebaseCrashlytics = crashlytics
+                apiHelperMethod = apiHelper::getTvSeriesRecommendations
             )
         }.flow.flowOn(defaultDispatcher)
 
@@ -184,8 +174,7 @@ class TvSeriesRepository @Inject constructor(
         ) {
             ReviewsDataSource(
                 mediaId = tvSeriesId,
-                apiHelperMethod = apiHelper::getTvSeriesReviews,
-                firebaseCrashlytics = crashlytics
+                apiHelperMethod = apiHelper::getTvSeriesReviews
             )
         }.flow.flowOn(defaultDispatcher)
 

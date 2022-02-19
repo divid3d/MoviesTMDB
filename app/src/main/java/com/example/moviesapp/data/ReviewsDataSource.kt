@@ -11,8 +11,7 @@ import java.io.IOException
 
 class ReviewsDataSource(
     private val mediaId: Int,
-    private inline val apiHelperMethod: suspend (Int, Int) -> ReviewsResponse,
-    private val firebaseCrashlytics: FirebaseCrashlytics
+    private inline val apiHelperMethod: suspend (Int, Int) -> ReviewsResponse
 ) : PagingSource<Int, Review>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Review> {
         return try {
@@ -34,7 +33,7 @@ class ReviewsDataSource(
         } catch (e: HttpException) {
             LoadResult.Error(e)
         } catch (e: Exception) {
-            firebaseCrashlytics.recordException(e)
+            FirebaseCrashlytics.getInstance().recordException(e)
             LoadResult.Error(e)
         }
     }

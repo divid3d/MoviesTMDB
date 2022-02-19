@@ -15,8 +15,7 @@ class MovieDetailsResponseDataSource @Inject constructor(
     private val movieId: Int,
     private val language: String = DeviceLanguage.default.languageCode,
     private val region: String = DeviceLanguage.default.region,
-    private inline val apiHelperMethod: suspend (Int, Int, String, String) -> MoviesResponse,
-    private val firebaseCrashlytics: FirebaseCrashlytics
+    private inline val apiHelperMethod: suspend (Int, Int, String, String) -> MoviesResponse
 ) : PagingSource<Int, Movie>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         return try {
@@ -38,7 +37,7 @@ class MovieDetailsResponseDataSource @Inject constructor(
         } catch (e: HttpException) {
             LoadResult.Error(e)
         } catch (e: Exception) {
-            firebaseCrashlytics.recordException(e)
+            FirebaseCrashlytics.getInstance().recordException(e)
             LoadResult.Error(e)
         }
     }

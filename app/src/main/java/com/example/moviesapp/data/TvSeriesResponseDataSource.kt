@@ -13,8 +13,7 @@ import java.io.IOException
 class TvSeriesResponseDataSource(
     private val language: String = DeviceLanguage.default.languageCode,
     private val region: String = DeviceLanguage.default.region,
-    private inline val apiHelperMethod: suspend (Int, String, String) -> TvSeriesResponse,
-    private val firebaseCrashlytics: FirebaseCrashlytics
+    private inline val apiHelperMethod: suspend (Int, String, String) -> TvSeriesResponse
 ) : PagingSource<Int, TvSeries>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TvSeries> {
         return try {
@@ -36,7 +35,7 @@ class TvSeriesResponseDataSource(
         } catch (e: HttpException) {
             LoadResult.Error(e)
         } catch (e: Exception) {
-            firebaseCrashlytics.recordException(e)
+            FirebaseCrashlytics.getInstance().recordException(e)
             LoadResult.Error(e)
         }
     }

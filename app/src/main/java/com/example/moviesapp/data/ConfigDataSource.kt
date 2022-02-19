@@ -30,8 +30,7 @@ class ConfigDataSource @Inject constructor(
     private val context: Context,
     private val externalScope: CoroutineScope,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val apiHelper: TmdbApiHelper,
-    private val crashlytics: FirebaseCrashlytics
+    private val apiHelper: TmdbApiHelper
 ) {
     private val _config: MutableStateFlow<Config?> = MutableStateFlow(null)
 
@@ -91,7 +90,7 @@ class ConfigDataSource @Inject constructor(
             }
 
             response.onException {
-                crashlytics.recordException(exception)
+                FirebaseCrashlytics.getInstance().recordException(exception)
             }
         }
 
@@ -108,7 +107,7 @@ class ConfigDataSource @Inject constructor(
                         }
 
                         response.onException {
-                            crashlytics.recordException(exception)
+                            FirebaseCrashlytics.getInstance().recordException(exception)
                         }
                     }
 
@@ -123,7 +122,7 @@ class ConfigDataSource @Inject constructor(
                         }
 
                         response.onException {
-                            crashlytics.recordException(exception)
+                            FirebaseCrashlytics.getInstance().recordException(exception)
                         }
                     }
 
@@ -142,7 +141,7 @@ class ConfigDataSource @Inject constructor(
                     }
 
                     response.onException {
-                        crashlytics.recordException(exception)
+                        FirebaseCrashlytics.getInstance().recordException(exception)
                     }
                 }
 
@@ -161,7 +160,7 @@ class ConfigDataSource @Inject constructor(
                     }
 
                     response.onException {
-                        crashlytics.recordException(exception)
+                        FirebaseCrashlytics.getInstance().recordException(exception)
                     }
                 }
             }

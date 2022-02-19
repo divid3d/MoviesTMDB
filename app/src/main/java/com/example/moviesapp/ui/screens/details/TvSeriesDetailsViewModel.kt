@@ -28,7 +28,6 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class TvSeriesDetailsViewModel @Inject constructor(
-    private val firebaseCrashlytics: FirebaseCrashlytics,
     private val configRepository: ConfigRepository,
     private val tvSeriesRepository: TvSeriesRepository,
     private val favouritesRepository: FavouritesRepository,
@@ -152,7 +151,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
             response.onException {
                 onError()
-                firebaseCrashlytics.recordException(exception)
+                FirebaseCrashlytics.getInstance().recordException(exception)
             }
         }
     }
@@ -172,7 +171,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
             response.onException {
                 onError()
-                firebaseCrashlytics.recordException(exception)
+                FirebaseCrashlytics.getInstance().recordException(exception)
             }
         }
     }
@@ -193,7 +192,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
             response.onException {
                 onError()
-                firebaseCrashlytics.recordException(exception)
+                FirebaseCrashlytics.getInstance().recordException(exception)
             }
         }
     }
@@ -217,7 +216,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
             response.onException {
                 onError()
-                firebaseCrashlytics.recordException(exception)
+                FirebaseCrashlytics.getInstance().recordException(exception)
             }
         }
     }
@@ -239,7 +238,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
                 response.onException {
                     onError()
-                    firebaseCrashlytics.recordException(exception)
+                    FirebaseCrashlytics.getInstance().recordException(exception)
                 }
             }
         }
@@ -270,7 +269,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
                 response.onException {
                     onError()
-                    firebaseCrashlytics.recordException(exception)
+                    FirebaseCrashlytics.getInstance().recordException(exception)
                 }
             }
         }

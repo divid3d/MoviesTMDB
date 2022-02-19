@@ -21,8 +21,7 @@ class DiscoverTvSeriesDataSource(
     private val onlyWithPosters: Boolean = false,
     private val onlyWithScore: Boolean = false,
     private val onlyWithOverview: Boolean = false,
-    private val airDateRange: DateRange,
-    private val firebaseCrashlytics: FirebaseCrashlytics
+    private val airDateRange: DateRange
 ) : PagingSource<Int, TvSeries>() {
 
     private val fromAirDate = airDateRange.from?.let { date -> DateParam(date) }
@@ -69,7 +68,7 @@ class DiscoverTvSeriesDataSource(
         } catch (e: HttpException) {
             LoadResult.Error(e)
         } catch (e: Exception) {
-            firebaseCrashlytics.recordException(e)
+            FirebaseCrashlytics.getInstance().recordException(e)
             LoadResult.Error(e)
         }
     }

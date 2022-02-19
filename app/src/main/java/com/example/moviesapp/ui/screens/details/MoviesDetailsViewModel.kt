@@ -28,7 +28,6 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class, FlowPreview::class)
 @HiltViewModel
 class MoviesDetailsViewModel @Inject constructor(
-    private val firebaseCrashlytics: FirebaseCrashlytics,
     private val configRepository: ConfigRepository,
     private val movieRepository: MovieRepository,
     private val favouritesRepository: FavouritesRepository,
@@ -188,7 +187,7 @@ class MoviesDetailsViewModel @Inject constructor(
 
             response.onException {
                 onError()
-                firebaseCrashlytics.recordException(exception)
+                FirebaseCrashlytics.getInstance().recordException(exception)
             }
         }
     }
@@ -211,7 +210,7 @@ class MoviesDetailsViewModel @Inject constructor(
 
             response.onException {
                 onError()
-                firebaseCrashlytics.recordException(exception)
+                FirebaseCrashlytics.getInstance().recordException(exception)
             }
         }
     }
@@ -231,7 +230,7 @@ class MoviesDetailsViewModel @Inject constructor(
 
             response.onException {
                 onError()
-                firebaseCrashlytics.recordException(exception)
+                FirebaseCrashlytics.getInstance().recordException(exception)
             }
         }
     }
@@ -252,7 +251,7 @@ class MoviesDetailsViewModel @Inject constructor(
 
             response.onException {
                 onError()
-                firebaseCrashlytics.recordException(exception)
+                FirebaseCrashlytics.getInstance().recordException(exception)
             }
         }
     }
@@ -286,7 +285,7 @@ class MoviesDetailsViewModel @Inject constructor(
 
             response.onException {
                 onError()
-                firebaseCrashlytics.recordException(exception)
+                FirebaseCrashlytics.getInstance().recordException(exception)
             }
         }
     }
@@ -310,7 +309,7 @@ class MoviesDetailsViewModel @Inject constructor(
 
             response.onException {
                 onError()
-                firebaseCrashlytics.recordException(exception)
+                FirebaseCrashlytics.getInstance().recordException(exception)
             }
         }
     }
@@ -332,7 +331,7 @@ class MoviesDetailsViewModel @Inject constructor(
 
                 response.onException {
                     onError()
-                    firebaseCrashlytics.recordException(exception)
+                    FirebaseCrashlytics.getInstance().recordException(exception)
                 }
             }
         }
@@ -364,7 +363,7 @@ class MoviesDetailsViewModel @Inject constructor(
 
                 response.onException {
                     onError()
-                    firebaseCrashlytics.recordException(exception)
+                    FirebaseCrashlytics.getInstance().recordException(exception)
                 }
             }
         }

@@ -20,7 +20,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SeasonDetailsViewModel @Inject constructor(
-    private val firebaseCrashlytics: FirebaseCrashlytics,
     private val configRepository: ConfigRepository,
     private val tvSeriesRepository: TvSeriesRepository,
     private val savedStateHandle: SavedStateHandle
@@ -69,7 +68,7 @@ class SeasonDetailsViewModel @Inject constructor(
 
                             response.onException {
                                 onError()
-                                firebaseCrashlytics.recordException(exception)
+                                FirebaseCrashlytics.getInstance().recordException(exception)
                             }
                         }
 
@@ -115,7 +114,7 @@ class SeasonDetailsViewModel @Inject constructor(
 
                             response.onException {
                                 onError()
-                                firebaseCrashlytics.recordException(exception)
+                                FirebaseCrashlytics.getInstance().recordException(exception)
                             }
                         }
                     }
@@ -152,7 +151,7 @@ class SeasonDetailsViewModel @Inject constructor(
 
                 response.onException {
                     onError()
-                    firebaseCrashlytics.recordException(exception)
+                    FirebaseCrashlytics.getInstance().recordException(exception)
                 }
             }
         }

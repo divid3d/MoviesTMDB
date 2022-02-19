@@ -21,8 +21,7 @@ class DiscoverMoviesDataSource(
     private val onlyWithPosters: Boolean = false,
     private val onlyWithScore: Boolean = false,
     private val onlyWithOverview: Boolean = false,
-    private val releaseDateRange: DateRange,
-    private val firebaseCrashlytics: FirebaseCrashlytics
+    private val releaseDateRange: DateRange
 ) : PagingSource<Int, Movie>() {
 
     private val fromReleaseDate = releaseDateRange.from?.let { date -> DateParam(date) }
@@ -69,7 +68,7 @@ class DiscoverMoviesDataSource(
         } catch (e: HttpException) {
             LoadResult.Error(e)
         } catch (e: Exception) {
-            firebaseCrashlytics.recordException(e)
+            FirebaseCrashlytics.getInstance().recordException(e)
             LoadResult.Error(e)
         }
     }

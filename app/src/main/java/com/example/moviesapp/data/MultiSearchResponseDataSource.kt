@@ -18,8 +18,7 @@ class MultiSearchResponseDataSource(
     private val year: Int? = null,
     private val releaseYear: Int? = null,
     private val language: String = DeviceLanguage.default.languageCode,
-    private val region: String = DeviceLanguage.default.region,
-    private val firebaseCrashlytics: FirebaseCrashlytics
+    private val region: String = DeviceLanguage.default.region
 ) : PagingSource<Int, SearchResult>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SearchResult> {
         return try {
@@ -54,7 +53,7 @@ class MultiSearchResponseDataSource(
         } catch (e: HttpException) {
             LoadResult.Error(e)
         } catch (e: Exception) {
-            firebaseCrashlytics.recordException(e)
+            FirebaseCrashlytics.getInstance().recordException(e)
             LoadResult.Error(e)
         }
     }
