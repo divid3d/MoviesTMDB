@@ -286,27 +286,6 @@ fun MovieDetailsScreen(
                 }
             }
 
-            videos?.let { videos ->
-                if (videos.isNotEmpty()) {
-                    VideosSection(
-                        modifier = Modifier
-                            .padding(top = MaterialTheme.spacing.small)
-                            .fillMaxWidth()
-                            .animateContentSize(),
-                        title = stringResource(R.string.movie_details_videos),
-                        videos = videos,
-                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                    ) { video ->
-                        openVideo(
-                            context = context,
-                            video = video
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-                }
-            }
-
             movieCollection?.let { collection ->
                 if (collection.parts.isNotEmpty()) {
                     PresentableListSection(
@@ -392,6 +371,27 @@ fun MovieDetailsScreen(
                             startRoute = startRoute
                         )
                     )
+                }
+            }
+
+            videos?.let { videos ->
+                if (videos.isNotEmpty()) {
+                    VideosSection(
+                        modifier = Modifier
+                            .padding(top = MaterialTheme.spacing.small)
+                            .fillMaxWidth()
+                            .animateContentSize(),
+                        title = stringResource(R.string.movie_details_videos),
+                        videos = videos,
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
+                    ) { video ->
+                        openVideo(
+                            context = context,
+                            video = video
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
                 }
             }
 

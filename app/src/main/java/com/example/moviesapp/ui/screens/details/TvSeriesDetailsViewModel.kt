@@ -247,7 +247,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
     private fun getTvSeriesVideos(tvSeriesId: Int, deviceLanguage: DeviceLanguage) {
         viewModelScope.launch(Dispatchers.IO) {
-            tvSeriesRepository.getTvSeriesVideos(
+            tvSeriesRepository.tvSeriesVideos(
                 tvSeriesId = tvSeriesId,
                 isoCode = deviceLanguage.languageCode
             ).request { response ->
