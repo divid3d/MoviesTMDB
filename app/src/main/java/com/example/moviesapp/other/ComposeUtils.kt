@@ -1,5 +1,6 @@
 package com.example.moviesapp.other
 
+import androidx.annotation.PluralsRes
 import androidx.compose.animation.core.InfiniteRepeatableSpec
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -13,8 +14,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -61,8 +61,13 @@ fun LazyListState.isScrollingTowardsStart(): Boolean {
 }
 
 @Composable
-fun BoxWithConstraintsScope.getMaxSize(): Pair<Float, Float> {
-    return LocalDensity.current.run { maxWidth.toPx() to maxHeight.toPx() }
+fun pluralsResource(
+    @PluralsRes resId: Int,
+    quantity: Int,
+    vararg formatArgs: Any? = emptyArray()
+): String {
+    return LocalContext.current.resources
+        .getQuantityString(resId, quantity, *formatArgs)
 }
 
 @Composable
@@ -80,7 +85,6 @@ fun <T : Any> LazyGridScope.items(
     }
 }
 
-
 fun LazyPagingItems<*>.isEmpty(): Boolean {
     return run {
         loadState.source.refresh is LoadState.NotLoading
@@ -90,19 +94,6 @@ fun LazyPagingItems<*>.isEmpty(): Boolean {
 }
 
 fun LazyPagingItems<*>.isNotEmpty(): Boolean = !isEmpty()
-
-fun ColorFilter.Companion.grayScale(): ColorFilter {
-    val grayScaleMatrix = ColorMatrix(
-        floatArrayOf(
-            0.33f, 0.33f, 0.33f, 0f, 0f,
-            0.33f, 0.33f, 0.33f, 0f, 0f,
-            0.33f, 0.33f, 0.33f, 0f, 0f,
-            0f, 0f, 0f, 1f, 0f
-        )
-    )
-
-    return colorMatrix(grayScaleMatrix)
-}
 
 inline fun <T> List<T>?.ifNotNullAndEmpty(scope: (List<T>) -> Unit) {
     if (!this.isNullOrEmpty()) {

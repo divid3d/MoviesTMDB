@@ -6,7 +6,7 @@ import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Movie
 import com.example.moviesapp.model.MoviesResponse
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import kotlinx.coroutines.CancellationException
+import com.squareup.moshi.JsonDataException
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -28,13 +28,11 @@ class MovieResponseDataSource(
                 prevKey = if (nextPage == 1) null else nextPage - 1,
                 nextKey = if (currentPage + 1 > totalPages) null else currentPage + 1
             )
-        } catch (e: CancellationException) {
-            throw  e
         } catch (e: IOException) {
             LoadResult.Error(e)
         } catch (e: HttpException) {
             LoadResult.Error(e)
-        } catch (e: Exception) {
+        } catch (e: JsonDataException) {
             FirebaseCrashlytics.getInstance().recordException(e)
             LoadResult.Error(e)
         }
