@@ -67,7 +67,8 @@ fun EpisodeChip(
                     episode.airDate?.let { date ->
                         Text(
                             text = date.formatted(),
-                            fontWeight = FontWeight.Thin
+                            fontWeight = FontWeight.Light,
+                            fontSize = 12.sp
                         )
                     }
                 }
@@ -101,6 +102,5 @@ fun EpisodeChip(
             }
         }
     }
-
 
 }
