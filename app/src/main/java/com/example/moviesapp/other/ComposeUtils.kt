@@ -91,7 +91,6 @@ fun LazyPagingItems<*>.isEmpty(): Boolean {
 
 fun LazyPagingItems<*>.isNotEmpty(): Boolean = !isEmpty()
 
-
 fun ColorFilter.Companion.grayScale(): ColorFilter {
     val grayScaleMatrix = ColorMatrix(
         floatArrayOf(
@@ -104,4 +103,11 @@ fun ColorFilter.Companion.grayScale(): ColorFilter {
 
     return colorMatrix(grayScaleMatrix)
 }
+
+inline fun <T> List<T>?.ifNotNullAndEmpty(scope: (List<T>) -> Unit) {
+    if (!this.isNullOrEmpty()) {
+        scope(this)
+    }
+}
+
 
