@@ -5,7 +5,7 @@ String getTmdbApiKey() {
     return properties['TMDB_API_KEY']
 }
 
-def getCurrentDate() {
+static String getCurrentDate() {
     def date = new Date()
     def formattedDate = date.format('ddMMyyyy')
     return formattedDate
