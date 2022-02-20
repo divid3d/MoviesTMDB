@@ -17,33 +17,26 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.moviesapp.R
-import com.example.moviesapp.model.MovieDetails
-import com.example.moviesapp.other.formattedRuntime
-import com.example.moviesapp.other.timeString
-import com.example.moviesapp.other.yearString
+import com.example.moviesapp.model.TvSeriesDetails
+import com.example.moviesapp.other.yearRangeString
 import com.example.moviesapp.ui.components.AdditionalInfoText
 import com.example.moviesapp.ui.components.ExpandableText
 import com.example.moviesapp.ui.components.GenresSection
 import com.example.moviesapp.ui.theme.spacing
-import java.util.*
 
 @Composable
-fun MovieDetailsInfoSection(
+fun TvSeriesDetailsInfoSection(
     modifier: Modifier = Modifier,
-    movieDetails: MovieDetails?,
-    watchAtTime: Date?
+    tvSeriesDetails: TvSeriesDetails?,
+    nextEpisodeDaysRemaining: Long?
 ) {
     val otherOriginalTitle: Boolean by derivedStateOf {
-        movieDetails?.run { originalTitle.isNotEmpty() && title != originalTitle } ?: false
-    }
-
-    val watchAtTimeString = watchAtTime?.let { time ->
-        stringResource(R.string.movie_details_watch_at, time.timeString())
+        tvSeriesDetails?.run { !originalName.isNullOrEmpty() && title != originalName } ?: false
     }
 
     Crossfade(
         modifier = modifier,
-        targetState = movieDetails
+        targetState = tvSeriesDetails
     ) { details ->
         if (details != null) {
             Column(
@@ -52,21 +45,37 @@ fun MovieDetailsInfoSection(
             ) {
                 Column {
                     Text(
-                        text = details.title,
+                        text = details.name,
                         color = Color.White,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.ExtraBold
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
                     )
-                    if (otherOriginalTitle) {
-                        Text(text = details.originalTitle)
+                    details.originalName?.let { name ->
+                        if (otherOriginalTitle) {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = name
+                            )
+                        }
                     }
                     AdditionalInfoText(
                         modifier = Modifier.fillMaxWidth(),
                         infoTexts = details.run {
                             listOfNotNull(
-                                releaseDate?.yearString(),
-                                runtime?.formattedRuntime(),
-                                watchAtTimeString
+                                yearRangeString(
+                                    from = firstAirDate,
+                                    to = lastAirDate
+                                ),
+                                nextEpisodeDaysRemaining?.let { days ->
+                                    when (days) {
+                                        0L -> stringResource(R.string.next_episode_today_text)
+                                        1L -> stringResource(R.string.next_episode_tomorrow_text)
+                                        else -> stringResource(
+                                            R.string.next_episode_days_text,
+                                            days
+                                        )
+                                    }
+                                }
                             )
                         }
                     )
@@ -82,7 +91,7 @@ fun MovieDetailsInfoSection(
                     modifier = Modifier.padding(top = MaterialTheme.spacing.small),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
                 ) {
-                    details.tagline?.let { tagline ->
+                    details.tagline.let { tagline ->
                         if (tagline.isNotEmpty()) {
                             Text(
                                 text = "\"$tagline\"",

@@ -146,6 +146,7 @@ fun MovieDetailsScreen(
 
             MovieDetailsInfoSection(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .padding(horizontal = MaterialTheme.spacing.medium)
                     .animateContentSize(),
                 movieDetails = movieDetails,
