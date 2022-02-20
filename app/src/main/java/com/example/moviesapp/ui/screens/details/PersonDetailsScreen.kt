@@ -214,7 +214,7 @@ fun PersonDetailsScreen(
                         .fillMaxWidth()
                         .animateContentSize(),
                     title = stringResource(R.string.person_details_screen_cast),
-                    list = cast
+                    credits = cast
                 ) { mediaType, id -> navigateToDetails(mediaType, id) }
             }
 
@@ -226,7 +226,7 @@ fun PersonDetailsScreen(
                         .fillMaxWidth()
                         .animateContentSize(),
                     title = stringResource(R.string.person_details_screen_crew),
-                    list = crew
+                    credits = crew
                 ) { mediaType, id -> navigateToDetails(mediaType, id) }
             }
 

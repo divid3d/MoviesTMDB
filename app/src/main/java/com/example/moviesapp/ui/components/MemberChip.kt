@@ -96,9 +96,6 @@ fun MemberResultChip(
                     maxLines = if (secondLineExpanded) Int.MAX_VALUE else 2,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center,
-                    onTextLayout = { result ->
-                        //hasSecondLineOverflow = result.hasVisualOverflow
-                    }
                 )
             }
         }
