@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
@@ -84,10 +83,8 @@ fun PresentableSection(
                     TextButton(onClick = onMoreClick) {
                         Text(
                             text = stringResource(R.string.movies_more),
-                            style = TextStyle(
-                                color = Color.White,
-                                fontSize = 12.sp
-                            )
+                            color = Color.White,
+                            fontSize = 12.sp
                         )
                         Icon(
                             imageVector = Icons.Filled.KeyboardArrowRight,

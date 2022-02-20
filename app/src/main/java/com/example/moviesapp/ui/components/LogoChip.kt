@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -92,11 +91,9 @@ fun LogoChip(
 
         Text(
             text = text,
-            style = TextStyle(
-                color = textColor,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 12.sp
-            ),
+            color = textColor,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 12.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )

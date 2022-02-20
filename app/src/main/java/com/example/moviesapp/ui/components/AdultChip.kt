@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.moviesapp.ui.theme.DarkRed
@@ -31,7 +30,9 @@ fun AdultChip(
     ) {
         Text(
             modifier = Modifier.padding(MaterialTheme.spacing.extraSmall),
-            text = "18+", style = TextStyle(color = Color.White, fontSize = 16.sp)
+            text = "18+",
+            color = Color.White,
+            fontSize = 16.sp
         )
     }
 }

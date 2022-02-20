@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -73,7 +72,7 @@ fun SearchScreen(
                 ) {
                     Text(
                         text = stringResource(R.string.search_insufficient_query_length_info_text),
-                        style = TextStyle(fontSize = 12.sp)
+                        fontSize = 12.sp
                     )
                 }
             },

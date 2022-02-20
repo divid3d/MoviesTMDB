@@ -5,6 +5,12 @@ String getTmdbApiKey() {
     return properties['TMDB_API_KEY']
 }
 
+def getCurrentDate() {
+    def date = new Date()
+    def formattedDate = date.format('ddMMyyyy')
+    return formattedDate
+}
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
@@ -15,6 +21,7 @@ plugins {
     id 'com.google.firebase.crashlytics'
     id 'com.google.firebase.firebase-perf'
     id 'com.google.gms.google-services'
+    id "io.gitlab.arturbosch.detekt"
 }
 
 android {
@@ -55,8 +62,9 @@ android {
             variant.outputs.all { output ->
                 def builtType = variant.buildType.name
                 def versionName = variant.versionName
-                def versionCode = variant.versionCode
-                outputFileName = "app-${builtType}-${versionName}-${versionCode}.apk"
+                def currentDate = getCurrentDate()
+
+                outputFileName = "app_${builtType}_${versionName}_${currentDate}.apk"
             }
         }
     }

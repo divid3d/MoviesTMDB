@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.example.moviesapp.R
 import com.example.moviesapp.ui.theme.White300
@@ -34,7 +33,7 @@ fun SearchEmptyState(
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         Text(
             text = stringResource(R.string.search_empty_state),
-            style = TextStyle(color = White300)
+            color = White300
         )
     }
 }

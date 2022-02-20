@@ -28,6 +28,7 @@ import com.example.moviesapp.ui.screens.destinations.BrowseMoviesScreenDestinati
 import com.example.moviesapp.ui.screens.destinations.DiscoverMoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
+import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -84,7 +85,9 @@ fun MoviesScreen(
             topRated,
             trending,
             nowPlaying
-        ).any { lazyPagingItems -> lazyPagingItems.itemCount > 0 && lazyPagingItems.loadState.refresh is LoadState.Loading }
+        ).any { lazyPagingItems ->
+            lazyPagingItems.itemCount > 0 && lazyPagingItems.loadState.refresh is LoadState.Loading
+        }
     }
 
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing)
@@ -111,10 +114,15 @@ fun MoviesScreen(
         navigator.navigate(DiscoverMoviesScreenDestination)
     }
 
+    LaunchedEffect(isRefreshing) {
+        swipeRefreshState.isRefreshing = isRefreshing
+    }
+
     SwipeRefresh(
         state = swipeRefreshState,
         indicator = { state, trigger ->
             SwipeRefreshIndicator(
+                modifier = Modifier.statusBarsPadding(),
                 state = state,
                 refreshTriggerDistance = trigger,
                 fade = true,

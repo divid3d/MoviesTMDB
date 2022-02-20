@@ -4,17 +4,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.sp
 import coil.size.OriginalSize
 import coil.size.Scale
 import com.example.moviesapp.R
-import com.example.moviesapp.model.CreditsPresentable
 import com.example.moviesapp.other.ImageUrlParser
 import com.example.moviesapp.ui.components.TmdbImage
 import com.example.moviesapp.ui.theme.Black500
@@ -34,10 +33,16 @@ import com.example.moviesapp.ui.theme.spacing
 @Composable
 fun CreditsItem(
     modifier: Modifier = Modifier,
-    creditsPresentable: CreditsPresentable,
+    posterPath: String?,
+    title: String?,
+    infoText: String?,
     size: Size = MaterialTheme.sizes.presentableItemSmall,
     onClick: () -> Unit = {}
 ) {
+    var infoTextExpanded by remember {
+        mutableStateOf(false)
+    }
+
     Column(
         modifier = Modifier.width(size.width),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
@@ -50,10 +55,10 @@ fun CreditsItem(
             shape = MaterialTheme.shapes.medium,
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
-                if (creditsPresentable.posterPath != null) {
+                if (posterPath != null) {
                     TmdbImage(
                         modifier = Modifier.fillMaxSize(),
-                        imagePath = creditsPresentable.posterPath,
+                        imagePath = posterPath,
                         imageType = ImageUrlParser.ImageType.Profile
                     ) {
                         size(OriginalSize)
@@ -80,7 +85,7 @@ fun CreditsItem(
                     }
                 }
 
-                creditsPresentable.title?.let { title ->
+                title?.let { title ->
                     Box(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
@@ -94,28 +99,35 @@ fun CreditsItem(
                             text = title,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
-                            style = TextStyle(
-                                color = Color.White,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 12.sp
-                            )
+                            color = Color.White,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 12.sp
                         )
                     }
                 }
             }
         }
 
-        creditsPresentable.infoText?.let { text ->
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = text,
-                style = TextStyle(
-                    fontSize = 12.sp
-                ),
-                textAlign = TextAlign.Center,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
+        infoText?.let { text ->
+            if (text.isNotEmpty()) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            infoTextExpanded = !infoTextExpanded
+                        },
+                    text = text,
+                    fontSize = 12.sp,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    maxLines = if (infoTextExpanded) Int.MAX_VALUE else 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
+
 }

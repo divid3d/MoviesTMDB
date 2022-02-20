@@ -17,10 +17,12 @@ import com.example.moviesapp.ui.theme.spacing
 fun CreditsList(
     modifier: Modifier = Modifier,
     title: String,
-    list: List<CreditsPresentable>,
+    credits: List<CreditsPresentable>,
     onCreditsClick: (MediaType, Int) -> Unit = { _, _ -> }
 ) {
-    if (list.isNotEmpty()) {
+    val creditsGroups = credits.groupBy { credit -> credit.id }.toList()
+
+    if (credits.isNotEmpty()) {
         Column(modifier = modifier) {
             SectionLabel(
                 modifier = Modifier
@@ -36,12 +38,24 @@ fun CreditsList(
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
                 contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
             ) {
-                items(list) { creditsPresentable ->
-                    CreditsItem(creditsPresentable = creditsPresentable, onClick = {
-                        onCreditsClick(
-                            creditsPresentable.mediaType, creditsPresentable.id
-                        )
-                    })
+                items(creditsGroups) { (id, credits) ->
+                    val posterPath = credits.firstNotNullOfOrNull { member -> member.posterPath }
+                    val mediaType = credits.firstOrNull()?.mediaType
+                    val mediaTitle = credits.firstNotNullOfOrNull { member -> member.title }
+                    val infoText = credits.mapNotNull { member ->
+                        member.infoText
+                    }.joinToString(separator = ", ")
+
+                    CreditsItem(
+                        posterPath = posterPath,
+                        title = mediaTitle,
+                        infoText = infoText,
+                        onClick = {
+                            mediaType?.let { type ->
+                                onCreditsClick(type, id)
+                            }
+                        }
+                    )
                 }
             }
         }

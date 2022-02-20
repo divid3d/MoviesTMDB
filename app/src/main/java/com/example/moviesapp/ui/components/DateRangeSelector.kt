@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
@@ -103,7 +102,7 @@ fun DateRangeSelector(
                     bottom.linkTo(fromDateChip.top)
                 },
             text = stringResource(R.string.date_range_selector_from_label),
-            style = TextStyle(fontWeight = FontWeight.SemiBold)
+            fontWeight = FontWeight.SemiBold
         )
 
         Text(
@@ -114,7 +113,7 @@ fun DateRangeSelector(
                     bottom.linkTo(toDateChip.top)
                 },
             text = stringResource(R.string.date_range_selector_to_label),
-            style = TextStyle(fontWeight = FontWeight.SemiBold)
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
@@ -162,9 +161,7 @@ fun DateChip(
                 modifier = Modifier.weight(1f),
                 text = initialDate?.formatted()
                     ?: stringResource(R.string.date_range_selector_select_hint),
-                style = TextStyle(
-                    fontSize = 12.sp
-                ),
+                fontSize = 12.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 color = if (initialDate != null) Color.White else Color.White.copy(0.5f)
