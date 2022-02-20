@@ -24,6 +24,7 @@ import com.example.moviesapp.ui.screens.destinations.BrowseTvSeriesScreenDestina
 import com.example.moviesapp.ui.screens.destinations.DiscoverTvSeriesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
+import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -58,7 +59,9 @@ fun TvScreen(
             onTheAir,
             trending,
             airingToday
-        ).any { lazyPagingItems -> lazyPagingItems.itemCount > 0 && lazyPagingItems.loadState.refresh is LoadState.Loading }
+        ).any { lazyPagingItems ->
+            lazyPagingItems.itemCount > 0 && lazyPagingItems.loadState.refresh is LoadState.Loading
+        }
     }
 
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing)
@@ -85,10 +88,15 @@ fun TvScreen(
         navigator.navigate(DiscoverTvSeriesScreenDestination)
     }
 
+    LaunchedEffect(isRefreshing) {
+        swipeRefreshState.isRefreshing = isRefreshing
+    }
+
     SwipeRefresh(
         state = swipeRefreshState,
         indicator = { state, trigger ->
             SwipeRefreshIndicator(
+                modifier = Modifier.statusBarsPadding(),
                 state = state,
                 refreshTriggerDistance = trigger,
                 fade = true,

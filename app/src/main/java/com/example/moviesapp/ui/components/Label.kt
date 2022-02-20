@@ -15,6 +15,8 @@ fun Label(
     Text(
         modifier = modifier,
         text = label,
-        color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold
+        color = Color.White,
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Bold
     )
 }

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.sp
 import com.example.moviesapp.ui.theme.spacing
 
 @Composable
@@ -24,7 +25,8 @@ fun LabeledText(
         Label(label = label)
         Text(
             text = text,
-            color = Color.White
+            color = Color.White,
+            fontSize = 12.sp
         )
     }
 }

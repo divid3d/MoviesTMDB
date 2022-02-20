@@ -207,13 +207,17 @@ fun TvSeriesDetailsScreen(
                         )
                     }
 
-                    Column {
+                    Column(
+                        modifier = Modifier.padding(top = MaterialTheme.spacing.small),
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
+                    ) {
                         details.tagline.let { tagline ->
                             if (tagline.isNotEmpty()) {
                                 Text(
                                     modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
                                     text = "\"$tagline\"",
-                                    fontStyle = FontStyle.Italic
+                                    fontStyle = FontStyle.Italic,
+                                    fontSize = 12.sp
                                 )
                             }
                         }

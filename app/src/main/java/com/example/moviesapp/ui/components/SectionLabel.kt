@@ -1,12 +1,12 @@
 package com.example.moviesapp.ui.components
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun SectionLabel(
@@ -17,7 +17,7 @@ fun SectionLabel(
         modifier = modifier,
         text = text,
         color = Color.White,
-        fontSize = 20.sp,
+        style = MaterialTheme.typography.h6,
         fontWeight = FontWeight.Bold,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis

@@ -177,7 +177,7 @@ fun PresentableTopSection(
                     .padding(top = MaterialTheme.spacing.small),
                 text = title,
                 color = contentColor,
-                fontSize = 24.sp,
+                style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.Bold
             )
             HorizontalPager(
@@ -257,7 +257,6 @@ fun PresentableTopSectionItem(
     itemTransformations: GraphicsLayerScope.() -> Unit = {},
     contentTransformations: GraphicsLayerScope.() -> Unit = {}
 ) {
-
     Row(
         modifier = modifier
     ) {
@@ -281,13 +280,14 @@ fun PresentableTopSectionItem(
                 Column(
                     modifier = modifier
                         .fillMaxWidth()
-                        .graphicsLayer { contentTransformations() }
+                        .graphicsLayer { contentTransformations() },
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                 ) {
                     Text(
                         text = presentableItemState.presentable.title,
                         fontSize = 16.sp,
                         color = contentColor,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.ExtraBold
                     )
                     presentableItemState.presentable.overview?.let { overview ->
                         Text(

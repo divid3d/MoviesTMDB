@@ -176,8 +176,8 @@ fun MovieDetailsScreen(
                         Text(
                             text = details.title,
                             color = Color.White,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.ExtraBold
                         )
                         if (otherOriginalTitle) {
                             Text(text = details.originalTitle)
@@ -200,12 +200,16 @@ fun MovieDetailsScreen(
                         )
                     }
 
-                    Column {
+                    Column(
+                        modifier = Modifier.padding(top = MaterialTheme.spacing.small),
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
+                    ) {
                         details.tagline?.let { tagline ->
                             if (tagline.isNotEmpty()) {
                                 Text(
                                     text = "\"$tagline\"",
-                                    fontStyle = FontStyle.Italic
+                                    fontStyle = FontStyle.Italic,
+                                    fontSize = 12.sp
                                 )
                             }
                         }

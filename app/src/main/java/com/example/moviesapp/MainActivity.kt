@@ -60,6 +60,7 @@ class MainActivity : ComponentActivity() {
             //val useDarkIcons = MaterialTheme.colors.isLight
             val navController = rememberNavController()
             val systemUiController = rememberSystemUiController()
+            val color = MaterialTheme.colors.primarySurface
 
             var currentRoute: String? by rememberSaveable {
                 mutableStateOf(null)
@@ -106,21 +107,25 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            SideEffect {
-                // Update all of the system bar colors to be transparent, and use
-                // dark icons if we're in light theme
-                systemUiController.setSystemBarsColor(
-                    color = Black500,
-                    darkIcons = false
-                )
-            }
-
             CompositionLocalProvider(
                 LocalImageLoader provides ImageLoader(context),
                 LocalImageUrlParser provides imageUrlParser
             ) {
                 MoviesAppTheme {
-                    // A surface container using the 'background' color from the theme
+                    val navigationBarColor = MaterialTheme.colors.surface
+
+                    SideEffect {
+                        systemUiController.setStatusBarColor(
+                            color = Black500,
+                            darkIcons = false
+                        )
+
+                        systemUiController.setNavigationBarColor(
+                            color = navigationBarColor,
+                            darkIcons = false
+                        )
+                    }
+
                     ProvideWindowInsets {
                         Scaffold(
                             scaffoldState = rememberScaffoldState(snackbarHostState = snackBarHostState),

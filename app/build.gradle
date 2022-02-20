@@ -15,6 +15,7 @@ plugins {
     id 'com.google.firebase.crashlytics'
     id 'com.google.firebase.firebase-perf'
     id 'com.google.gms.google-services'
+    id "io.gitlab.arturbosch.detekt"
 }
 
 android {

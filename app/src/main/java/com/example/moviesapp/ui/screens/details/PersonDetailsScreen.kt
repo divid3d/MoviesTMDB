@@ -114,7 +114,6 @@ fun PersonDetailsScreen(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
             ) {
                 details?.let { details ->
-
                     ConstraintLayout(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -192,16 +191,18 @@ fun PersonDetailsScreen(
                             .padding(horizontal = MaterialTheme.spacing.medium),
                         text = details.name,
                         color = Color.White,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.ExtraBold
                     )
 
-                    ExpandableText(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = MaterialTheme.spacing.medium),
-                        text = details.biography
-                    )
+                    if (details.biography.isNotEmpty()) {
+                        ExpandableText(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = MaterialTheme.spacing.medium),
+                            text = details.biography
+                        )
+                    }
                 }
             }
 
