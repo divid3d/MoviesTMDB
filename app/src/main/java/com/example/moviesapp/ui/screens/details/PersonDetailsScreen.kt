@@ -1,6 +1,7 @@
 package com.example.moviesapp.ui.screens.details
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -8,7 +9,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -18,25 +18,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MediaType
-import com.example.moviesapp.other.formatted
+import com.example.moviesapp.other.ifNotNullAndEmpty
 import com.example.moviesapp.other.openExternalId
 import com.example.moviesapp.ui.components.AppBar
-import com.example.moviesapp.ui.components.ExpandableText
 import com.example.moviesapp.ui.components.ExternalIdsSection
-import com.example.moviesapp.ui.components.LabeledText
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.details.components.CreditsList
+import com.example.moviesapp.ui.screens.details.components.PersonDetailsInfoSection
+import com.example.moviesapp.ui.screens.details.components.PersonDetailsTopContent
 import com.example.moviesapp.ui.screens.details.components.PersonProfileImage
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
@@ -107,133 +105,98 @@ fun PersonDetailsScreen(
                 .fillMaxSize()
                 .statusBarsPadding()
                 .padding(top = 56.dp)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+            ConstraintLayout(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(MaterialTheme.spacing.medium)
             ) {
-                details?.let { details ->
-                    ConstraintLayout(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(MaterialTheme.spacing.medium)
-                    ) {
-                        val (profileImageRef, contentRef) = createRefs()
+                val (profileImageRef, contentRef) = createRefs()
 
-                        PersonProfileImage(
-                            modifier = Modifier.constrainAs(profileImageRef) {
-                                top.linkTo(parent.top)
-                                start.linkTo(parent.start)
-                            }, profilePath = details.profilePath
-                        )
+                PersonProfileImage(
+                    modifier = Modifier.constrainAs(profileImageRef) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                    },
+                    profilePath = details?.profilePath
+                )
 
-                        Column(modifier = Modifier
-                            .constrainAs(contentRef) {
-                                start.linkTo(profileImageRef.end)
-                                end.linkTo(parent.end)
-                                top.linkTo(profileImageRef.top)
-                                bottom.linkTo(profileImageRef.bottom)
+                Column(modifier = Modifier
+                    .constrainAs(contentRef) {
+                        start.linkTo(profileImageRef.end)
+                        end.linkTo(parent.end)
+                        top.linkTo(profileImageRef.top)
+                        bottom.linkTo(profileImageRef.bottom)
 
-                                height = Dimension.fillToConstraints
-                                width = Dimension.fillToConstraints
-                            }
-                            .padding(start = MaterialTheme.spacing.medium)) {
-                            Column(
-                                modifier = Modifier.weight(1f),
-                                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                            ) {
-                                LabeledText(
-                                    label = stringResource(R.string.person_details_screen_know_for_label),
-                                    text = details.knownFor
-                                )
-
-                                details.birthPlace?.let { birthplace ->
-                                    LabeledText(
-                                        label = stringResource(R.string.person_details_screen_birthplace),
-                                        text = birthplace
-                                    )
-                                }
-
-                                details.birthday?.let { date ->
-                                    LabeledText(
-                                        label = stringResource(R.string.person_details_screen_birthday),
-                                        text = date.formatted()
-                                    )
-                                }
-
-                                details.deathDate?.let { date ->
-                                    LabeledText(
-                                        label = stringResource(R.string.person_details_screen_death_date),
-                                        text = date.formatted()
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.weight(1f))
-
-                                externalIds?.let { ids ->
-                                    ExternalIdsSection(
-                                        modifier = Modifier.fillMaxWidth(), externalIds = ids
-                                    ) { externalId ->
-                                        openExternalId(
-                                            context = context, externalId = externalId
-                                        )
-                                    }
-                                }
-
-                            }
-                        }
+                        height = Dimension.fillToConstraints
+                        width = Dimension.fillToConstraints
                     }
-
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = MaterialTheme.spacing.medium),
-                        text = details.name,
-                        color = Color.White,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.ExtraBold
+                    .padding(start = MaterialTheme.spacing.medium)
+                ) {
+                    PersonDetailsTopContent(
+                        modifier = Modifier.fillMaxWidth(),
+                        personDetails = details
                     )
 
-                    if (details.biography.isNotEmpty()) {
-                        ExpandableText(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = MaterialTheme.spacing.medium),
-                            text = details.biography
-                        )
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    externalIds?.let { ids ->
+                        ExternalIdsSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            externalIds = ids
+                        ) { externalId ->
+                            openExternalId(
+                                context = context, externalId = externalId
+                            )
+                        }
                     }
                 }
             }
 
-            if (cast.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            PersonDetailsInfoSection(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .animateContentSize(),
+                personDetails = details
+            )
 
-                CreditsList(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .animateContentSize(),
-                    title = stringResource(R.string.person_details_screen_cast),
-                    credits = cast
-                ) { mediaType, id -> navigateToDetails(mediaType, id) }
+            Crossfade(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                targetState = cast
+            ) { cast ->
+                cast.ifNotNullAndEmpty { members ->
+                    CreditsList(
+                        modifier = Modifier.fillMaxWidth(),
+                        title = stringResource(R.string.person_details_screen_cast),
+                        credits = members
+                    ) { mediaType, id -> navigateToDetails(mediaType, id) }
+                }
             }
 
-            if (crew.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-
-                CreditsList(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .animateContentSize(),
-                    title = stringResource(R.string.person_details_screen_crew),
-                    credits = crew
-                ) { mediaType, id -> navigateToDetails(mediaType, id) }
+            Crossfade(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                targetState = crew
+            ) { crew ->
+                crew.ifNotNullAndEmpty { members ->
+                    CreditsList(
+                        modifier = Modifier.fillMaxWidth(),
+                        title = stringResource(R.string.person_details_screen_crew),
+                        credits = members
+                    ) { mediaType, id -> navigateToDetails(mediaType, id) }
+                }
             }
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
         }
 
-        AppBar(modifier = Modifier.align(Alignment.TopCenter),
+        AppBar(
+            modifier = Modifier.align(Alignment.TopCenter),
             title = stringResource(R.string.person_details_screen_appbar_label),
             backgroundColor = Color.Black.copy(0.7f),
             action = {
@@ -257,7 +220,8 @@ fun PersonDetailsScreen(
                         )
                     }
                 }
-            })
+            }
+        )
     }
 
 }
