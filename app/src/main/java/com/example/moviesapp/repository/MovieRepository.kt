@@ -139,14 +139,12 @@ class MovieRepository @Inject constructor(
     fun movieDetails(
         movieId: Int,
         isoCode: String = DeviceLanguage.default.languageCode
-    ): Call<MovieDetails> =
-        apiHelper.getMovieDetails(movieId, isoCode)
+    ): Call<MovieDetails> = apiHelper.getMovieDetails(movieId, isoCode)
 
     fun movieCredits(
         movieId: Int,
         isoCode: String = DeviceLanguage.default.languageCode
-    ): Call<Credits> =
-        apiHelper.getMovieCredits(movieId, isoCode)
+    ): Call<Credits> = apiHelper.getMovieCredits(movieId, isoCode)
 
     fun movieImages(
         movieId: Int
@@ -167,8 +165,7 @@ class MovieRepository @Inject constructor(
     fun collection(
         collectionId: Int,
         isoCode: String = DeviceLanguage.default.languageCode
-    ): Call<CollectionResponse> =
-        apiHelper.getCollection(collectionId, isoCode)
+    ): Call<CollectionResponse> = apiHelper.getCollection(collectionId, isoCode)
 
     fun watchProviders(movieId: Int): Call<WatchProvidersResponse> =
         apiHelper.getMovieWatchProviders(movieId)

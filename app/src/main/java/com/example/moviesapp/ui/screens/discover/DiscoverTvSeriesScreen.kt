@@ -52,7 +52,7 @@ fun DiscoverTvSeriesScreen(
     viewModel: DiscoverTvSeriesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-    val movies = viewModel.movies.collectAsLazyPagingItems()
+    val tvSeries = viewModel.tvSeries.collectAsLazyPagingItems()
 
     val sortType by viewModel.sortType.collectAsState()
     val sortOrder by viewModel.sortOrder.collectAsState()
@@ -72,7 +72,6 @@ fun DiscoverTvSeriesScreen(
     }
 
     val orderIconRotation by animateFloatAsState(targetValue = if (sortOrder == SortOrder.Desc) 0f else 180f)
-
 
     BackHandler(sheetState.isVisible) {
         coroutineScope.launch {
@@ -148,7 +147,7 @@ fun DiscoverTvSeriesScreen(
 
                 Crossfade(
                     modifier = Modifier.fillMaxSize(),
-                    targetState = !movies.isEmpty()
+                    targetState = !tvSeries.isEmpty()
                 ) { hasFilterResults ->
                     if (hasFilterResults) {
                         PresentableGridSection(
@@ -158,7 +157,7 @@ fun DiscoverTvSeriesScreen(
                                 horizontal = MaterialTheme.spacing.small,
                                 vertical = MaterialTheme.spacing.medium,
                             ),
-                            state = movies
+                            state = tvSeries
                         ) { tvSeriesId ->
                             navigator.navigate(
                                 TvSeriesDetailsScreenDestination(tvSeriesId)

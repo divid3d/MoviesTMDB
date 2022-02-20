@@ -32,43 +32,26 @@ class MoviesViewModel @Inject constructor(
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
     val discover: Flow<PagingData<Movie>> = deviceLanguage.map { deviceLanguage ->
-        movieRepository
-            .discoverMovies(deviceLanguage = deviceLanguage)
-            .cachedIn(viewModelScope)
-    }.flattenMerge()
+        movieRepository.discoverMovies(deviceLanguage)
+    }.flattenMerge().cachedIn(viewModelScope)
 
     val upcoming: Flow<PagingData<Movie>> = deviceLanguage.map { deviceLanguage ->
-        movieRepository
-            .upcomingMovies(deviceLanguage = deviceLanguage)
-            .cachedIn(viewModelScope)
-    }.flattenMerge()
+        movieRepository.upcomingMovies(deviceLanguage)
+    }.flattenMerge().cachedIn(viewModelScope)
 
     val trending: Flow<PagingData<Movie>> = deviceLanguage.map { deviceLanguage ->
-        movieRepository
-            .trendingMovies(deviceLanguage = deviceLanguage)
-            .cachedIn(viewModelScope)
-    }.flattenMerge()
+        movieRepository.trendingMovies(deviceLanguage)
+    }.flattenMerge().cachedIn(viewModelScope)
 
     val topRated: Flow<PagingData<Movie>> = deviceLanguage.map { deviceLanguage ->
-        movieRepository
-            .topRatedMovies(deviceLanguage = deviceLanguage)
-            .cachedIn(viewModelScope)
-    }.flattenMerge()
+        movieRepository.topRatedMovies(deviceLanguage)
+    }.flattenMerge().cachedIn(viewModelScope)
 
     val nowPlaying: Flow<PagingData<Movie>> = deviceLanguage.map { deviceLanguage ->
-        movieRepository
-            .nowPlayingMovies(deviceLanguage = deviceLanguage)
-            .cachedIn(viewModelScope)
-    }
-        .flattenMerge()
-        .map { pagingData ->
-            pagingData
-                .filter { tvSeries ->
-                    tvSeries.run {
-                        !backdropPath.isNullOrEmpty() && !posterPath.isNullOrEmpty() && title.isNotEmpty() && overview.isNotEmpty()
-                    }
-                }
-        }.cachedIn(viewModelScope)
+        movieRepository.nowPlayingMovies(deviceLanguage)
+    }.flattenMerge().map { pagingData ->
+        pagingData.filterCompleteInfo()
+    }.cachedIn(viewModelScope)
 
     val favourites: Flow<PagingData<MovieFavourite>> =
         favouritesRepository.favouriteMovies().cachedIn(viewModelScope)
@@ -76,4 +59,14 @@ class MoviesViewModel @Inject constructor(
     val recentBrowsed: Flow<PagingData<RecentlyBrowsedMovie>> =
         recentlyBrowsedRepository.recentlyBrowsedMovies().cachedIn(viewModelScope)
 
+    private fun PagingData<Movie>.filterCompleteInfo(): PagingData<Movie> {
+        return filter { tvSeries ->
+            tvSeries.run {
+                !backdropPath.isNullOrEmpty() &&
+                        !posterPath.isNullOrEmpty() &&
+                        title.isNotEmpty() &&
+                        overview.isNotEmpty()
+            }
+        }
+    }
 }

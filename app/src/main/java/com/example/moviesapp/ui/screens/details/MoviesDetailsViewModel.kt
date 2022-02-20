@@ -39,7 +39,7 @@ class MoviesDetailsViewModel @Inject constructor(
     private val favouritesMoviesIdsFlow: Flow<List<Int>> =
         favouritesRepository.getFavouritesMoviesIds()
 
-    private val movieId: Flow<Int?> = savedStateHandle.getLiveData<Int>("movieId").asFlow()
+    private val movieId: Flow<Int> = savedStateHandle.getLiveData<Int>("movieId").asFlow()
 
     private val _watchAtTime: MutableStateFlow<Date?> = MutableStateFlow(null)
     val watchAtTime: StateFlow<Date?> = _watchAtTime.asStateFlow()
@@ -52,8 +52,23 @@ class MoviesDetailsViewModel @Inject constructor(
     private val _videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
     private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    var similarMoviesPagingDataFlow: Flow<PagingData<Movie>>? = null
-    var moviesRecommendationPagingDataFlow: Flow<PagingData<Movie>>? = null
+    val similarMoviesPagingDataFlow: Flow<PagingData<Movie>> = combine(
+        movieId, deviceLanguage
+    ) { id, deviceLanguage ->
+        movieRepository.similarMovies(
+            movieId = id,
+            deviceLanguage = deviceLanguage
+        )
+    }.flattenMerge().cachedIn(viewModelScope)
+
+    val moviesRecommendationPagingDataFlow: Flow<PagingData<Movie>>? = combine(
+        movieId, deviceLanguage
+    ) { id, deviceLanguage ->
+        movieRepository.moviesRecommendations(
+            movieId = id,
+            deviceLanguage = deviceLanguage
+        )
+    }.flattenMerge().cachedIn(viewModelScope)
 
     val movieDetails: StateFlow<MovieDetails?> =
         _movieDetails.onEach { movieDetails ->
@@ -94,24 +109,11 @@ class MoviesDetailsViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             movieId.collectLatest { movieId ->
-                movieId?.let { id ->
-                    similarMoviesPagingDataFlow = deviceLanguage.map { deviceLanguage ->
-                        movieRepository.similarMovies(movieId = id, deviceLanguage = deviceLanguage)
-                    }.flattenMerge().cachedIn(viewModelScope)
-
-                    moviesRecommendationPagingDataFlow = deviceLanguage.map { deviceLanguage ->
-                        movieRepository.moviesRecommendations(
-                            movieId = movieId,
-                            deviceLanguage = deviceLanguage
-                        )
-                    }.flattenMerge().cachedIn(viewModelScope)
-
-                    deviceLanguage.collectLatest { deviceLanguage ->
-                        getMovieInfo(
-                            movieId = id,
-                            deviceLanguage = deviceLanguage
-                        )
-                    }
+                deviceLanguage.collectLatest { deviceLanguage ->
+                    getMovieInfo(
+                        movieId = movieId,
+                        deviceLanguage = deviceLanguage
+                    )
                 }
             }
         }

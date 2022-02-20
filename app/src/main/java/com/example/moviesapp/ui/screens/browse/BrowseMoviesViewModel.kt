@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.example.moviesapp.model.*
+import com.example.moviesapp.model.DeviceLanguage
+import com.example.moviesapp.model.MovieType
+import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
@@ -15,7 +17,6 @@ import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @FlowPreview
@@ -30,51 +31,28 @@ class BrowseMoviesViewModel @Inject constructor(
 
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
-    var movies: Flow<PagingData<Presentable>>? = null
-
     private val movieType: Flow<MovieType> = savedStateHandle
         .getLiveData("movieType", MovieType.Upcoming.name)
         .asFlow().map { value ->
             MovieType.valueOf(value)
         }
 
-    private val topRated: Flow<PagingData<Movie>> = deviceLanguage.map { deviceLanguage ->
-        movieRepository.topRatedMovies(deviceLanguage = deviceLanguage)
-    }.flattenMerge()
-
-    private val upcoming: Flow<PagingData<Movie>> = deviceLanguage.map { deviceLanguage ->
-        movieRepository.upcomingMovies(deviceLanguage = deviceLanguage)
-    }.flattenMerge()
-
-    private val trending: Flow<PagingData<Movie>> = deviceLanguage.map { deviceLanguage ->
-        movieRepository.trendingMovies(deviceLanguage = deviceLanguage)
-    }.flattenMerge()
-
-    private val favourites: Flow<PagingData<MovieFavourite>> =
-        favouritesRepository.favouriteMovies()
-
-    private val recentlyBrowsed: Flow<PagingData<RecentlyBrowsedMovie>> =
-        recentlyBrowsedRepository.recentlyBrowsedMovies()
-
     val favouriteMoviesCount: StateFlow<Int> = favouritesRepository.getFavouriteMoviesCount()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), 0)
 
-    init {
-        viewModelScope.launch {
-            movieType.collectLatest { type ->
-                movies = when (type) {
-                    MovieType.TopRated -> topRated
-                    MovieType.Upcoming -> upcoming
-                    MovieType.Favourite -> favourites
-                    MovieType.RecentlyBrowsed -> recentlyBrowsed
-                    MovieType.Trending -> trending
-                }.map { data -> data.map { movie -> movie } }.cachedIn(viewModelScope)
-            }
+    val movies: Flow<PagingData<Presentable>> = combine(
+        movieType, deviceLanguage
+    ) { type, deviceLanguage ->
+        when (type) {
+            MovieType.TopRated -> movieRepository.topRatedMovies(deviceLanguage)
+            MovieType.Upcoming -> movieRepository.upcomingMovies(deviceLanguage)
+            MovieType.Favourite -> favouritesRepository.favouriteMovies()
+            MovieType.RecentlyBrowsed -> recentlyBrowsedRepository.recentlyBrowsedMovies()
+            MovieType.Trending -> movieRepository.trendingMovies(deviceLanguage)
         }
-    }
+    }.flattenMerge().map { data -> data.map { movie -> movie } }.cachedIn(viewModelScope)
 
     fun onClearClicked() {
         recentlyBrowsedRepository.clearRecentlyBrowsedMovies()
     }
-
 }

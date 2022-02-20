@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.example.moviesapp.model.*
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.MovieRepository
@@ -46,54 +45,38 @@ class DiscoverMoviesViewModel @Inject constructor(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), MovieFilterState())
 
-
-    var movies: Flow<PagingData<Movie>> = deviceLanguage.map { deviceLanguage ->
-        movieRepository.discoverMovies(deviceLanguage = deviceLanguage)
+    val movies: Flow<PagingData<Movie>> = combine(
+        _filterState, _sortType, _sortOrder, deviceLanguage
+    ) { filterState, type, order, deviceLanguage ->
+        movieRepository.discoverMovies(
+            deviceLanguage = deviceLanguage,
+            sortType = type,
+            sortOrder = order,
+            genresParam = GenresParam(filterState.selectedGenres),
+            watchProvidersParam = WatchProvidersParam(filterState.selectedWatchProviders),
+            voteRange = filterState.voteRange.current,
+            onlyWithPosters = filterState.showOnlyWithPoster,
+            onlyWithScore = filterState.showOnlyWithScore,
+            onlyWithOverview = filterState.showOnlyWithOverview,
+            releaseDateRange = filterState.releaseDateRange
+        )
     }.flattenMerge().cachedIn(viewModelScope)
 
     fun onSortTypeChange(sortType: SortType) {
         viewModelScope.launch {
             _sortType.emit(sortType)
-
-            updateMovies()
         }
     }
 
     fun onSortOrderChange(sortOrder: SortOrder) {
         viewModelScope.launch {
             _sortOrder.emit(sortOrder)
-
-            updateMovies()
         }
     }
 
     fun onFilterStateChange(filterState: MovieFilterState) {
         viewModelScope.launch {
             _filterState.emit(filterState)
-
-            updateMovies()
         }
     }
-
-    private fun updateMovies() {
-        val sortType = _sortType.value
-        val sortOrder = _sortOrder.value
-        val filterState = _filterState.value
-
-        movies = deviceLanguage.map { deviceLanguage ->
-            movieRepository.discoverMovies(
-                deviceLanguage = deviceLanguage,
-                sortType = sortType,
-                sortOrder = sortOrder,
-                genresParam = GenresParam(filterState.selectedGenres),
-                watchProvidersParam = WatchProvidersParam(filterState.selectedWatchProviders),
-                voteRange = filterState.voteRange.current,
-                onlyWithPosters = filterState.showOnlyWithPoster,
-                onlyWithScore = filterState.showOnlyWithScore,
-                onlyWithOverview = filterState.showOnlyWithOverview,
-                releaseDateRange = filterState.releaseDateRange
-            )
-        }.flattenMerge().map { data -> data.map { movie -> movie } }.cachedIn(viewModelScope)
-    }
-
 }
