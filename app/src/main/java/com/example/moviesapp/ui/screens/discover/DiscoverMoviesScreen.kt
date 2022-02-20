@@ -73,7 +73,6 @@ fun DiscoverMoviesScreen(
 
     val orderIconRotation by animateFloatAsState(targetValue = if (sortOrder == SortOrder.Desc) 0f else 180f)
 
-
     BackHandler(sheetState.isVisible) {
         coroutineScope.launch {
             sheetState.hide()

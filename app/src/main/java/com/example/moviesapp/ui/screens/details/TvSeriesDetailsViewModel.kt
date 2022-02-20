@@ -41,10 +41,25 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
     private val _tvSeriesDetails: MutableStateFlow<TvSeriesDetails?> = MutableStateFlow(null)
 
-    private val tvSeriesId: Flow<Int?> = savedStateHandle.getLiveData<Int>("tvSeriesId").asFlow()
+    private val tvSeriesId: Flow<Int> = savedStateHandle.getLiveData<Int>("tvSeriesId").asFlow()
 
-    var similarTvSeries: Flow<PagingData<TvSeries>>? = null
-    var tvSeriesRecommendations: Flow<PagingData<TvSeries>>? = null
+    val similarTvSeries: Flow<PagingData<TvSeries>>? = combine(
+        tvSeriesId, deviceLanguage
+    ) { id, deviceLanguage ->
+        tvSeriesRepository.similarTvSeries(
+            tvSeriesId = id,
+            deviceLanguage = deviceLanguage
+        )
+    }.flattenMerge().cachedIn(viewModelScope)
+
+    val tvSeriesRecommendations: Flow<PagingData<TvSeries>>? = combine(
+        tvSeriesId, deviceLanguage
+    ) { id, deviceLanguage ->
+        tvSeriesRepository.tvSeriesRecommendations(
+            tvSeriesId = id,
+            deviceLanguage = deviceLanguage
+        )
+    }.flattenMerge().cachedIn(viewModelScope)
 
     private val _tvSeriesBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
     private val _videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
@@ -85,28 +100,11 @@ class TvSeriesDetailsViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             tvSeriesId.collectLatest { tvSeriesId ->
-                tvSeriesId?.let { id ->
-                    similarTvSeries = deviceLanguage.map { deviceLanguage ->
-                        tvSeriesRepository.similarTvSeries(
-                            tvSeriesId = id,
-                            deviceLanguage = deviceLanguage
-                        )
-                    }.flattenMerge().cachedIn(viewModelScope)
-
-                    tvSeriesRecommendations = deviceLanguage.map { deviceLanguage ->
-                        tvSeriesRepository.tvSeriesRecommendations(
-                            tvSeriesId = id,
-                            deviceLanguage = deviceLanguage
-                        )
-                    }.flattenMerge().cachedIn(viewModelScope)
-
-                    deviceLanguage.collectLatest { deviceLanguage ->
-                        getTvSeriesInfo(
-                            tvSeriesId = id,
-                            deviceLanguage = deviceLanguage
-                        )
-                    }
-
+                deviceLanguage.collectLatest { deviceLanguage ->
+                    getTvSeriesInfo(
+                        tvSeriesId = tvSeriesId,
+                        deviceLanguage = deviceLanguage
+                    )
                 }
             }
         }

@@ -32,33 +32,25 @@ class TvSeriesViewModel @Inject constructor(
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
     val onTheAir: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository
-            .onTheAirTvSeries(deviceLanguage = deviceLanguage)
+        tvSeriesRepository.onTheAirTvSeries(deviceLanguage)
     }.flattenMerge().map { pagingData ->
-        pagingData
-            .filter { tvSeries ->
-                tvSeries.run {
-                    !backdropPath.isNullOrEmpty() && !posterPath.isNullOrEmpty() && title.isNotEmpty() && overview.isNotEmpty()
-                }
-            }
+        pagingData.filterCompleteInfo()
     }.cachedIn(viewModelScope)
 
     val discover: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository
-            .discoverTvSeries(deviceLanguage = deviceLanguage)
-            .cachedIn(viewModelScope)
-    }.flattenMerge()
+        tvSeriesRepository.discoverTvSeries(deviceLanguage)
+    }.flattenMerge().cachedIn(viewModelScope)
 
     val topRated: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository.topRatedTvSeries(deviceLanguage = deviceLanguage)
+        tvSeriesRepository.topRatedTvSeries(deviceLanguage)
     }.flattenMerge().cachedIn(viewModelScope)
 
     val trending: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository.trendingTvSeries(deviceLanguage = deviceLanguage)
+        tvSeriesRepository.trendingTvSeries(deviceLanguage)
     }.flattenMerge().cachedIn(viewModelScope)
 
     val airingToday: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository.airingTodayTvSeries(deviceLanguage = deviceLanguage)
+        tvSeriesRepository.airingTodayTvSeries(deviceLanguage)
     }.flattenMerge().cachedIn(viewModelScope)
 
     val favourites: Flow<PagingData<TvSeriesFavourite>> =
@@ -66,4 +58,15 @@ class TvSeriesViewModel @Inject constructor(
 
     val recentlyBrowsed: Flow<PagingData<RecentlyBrowsedTvSeries>> =
         recentlyBrowsedRepository.recentlyBrowsedTvSeries().cachedIn(viewModelScope)
+
+    private fun PagingData<TvSeries>.filterCompleteInfo(): PagingData<TvSeries> {
+        return filter { tvSeries ->
+            tvSeries.run {
+                !backdropPath.isNullOrEmpty() &&
+                        !posterPath.isNullOrEmpty() &&
+                        title.isNotEmpty() &&
+                        overview.isNotEmpty()
+            }
+        }
+    }
 }
