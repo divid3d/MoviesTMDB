@@ -8,10 +8,7 @@ import android.net.Uri
 import android.speech.RecognizerIntent
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.CallSuper
-import com.example.moviesapp.model.ExternalContentType
-import com.example.moviesapp.model.ExternalId
-import com.example.moviesapp.model.Video
-import com.example.moviesapp.model.VideoSite
+import com.example.moviesapp.model.*
 
 
 open class CaptureSpeechToText : ActivityResultContract<Void?, String?>() {
@@ -152,4 +149,15 @@ private fun openVimeoVideo(context: Context, key: String) {
     val intent = Intent(Intent.ACTION_VIEW, uri)
 
     context.startActivity(intent)
+}
+
+fun shareImdb(context: Context, details: ShareDetails) {
+    val message = details.asMessage()
+
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, message)
+    }
+
+    context.startActivity(Intent.createChooser(intent, "Share"))
 }

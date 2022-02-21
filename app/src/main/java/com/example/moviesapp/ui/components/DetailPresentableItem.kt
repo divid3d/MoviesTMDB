@@ -11,17 +11,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import com.example.moviesapp.model.PresentableItemState
+import com.example.moviesapp.model.DetailPresentableItemState
 import com.example.moviesapp.ui.theme.Size
 import com.example.moviesapp.ui.theme.sizes
 
 @Composable
-fun PresentableItem(
+fun DetailPresentableItem(
     modifier: Modifier = Modifier,
     size: Size = MaterialTheme.sizes.presentableItemSmall,
-    presentableState: PresentableItemState,
+    presentableState: DetailPresentableItemState,
     selected: Boolean = false,
     showTitle: Boolean = true,
+    showScore: Boolean = false,
+    showAdult: Boolean = false,
     transformations: GraphicsLayerScope.() -> Unit = {},
     onClick: (() -> Unit)? = null
 ) {
@@ -39,21 +41,23 @@ fun PresentableItem(
         ) else null
     ) {
         when (presentableState) {
-            is PresentableItemState.Loading -> {
+            is DetailPresentableItemState.Loading -> {
                 LoadingPresentableItem(
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            is PresentableItemState.Error -> {
+            is DetailPresentableItemState.Error -> {
                 ErrorPresentableItem(
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            is PresentableItemState.Result -> {
-                ResultPresentableItem(
+            is DetailPresentableItemState.Result -> {
+                ResultDetailPresentableItem(
                     modifier = Modifier.fillMaxSize(),
                     presentable = presentableState.presentable,
+                    showScore = showScore,
                     showTitle = showTitle,
+                    showAdult = showAdult,
                     onClick = onClick
                 )
             }

@@ -26,14 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
-import com.example.moviesapp.model.MediaType
-import com.example.moviesapp.model.RelationType
-import com.example.moviesapp.model.SeasonInfo
-import com.example.moviesapp.model.TvSeriesRelationInfo
-import com.example.moviesapp.other.ifNotNullAndEmpty
-import com.example.moviesapp.other.isNotEmpty
-import com.example.moviesapp.other.openExternalId
-import com.example.moviesapp.other.openVideo
+import com.example.moviesapp.model.*
+import com.example.moviesapp.other.*
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.*
@@ -69,6 +63,10 @@ fun TvSeriesDetailsScreen(
     val hasReviews by viewModel.hasReviews.collectAsState()
 
     val scrollState = rememberScrollState()
+
+    val imdbExternalId by derivedStateOf {
+        externalIds?.filterIsInstance<ExternalId.Imdb>()?.firstOrNull()
+    }
 
     var showErrorDialog by remember { mutableStateOf(false) }
     val error: String? by viewModel.error.collectAsState()
@@ -142,7 +140,14 @@ fun TvSeriesDetailsScreen(
                     .padding(horizontal = MaterialTheme.spacing.medium)
                     .animateContentSize(),
                 tvSeriesDetails = tvSeriesDetails,
-                nextEpisodeDaysRemaining = nextEpisodeDaysRemaining
+                nextEpisodeDaysRemaining = nextEpisodeDaysRemaining,
+                imdbExternalId = imdbExternalId,
+                onShareClicked = { details ->
+                    shareImdb(
+                        context = context,
+                        details = details
+                    )
+                }
             )
 
             Crossfade(

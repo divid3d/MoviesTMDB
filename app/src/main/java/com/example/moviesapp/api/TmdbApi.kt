@@ -209,7 +209,6 @@ interface TmdbApi {
         @Path("tv_id") tvSeriesId: Int
     ): Call<ImagesResponse>
 
-
     @GET("tv/{tv_id}/season/{season_number}/episode/{episode_number}/images")
     fun getEpisodeImages(
         @Path("tv_id") tvSeriesId: Int,
