@@ -359,7 +359,7 @@ fun MovieDetailsScreen(
                         SectionDivider(modifier = Modifier.fillMaxWidth())
                         VideosSection(
                             modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.movie_details_videos),
+                            title = stringResource(R.string.season_details_videos_label),
                             videos = value,
                             contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
                         ) { video ->

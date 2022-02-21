@@ -1,6 +1,7 @@
 package com.example.moviesapp.ui.screens.seasons
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,11 +27,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.moviesapp.R
 import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.other.formatted
+import com.example.moviesapp.other.ifNotNullAndEmpty
 import com.example.moviesapp.other.openVideo
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.theme.spacing
+import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -111,54 +114,76 @@ fun SeasonDetailsScreen(
                 }
             }
 
-            seasonDetails?.let { details ->
-                item {
-                    Column(
-                        modifier = Modifier
-                            .padding(horizontal = MaterialTheme.spacing.medium)
-                            .animateContentSize(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                    ) {
-                        Text(
-                            text = details.name,
-                            color = Color.White,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        ExpandableText(
-                            modifier = Modifier.fillMaxSize(),
-                            text = details.overview
+            item {
+                Crossfade(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = MaterialTheme.spacing.medium)
+                        .animateContentSize(),
+                    targetState = seasonDetails
+                ) { details ->
+                    if (details != null) {
+                        Column(
+                            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
+                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                        ) {
+                            Text(
+                                text = details.name,
+                                color = Color.White,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            ExpandableText(
+                                modifier = Modifier.fillMaxSize(),
+                                text = details.overview
+                            )
+                        }
+                    }
+                }
+            }
+
+            item {
+                Crossfade(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = MaterialTheme.spacing.medium)
+                        .animateContentSize(),
+                    targetState = videos
+                ) { videos ->
+                    videos.ifNotNullAndEmpty { value ->
+                        VideosSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.tv_series_details_videos),
+                            videos = value,
+                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
+                        ) { video ->
+                            openVideo(
+                                context = context,
+                                video = video
+                            )
+                        }
+                    }
+                }
+            }
+
+            seasonDetails?.episodes?.let { episodes ->
+                if (episodes.isNotEmpty()) {
+                    item {
+                        SectionLabel(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = MaterialTheme.spacing.medium)
+                                .padding(
+                                    top = MaterialTheme.spacing.medium,
+                                    bottom = MaterialTheme.spacing.small
+                                ),
+                            text = stringResource(R.string.season_details_episodes_label)
                         )
                     }
                 }
 
-                videos?.let { videos ->
-                    if (videos.isNotEmpty()) {
-                        item {
-                            VideosSection(
-                                modifier = Modifier
-                                    .padding(top = MaterialTheme.spacing.small)
-                                    .fillMaxWidth()
-                                    .animateContentSize(),
-                                title = stringResource(R.string.tv_series_details_videos),
-                                videos = videos,
-                                contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                            ) { video ->
-                                openVideo(
-                                    context = context,
-                                    video = video
-                                )
-                            }
-                        }
-
-                        item {
-                            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-                        }
-                    }
-                }
-
-                itemsIndexed(details.episodes) { index, episode ->
-                    val bottomPadding = if (index < details.episodes.count() - 1) {
+                itemsIndexed(episodes) { index, episode ->
+                    val bottomPadding = if (index < episodes.count() - 1) {
                         MaterialTheme.spacing.medium
                     } else {
                         MaterialTheme.spacing.default
@@ -189,10 +214,10 @@ fun SeasonDetailsScreen(
                         }
                     }
                 }
+            }
 
-                item {
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
-                }
+            item {
+                Spacer(modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.large))
             }
         }
 

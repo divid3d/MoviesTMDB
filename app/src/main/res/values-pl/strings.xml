@@ -114,6 +114,8 @@
     <string name="season_details_episodes_count_label">Liczba odcinków</string>
     <string name="season_details_air_date_label">Data emisji</string>
     <string name="season_details_season_number_label">Number sezonu</string>
+    <string name="season_details_episodes_label">Odcinki</string>
+    <string name="season_details_videos_label">Wideo</string>
 
     <string name="review_item_created_text" formatted="true">Opublikowano %s</string>
     <string name="review_item_last_modified_text" formatted="true">Ostatnia modyfikacja %s</string>
