@@ -30,6 +30,7 @@ import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.model.MovieRelationInfo
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.other.ifNotNullAndEmpty
+import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.other.openExternalId
 import com.example.moviesapp.other.openVideo
 import com.example.moviesapp.ui.components.*
@@ -66,9 +67,9 @@ fun MovieDetailsScreen(
     val movieCollection by viewModel.movieCollection.collectAsState()
     val externalIds by viewModel.externalIds.collectAsState()
 
-    val similarMoviesState = viewModel.similarMoviesPagingDataFlow?.collectAsLazyPagingItems()
+    val similarMoviesState = viewModel.similarMoviesPagingDataFlow.collectAsLazyPagingItems()
     val moviesRecommendationState =
-        viewModel.moviesRecommendationPagingDataFlow?.collectAsLazyPagingItems()
+        viewModel.moviesRecommendationPagingDataFlow.collectAsLazyPagingItems()
     val hasReviews by viewModel.hasReviews.collectAsState()
 
     val scrollState = rememberScrollState()
@@ -160,11 +161,17 @@ fun MovieDetailsScreen(
                 targetState = watchProviders
             ) { providers ->
                 if (providers != null) {
-                    WatchProvidersSection(
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        watchProviders = providers,
-                        title = stringResource(R.string.available_at)
-                    )
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        WatchProvidersSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            watchProviders = providers,
+                            title = stringResource(R.string.available_at)
+                        )
+                    }
                 }
             }
 
@@ -175,63 +182,20 @@ fun MovieDetailsScreen(
                 targetState = credits?.cast
             ) { cast ->
                 cast.ifNotNullAndEmpty { members ->
-                    MemberSection(
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        title = "Obsada",
-                        members = members,
-                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                    ) { personId ->
-                        navigator.navigate(
-                            PersonDetailsScreenDestination(
-                                personId = personId,
-                                startRoute = startRoute
-                            )
-                        )
-                    }
-                }
-            }
-
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = credits?.crew
-            ) { crew ->
-                crew.ifNotNullAndEmpty { members ->
-                    MemberSection(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = "Ekipa filmowa",
-                        members = members,
-                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                    ) { personId ->
-                        navigator.navigate(
-                            PersonDetailsScreenDestination(
-                                personId = personId,
-                                startRoute = startRoute
-                            )
-                        )
-                    }
-                }
-            }
-
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colors.surface)
-                    .animateContentSize(),
-                targetState = movieCollection
-            ) { movieCollection ->
-                if (movieCollection != null && movieCollection.parts.isNotEmpty()) {
-                    PresentableListSection(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = movieCollection.name,
-                        list = movieCollection.parts.sortedBy { part -> part.releaseDate },
-                        selectedId = movieId
-                    ) { id ->
-                        if (movieId != id) {
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        MemberSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = "Obsada",
+                            members = members,
+                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
+                        ) { personId ->
                             navigator.navigate(
-                                MovieDetailsScreenDestination(
-                                    movieId = id,
+                                PersonDetailsScreenDestination(
+                                    personId = personId,
                                     startRoute = startRoute
                                 )
                             )
@@ -244,32 +208,99 @@ fun MovieDetailsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
-                targetState = similarMoviesState
-            ) { similarMovies ->
-                if (similarMovies != null) {
-                    PresentableSection(
+                targetState = credits?.crew
+            ) { crew ->
+                crew.ifNotNullAndEmpty { members ->
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.movie_details_similar),
-                        state = similarMovies,
-                        onMoreClick = {
-                            val movieRelationInfo = MovieRelationInfo(
-                                movieId = movieId,
-                                type = RelationType.Similar
-                            )
-
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        MemberSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = "Ekipa filmowa",
+                            members = members,
+                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
+                        ) { personId ->
                             navigator.navigate(
-                                RelatedMoviesDestination(
-                                    movieRelationInfo = movieRelationInfo
+                                PersonDetailsScreenDestination(
+                                    personId = personId,
+                                    startRoute = startRoute
                                 )
                             )
                         }
-                    ) { movieId ->
-                        navigator.navigate(
-                            MovieDetailsScreenDestination(
-                                movieId = movieId,
-                                startRoute = startRoute
+                    }
+                }
+            }
+
+            Crossfade(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.surface)
+                    .animateContentSize(),
+                targetState = movieCollection
+            ) { movieCollection ->
+                if (movieCollection != null && movieCollection.parts.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        PresentableListSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = movieCollection.name,
+                            list = movieCollection.parts.sortedBy { part -> part.releaseDate },
+                            selectedId = movieId
+                        ) { id ->
+                            if (movieId != id) {
+                                navigator.navigate(
+                                    MovieDetailsScreenDestination(
+                                        movieId = id,
+                                        startRoute = startRoute
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            Crossfade(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                targetState = similarMoviesState
+            ) { similarMovies ->
+                if (similarMovies.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        PresentableSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.movie_details_similar),
+                            state = similarMovies,
+                            onMoreClick = {
+                                val movieRelationInfo = MovieRelationInfo(
+                                    movieId = movieId,
+                                    type = RelationType.Similar
+                                )
+
+                                navigator.navigate(
+                                    RelatedMoviesDestination(
+                                        movieRelationInfo = movieRelationInfo
+                                    )
+                                )
+                            }
+                        ) { movieId ->
+                            navigator.navigate(
+                                MovieDetailsScreenDestination(
+                                    movieId = movieId,
+                                    startRoute = startRoute
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
@@ -280,30 +311,36 @@ fun MovieDetailsScreen(
                     .animateContentSize(),
                 targetState = moviesRecommendationState
             ) { movieRecommendation ->
-                if (movieRecommendation != null) {
-                    PresentableSection(
+                if (movieRecommendation.isNotEmpty()) {
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.movie_details_recommendations),
-                        state = movieRecommendation,
-                        onMoreClick = {
-                            val movieRelationInfo = MovieRelationInfo(
-                                movieId = movieId,
-                                type = RelationType.Recommended
-                            )
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        PresentableSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.movie_details_recommendations),
+                            state = movieRecommendation,
+                            onMoreClick = {
+                                val movieRelationInfo = MovieRelationInfo(
+                                    movieId = movieId,
+                                    type = RelationType.Recommended
+                                )
 
+                                navigator.navigate(
+                                    RelatedMoviesDestination(
+                                        movieRelationInfo = movieRelationInfo
+                                    )
+                                )
+                            }
+                        ) { movieId ->
                             navigator.navigate(
-                                RelatedMoviesDestination(
-                                    movieRelationInfo = movieRelationInfo
+                                MovieDetailsScreenDestination(
+                                    movieId = movieId,
+                                    startRoute = startRoute
                                 )
                             )
                         }
-                    ) { movieId ->
-                        navigator.navigate(
-                            MovieDetailsScreenDestination(
-                                movieId = movieId,
-                                startRoute = startRoute
-                            )
-                        )
                     }
                 }
             }
@@ -315,16 +352,22 @@ fun MovieDetailsScreen(
                 targetState = videos
             ) { videos ->
                 videos.ifNotNullAndEmpty { value ->
-                    VideosSection(
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.movie_details_videos),
-                        videos = value,
-                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                    ) { video ->
-                        openVideo(
-                            context = context,
-                            video = video
-                        )
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        VideosSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.movie_details_videos),
+                            videos = value,
+                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
+                        ) { video ->
+                            openVideo(
+                                context = context,
+                                video = video
+                            )
+                        }
                     }
                 }
             }
@@ -333,15 +376,21 @@ fun MovieDetailsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 visible = hasReviews
             ) {
-                ReviewSection(modifier = Modifier.fillMaxWidth()) {
-                    val args = ReviewsScreenNavArgs(
-                        mediaId = movieId,
-                        type = MediaType.Movie
-                    )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                ) {
+                    SectionDivider(modifier = Modifier.fillMaxWidth())
+                    ReviewSection(modifier = Modifier.fillMaxWidth()) {
+                        val args = ReviewsScreenNavArgs(
+                            mediaId = movieId,
+                            type = MediaType.Movie
+                        )
 
-                    navigator.navigate(
-                        ReviewsScreenDestination(args)
-                    )
+                        navigator.navigate(
+                            ReviewsScreenDestination(args)
+                        )
+                    }
                 }
             }
 

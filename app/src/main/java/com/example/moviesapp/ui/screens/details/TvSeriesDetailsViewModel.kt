@@ -15,7 +15,6 @@ import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import com.example.moviesapp.repository.TvSeriesRepository
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -43,7 +42,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
     private val tvSeriesId: Flow<Int> = savedStateHandle.getLiveData<Int>("tvSeriesId").asFlow()
 
-    val similarTvSeries: Flow<PagingData<TvSeries>>? = combine(
+    val similarTvSeries: Flow<PagingData<TvSeries>> = combine(
         tvSeriesId, deviceLanguage
     ) { id, deviceLanguage ->
         tvSeriesRepository.similarTvSeries(
@@ -52,7 +51,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
         )
     }.flattenMerge().cachedIn(viewModelScope)
 
-    val tvSeriesRecommendations: Flow<PagingData<TvSeries>>? = combine(
+    val tvSeriesRecommendations: Flow<PagingData<TvSeries>> = combine(
         tvSeriesId, deviceLanguage
     ) { id, deviceLanguage ->
         tvSeriesRepository.tvSeriesRecommendations(
@@ -144,12 +143,11 @@ class TvSeriesDetailsViewModel @Inject constructor(
             }
 
             response.onFailure {
-                onError(message)
+                onFailure(this)
             }
 
             response.onException {
-                onError()
-                FirebaseCrashlytics.getInstance().recordException(exception)
+                onError(this)
             }
         }
     }
@@ -164,12 +162,11 @@ class TvSeriesDetailsViewModel @Inject constructor(
             }
 
             response.onFailure {
-                onError(message)
+                onFailure(this)
             }
 
             response.onException {
-                onError()
-                FirebaseCrashlytics.getInstance().recordException(exception)
+                onError(this)
             }
         }
     }
@@ -185,12 +182,11 @@ class TvSeriesDetailsViewModel @Inject constructor(
             }
 
             response.onFailure {
-                onError(message)
+                onFailure(this)
             }
 
             response.onException {
-                onError()
-                FirebaseCrashlytics.getInstance().recordException(exception)
+                onError(this)
             }
         }
     }
@@ -209,12 +205,11 @@ class TvSeriesDetailsViewModel @Inject constructor(
             }
 
             response.onFailure {
-                onError(message)
+                onFailure(this)
             }
 
             response.onException {
-                onError()
-                FirebaseCrashlytics.getInstance().recordException(exception)
+                onError(this)
             }
         }
     }
@@ -231,12 +226,11 @@ class TvSeriesDetailsViewModel @Inject constructor(
                 }
 
                 response.onFailure {
-                    onError(message)
+                    onFailure(this)
                 }
 
                 response.onException {
-                    onError()
-                    FirebaseCrashlytics.getInstance().recordException(exception)
+                    onError(this)
                 }
             }
         }
@@ -262,12 +256,11 @@ class TvSeriesDetailsViewModel @Inject constructor(
                 }
 
                 response.onFailure {
-                    onError(message)
+                    onFailure(this)
                 }
 
                 response.onException {
-                    onError()
-                    FirebaseCrashlytics.getInstance().recordException(exception)
+                    onError(this)
                 }
             }
         }

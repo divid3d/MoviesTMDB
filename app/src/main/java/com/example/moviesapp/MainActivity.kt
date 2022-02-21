@@ -60,7 +60,6 @@ class MainActivity : ComponentActivity() {
             //val useDarkIcons = MaterialTheme.colors.isLight
             val navController = rememberNavController()
             val systemUiController = rememberSystemUiController()
-            val color = MaterialTheme.colors.primarySurface
 
             var currentRoute: String? by rememberSaveable {
                 mutableStateOf(null)

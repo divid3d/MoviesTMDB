@@ -15,7 +15,6 @@ import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.MovieRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -61,7 +60,7 @@ class MoviesDetailsViewModel @Inject constructor(
         )
     }.flattenMerge().cachedIn(viewModelScope)
 
-    val moviesRecommendationPagingDataFlow: Flow<PagingData<Movie>>? = combine(
+    val moviesRecommendationPagingDataFlow: Flow<PagingData<Movie>> = combine(
         movieId, deviceLanguage
     ) { id, deviceLanguage ->
         movieRepository.moviesRecommendations(
@@ -184,12 +183,11 @@ class MoviesDetailsViewModel @Inject constructor(
             }
 
             response.onFailure {
-                onError(message)
+                onFailure(this)
             }
 
             response.onException {
-                onError()
-                FirebaseCrashlytics.getInstance().recordException(exception)
+                onError(this)
             }
         }
     }
@@ -207,12 +205,11 @@ class MoviesDetailsViewModel @Inject constructor(
             }
 
             response.onFailure {
-                onError(message)
+                onFailure(this)
             }
 
             response.onException {
-                onError()
-                FirebaseCrashlytics.getInstance().recordException(exception)
+                onError(this)
             }
         }
     }
@@ -227,12 +224,11 @@ class MoviesDetailsViewModel @Inject constructor(
             }
 
             response.onFailure {
-                onError(message)
+                onFailure(this)
             }
 
             response.onException {
-                onError()
-                FirebaseCrashlytics.getInstance().recordException(exception)
+                onError(this)
             }
         }
     }
@@ -248,12 +244,11 @@ class MoviesDetailsViewModel @Inject constructor(
             }
 
             response.onFailure {
-                onError(message)
+                onFailure(this)
             }
 
             response.onException {
-                onError()
-                FirebaseCrashlytics.getInstance().recordException(exception)
+                onError(this)
             }
         }
     }
@@ -282,12 +277,11 @@ class MoviesDetailsViewModel @Inject constructor(
             }
 
             response.onFailure {
-                onError(message)
+                onFailure(this)
             }
 
             response.onException {
-                onError()
-                FirebaseCrashlytics.getInstance().recordException(exception)
+                onError(this)
             }
         }
     }
@@ -306,12 +300,11 @@ class MoviesDetailsViewModel @Inject constructor(
             }
 
             response.onFailure {
-                onError(message)
+                onFailure(this)
             }
 
             response.onException {
-                onError()
-                FirebaseCrashlytics.getInstance().recordException(exception)
+                onError(this)
             }
         }
     }
@@ -328,12 +321,11 @@ class MoviesDetailsViewModel @Inject constructor(
                 }
 
                 response.onFailure {
-                    onError(message)
+                    onFailure(this)
                 }
 
                 response.onException {
-                    onError()
-                    FirebaseCrashlytics.getInstance().recordException(exception)
+                    onError(this)
                 }
             }
         }
@@ -360,12 +352,11 @@ class MoviesDetailsViewModel @Inject constructor(
                 }
 
                 response.onFailure {
-                    onError(message)
+                    onFailure(this)
                 }
 
                 response.onException {
-                    onError()
-                    FirebaseCrashlytics.getInstance().recordException(exception)
+                    onError(this)
                 }
             }
         }

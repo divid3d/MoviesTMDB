@@ -62,7 +62,7 @@ fun PresentableSection(
 
     val isNotEmpty by derivedStateOf {
         state.run {
-            loadState.refresh is LoadState.Loading || itemCount != 0
+            loadState.refresh is LoadState.Loading || itemCount > 0
         }
     }
 

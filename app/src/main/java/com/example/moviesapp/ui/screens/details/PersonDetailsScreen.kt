@@ -28,6 +28,7 @@ import com.example.moviesapp.other.ifNotNullAndEmpty
 import com.example.moviesapp.other.openExternalId
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.ExternalIdsSection
+import com.example.moviesapp.ui.components.SectionDivider
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
@@ -37,6 +38,7 @@ import com.example.moviesapp.ui.screens.details.components.PersonDetailsInfoSect
 import com.example.moviesapp.ui.screens.details.components.PersonDetailsTopContent
 import com.example.moviesapp.ui.screens.details.components.PersonProfileImage
 import com.example.moviesapp.ui.theme.spacing
+import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.statusBarsPadding
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -169,11 +171,17 @@ fun PersonDetailsScreen(
                 targetState = cast
             ) { cast ->
                 cast.ifNotNullAndEmpty { members ->
-                    CreditsList(
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.person_details_screen_cast),
-                        credits = members
-                    ) { mediaType, id -> navigateToDetails(mediaType, id) }
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        CreditsList(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.person_details_screen_cast),
+                            credits = members
+                        ) { mediaType, id -> navigateToDetails(mediaType, id) }
+                    }
                 }
             }
 
@@ -184,15 +192,21 @@ fun PersonDetailsScreen(
                 targetState = crew
             ) { crew ->
                 crew.ifNotNullAndEmpty { members ->
-                    CreditsList(
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.person_details_screen_crew),
-                        credits = members
-                    ) { mediaType, id -> navigateToDetails(mediaType, id) }
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        CreditsList(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.person_details_screen_crew),
+                            credits = members
+                        ) { mediaType, id -> navigateToDetails(mediaType, id) }
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            Spacer(modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.large))
         }
 
         AppBar(

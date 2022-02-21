@@ -140,7 +140,6 @@ fun TvScreen(
                     bottom = MaterialTheme.spacing.small
                 )
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             PresentableSection(
                 modifier = Modifier
                     .fillMaxWidth()

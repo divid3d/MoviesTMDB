@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
@@ -31,16 +32,22 @@ fun BottomBar(
     visible: Boolean = true,
     onItemClicked: (String) -> Unit = {}
 ) {
-    val routes = buildList {
-        addAll(backQueueRoutes)
-        add(currentRoute)
+    val bottomBarRoutes = remember {
+        mutableSetOf(
+            MoviesScreenDestination.route,
+            TvScreenDestination.route,
+            FavouritesScreenDestination.route,
+            SearchScreenDestination.route
+        )
     }
 
-    val selectedRoute = when {
-        SearchScreenDestination.route in routes -> SearchScreenDestination.route
-        FavouritesScreenDestination.route in routes -> FavouritesScreenDestination.route
-        TvScreenDestination.route in routes -> TvScreenDestination.route
-        else -> MoviesScreenDestination.route
+    val selectedRoute = when (currentRoute) {
+        in bottomBarRoutes -> currentRoute
+        else -> {
+            backQueueRoutes.firstOrNull { route ->
+                route in bottomBarRoutes
+            } ?: MoviesScreenDestination.route
+        }
     }
 
     AnimatedVisibility(

@@ -71,7 +71,7 @@ fun MemberResultChip(
                     text = firstLine,
                     color = Color.White,
                     fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.ExtraBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center
@@ -95,7 +95,7 @@ fun MemberResultChip(
                     fontSize = 12.sp,
                     maxLines = if (secondLineExpanded) Int.MAX_VALUE else 2,
                     overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Center
                 )
             }
         }

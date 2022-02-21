@@ -31,6 +31,7 @@ import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.model.TvSeriesRelationInfo
 import com.example.moviesapp.other.ifNotNullAndEmpty
+import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.other.openExternalId
 import com.example.moviesapp.other.openVideo
 import com.example.moviesapp.ui.components.*
@@ -58,8 +59,8 @@ fun TvSeriesDetailsScreen(
     val tvSeriesDetails by viewModel.tvSeriesDetails.collectAsState()
     val isFavourite by viewModel.isFavourite.collectAsState()
 
-    val similar = viewModel.similarTvSeries?.collectAsLazyPagingItems()
-    val recommendations = viewModel.tvSeriesRecommendations?.collectAsLazyPagingItems()
+    val similar = viewModel.similarTvSeries.collectAsLazyPagingItems()
+    val recommendations = viewModel.tvSeriesRecommendations.collectAsLazyPagingItems()
     val backdrops by viewModel.backdrops.collectAsState()
     val videos by viewModel.videos.collectAsState()
     val nextEpisodeDaysRemaining by viewModel.nextEpisodeDaysRemaining.collectAsState()
@@ -151,11 +152,17 @@ fun TvSeriesDetailsScreen(
                 targetState = watchProviders
             ) { providers ->
                 if (providers != null) {
-                    WatchProvidersSection(
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        watchProviders = providers,
-                        title = stringResource(R.string.available_at)
-                    )
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        WatchProvidersSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            watchProviders = providers,
+                            title = stringResource(R.string.available_at)
+                        )
+                    }
                 }
             }
 
@@ -166,13 +173,19 @@ fun TvSeriesDetailsScreen(
                 targetState = tvSeriesDetails?.creators
             ) { creators ->
                 creators.ifNotNullAndEmpty { members ->
-                    MemberSection(
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.tv_series_details_creators),
-                        members = members,
-                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                    ) { creatorId ->
-                        navigator.navigate(PersonDetailsScreenDestination(creatorId))
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        MemberSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.tv_series_details_creators),
+                            members = members,
+                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
+                        ) { creatorId ->
+                            navigator.navigate(PersonDetailsScreenDestination(creatorId))
+                        }
                     }
                 }
             }
@@ -185,19 +198,63 @@ fun TvSeriesDetailsScreen(
                 targetState = tvSeriesDetails?.seasons
             ) { seasons ->
                 seasons.ifNotNullAndEmpty { value ->
-                    SeasonsSection(
-                        title = stringResource(R.string.tv_series_details_seasons),
-                        seasons = value
-                    ) { seasonNumber ->
-                        tvSeriesDetails?.id?.let { id ->
-                            val seasonInfo = SeasonInfo(
-                                tvSeriesId = id,
-                                seasonNumber = seasonNumber
-                            )
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        SeasonsSection(
+                            title = stringResource(R.string.tv_series_details_seasons),
+                            seasons = value
+                        ) { seasonNumber ->
+                            tvSeriesDetails?.id?.let { id ->
+                                val seasonInfo = SeasonInfo(
+                                    tvSeriesId = id,
+                                    seasonNumber = seasonNumber
+                                )
 
+                                navigator.navigate(
+                                    SeasonDetailsScreenDestination(
+                                        seasonInfo = seasonInfo,
+                                        startRoute = startRoute
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            Crossfade(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                targetState = similar
+            ) { similar ->
+                if (similar.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        PresentableSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.tv_series_details_similar),
+                            state = similar,
+                            onMoreClick = {
+                                val tvSeriesRelationInfo = TvSeriesRelationInfo(
+                                    tvSeriesId = tvSeriesId,
+                                    type = RelationType.Similar
+                                )
+
+                                navigator.navigate(
+                                    RelatedTvSeriesDestination(tvSeriesRelationInfo)
+                                )
+                            }
+                        ) { tvSeriesId ->
                             navigator.navigate(
-                                SeasonDetailsScreenDestination(
-                                    seasonInfo = seasonInfo,
+                                TvSeriesDetailsScreenDestination(
+                                    tvSeriesId = tvSeriesId,
                                     startRoute = startRoute
                                 )
                             )
@@ -210,62 +267,36 @@ fun TvSeriesDetailsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
-                targetState = similar
-            ) { similar ->
-                if (similar != null) {
-                    PresentableSection(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.tv_series_details_similar),
-                        state = similar,
-                        onMoreClick = {
-                            val tvSeriesRelationInfo = TvSeriesRelationInfo(
-                                tvSeriesId = tvSeriesId,
-                                type = RelationType.Similar
-                            )
-
-                            navigator.navigate(
-                                RelatedTvSeriesDestination(tvSeriesRelationInfo)
-                            )
-                        }
-                    ) { tvSeriesId ->
-                        navigator.navigate(
-                            TvSeriesDetailsScreenDestination(
-                                tvSeriesId = tvSeriesId,
-                                startRoute = startRoute
-                            )
-                        )
-                    }
-                }
-            }
-
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
                 targetState = recommendations
             ) { recommendations ->
-                if (recommendations != null) {
-                    PresentableSection(
+                if (recommendations.isNotEmpty()) {
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.tv_series_details_recommendations),
-                        state = recommendations,
-                        onMoreClick = {
-                            val tvSeriesRelationInfo = TvSeriesRelationInfo(
-                                tvSeriesId = tvSeriesId,
-                                type = RelationType.Recommended
-                            )
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        PresentableSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.tv_series_details_recommendations),
+                            state = recommendations,
+                            onMoreClick = {
+                                val tvSeriesRelationInfo = TvSeriesRelationInfo(
+                                    tvSeriesId = tvSeriesId,
+                                    type = RelationType.Recommended
+                                )
 
+                                navigator.navigate(
+                                    RelatedTvSeriesDestination(tvSeriesRelationInfo)
+                                )
+                            }
+                        ) { tvSeriesId ->
                             navigator.navigate(
-                                RelatedTvSeriesDestination(tvSeriesRelationInfo)
+                                TvSeriesDetailsScreenDestination(
+                                    tvSeriesId = tvSeriesId,
+                                    startRoute = startRoute
+                                )
                             )
                         }
-                    ) { tvSeriesId ->
-                        navigator.navigate(
-                            TvSeriesDetailsScreenDestination(
-                                tvSeriesId = tvSeriesId,
-                                startRoute = startRoute
-                            )
-                        )
                     }
                 }
             }
@@ -277,16 +308,22 @@ fun TvSeriesDetailsScreen(
                 targetState = videos
             ) { videos ->
                 videos.ifNotNullAndEmpty { value ->
-                    VideosSection(
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.tv_series_details_videos),
-                        videos = value,
-                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                    ) { video ->
-                        openVideo(
-                            context = context,
-                            video = video
-                        )
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        VideosSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.tv_series_details_videos),
+                            videos = value,
+                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
+                        ) { video ->
+                            openVideo(
+                                context = context,
+                                video = video
+                            )
+                        }
                     }
                 }
             }
@@ -295,15 +332,21 @@ fun TvSeriesDetailsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 visible = hasReviews
             ) {
-                ReviewSection(modifier = Modifier.fillMaxWidth()) {
-                    val args = ReviewsScreenNavArgs(
-                        mediaId = tvSeriesId,
-                        type = MediaType.Tv
-                    )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                ) {
+                    SectionDivider(modifier = Modifier.fillMaxWidth())
+                    ReviewSection(modifier = Modifier.fillMaxWidth()) {
+                        val args = ReviewsScreenNavArgs(
+                            mediaId = tvSeriesId,
+                            type = MediaType.Tv
+                        )
 
-                    navigator.navigate(
-                        ReviewsScreenDestination(args)
-                    )
+                        navigator.navigate(
+                            ReviewsScreenDestination(args)
+                        )
+                    }
                 }
             }
 
