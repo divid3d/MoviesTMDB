@@ -80,6 +80,24 @@ class ConfigDataSource @Inject constructor(
     val tvSeriesWatchProviders: StateFlow<List<ProviderSource>> =
         _tvSeriesWatchProviders.asStateFlow()
 
+    val isInitialized: Flow<Boolean> = combine(
+        _config, _movieGenres, _tvSeriesGenres, _movieWatchProviders, _tvSeriesWatchProviders
+    ) { imageUrlParser, movieGenres, tvSeriesGenres, movieWatchProviders, tvSeriesWatchProviders ->
+        val imageUrlParserInit = imageUrlParser != null
+        val movieGenresInit = movieGenres.isNotEmpty()
+        val tvSeriesGenresInit = tvSeriesGenres.isNotEmpty()
+        val movieWatchProvidersInit = movieWatchProviders.isNotEmpty()
+        val tvSeriesWatchProvidersInit = tvSeriesWatchProviders.isNotEmpty()
+
+        listOf(
+            imageUrlParserInit,
+            movieGenresInit,
+            tvSeriesGenresInit,
+            movieWatchProvidersInit,
+            tvSeriesWatchProvidersInit
+        ).all { init -> init }
+    }
+
     fun init() {
         apiHelper.getConfig().request { response ->
             response.onSuccess {

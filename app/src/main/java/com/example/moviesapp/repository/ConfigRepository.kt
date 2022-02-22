@@ -13,6 +13,8 @@ import javax.inject.Singleton
 class ConfigRepository @Inject constructor(
     private val configDataSource: ConfigDataSource
 ) {
+    fun isInitialised(): Flow<Boolean> = configDataSource.isInitialized
+
     fun getSpeechToTextAvailable(): Flow<Boolean> = configDataSource.speechToTextAvailable
 
     fun getDeviceLanguage(): Flow<DeviceLanguage> = configDataSource.deviceLanguage
