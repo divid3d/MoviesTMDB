@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.details
 
+import android.os.Parcelable
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -26,26 +27,30 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
-import com.example.moviesapp.model.*
+import com.example.moviesapp.model.ExternalId
 import com.example.moviesapp.other.*
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
-import com.example.moviesapp.ui.screens.destinations.*
+import com.example.moviesapp.ui.screens.destinations.PersonDetailsScreenDestination
 import com.example.moviesapp.ui.screens.details.components.TvSeriesDetailsInfoSection
 import com.example.moviesapp.ui.screens.details.components.TvSeriesDetailsTopContent
-import com.example.moviesapp.ui.screens.reviews.ReviewsScreenNavArgs
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.parcelize.Parcelize
 
-@Destination
+@Parcelize
+data class TvSeriesDetailsScreenArgs(
+    val tvSeriesId: Int,
+    val startRoute: String
+) : Parcelable
+
+@Destination(navArgsDelegate = TvSeriesDetailsScreenArgs::class)
 @Composable
 fun TvSeriesDetailsScreen(
     viewModel: TvSeriesDetailsViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator,
-    tvSeriesId: Int,
-    startRoute: String = TvScreenDestination.route
+    navigator: DestinationsNavigator
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
@@ -212,19 +217,19 @@ fun TvSeriesDetailsScreen(
                             title = stringResource(R.string.tv_series_details_seasons),
                             seasons = value
                         ) { seasonNumber ->
-                            tvSeriesDetails?.id?.let { id ->
-                                val seasonInfo = SeasonInfo(
-                                    tvSeriesId = id,
-                                    seasonNumber = seasonNumber
-                                )
-
-                                navigator.navigate(
-                                    SeasonDetailsScreenDestination(
-                                        seasonInfo = seasonInfo,
-                                        startRoute = startRoute
-                                    )
-                                )
-                            }
+//                            tvSeriesDetails?.id?.let { id ->
+//                                val seasonInfo = SeasonInfo(
+//                                    tvSeriesId = id,
+//                                    seasonNumber = seasonNumber
+//                                )
+//
+//                                navigator.navigate(
+//                                    SeasonDetailsScreenDestination(
+//                                        seasonInfo = seasonInfo,
+//                                        startRoute = startRoute
+//                                    )
+//                                )
+//                            }
                         }
                     }
                 }
@@ -247,22 +252,22 @@ fun TvSeriesDetailsScreen(
                             title = stringResource(R.string.tv_series_details_similar),
                             state = similar,
                             onMoreClick = {
-                                val tvSeriesRelationInfo = TvSeriesRelationInfo(
-                                    tvSeriesId = tvSeriesId,
-                                    type = RelationType.Similar
-                                )
-
-                                navigator.navigate(
-                                    RelatedTvSeriesDestination(tvSeriesRelationInfo)
-                                )
+//                                val tvSeriesRelationInfo = TvSeriesRelationInfo(
+//                                    tvSeriesId = tvSeriesId,
+//                                    type = RelationType.Similar
+//                                )
+//
+//                                navigator.navigate(
+//                                    RelatedTvSeriesDestination(tvSeriesRelationInfo)
+//                                )
                             }
                         ) { tvSeriesId ->
-                            navigator.navigate(
-                                TvSeriesDetailsScreenDestination(
-                                    tvSeriesId = tvSeriesId,
-                                    startRoute = startRoute
-                                )
-                            )
+//                            navigator.navigate(
+//                                TvSeriesDetailsScreenDestination(
+//                                    tvSeriesId = tvSeriesId,
+//                                    startRoute = startRoute
+//                                )
+//                            )
                         }
                     }
                 }
@@ -285,22 +290,22 @@ fun TvSeriesDetailsScreen(
                             title = stringResource(R.string.tv_series_details_recommendations),
                             state = recommendations,
                             onMoreClick = {
-                                val tvSeriesRelationInfo = TvSeriesRelationInfo(
-                                    tvSeriesId = tvSeriesId,
-                                    type = RelationType.Recommended
-                                )
-
-                                navigator.navigate(
-                                    RelatedTvSeriesDestination(tvSeriesRelationInfo)
-                                )
+//                                val tvSeriesRelationInfo = TvSeriesRelationInfo(
+//                                    tvSeriesId = tvSeriesId,
+//                                    type = RelationType.Recommended
+//                                )
+//
+//                                navigator.navigate(
+//                                    RelatedTvSeriesDestination(tvSeriesRelationInfo)
+//                                )
                             }
                         ) { tvSeriesId ->
-                            navigator.navigate(
-                                TvSeriesDetailsScreenDestination(
-                                    tvSeriesId = tvSeriesId,
-                                    startRoute = startRoute
-                                )
-                            )
+//                            navigator.navigate(
+//                                TvSeriesDetailsScreenDestination(
+//                                    tvSeriesId = tvSeriesId,
+//                                    startRoute = startRoute
+//                                )
+//                            )
                         }
                     }
                 }
@@ -343,14 +348,14 @@ fun TvSeriesDetailsScreen(
                 ) {
                     SectionDivider(modifier = Modifier.fillMaxWidth())
                     ReviewSection(modifier = Modifier.fillMaxWidth()) {
-                        val args = ReviewsScreenNavArgs(
-                            mediaId = tvSeriesId,
-                            type = MediaType.Tv
-                        )
-
-                        navigator.navigate(
-                            ReviewsScreenDestination(args)
-                        )
+//                        val args = ReviewsScreenNavArgs(
+//                            mediaId = tvSeriesId,
+//                            type = MediaType.Tv
+//                        )
+//
+//                        navigator.navigate(
+//                            ReviewsScreenDestination(args)
+//                        )
                     }
                 }
             }
@@ -391,7 +396,7 @@ fun TvSeriesDetailsScreen(
                     )
                     IconButton(
                         onClick = {
-                            navigator.popBackStack(startRoute, inclusive = false)
+//                            navigator.popBackStack(startRoute, inclusive = false)
                         }
                     ) {
                         Icon(

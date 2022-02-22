@@ -27,6 +27,7 @@ import com.example.moviesapp.ui.components.dialogs.ExitDialog
 import com.example.moviesapp.ui.screens.destinations.BrowseMoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.DiscoverMoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -103,7 +104,12 @@ fun MoviesScreen(
     }
 
     val navigateToMovieDetails: (Int) -> Unit = { movieId ->
-        navigator.navigate(MovieDetailsScreenDestination(movieId))
+        val destination = MovieDetailsScreenDestination(
+            movieId = movieId,
+            startRoute = MoviesScreenDestination.route
+        )
+
+        navigator.navigate(destination)
     }
 
     val navigateToBrowseMovies: (MovieType) -> Unit = { type ->

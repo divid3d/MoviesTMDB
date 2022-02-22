@@ -9,11 +9,11 @@ import androidx.paging.map
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.MovieType
 import com.example.moviesapp.model.Presentable
-import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.MovieRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
+import com.example.moviesapp.ui.screens.destinations.BrowseMoviesScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -31,19 +31,14 @@ class BrowseMoviesViewModel @Inject constructor(
 
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
-    private val movieType: Flow<MovieType> = savedStateHandle
-        .getLiveData("movieType", MovieType.Upcoming.name)
-        .asFlow().map { value ->
-            MovieType.valueOf(value)
-        }
+    private val navArgs: BrowseMoviesScreenArgs =
+        BrowseMoviesScreenDestination.argsFrom(savedStateHandle)
 
     val favouriteMoviesCount: StateFlow<Int> = favouritesRepository.getFavouriteMoviesCount()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), 0)
 
-    val movies: Flow<PagingData<Presentable>> = combine(
-        movieType, deviceLanguage
-    ) { type, deviceLanguage ->
-        when (type) {
+    val movies: Flow<PagingData<Presentable>> = deviceLanguage.map { deviceLanguage ->
+        when (navArgs.movieType) {
             MovieType.TopRated -> movieRepository.topRatedMovies(deviceLanguage)
             MovieType.Upcoming -> movieRepository.upcomingMovies(deviceLanguage)
             MovieType.Favourite -> favouritesRepository.favouriteMovies()

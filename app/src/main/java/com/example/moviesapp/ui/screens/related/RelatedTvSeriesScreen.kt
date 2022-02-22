@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.related
 
+import android.os.Parcelable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,26 +12,37 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.model.RelationType
-import com.example.moviesapp.model.TvSeriesRelationInfo
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.PresentableGridSection
+import com.example.moviesapp.ui.screens.destinations.RelatedTvSeriesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.parcelize.Parcelize
 
-@Destination
+@Parcelize
+data class RelatedTvSeriesScreenArgs(
+    val tvSeriesId: Int,
+    val type: RelationType,
+    val startRoute: String
+) : Parcelable
+
+@Destination(navArgsDelegate = RelatedTvSeriesScreenArgs::class)
 @Composable
-fun RelatedTvSeries(
+fun RelatedTvSeriesScreen(
     viewModel: RelatedTvSeriesViewModel = hiltViewModel(),
-    tvSeriesRelationInfo: TvSeriesRelationInfo,
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    backStackEntry: NavBackStackEntry
 ) {
-    val tvSeries = viewModel.tvSeries?.collectAsLazyPagingItems()
+    val navArgs: RelatedTvSeriesScreenArgs =
+        RelatedTvSeriesScreenDestination.argsFrom(backStackEntry)
+    val tvSeries = viewModel.tvSeries.collectAsLazyPagingItems()
 
-    val appbarTitle = when (tvSeriesRelationInfo.type) {
+    val appbarTitle = when (navArgs.type) {
         RelationType.Similar -> "Podobne"
         RelationType.Recommended -> "Polecane"
     }
@@ -54,9 +66,12 @@ fun RelatedTvSeries(
                 ),
                 state = state
             ) { tvSeriesId ->
-                navigator.navigate(
-                    TvSeriesDetailsScreenDestination(tvSeriesId)
+                val destination = TvSeriesDetailsScreenDestination(
+                    tvSeriesId = tvSeriesId,
+                    startRoute = navArgs.startRoute
                 )
+
+                navigator.navigate(destination)
             }
         }
     }

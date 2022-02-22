@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.details
 
+import android.os.Parcelable
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -24,32 +25,39 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.ExternalId
-import com.example.moviesapp.model.MediaType
-import com.example.moviesapp.model.MovieRelationInfo
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.other.*
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
-import com.example.moviesapp.ui.screens.destinations.*
+import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.RelatedMoviesScreenDestination
 import com.example.moviesapp.ui.screens.details.components.MovieDetailsInfoSection
 import com.example.moviesapp.ui.screens.details.components.MovieDetailsTopContent
-import com.example.moviesapp.ui.screens.reviews.ReviewsScreenNavArgs
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.parcelize.Parcelize
 
-@Destination
+@Parcelize
+data class MovieDetailsScreenArgs(
+    val movieId: Int,
+    val startRoute: String
+) : Parcelable
+
+@Destination(navArgsDelegate = MovieDetailsScreenArgs::class)
 @Composable
 fun MovieDetailsScreen(
     viewModel: MoviesDetailsViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
-    movieId: Int,
-    startRoute: String = MoviesScreenDestination.route
+    navBackStackEntry: NavBackStackEntry
 ) {
+    val navArgs: MovieDetailsScreenArgs = MovieDetailsScreenDestination.argsFrom(navBackStackEntry)
+
     val context = LocalContext.current
     val density = LocalDensity.current
 
@@ -202,12 +210,11 @@ fun MovieDetailsScreen(
                             members = members,
                             contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
                         ) { personId ->
-                            navigator.navigate(
-                                PersonDetailsScreenDestination(
-                                    personId = personId,
-                                    startRoute = startRoute
-                                )
-                            )
+//                            navigator.navigate(
+//                                PersonDetailsScreenDestination(
+//
+//                                )
+//                            )
                         }
                     }
                 }
@@ -231,12 +238,12 @@ fun MovieDetailsScreen(
                             members = members,
                             contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
                         ) { personId ->
-                            navigator.navigate(
-                                PersonDetailsScreenDestination(
-                                    personId = personId,
-                                    startRoute = startRoute
-                                )
-                            )
+//                            navigator.navigate(
+//                                PersonDetailsScreenDestination(
+//                                    personId = personId,
+//                                    startRoute = startRoute
+//                                )
+//                            )
                         }
                     }
                 }
@@ -259,16 +266,15 @@ fun MovieDetailsScreen(
                             modifier = Modifier.fillMaxWidth(),
                             title = movieCollection.name,
                             list = movieCollection.parts.sortedBy { part -> part.releaseDate },
-                            selectedId = movieId
+                            selectedId = navArgs.movieId
                         ) { id ->
-                            if (movieId != id) {
-                                navigator.navigate(
-                                    MovieDetailsScreenDestination(
-                                        movieId = id,
-                                        startRoute = startRoute
-                                    )
-                                )
-                            }
+                            val destination = MovieDetailsScreenDestination(
+                                movieId = id,
+                                startRoute = navArgs.startRoute
+
+                            )
+
+                            navigator.navigate(destination)
                         }
                     }
                 }
@@ -291,24 +297,21 @@ fun MovieDetailsScreen(
                             title = stringResource(R.string.movie_details_similar),
                             state = similarMovies,
                             onMoreClick = {
-                                val movieRelationInfo = MovieRelationInfo(
-                                    movieId = movieId,
-                                    type = RelationType.Similar
+                                val destination = RelatedMoviesScreenDestination(
+                                    movieId = navArgs.movieId,
+                                    type = RelationType.Similar,
+                                    startRoute = navArgs.startRoute
                                 )
 
-                                navigator.navigate(
-                                    RelatedMoviesDestination(
-                                        movieRelationInfo = movieRelationInfo
-                                    )
-                                )
+                                navigator.navigate(destination)
                             }
-                        ) { movieId ->
-                            navigator.navigate(
-                                MovieDetailsScreenDestination(
-                                    movieId = movieId,
-                                    startRoute = startRoute
-                                )
+                        ) { id ->
+                            val destination = MovieDetailsScreenDestination(
+                                movieId = id,
+                                startRoute = navArgs.startRoute
                             )
+
+                            navigator.navigate(destination)
                         }
                     }
                 }
@@ -331,24 +334,24 @@ fun MovieDetailsScreen(
                             title = stringResource(R.string.movie_details_recommendations),
                             state = movieRecommendation,
                             onMoreClick = {
-                                val movieRelationInfo = MovieRelationInfo(
-                                    movieId = movieId,
-                                    type = RelationType.Recommended
-                                )
+//                                val movieRelationInfo = MovieRelationInfo(
+//                                    movieId = movieId,
+//                                    type = RelationType.Recommended
+//                                )
 
-                                navigator.navigate(
-                                    RelatedMoviesDestination(
-                                        movieRelationInfo = movieRelationInfo
-                                    )
-                                )
+//                                navigator.navigate(
+//                                    RelatedMoviesDestination(
+//                                        movieRelationInfo = movieRelationInfo
+//                                    )
+//                                )
                             }
                         ) { movieId ->
-                            navigator.navigate(
-                                MovieDetailsScreenDestination(
-                                    movieId = movieId,
-                                    startRoute = startRoute
-                                )
-                            )
+//                            navigator.navigate(
+//                                MovieDetailsScreenDestination(
+//                                    movieId = movieId,
+//                                    startRoute = startRoute
+//                                )
+//                            )
                         }
                     }
                 }
@@ -391,14 +394,14 @@ fun MovieDetailsScreen(
                 ) {
                     SectionDivider(modifier = Modifier.fillMaxWidth())
                     ReviewSection(modifier = Modifier.fillMaxWidth()) {
-                        val args = ReviewsScreenNavArgs(
-                            mediaId = movieId,
-                            type = MediaType.Movie
-                        )
-
-                        navigator.navigate(
-                            ReviewsScreenDestination(args)
-                        )
+//                        val args = ReviewsScreenNavArgs(
+//                            mediaId = movieId,
+//                            type = MediaType.Movie
+//                        )
+//
+//                        navigator.navigate(
+//                            ReviewsScreenDestination(args)
+//                        )
                     }
                 }
             }
@@ -439,7 +442,7 @@ fun MovieDetailsScreen(
                     )
                     IconButton(
                         onClick = {
-                            navigator.popBackStack(startRoute, inclusive = false)
+                            //navigator.popBackStack(startRoute, inclusive = false)
                         }
                     ) {
                         Icon(

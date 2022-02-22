@@ -30,9 +30,7 @@ import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.ExternalIdsSection
 import com.example.moviesapp.ui.components.SectionDivider
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
-import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
-import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.details.components.CreditsList
 import com.example.moviesapp.ui.screens.details.components.PersonDetailsInfoSection
 import com.example.moviesapp.ui.screens.details.components.PersonDetailsTopContent
@@ -78,25 +76,25 @@ fun PersonDetailsScreen(
     }
 
     val navigateToDetails = { mediaType: MediaType, id: Int ->
-        val destination = when (mediaType) {
-            MediaType.Movie -> {
-                MovieDetailsScreenDestination(
-                    movieId = id, startRoute = startRoute
-                )
-            }
-
-            MediaType.Tv -> {
-                TvSeriesDetailsScreenDestination(
-                    tvSeriesId = id, startRoute = startRoute
-                )
-            }
-
-            else -> null
-        }
-
-        if (destination != null) {
-            navigator.navigate(destination)
-        }
+//        val destination = when (mediaType) {
+//            MediaType.Movie -> {
+//                MovieDetailsScreenDestination(
+//                    movieId = id, startRoute = startRoute
+//                )
+//            }
+//
+//            MediaType.Tv -> {
+//                TvSeriesDetailsScreenDestination(
+//                    tvSeriesId = id, startRoute = startRoute
+//                )
+//            }
+//
+//            else -> null
+//        }
+//
+//        if (destination != null) {
+//            navigator.navigate(destination)
+//        }
     }
 
     Box(

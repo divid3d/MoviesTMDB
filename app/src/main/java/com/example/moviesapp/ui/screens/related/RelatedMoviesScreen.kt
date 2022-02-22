@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.related
 
+import android.os.Parcelable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,26 +12,37 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.moviesapp.model.MovieRelationInfo
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.PresentableGridSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.RelatedMoviesScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.parcelize.Parcelize
 
-@Destination
+@Parcelize
+data class RelatedMoviesScreenArgs(
+    val movieId: Int,
+    val type: RelationType,
+    val startRoute: String
+) : Parcelable
+
+@Destination(navArgsDelegate = RelatedMoviesScreenArgs::class)
 @Composable
-fun RelatedMovies(
+fun RelatedMoviesScreen(
     viewModel: RelatedMoviesViewModel = hiltViewModel(),
-    movieRelationInfo: MovieRelationInfo,
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    navBackStackEntry: NavBackStackEntry
 ) {
-    val movies = viewModel.movies?.collectAsLazyPagingItems()
+    val navArgs: RelatedMoviesScreenArgs =
+        RelatedMoviesScreenDestination.argsFrom(navBackStackEntry)
+    val movies = viewModel.movies.collectAsLazyPagingItems()
 
-    val appbarTitle = when (movieRelationInfo.type) {
+    val appbarTitle = when (navArgs.type) {
         RelationType.Similar -> "Podobne"
         RelationType.Recommended -> "Polecane"
     }
@@ -45,19 +57,21 @@ fun RelatedMovies(
                 )
             }
         })
-        movies?.let { state ->
-            PresentableGridSection(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(
-                    horizontal = MaterialTheme.spacing.small,
-                    vertical = MaterialTheme.spacing.medium,
-                ),
-                state = state
-            ) { movieId ->
-                navigator.navigate(
-                    MovieDetailsScreenDestination(movieId)
-                )
-            }
+
+        PresentableGridSection(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                horizontal = MaterialTheme.spacing.small,
+                vertical = MaterialTheme.spacing.medium,
+            ),
+            state = movies
+        ) { movieId ->
+            val destination = MovieDetailsScreenDestination(
+                movieId = movieId,
+                startRoute = navArgs.startRoute
+            )
+
+            navigator.navigate(destination)
         }
     }
 }

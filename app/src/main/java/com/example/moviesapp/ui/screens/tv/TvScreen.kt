@@ -22,6 +22,7 @@ import com.example.moviesapp.ui.components.PresentableTopSection
 import com.example.moviesapp.ui.components.SectionDivider
 import com.example.moviesapp.ui.screens.destinations.BrowseTvSeriesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.DiscoverTvSeriesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
@@ -77,7 +78,12 @@ fun TvScreen(
     }
 
     val navigateToTvSeriesDetails: (Int) -> Unit = { tvSeriesId ->
-        navigator.navigate(TvSeriesDetailsScreenDestination(tvSeriesId))
+        val destination = TvSeriesDetailsScreenDestination(
+            tvSeriesId = tvSeriesId,
+            startRoute = TvScreenDestination.route
+        )
+
+        navigator.navigate(destination)
     }
 
     val navigateToBrowseTvSeries: (TvSeriesType) -> Unit = { type ->

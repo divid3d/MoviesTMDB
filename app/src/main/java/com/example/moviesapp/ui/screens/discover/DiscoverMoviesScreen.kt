@@ -30,7 +30,6 @@ import com.example.moviesapp.R
 import com.example.moviesapp.model.SortOrder
 import com.example.moviesapp.other.isEmpty
 import com.example.moviesapp.ui.components.*
-import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.discover.components.FilterMoviesModalBottomSheetContent
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsPadding
@@ -159,9 +158,9 @@ fun DiscoverMoviesScreen(
                             ),
                             state = movies
                         ) { movieId ->
-                            navigator.navigate(
-                                MovieDetailsScreenDestination(movieId)
-                            )
+//                            navigator.navigate(
+//                                MovieDetailsScreenDestination(movieId)
+//                            )
                         }
                     } else {
                         FilterEmptyState(
