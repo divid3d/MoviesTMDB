@@ -33,7 +33,7 @@ data class TvSeriesDetails(
     val lastAirDate: Date?,
 
     @Json(name = "last_episode_to_air")
-    val lastEpisodeToAir: Episode,
+    val lastEpisodeToAir: Episode?,
 
     val name: String,
 

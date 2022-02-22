@@ -2,7 +2,6 @@ package com.example.moviesapp.di
 
 import android.annotation.SuppressLint
 import com.squareup.moshi.*
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,7 +45,9 @@ class DateJsonAdapter : JsonAdapter<Date>() {
 private fun SimpleDateFormat.parseOrNull(source: String): Date? {
     return try {
         parse(source)
-    } catch (e: ParseException) {
+    } catch (e: Exception) {
+        null
+    } catch (e: ArrayIndexOutOfBoundsException) {
         null
     }
 }
