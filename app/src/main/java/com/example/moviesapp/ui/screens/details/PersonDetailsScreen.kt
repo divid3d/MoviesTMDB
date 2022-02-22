@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.details
 
+import android.os.Parcelable
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.other.ifNotNullAndEmpty
@@ -30,7 +32,9 @@ import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.ExternalIdsSection
 import com.example.moviesapp.ui.components.SectionDivider
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
-import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.PersonDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.details.components.CreditsList
 import com.example.moviesapp.ui.screens.details.components.PersonDetailsInfoSection
 import com.example.moviesapp.ui.screens.details.components.PersonDetailsTopContent
@@ -40,15 +44,22 @@ import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.statusBarsPadding
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.parcelize.Parcelize
 
-@Destination
+@Parcelize
+data class PersonDetailsScreenArgs(
+    val personId: Int,
+    val startRoute: String
+) : Parcelable
+
+@Destination(navArgsDelegate = PersonDetailsScreenArgs::class)
 @Composable
 fun PersonDetailsScreen(
     viewModel: PersonDetailsViewModel = hiltViewModel(),
-    personId: Int,
     navigator: DestinationsNavigator,
-    startRoute: String = MoviesScreenDestination.route
+    backStackEntry: NavBackStackEntry
 ) {
+    val navArgs: PersonDetailsScreenArgs = PersonDetailsScreenDestination.argsFrom(backStackEntry)
     val context = LocalContext.current
 
     val details by viewModel.personDetails.collectAsState()
@@ -76,25 +87,27 @@ fun PersonDetailsScreen(
     }
 
     val navigateToDetails = { mediaType: MediaType, id: Int ->
-//        val destination = when (mediaType) {
-//            MediaType.Movie -> {
-//                MovieDetailsScreenDestination(
-//                    movieId = id, startRoute = startRoute
-//                )
-//            }
-//
-//            MediaType.Tv -> {
-//                TvSeriesDetailsScreenDestination(
-//                    tvSeriesId = id, startRoute = startRoute
-//                )
-//            }
-//
-//            else -> null
-//        }
-//
-//        if (destination != null) {
-//            navigator.navigate(destination)
-//        }
+        val destination = when (mediaType) {
+            MediaType.Movie -> {
+                MovieDetailsScreenDestination(
+                    movieId = id,
+                    startRoute = navArgs.startRoute
+                )
+            }
+
+            MediaType.Tv -> {
+                TvSeriesDetailsScreenDestination(
+                    tvSeriesId = id,
+                    startRoute = navArgs.startRoute
+                )
+            }
+
+            else -> null
+        }
+
+        if (destination != null) {
+            navigator.navigate(destination)
+        }
     }
 
     Box(
@@ -223,7 +236,7 @@ fun PersonDetailsScreen(
             trailing = {
                 Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
                     IconButton(onClick = {
-                        navigator.popBackStack(startRoute, inclusive = false)
+                        navigator.popBackStack(navArgs.startRoute, inclusive = false)
                     }) {
                         Icon(
                             imageVector = Icons.Filled.Close,

@@ -34,12 +34,12 @@ class MoviesDetailsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
+    private val navArgs: MovieDetailsScreenArgs =
+        MovieDetailsScreenDestination.argsFrom(savedStateHandle)
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
     private val favouritesMoviesIdsFlow: Flow<List<Int>> =
         favouritesRepository.getFavouritesMoviesIds()
 
-    private val navArgs: MovieDetailsScreenArgs =
-        MovieDetailsScreenDestination.argsFrom(savedStateHandle)
 
     private val _watchAtTime: MutableStateFlow<Date?> = MutableStateFlow(null)
     val watchAtTime: StateFlow<Date?> = _watchAtTime.asStateFlow()

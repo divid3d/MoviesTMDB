@@ -25,13 +25,17 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.ExternalId
+import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.other.*
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.PersonDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.RelatedTvSeriesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.details.components.TvSeriesDetailsInfoSection
 import com.example.moviesapp.ui.screens.details.components.TvSeriesDetailsTopContent
 import com.example.moviesapp.ui.theme.spacing
@@ -50,8 +54,12 @@ data class TvSeriesDetailsScreenArgs(
 @Composable
 fun TvSeriesDetailsScreen(
     viewModel: TvSeriesDetailsViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    backStackEntry: NavBackStackEntry
 ) {
+    val navArgs: TvSeriesDetailsScreenArgs =
+        TvSeriesDetailsScreenDestination.argsFrom(backStackEntry)
+
     val context = LocalContext.current
     val density = LocalDensity.current
 
@@ -79,6 +87,44 @@ fun TvSeriesDetailsScreen(
     var topSectionHeight: Float? by remember { mutableStateOf(null) }
     val appbarHeight = density.run { 56.dp.toPx() }
     val topSectionScrollLimitValue: Float? = topSectionHeight?.minus(appbarHeight)
+
+    val navigateToDetails = { tvSeriesId: Int ->
+        val destination = TvSeriesDetailsScreenDestination(
+            tvSeriesId = tvSeriesId,
+            startRoute = navArgs.startRoute
+        )
+
+        navigator.navigate(destination)
+    }
+
+    val navigateToSimilar = {
+        val destination = RelatedTvSeriesScreenDestination(
+            tvSeriesId = navArgs.tvSeriesId,
+            type = RelationType.Similar,
+            startRoute = navArgs.startRoute
+        )
+
+        navigator.navigate(destination)
+    }
+
+    val navigateToRecommendations = {
+        val destination = RelatedTvSeriesScreenDestination(
+            tvSeriesId = navArgs.tvSeriesId,
+            type = RelationType.Recommended,
+            startRoute = navArgs.startRoute
+        )
+
+        navigator.navigate(destination)
+    }
+
+    val navigateToCreatorDetails = { creatorId: Int ->
+        val destination = PersonDetailsScreenDestination(
+            personId = creatorId,
+            startRoute = navArgs.startRoute
+        )
+
+        navigator.navigate(destination)
+    }
 
     LaunchedEffect(error) {
         showErrorDialog = error != null
@@ -192,10 +238,9 @@ fun TvSeriesDetailsScreen(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(R.string.tv_series_details_creators),
                             members = members,
-                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                        ) { creatorId ->
-                            navigator.navigate(PersonDetailsScreenDestination(creatorId))
-                        }
+                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                            onMemberClick = { id -> navigateToCreatorDetails(id) }
+                        )
                     }
                 }
             }
@@ -251,24 +296,9 @@ fun TvSeriesDetailsScreen(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(R.string.tv_series_details_similar),
                             state = similar,
-                            onMoreClick = {
-//                                val tvSeriesRelationInfo = TvSeriesRelationInfo(
-//                                    tvSeriesId = tvSeriesId,
-//                                    type = RelationType.Similar
-//                                )
-//
-//                                navigator.navigate(
-//                                    RelatedTvSeriesDestination(tvSeriesRelationInfo)
-//                                )
-                            }
-                        ) { tvSeriesId ->
-//                            navigator.navigate(
-//                                TvSeriesDetailsScreenDestination(
-//                                    tvSeriesId = tvSeriesId,
-//                                    startRoute = startRoute
-//                                )
-//                            )
-                        }
+                            onMoreClick = navigateToSimilar,
+                            onPresentableClick = { id -> navigateToDetails(id) }
+                        )
                     }
                 }
             }
@@ -289,24 +319,9 @@ fun TvSeriesDetailsScreen(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(R.string.tv_series_details_recommendations),
                             state = recommendations,
-                            onMoreClick = {
-//                                val tvSeriesRelationInfo = TvSeriesRelationInfo(
-//                                    tvSeriesId = tvSeriesId,
-//                                    type = RelationType.Recommended
-//                                )
-//
-//                                navigator.navigate(
-//                                    RelatedTvSeriesDestination(tvSeriesRelationInfo)
-//                                )
-                            }
-                        ) { tvSeriesId ->
-//                            navigator.navigate(
-//                                TvSeriesDetailsScreenDestination(
-//                                    tvSeriesId = tvSeriesId,
-//                                    startRoute = startRoute
-//                                )
-//                            )
-                        }
+                            onMoreClick = navigateToRecommendations,
+                            onPresentableClick = { id -> navigateToDetails(id) }
+                        )
                     }
                 }
             }
@@ -396,7 +411,7 @@ fun TvSeriesDetailsScreen(
                     )
                     IconButton(
                         onClick = {
-//                            navigator.popBackStack(startRoute, inclusive = false)
+                            navigator.popBackStack(navArgs.startRoute, inclusive = false)
                         }
                     ) {
                         Icon(

@@ -10,11 +10,11 @@ import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
-import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import com.example.moviesapp.repository.TvSeriesRepository
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -34,28 +34,25 @@ class TvSeriesDetailsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
+    private val navArgs: TvSeriesDetailsScreenArgs =
+        TvSeriesDetailsScreenDestination.argsFrom(savedStateHandle)
+
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
     private val favouriteTvSeriesIds: Flow<List<Int>> =
         favouritesRepository.getFavouriteTvSeriesIds()
 
     private val _tvSeriesDetails: MutableStateFlow<TvSeriesDetails?> = MutableStateFlow(null)
 
-    private val tvSeriesId: Flow<Int> = savedStateHandle.getLiveData<Int>("tvSeriesId").asFlow()
-
-    val similarTvSeries: Flow<PagingData<TvSeries>> = combine(
-        tvSeriesId, deviceLanguage
-    ) { id, deviceLanguage ->
+    val similarTvSeries: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
         tvSeriesRepository.similarTvSeries(
-            tvSeriesId = id,
+            tvSeriesId = navArgs.tvSeriesId,
             deviceLanguage = deviceLanguage
         )
     }.flattenMerge().cachedIn(viewModelScope)
 
-    val tvSeriesRecommendations: Flow<PagingData<TvSeries>> = combine(
-        tvSeriesId, deviceLanguage
-    ) { id, deviceLanguage ->
+    val tvSeriesRecommendations: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
         tvSeriesRepository.tvSeriesRecommendations(
-            tvSeriesId = id,
+            tvSeriesId = navArgs.tvSeriesId,
             deviceLanguage = deviceLanguage
         )
     }.flattenMerge().cachedIn(viewModelScope)
@@ -77,10 +74,8 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
     val backdrops: StateFlow<List<Image>> = _tvSeriesBackdrops.asStateFlow()
 
-    val isFavourite: StateFlow<Boolean> = combine(
-        tvSeriesId, favouriteTvSeriesIds
-    ) { id, favouritesId ->
-        id in favouritesId
+    val isFavourite: StateFlow<Boolean> = favouriteTvSeriesIds.map { favouriteIds ->
+        navArgs.tvSeriesId in favouriteIds
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
 
     val nextEpisodeDaysRemaining: StateFlow<Long?> = _nextEpisodeDaysRemaining.asStateFlow()
@@ -98,13 +93,11 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            tvSeriesId.collectLatest { tvSeriesId ->
-                deviceLanguage.collectLatest { deviceLanguage ->
-                    getTvSeriesInfo(
-                        tvSeriesId = tvSeriesId,
-                        deviceLanguage = deviceLanguage
-                    )
-                }
+            deviceLanguage.collectLatest { deviceLanguage ->
+                getTvSeriesInfo(
+                    tvSeriesId = navArgs.tvSeriesId,
+                    deviceLanguage = deviceLanguage
+                )
             }
         }
     }
