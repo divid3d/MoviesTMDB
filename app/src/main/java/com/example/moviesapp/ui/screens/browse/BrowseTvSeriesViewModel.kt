@@ -3,17 +3,14 @@ package com.example.moviesapp.ui.screens.browse
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.moviesapp.model.DeviceLanguage
-import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.TvSeriesType
-import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import com.example.moviesapp.repository.TvSeriesRepository
+import com.example.moviesapp.ui.screens.destinations.BrowseTvSeriesScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -31,26 +28,34 @@ class BrowseTvSeriesViewModel @Inject constructor(
 
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
-    private val tvSeriesType: Flow<TvSeriesType> = savedStateHandle
-        .getLiveData("tvSeriesType", TvSeriesType.Trending.name)
-        .asFlow().map { value ->
-            TvSeriesType.valueOf(value)
-        }
+    private val navArgs: BrowseTvSeriesScreenArgs =
+        BrowseTvSeriesScreenDestination.argsFrom(savedStateHandle)
 
-    val favouriteTvSeriesCount: StateFlow<Int> = favouritesRepository.getFavouriteTvSeriesCount()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), 0)
+    private val favouriteTvSeriesCount: StateFlow<Int> =
+        favouritesRepository.getFavouriteTvSeriesCount()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), 0)
 
-    var tvSeries: Flow<PagingData<Presentable>>? = combine(
-        tvSeriesType, deviceLanguage
-    ) { type, deviceLanguage ->
-        when (type) {
+    val uiState: StateFlow<BrowseTvSeriesScreenUiState> = combine(
+        deviceLanguage, favouriteTvSeriesCount
+    ) { deviceLanguage, favouriteTvSeriesCount ->
+        val tvSeries = when (navArgs.tvSeriesType) {
             TvSeriesType.TopRated -> tvSeriesRepository.topRatedTvSeries(deviceLanguage)
             TvSeriesType.AiringToday -> tvSeriesRepository.airingTodayTvSeries(deviceLanguage)
+            TvSeriesType.Trending -> tvSeriesRepository.trendingTvSeries(deviceLanguage)
             TvSeriesType.Favourite -> favouritesRepository.favouritesTvSeries()
             TvSeriesType.RecentlyBrowsed -> recentlyBrowsedRepository.recentlyBrowsedTvSeries()
-            TvSeriesType.Trending -> tvSeriesRepository.trendingTvSeries(deviceLanguage)
-        }
-    }.flattenMerge().map { data -> data.map { tvSeries -> tvSeries } }.cachedIn(viewModelScope)
+        }.map { data -> data.map { tvSeries -> tvSeries } }
+
+        BrowseTvSeriesScreenUiState(
+            selectedTvSeriesType = navArgs.tvSeriesType,
+            tvSeries = tvSeries,
+            favouriteMoviesCount = favouriteTvSeriesCount
+        )
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        BrowseTvSeriesScreenUiState.getDefault(navArgs.tvSeriesType)
+    )
 
     fun onClearClicked() {
         recentlyBrowsedRepository.clearRecentlyBrowsedTvSeries()

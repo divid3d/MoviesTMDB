@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.browse
 
+import android.os.Parcelable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -24,34 +25,66 @@ import com.example.moviesapp.model.TvSeriesType
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.PresentableGridSection
 import com.example.moviesapp.ui.components.dialogs.InfoDialog
+import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class BrowseTvSeriesScreenArgs(
+    val tvSeriesType: TvSeriesType
+) : Parcelable
 
 @OptIn(ExperimentalFoundationApi::class, kotlinx.coroutines.FlowPreview::class)
-@Destination
+@Destination(navArgsDelegate = BrowseTvSeriesScreenArgs::class)
 @Composable
 fun BrowseTvSeriesScreen(
     viewModel: BrowseTvSeriesViewModel = hiltViewModel(),
-    tvSeriesType: TvSeriesType,
     navigator: DestinationsNavigator
 ) {
-    val tvSeries = viewModel.tvSeries?.collectAsLazyPagingItems()
+    val uiState by viewModel.uiState.collectAsState()
+    val onBackClicked: () -> Unit = { navigator.navigateUp() }
+    val onClearDialogConfirmClicked: () -> Unit = viewModel::onClearClicked
+    val onTvSeriesClicked = { tvSeriesId: Int ->
+        val destination = TvSeriesDetailsScreenDestination(
+            tvSeriesId = tvSeriesId,
+            startRoute = TvScreenDestination.route
+        )
 
-    val favouriteTvSeriesCount by viewModel.favouriteTvSeriesCount.collectAsState()
+        navigator.navigate(destination)
+    }
 
-    val appbarTitle = when (tvSeriesType) {
+    BrowseTvSeriesScreenContent(
+        uiState = uiState,
+        onBackClicked = onBackClicked,
+        onClearDialogConfirmClicked = onClearDialogConfirmClicked,
+        onTvSeriesClicked = onTvSeriesClicked
+    )
+}
+
+@Composable
+fun BrowseTvSeriesScreenContent(
+    uiState: BrowseTvSeriesScreenUiState,
+    onBackClicked: () -> Unit,
+    onClearDialogConfirmClicked: () -> Unit,
+    onTvSeriesClicked: (tvSeriesId: Int) -> Unit
+) {
+    val tvSeries = uiState.tvSeries.collectAsLazyPagingItems()
+
+    val appbarTitle = when (uiState.selectedTvSeriesType) {
         TvSeriesType.TopRated -> stringResource(R.string.all_tv_series_top_rated_label)
         TvSeriesType.AiringToday -> stringResource(R.string.all_tv_series_airing_today_label)
         TvSeriesType.Favourite -> stringResource(
             R.string.all_tv_series_favourites_label,
-            favouriteTvSeriesCount
+            uiState.favouriteMoviesCount
         )
         TvSeriesType.RecentlyBrowsed -> stringResource(R.string.all_tv_series_recently_browsed_label)
         TvSeriesType.Trending -> stringResource(R.string.all_tv_series_trending_label)
     }
-    val showClearButton = tvSeriesType == TvSeriesType.RecentlyBrowsed
-            && tvSeries?.itemSnapshotList?.isEmpty() != true
+    val showClearButton =
+        uiState.selectedTvSeriesType == TvSeriesType.RecentlyBrowsed && tvSeries.itemSnapshotList.isNotEmpty()
 
     var showClearDialog by remember { mutableStateOf(false) }
 
@@ -69,7 +102,7 @@ fun BrowseTvSeriesScreen(
             onDismissRequest = dismissDialog,
             onCancelClick = dismissDialog,
             onConfirmClick = {
-                viewModel.onClearClicked()
+                onClearDialogConfirmClicked()
                 dismissDialog()
             }
         )
@@ -77,7 +110,7 @@ fun BrowseTvSeriesScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         AppBar(title = appbarTitle, action = {
-            IconButton(onClick = { navigator.navigateUp() }) {
+            IconButton(onClick = onBackClicked) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "go back",
@@ -103,19 +136,15 @@ fun BrowseTvSeriesScreen(
                     }
                 }
             })
-        tvSeries?.let { state ->
-            PresentableGridSection(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(
-                    horizontal = MaterialTheme.spacing.small,
-                    vertical = MaterialTheme.spacing.medium,
-                ),
-                state = state
-            ) { tvSeriesId ->
-//                navigator.navigate(
-//                    TvSeriesDetailsScreenDestination(tvSeriesId)
-//                )
-            }
-        }
+
+        PresentableGridSection(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                horizontal = MaterialTheme.spacing.small,
+                vertical = MaterialTheme.spacing.medium,
+            ),
+            state = tvSeries,
+            onPresentableClick = onTvSeriesClicked
+        )
     }
 }
