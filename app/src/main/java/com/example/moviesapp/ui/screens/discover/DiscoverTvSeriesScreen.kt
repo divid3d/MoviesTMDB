@@ -28,9 +28,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.SortOrder
+import com.example.moviesapp.model.SortType
 import com.example.moviesapp.other.isEmpty
 import com.example.moviesapp.ui.components.*
-import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
+import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.discover.components.FilterTvSeriesModalBottomSheetContent
 import com.example.moviesapp.ui.theme.spacing
@@ -53,11 +54,42 @@ fun DiscoverTvSeriesScreen(
     viewModel: DiscoverTvSeriesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-    val tvSeries = viewModel.tvSeries.collectAsLazyPagingItems()
+    val uiState by viewModel.uiState.collectAsState()
+    val onBackClicked: () -> Unit = { navigator.navigateUp() }
+    val onSortOrderChanged: (order: SortOrder) -> Unit = viewModel::onSortOrderChange
+    val onSortTypeChanged: (type: SortType) -> Unit = viewModel::onSortTypeChange
+    val onTvSeriesClicked: (tvSeriesId: Int) -> Unit = { id ->
+        val destination = TvSeriesDetailsScreenDestination(
+            tvSeriesId = id,
+            startRoute = MoviesScreenDestination.route
+        )
 
-    val sortType by viewModel.sortType.collectAsState()
-    val sortOrder by viewModel.sortOrder.collectAsState()
-    val filterState by viewModel.filterState.collectAsState()
+        navigator.navigate(destination)
+    }
+    val onSaveFilterClicked: (state: TvSeriesFilterState) -> Unit = viewModel::onFilterStateChange
+
+    DiscoverTvSeriesScreenContent(
+        uiState = uiState,
+        onBackClicked = onBackClicked,
+        onSortOrderChanged = onSortOrderChanged,
+        onSortTypeChanged = onSortTypeChanged,
+        onTvSeriesClicked = onTvSeriesClicked,
+        onSaveFilterClicked = onSaveFilterClicked
+    )
+}
+
+@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
+@Composable
+fun DiscoverTvSeriesScreenContent(
+    uiState: DiscoverTvSeriesScreenUiState,
+    onBackClicked: () -> Unit,
+    onSortOrderChanged: (order: SortOrder) -> Unit,
+    onSortTypeChanged: (type: SortType) -> Unit,
+    onTvSeriesClicked: (tvSeriesId: Int) -> Unit,
+    onSaveFilterClicked: (state: TvSeriesFilterState) -> Unit
+) {
+    val tvSeries = uiState.tvSeries.collectAsLazyPagingItems()
+
 
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
@@ -72,7 +104,11 @@ fun DiscoverTvSeriesScreen(
         !sheetState.isVisible
     }
 
-    val orderIconRotation by animateFloatAsState(targetValue = if (sortOrder == SortOrder.Desc) 0f else 180f)
+    val orderIconRotation by animateFloatAsState(
+        targetValue = if (uiState.sortInfo.sortOrder == SortOrder.Desc) {
+            0f
+        } else 180f
+    )
 
     BackHandler(sheetState.isVisible) {
         coroutineScope.launch {
@@ -92,7 +128,7 @@ fun DiscoverTvSeriesScreen(
                     .fillMaxHeight(0.9f)
                     .navigationBarsPadding(),
                 sheetState = sheetState,
-                filterState = filterState,
+                filterState = uiState.filterState,
                 onCloseClick = {
                     coroutineScope.launch {
                         sheetState.hide()
@@ -102,7 +138,7 @@ fun DiscoverTvSeriesScreen(
                     coroutineScope.launch {
                         sheetState.hide()
                     }
-                    viewModel.onFilterStateChange(filterState)
+                    onSaveFilterClicked(filterState)
                 }
             )
         }
@@ -112,7 +148,7 @@ fun DiscoverTvSeriesScreen(
                 AppBar(
                     title = stringResource(R.string.discover_tv_series_appbar_title),
                     action = {
-                        IconButton(onClick = { navigator.navigateUp() }) {
+                        IconButton(onClick = onBackClicked) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
                                 contentDescription = "go back",
@@ -126,9 +162,11 @@ fun DiscoverTvSeriesScreen(
                             IconButton(
                                 modifier = Modifier.rotate(orderIconRotation),
                                 onClick = {
-                                    val order =
-                                        if (sortOrder == SortOrder.Desc) SortOrder.Asc else SortOrder.Desc
-                                    viewModel.onSortOrderChange(order)
+                                    val order = if (uiState.sortInfo.sortOrder == SortOrder.Desc) {
+                                        SortOrder.Asc
+                                    } else SortOrder.Desc
+
+                                    onSortOrderChanged(order)
                                 }
                             ) {
                                 Image(
@@ -139,10 +177,9 @@ fun DiscoverTvSeriesScreen(
                             }
 
                             SortTypeDropdownButton(
-                                selectedType = sortType
-                            ) { type ->
-                                viewModel.onSortTypeChange(type)
-                            }
+                                selectedType = uiState.sortInfo.sortType,
+                                onTypeSelected = onSortTypeChanged
+                            )
                         }
                     })
 
@@ -158,14 +195,9 @@ fun DiscoverTvSeriesScreen(
                                 horizontal = MaterialTheme.spacing.small,
                                 vertical = MaterialTheme.spacing.medium,
                             ),
-                            state = tvSeries
-                        ) { tvSeriesId ->
-                            val destination = TvSeriesDetailsScreenDestination(
-                                tvSeriesId = tvSeriesId,
-                                startRoute = TvScreenDestination.route
-                            )
-                            navigator.navigate(destination)
-                        }
+                            state = tvSeries,
+                            onPresentableClick = onTvSeriesClicked
+                        )
                     } else {
                         FilterEmptyState(
                             modifier = Modifier.fillMaxSize(),

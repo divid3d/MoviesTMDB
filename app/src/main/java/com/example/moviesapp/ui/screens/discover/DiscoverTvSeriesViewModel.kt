@@ -3,8 +3,6 @@ package com.example.moviesapp.ui.screens.discover
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.example.moviesapp.model.*
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.TvSeriesRepository
@@ -26,15 +24,11 @@ class DiscoverTvSeriesViewModel @Inject constructor(
     private val availableTvSeriesGenres = configRepository.getTvSeriesGenres()
     private val availableWatchProviders = configRepository.getAllTvSeriesWatchProviders()
 
-    private val _sortType: MutableStateFlow<SortType> = MutableStateFlow(SortType.Popularity)
-    val sortType: StateFlow<SortType> = _sortType.asStateFlow()
-
-    private val _sortOrder: MutableStateFlow<SortOrder> = MutableStateFlow(SortOrder.Desc)
-    val sortOrder: StateFlow<SortOrder> = _sortOrder.asStateFlow()
+    private val sortInfo: MutableStateFlow<SortInfo> = MutableStateFlow(SortInfo.default)
 
     private val _filterState: MutableStateFlow<TvSeriesFilterState> =
-        MutableStateFlow(TvSeriesFilterState())
-    val filterState: StateFlow<TvSeriesFilterState> = combine(
+        MutableStateFlow(TvSeriesFilterState.default)
+    private val filterState: StateFlow<TvSeriesFilterState> = combine(
         _filterState,
         availableTvSeriesGenres,
         availableWatchProviders
@@ -43,15 +37,15 @@ class DiscoverTvSeriesViewModel @Inject constructor(
             availableGenres = genres,
             availableWatchProviders = watchProviders
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), TvSeriesFilterState())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), TvSeriesFilterState.default)
 
-    var tvSeries: Flow<PagingData<TvSeries>> = combine(
-        _filterState, _sortType, _sortOrder, deviceLanguage
-    ) { filterState, type, order, deviceLanguage ->
-        tvSeriesRepository.discoverTvSeries(
+    val uiState: StateFlow<DiscoverTvSeriesScreenUiState> = combine(
+        deviceLanguage, sortInfo, filterState
+    ) { deviceLanguage, sortInfo, filterState ->
+        val tvSeries = tvSeriesRepository.discoverTvSeries(
             deviceLanguage = deviceLanguage,
-            sortType = type,
-            sortOrder = order,
+            sortType = sortInfo.sortType,
+            sortOrder = sortInfo.sortOrder,
             genresParam = GenresParam(filterState.selectedGenres),
             watchProvidersParam = WatchProvidersParam(filterState.selectedWatchProviders),
             voteRange = filterState.voteRange.current,
@@ -60,23 +54,33 @@ class DiscoverTvSeriesViewModel @Inject constructor(
             onlyWithOverview = filterState.showOnlyWithOverview,
             airDateRange = filterState.airDateRange
         )
-    }.flattenMerge().cachedIn(viewModelScope)
+
+        DiscoverTvSeriesScreenUiState(
+            sortInfo = sortInfo,
+            filterState = filterState,
+            tvSeries = tvSeries
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, DiscoverTvSeriesScreenUiState.default)
 
     fun onSortTypeChange(sortType: SortType) {
         viewModelScope.launch {
-            _sortType.emit(sortType)
+            val currentSortInfo = sortInfo.value
+
+            sortInfo.emit(currentSortInfo.copy(sortType = sortType))
         }
     }
 
     fun onSortOrderChange(sortOrder: SortOrder) {
         viewModelScope.launch {
-            _sortOrder.emit(sortOrder)
+            val currentSortInfo = sortInfo.value
+
+            sortInfo.emit(currentSortInfo.copy(sortOrder = sortOrder))
         }
     }
 
-    fun onFilterStateChange(filterState: TvSeriesFilterState) {
+    fun onFilterStateChange(state: TvSeriesFilterState) {
         viewModelScope.launch {
-            _filterState.emit(filterState)
+            _filterState.emit(state)
         }
     }
 }
