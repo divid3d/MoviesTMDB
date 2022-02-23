@@ -25,12 +25,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
-import com.example.moviesapp.model.ExternalId
-import com.example.moviesapp.model.MediaType
-import com.example.moviesapp.model.RelationType
+import com.example.moviesapp.model.*
 import com.example.moviesapp.other.*
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
@@ -53,81 +50,162 @@ data class TvSeriesDetailsScreenArgs(
 @Composable
 fun TvSeriesDetailsScreen(
     viewModel: TvSeriesDetailsViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator,
-    backStackEntry: NavBackStackEntry
+    navigator: DestinationsNavigator
 ) {
-    val navArgs: TvSeriesDetailsScreenArgs by derivedStateOf {
-        TvSeriesDetailsScreenDestination.argsFrom(backStackEntry)
+    val context = LocalContext.current
+
+    val uiState by viewModel.uiState.collectAsState()
+
+    val onBackClicked: () -> Unit = { navigator.navigateUp() }
+    val onFavouriteClicked: (details: TvSeriesDetails) -> Unit = { details ->
+        if (uiState.additionalTvSeriesDetailsInfo.isFavourite) {
+            viewModel.onUnlikeClick(details)
+        } else {
+            viewModel.onLikeClick(details)
+        }
+    }
+    val onCloseClicked: () -> Unit = {
+        navigator.popBackStack(uiState.startRoute, inclusive = false)
+    }
+    val onExternalIdClicked = { id: ExternalId ->
+        openExternalId(
+            context = context,
+            externalId = id
+        )
+    }
+    val onShareClicked = { details: ShareDetails ->
+        shareImdb(
+            context = context,
+            details = details
+        )
+    }
+    val onVideoClicked = { video: Video ->
+        openVideo(
+            context = context,
+            video = video
+        )
+    }
+    val onCreatorClicked = { personId: Int ->
+        val destination = PersonDetailsScreenDestination(
+            personId = personId,
+            startRoute = uiState.startRoute
+        )
+
+        navigator.navigate(destination)
+    }
+    val onTvSeriesClicked = { tvSeriesId: Int ->
+        val destination = TvSeriesDetailsScreenDestination(
+            tvSeriesId = tvSeriesId,
+            startRoute = uiState.startRoute
+        )
+
+        navigator.navigate(destination)
+    }
+    val onReviewsClicked: () -> Unit = {
+        val tvSeriesId = uiState.tvSeriesDetails?.id
+
+        if (tvSeriesId != null) {
+            val destination = ReviewsScreenDestination(
+                mediaId = tvSeriesId,
+                type = MediaType.Movie
+            )
+
+            navigator.navigate(destination)
+        }
+    }
+    val onSeasonClicked = { seasonNumber: Int ->
+        val tvSeriesId = uiState.tvSeriesDetails?.id
+
+        if (tvSeriesId != null) {
+            val destination = SeasonDetailsScreenDestination(
+                tvSeriesId = tvSeriesId,
+                seasonNumber = seasonNumber,
+                startRoute = uiState.startRoute
+            )
+
+            navigator.navigate(destination)
+        }
+    }
+    val onSimilarMoreClicked = {
+        val tvSeriesId = uiState.tvSeriesDetails?.id
+
+        if (tvSeriesId != null) {
+            val destination = RelatedTvSeriesScreenDestination(
+                tvSeriesId = tvSeriesId,
+                type = RelationType.Similar,
+                startRoute = uiState.startRoute
+            )
+
+            navigator.navigate(destination)
+        }
     }
 
-    val context = LocalContext.current
+    val onRecommendationsMoreClicked = {
+        val tvSeriesId = uiState.tvSeriesDetails?.id
+
+        if (tvSeriesId != null) {
+            val destination = RelatedTvSeriesScreenDestination(
+                tvSeriesId = tvSeriesId,
+                type = RelationType.Recommended,
+                startRoute = uiState.startRoute
+            )
+
+            navigator.navigate(destination)
+        }
+    }
+
+    TvSeriesDetailsScreenContent(
+        uiState = uiState,
+        onBackClicked = onBackClicked,
+        onExternalIdClicked = onExternalIdClicked,
+        onShareClicked = onShareClicked,
+        onVideoClicked = onVideoClicked,
+        onFavouriteClicked = onFavouriteClicked,
+        onCloseClicked = onCloseClicked,
+        onCreatorClicked = onCreatorClicked,
+        onTvSeriesClicked = onTvSeriesClicked,
+        onSeasonClicked = onSeasonClicked,
+        onSimilarMoreClicked = onSimilarMoreClicked,
+        onRecommendationsMoreClicked = onRecommendationsMoreClicked,
+        onReviewsClicked = onReviewsClicked
+    )
+}
+
+@Composable
+fun TvSeriesDetailsScreenContent(
+    uiState: TvSeriesDetailsScreenUiState,
+    onBackClicked: () -> Unit,
+    onExternalIdClicked: (id: ExternalId) -> Unit,
+    onShareClicked: (details: ShareDetails) -> Unit,
+    onVideoClicked: (video: Video) -> Unit,
+    onFavouriteClicked: (details: TvSeriesDetails) -> Unit,
+    onCloseClicked: () -> Unit,
+    onCreatorClicked: (personId: Int) -> Unit,
+    onTvSeriesClicked: (tvSeriesId: Int) -> Unit,
+    onSeasonClicked: (seasonNumber: Int) -> Unit,
+    onSimilarMoreClicked: () -> Unit,
+    onRecommendationsMoreClicked: () -> Unit,
+    onReviewsClicked: () -> Unit
+) {
     val density = LocalDensity.current
 
-    val tvSeriesDetails by viewModel.tvSeriesDetails.collectAsState()
-    val isFavourite by viewModel.isFavourite.collectAsState()
-
-    val similar = viewModel.similarTvSeries.collectAsLazyPagingItems()
-    val recommendations = viewModel.tvSeriesRecommendations.collectAsLazyPagingItems()
-    val backdrops by viewModel.backdrops.collectAsState()
-    val videos by viewModel.videos.collectAsState()
-    val nextEpisodeDaysRemaining by viewModel.nextEpisodeDaysRemaining.collectAsState()
-    val watchProviders by viewModel.watchProviders.collectAsState()
-    val externalIds by viewModel.externalIds.collectAsState()
-    val hasReviews by viewModel.hasReviews.collectAsState()
+    val similar = uiState.associatedTvSeries.similar.collectAsLazyPagingItems()
+    val recommendations = uiState.associatedTvSeries.recommendations.collectAsLazyPagingItems()
 
     val scrollState = rememberScrollState()
 
     val imdbExternalId by derivedStateOf {
-        externalIds?.filterIsInstance<ExternalId.Imdb>()?.firstOrNull()
+        uiState.associatedContent.externalIds?.filterIsInstance<ExternalId.Imdb>()?.firstOrNull()
     }
 
     var showErrorDialog by remember { mutableStateOf(false) }
-    val error: String? by viewModel.error.collectAsState()
 
     var topSectionHeight: Float? by remember { mutableStateOf(null) }
     val appbarHeight = density.run { 56.dp.toPx() }
     val topSectionScrollLimitValue: Float? = topSectionHeight?.minus(appbarHeight)
 
-    val navigateToDetails = { tvSeriesId: Int ->
-        val destination = TvSeriesDetailsScreenDestination(
-            tvSeriesId = tvSeriesId,
-            startRoute = navArgs.startRoute
-        )
-
-        navigator.navigate(destination)
-    }
-
-    val navigateToSimilar = {
-        val destination = RelatedTvSeriesScreenDestination(
-            tvSeriesId = navArgs.tvSeriesId,
-            type = RelationType.Similar,
-            startRoute = navArgs.startRoute
-        )
-
-        navigator.navigate(destination)
-    }
-
-    val navigateToRecommendations = {
-        val destination = RelatedTvSeriesScreenDestination(
-            tvSeriesId = navArgs.tvSeriesId,
-            type = RelationType.Recommended,
-            startRoute = navArgs.startRoute
-        )
-
-        navigator.navigate(destination)
-    }
-
-    val navigateToCreatorDetails = { creatorId: Int ->
-        val destination = PersonDetailsScreenDestination(
-            personId = creatorId,
-            startRoute = navArgs.startRoute
-        )
-
-        navigator.navigate(destination)
-    }
-
-    LaunchedEffect(error) {
-        showErrorDialog = error != null
+    LaunchedEffect(uiState.error) {
+        showErrorDialog = uiState.error != null
     }
 
     BackHandler(showErrorDialog) {
@@ -160,28 +238,24 @@ fun TvSeriesDetailsScreen(
                     .onGloballyPositioned { coordinates ->
                         topSectionHeight = coordinates.size.height.toFloat()
                     },
-                presentable = tvSeriesDetails,
-                backdrops = backdrops,
+                presentable = uiState.tvSeriesDetails,
+                backdrops = uiState.associatedContent.backdrops,
                 scrollState = scrollState,
                 scrollValueLimit = topSectionScrollLimitValue
             ) {
                 TvSeriesDetailsTopContent(
                     modifier = Modifier.fillMaxWidth(),
-                    tvSeriesDetails = tvSeriesDetails
+                    tvSeriesDetails = uiState.tvSeriesDetails
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                externalIds?.let { ids ->
+                uiState.associatedContent.externalIds?.let { ids ->
                     ExternalIdsSection(
                         modifier = Modifier.fillMaxWidth(),
-                        externalIds = ids
-                    ) { externalId ->
-                        openExternalId(
-                            context = context,
-                            externalId = externalId
-                        )
-                    }
+                        externalIds = ids,
+                        onExternalIdClick = onExternalIdClicked
+                    )
                 }
             }
 
@@ -190,22 +264,17 @@ fun TvSeriesDetailsScreen(
                     .fillMaxWidth()
                     .padding(horizontal = MaterialTheme.spacing.medium)
                     .animateContentSize(),
-                tvSeriesDetails = tvSeriesDetails,
-                nextEpisodeDaysRemaining = nextEpisodeDaysRemaining,
+                tvSeriesDetails = uiState.tvSeriesDetails,
+                nextEpisodeDaysRemaining = uiState.additionalTvSeriesDetailsInfo.nextEpisodeRemainingDays,
                 imdbExternalId = imdbExternalId,
-                onShareClicked = { details ->
-                    shareImdb(
-                        context = context,
-                        details = details
-                    )
-                }
+                onShareClicked = onShareClicked
             )
 
             Crossfade(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
-                targetState = watchProviders
+                targetState = uiState.additionalTvSeriesDetailsInfo.watchProviders
             ) { providers ->
                 if (providers != null) {
                     Column(
@@ -226,7 +295,7 @@ fun TvSeriesDetailsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
-                targetState = tvSeriesDetails?.creators
+                targetState = uiState.tvSeriesDetails?.creators
             ) { creators ->
                 creators.ifNotNullAndEmpty { members ->
                     Column(
@@ -239,7 +308,7 @@ fun TvSeriesDetailsScreen(
                             title = stringResource(R.string.tv_series_details_creators),
                             members = members,
                             contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                            onMemberClick = { id -> navigateToCreatorDetails(id) }
+                            onMemberClick = onCreatorClicked
                         )
                     }
                 }
@@ -250,7 +319,7 @@ fun TvSeriesDetailsScreen(
                     .fillMaxWidth()
                     .background(MaterialTheme.colors.surface)
                     .animateContentSize(),
-                targetState = tvSeriesDetails?.seasons
+                targetState = uiState.tvSeriesDetails?.seasons
             ) { seasons ->
                 seasons.ifNotNullAndEmpty { value ->
                     Column(
@@ -260,16 +329,9 @@ fun TvSeriesDetailsScreen(
                         SectionDivider(modifier = Modifier.fillMaxWidth())
                         SeasonsSection(
                             title = stringResource(R.string.tv_series_details_seasons),
-                            seasons = value
-                        ) { seasonNumber ->
-                            val destination = SeasonDetailsScreenDestination(
-                                tvSeriesId = navArgs.tvSeriesId,
-                                seasonNumber = seasonNumber,
-                                startRoute = navArgs.startRoute
-                            )
-
-                            navigator.navigate(destination)
-                        }
+                            seasons = value,
+                            onSeasonClick = onSeasonClicked
+                        )
                     }
                 }
             }
@@ -290,8 +352,8 @@ fun TvSeriesDetailsScreen(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(R.string.tv_series_details_similar),
                             state = similar,
-                            onMoreClick = navigateToSimilar,
-                            onPresentableClick = { id -> navigateToDetails(id) }
+                            onMoreClick = onSimilarMoreClicked,
+                            onPresentableClick = onTvSeriesClicked
                         )
                     }
                 }
@@ -313,8 +375,8 @@ fun TvSeriesDetailsScreen(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(R.string.tv_series_details_recommendations),
                             state = recommendations,
-                            onMoreClick = navigateToRecommendations,
-                            onPresentableClick = { id -> navigateToDetails(id) }
+                            onMoreClick = onRecommendationsMoreClicked,
+                            onPresentableClick = onTvSeriesClicked
                         )
                     }
                 }
@@ -324,7 +386,7 @@ fun TvSeriesDetailsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
-                targetState = videos
+                targetState = uiState.associatedContent.videos
             ) { videos ->
                 videos.ifNotNullAndEmpty { value ->
                     Column(
@@ -336,34 +398,26 @@ fun TvSeriesDetailsScreen(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(R.string.tv_series_details_videos),
                             videos = value,
-                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                        ) { video ->
-                            openVideo(
-                                context = context,
-                                video = video
-                            )
-                        }
+                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                            onVideoClicked = onVideoClicked
+                        )
                     }
                 }
             }
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
-                visible = hasReviews
+                visible = uiState.additionalTvSeriesDetailsInfo.hasReviews
             ) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {
                     SectionDivider(modifier = Modifier.fillMaxWidth())
-                    ReviewSection(modifier = Modifier.fillMaxWidth()) {
-                        val destination = ReviewsScreenDestination(
-                            mediaId = navArgs.tvSeriesId,
-                            type = MediaType.Tv
-                        )
-
-                        navigator.navigate(destination)
-                    }
+                    ReviewSection(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = onReviewsClicked
+                    )
                 }
             }
 
@@ -379,7 +433,7 @@ fun TvSeriesDetailsScreen(
             scrollState = scrollState,
             transparentScrollValueLimit = topSectionScrollLimitValue,
             action = {
-                IconButton(onClick = { navigator.navigateUp() }) {
+                IconButton(onClick = onBackClicked) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "go back",
@@ -390,21 +444,17 @@ fun TvSeriesDetailsScreen(
             trailing = {
                 Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
                     LikeButton(
-                        isFavourite = isFavourite,
+                        isFavourite = uiState.additionalTvSeriesDetailsInfo.isFavourite,
                         onClick = {
-                            tvSeriesDetails?.let { details ->
-                                if (isFavourite) {
-                                    viewModel.onUnlikeClick(details)
-                                } else {
-                                    viewModel.onLikeClick(details)
-                                }
+                            val details = uiState.tvSeriesDetails
+
+                            if (details != null) {
+                                onFavouriteClicked(details)
                             }
                         }
                     )
                     IconButton(
-                        onClick = {
-                            navigator.popBackStack(navArgs.startRoute, inclusive = false)
-                        }
+                        onClick = onCloseClicked
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Close,
@@ -416,5 +466,4 @@ fun TvSeriesDetailsScreen(
             }
         )
     }
-
 }

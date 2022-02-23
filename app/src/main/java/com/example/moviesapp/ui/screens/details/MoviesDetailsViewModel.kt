@@ -39,18 +39,7 @@ class MoviesDetailsViewModel @Inject constructor(
         favouritesRepository.getFavouritesMoviesIds()
 
     private val watchAtTime: MutableStateFlow<Date?> = MutableStateFlow(null)
-
     private val _movieDetails: MutableStateFlow<MovieDetails?> = MutableStateFlow(null)
-    private val isFavourite: Flow<Boolean> = favouritesMoviesIdsFlow.map { favouriteIds ->
-        navArgs.movieId in favouriteIds
-    }
-    private val credits: MutableStateFlow<Credits?> = MutableStateFlow(null)
-    private val movieBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
-    private val movieCollection: MutableStateFlow<MovieCollection?> = MutableStateFlow(null)
-    private val watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
-    private val videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
-    private val hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
-
     private val movieDetails: StateFlow<MovieDetails?> =
         _movieDetails.onEach { movieDetails ->
             movieDetails?.let { details ->
@@ -58,6 +47,17 @@ class MoviesDetailsViewModel @Inject constructor(
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
+    private val credits: MutableStateFlow<Credits?> = MutableStateFlow(null)
+    private val movieBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
+    private val movieCollection: MutableStateFlow<MovieCollection?> = MutableStateFlow(null)
+    private val watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
+    private val videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
+    private val hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+    private val isFavourite: Flow<Boolean> = favouritesMoviesIdsFlow.map { favouriteIds ->
+        navArgs.movieId in favouriteIds
+    }
+    
     private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
     private val externalIds: StateFlow<List<ExternalId>?> =
         _externalIds.filterNotNull().map { externalIds ->
