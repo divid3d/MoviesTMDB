@@ -3,21 +3,16 @@ package com.example.moviesapp.ui.screens.tv
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import androidx.paging.filter
 import com.example.moviesapp.model.DeviceLanguage
-import com.example.moviesapp.model.RecentlyBrowsedTvSeries
 import com.example.moviesapp.model.TvSeries
-import com.example.moviesapp.model.TvSeriesFavourite
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import com.example.moviesapp.repository.TvSeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flattenMerge
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @OptIn(FlowPreview::class)
@@ -31,33 +26,25 @@ class TvSeriesViewModel @Inject constructor(
 
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
-    val onTheAir: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository.onTheAirTvSeries(deviceLanguage)
-    }.flattenMerge().map { pagingData ->
-        pagingData.filterCompleteInfo()
-    }.cachedIn(viewModelScope)
+    private val tvSeriesState: StateFlow<TvSeriesState> = deviceLanguage.map { deviceLanguage ->
+        TvSeriesState(
+            onTheAir = tvSeriesRepository.onTheAirTvSeries(deviceLanguage).map { pagingData ->
+                pagingData.filterCompleteInfo()
+            },
+            discover = tvSeriesRepository.discoverTvSeries(deviceLanguage),
+            topRated = tvSeriesRepository.topRatedTvSeries(deviceLanguage),
+            trending = tvSeriesRepository.trendingTvSeries(deviceLanguage),
+            airingToday = tvSeriesRepository.airingTodayTvSeries(deviceLanguage)
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, TvSeriesState.default)
 
-    val discover: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository.discoverTvSeries(deviceLanguage)
-    }.flattenMerge().cachedIn(viewModelScope)
-
-    val topRated: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository.topRatedTvSeries(deviceLanguage)
-    }.flattenMerge().cachedIn(viewModelScope)
-
-    val trending: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository.trendingTvSeries(deviceLanguage)
-    }.flattenMerge().cachedIn(viewModelScope)
-
-    val airingToday: Flow<PagingData<TvSeries>> = deviceLanguage.map { deviceLanguage ->
-        tvSeriesRepository.airingTodayTvSeries(deviceLanguage)
-    }.flattenMerge().cachedIn(viewModelScope)
-
-    val favourites: Flow<PagingData<TvSeriesFavourite>> =
-        favouritesRepository.favouritesTvSeries().cachedIn(viewModelScope)
-
-    val recentlyBrowsed: Flow<PagingData<RecentlyBrowsedTvSeries>> =
-        recentlyBrowsedRepository.recentlyBrowsedTvSeries().cachedIn(viewModelScope)
+    val tvScreenUiState: StateFlow<TvScreenUiState> = tvSeriesState.map { tvSeriesState ->
+        TvScreenUiState(
+            tvSeriesState = tvSeriesState,
+            favourites = favouritesRepository.favouritesTvSeries(),
+            recentlyBrowsed = recentlyBrowsedRepository.recentlyBrowsedTvSeries()
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, TvScreenUiState.default)
 
     private fun PagingData<TvSeries>.filterCompleteInfo(): PagingData<TvSeries> {
         return filter { tvSeries ->
