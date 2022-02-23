@@ -15,6 +15,8 @@ class ConfigRepository @Inject constructor(
 ) {
     fun isInitialised(): Flow<Boolean> = configDataSource.isInitialized
 
+    fun updateLocale() = configDataSource.updateLocale()
+
     fun getSpeechToTextAvailable(): Flow<Boolean> = configDataSource.speechToTextAvailable
 
     fun getDeviceLanguage(): Flow<DeviceLanguage> = configDataSource.deviceLanguage

@@ -36,4 +36,8 @@ class MainViewModel @Inject constructor(
 
     val isConfigInitialised: StateFlow<Boolean> = configRepository.isInitialised()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
+
+    fun updateLocale() {
+        configRepository.updateLocale()
+    }
 }

@@ -45,19 +45,9 @@ class ConfigDataSource @Inject constructor(
         emit(activities.isNotEmpty())
     }.flowOn(Dispatchers.Default)
 
-    val deviceLanguage: Flow<DeviceLanguage> = flow {
-        val locale = Locale.getDefault()
-
-        val languageCode = locale.toLanguageTag().ifEmpty { DeviceLanguage.default.languageCode }
-        val region = locale.country.ifEmpty { DeviceLanguage.default.region }
-
-        val deviceLanguage = DeviceLanguage(
-            languageCode = languageCode,
-            region = region
-        )
-
-        emit(deviceLanguage)
-    }.flowOn(Dispatchers.Default)
+    private val _deviceLanguage: MutableStateFlow<DeviceLanguage> =
+        MutableStateFlow(getCurrentDeviceLanguage())
+    val deviceLanguage: StateFlow<DeviceLanguage> = _deviceLanguage.asStateFlow()
 
     val imageUrlParser: Flow<ImageUrlParser?> = _config.map { config ->
         if (config != null) {
@@ -183,6 +173,25 @@ class ConfigDataSource @Inject constructor(
                 }
             }
         }
+    }
+
+    fun updateLocale() {
+        externalScope.launch {
+            val deviceLanguage = getCurrentDeviceLanguage()
+            _deviceLanguage.emit(deviceLanguage)
+        }
+    }
+
+    private fun getCurrentDeviceLanguage(): DeviceLanguage {
+        val locale = Locale.getDefault()
+
+        val languageCode = locale.toLanguageTag().ifEmpty { DeviceLanguage.default.languageCode }
+        val region = locale.country.ifEmpty { DeviceLanguage.default.region }
+
+        return DeviceLanguage(
+            languageCode = languageCode,
+            region = region
+        )
     }
 
 }

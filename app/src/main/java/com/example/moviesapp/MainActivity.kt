@@ -15,6 +15,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import coil.compose.LocalImageLoader
@@ -36,6 +39,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.launch
 
 val LocalImageUrlParser = staticCompositionLocalOf<ImageUrlParser?> { null }
 
@@ -49,10 +53,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
         installSplashScreen().apply {
             setKeepOnScreenCondition(
                 condition = { mainViewModel.isConfigInitialised.value }
             )
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainViewModel.updateLocale()
+            }
         }
 
         setContent {
