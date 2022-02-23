@@ -31,21 +31,25 @@ class SeasonDetailsViewModel @Inject constructor(
         SeasonDetailsScreenDestination.argsFrom(savedStateHandle)
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
-    private val _seasonDetails: MutableStateFlow<SeasonDetails?> = MutableStateFlow(null)
-    val seasonDetails: StateFlow<SeasonDetails?> =
-        _seasonDetails.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+    private val seasonDetails: MutableStateFlow<SeasonDetails?> = MutableStateFlow(null)
 
-    val episodeCount: StateFlow<Int?> = _seasonDetails.map { details ->
-        details?.episodes?.count()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
-
-    private val _episodesStills: MutableStateFlow<Map<Int, List<Image>>> =
+    private val episodesStills: MutableStateFlow<Map<Int, List<Image>>> =
         MutableStateFlow(emptyMap())
-    val episodeStills: StateFlow<Map<Int, List<Image>>> =
-        _episodesStills.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyMap())
 
-    private val _videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
-    val videos: StateFlow<List<Video>?> = _videos.asStateFlow()
+    private val videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
+
+    val uiState: StateFlow<SeasonDetailsScreenUiState> = combine(
+        seasonDetails, episodesStills, videos, error
+    ) { details, stills, videos, error ->
+        SeasonDetailsScreenUiState(
+            startRoute = navArgs.startRoute,
+            seasonDetails = details,
+            videos = videos,
+            episodeCount = details?.episodes?.count(),
+            episodeStills = stills,
+            error = error
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, SeasonDetailsScreenUiState.default)
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -57,8 +61,7 @@ class SeasonDetailsViewModel @Inject constructor(
                 ).request { response ->
                     response.onSuccess {
                         viewModelScope.launch {
-                            val seasonDetails = data
-                            _seasonDetails.emit(seasonDetails)
+                            seasonDetails.emit(data)
                         }
                     }
 
@@ -81,7 +84,7 @@ class SeasonDetailsViewModel @Inject constructor(
     }
 
     fun getEpisodeStills(episodeNumber: Int) {
-        if (_episodesStills.value.containsKey(episodeNumber)) {
+        if (episodesStills.value.containsKey(episodeNumber)) {
             return
         }
 
@@ -94,11 +97,11 @@ class SeasonDetailsViewModel @Inject constructor(
                 response.onSuccess {
                     viewModelScope.launch {
                         data?.stills?.let { stills ->
-                            episodeStills.collectLatest { current ->
+                            episodesStills.collectLatest { current ->
                                 val updatedStills = current.toMutableMap().apply {
                                     put(episodeNumber, stills)
                                 }
-                                _episodesStills.emit(updatedStills)
+                                episodesStills.emit(updatedStills)
                             }
                         }
                     }
@@ -126,7 +129,7 @@ class SeasonDetailsViewModel @Inject constructor(
         ).request { response ->
             response.onSuccess {
                 viewModelScope.launch {
-                    val videos = data?.results?.sortedWith(
+                    val data = data?.results?.sortedWith(
                         compareBy<Video> { video ->
                             video.language == deviceLanguage.languageCode
                         }.thenByDescending { video ->
@@ -134,7 +137,7 @@ class SeasonDetailsViewModel @Inject constructor(
                         }
                     )
 
-                    _videos.emit(videos ?: emptyList())
+                    videos.emit(data ?: emptyList())
                 }
 
                 response.onFailure {
