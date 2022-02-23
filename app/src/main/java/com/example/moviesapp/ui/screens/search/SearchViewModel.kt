@@ -26,40 +26,42 @@ class SearchViewModel @Inject constructor(
     private val queryDelay = 500.milliseconds
     private val minQueryLength = 3
 
-    val voiceSearchAvailable: StateFlow<Boolean> = configRepository.getSpeechToTextAvailable()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
-
-    private val _query: MutableStateFlow<String?> = MutableStateFlow(null)
-    val query: StateFlow<String?> = _query.asStateFlow()
-
-    private val _searchState: MutableStateFlow<SearchState> =
+    private val voiceSearchAvailable: Flow<Boolean> = configRepository.getSpeechToTextAvailable()
+    private val query: MutableStateFlow<String?> = MutableStateFlow(null)
+    private val searchState: MutableStateFlow<SearchState> =
         MutableStateFlow(SearchState.EmptyQuery)
-    val searchState: StateFlow<SearchState> = _searchState
-        .asStateFlow()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), SearchState.EmptyQuery)
-
-    private val _queryLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val queryLoading: StateFlow<Boolean> = _queryLoading.asStateFlow()
+    private val queryLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     private var queryJob: Job? = null
 
-    fun onQueryChange(query: String) {
+    val uiState: StateFlow<SearchScreenUiState> = combine(
+        voiceSearchAvailable, query, searchState, queryLoading
+    ) { voiceSearchAvailable, query, searchState, queryLoading ->
+        SearchScreenUiState(
+            voiceSearchAvailable = voiceSearchAvailable,
+            query = query,
+            searchState = searchState,
+            queryLoading = queryLoading
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, SearchScreenUiState.default)
+
+    fun onQueryChange(queryText: String) {
         viewModelScope.launch {
-            _query.emit(query)
+            query.emit(queryText)
 
             queryJob?.cancel()
 
             when {
-                query.isBlank() -> {
-                    _searchState.emit(SearchState.EmptyQuery)
+                queryText.isBlank() -> {
+                    searchState.emit(SearchState.EmptyQuery)
                 }
 
-                query.length < minQueryLength -> {
-                    _searchState.emit(SearchState.InsufficientQuery)
+                queryText.length < minQueryLength -> {
+                    searchState.emit(SearchState.InsufficientQuery)
                 }
 
                 else -> {
-                    queryJob = createQueryJob(query).apply {
+                    queryJob = createQueryJob(queryText).apply {
                         start()
                     }
                 }
@@ -77,7 +79,7 @@ class SearchViewModel @Inject constructor(
             try {
                 delay(queryDelay)
 
-                _queryLoading.emit(true)
+                queryLoading.emit(true)
 
                 val response = deviceLanguage.map { deviceLanguage ->
                     searchRepository.multiSearch(
@@ -86,7 +88,7 @@ class SearchViewModel @Inject constructor(
                     )
                 }.flattenMerge()
 
-                _searchState.emit(
+                searchState.emit(
                     SearchState.Result(
                         query = query,
                         data = response
@@ -96,7 +98,7 @@ class SearchViewModel @Inject constructor(
 
             } finally {
                 withContext(NonCancellable) {
-                    _queryLoading.emit(false)
+                    queryLoading.emit(false)
                 }
             }
         }
