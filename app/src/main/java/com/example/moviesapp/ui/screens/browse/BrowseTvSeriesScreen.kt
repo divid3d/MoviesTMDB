@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.example.moviesapp.ui.screens.browse
 
 import android.os.Parcelable
@@ -135,7 +137,8 @@ fun BrowseTvSeriesScreenContent(
                         )
                     }
                 }
-            })
+            }
+        )
 
         PresentableGridSection(
             modifier = Modifier.fillMaxSize(),

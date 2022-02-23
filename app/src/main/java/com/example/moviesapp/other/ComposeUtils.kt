@@ -7,8 +7,9 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
+import androidx.compose.foundation.lazy.LazyGridItemScope
 import androidx.compose.foundation.lazy.LazyGridScope
-import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyGridState
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -60,6 +61,30 @@ fun LazyListState.isScrollingTowardsStart(): Boolean {
     }.value
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun LazyGridState.isScrollingTowardsStart(): Boolean {
+    var previousIndex by remember(this) {
+        mutableStateOf(firstVisibleItemIndex)
+    }
+    var previousScrollOffset by remember(this) {
+        mutableStateOf(firstVisibleItemScrollOffset)
+    }
+
+    return remember(this) {
+        derivedStateOf {
+            if (previousIndex != firstVisibleItemIndex) {
+                previousIndex > firstVisibleItemIndex
+            } else {
+                previousScrollOffset >= firstVisibleItemScrollOffset
+            }.also {
+                previousIndex = firstVisibleItemIndex
+                previousScrollOffset = firstVisibleItemScrollOffset
+            }
+        }
+    }.value
+}
+
 @Composable
 fun pluralsResource(
     @PluralsRes resId: Int,
@@ -78,7 +103,7 @@ fun BoxWithConstraintsScope.getMaxSizeInt(): Pair<Int, Int> {
 @ExperimentalFoundationApi
 fun <T : Any> LazyGridScope.items(
     lazyPagingItems: LazyPagingItems<T>,
-    itemContent: @Composable LazyItemScope.(value: T?) -> Unit
+    itemContent: @Composable LazyGridItemScope.(value: T?) -> Unit
 ) {
     items(lazyPagingItems.itemCount) { index ->
         itemContent(lazyPagingItems[index])

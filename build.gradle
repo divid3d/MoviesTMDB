@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        compose_version = '1.2.0-alpha02'
+        compose_version = '1.2.0-alpha04'
         accompanist_version = '0.20.3'
         hilt_version = "2.38.1"
         room_version = "2.4.1"

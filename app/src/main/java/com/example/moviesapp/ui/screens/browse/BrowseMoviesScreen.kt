@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.example.moviesapp.ui.screens.browse
 
 import android.os.Parcelable
@@ -111,32 +113,37 @@ fun BrowseMoviesScreenContent(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        AppBar(title = appbarTitle, action = {
-            IconButton(onClick = onBackClicked) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "go back",
-                    tint = MaterialTheme.colors.primary
-                )
-            }
-        }, trailing = {
-            AnimatedVisibility(
-                visible = showClearButton,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                IconButton(
-                    modifier = Modifier.padding(end = MaterialTheme.spacing.medium),
-                    onClick = showDialog
-                ) {
+        AppBar(
+            title = appbarTitle,
+            action = {
+                IconButton(onClick = onBackClicked) {
                     Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = "clear recent",
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "go back",
                         tint = MaterialTheme.colors.primary
                     )
                 }
+            },
+            trailing = {
+                AnimatedVisibility(
+                    visible = showClearButton,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    IconButton(
+                        modifier = Modifier.padding(end = MaterialTheme.spacing.medium),
+                        onClick = showDialog
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "clear recent",
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
+                }
             }
-        })
+        )
+
         PresentableGridSection(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(

@@ -8,7 +8,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.rememberLazyGridState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -38,7 +38,7 @@ fun SearchGridSection(
     onSearchResultClick: (Int, MediaType) -> Unit = { _, _ -> }
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val gridState = rememberLazyListState()
+    val gridState = rememberLazyGridState()
     val isScrollingLeft = gridState.isScrollingTowardsStart()
 
     val showScrollToBeginningButton by derivedStateOf {

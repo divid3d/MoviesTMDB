@@ -7,9 +7,9 @@ import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyGridState
 import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.rememberLazyGridState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PresentableGridSection(
     modifier: Modifier = Modifier,
-    gridState: LazyListState = rememberLazyListState(),
+    gridState: LazyGridState = rememberLazyGridState(),
     state: LazyPagingItems<out Presentable>,
     contentPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.default),
     scrollToBeginningItemsStart: Int = 30,

@@ -1,6 +1,9 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.example.moviesapp.ui.screens.related
 
 import android.os.Parcelable
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -67,17 +70,20 @@ fun RelatedMoviesScreenContent(
         RelationType.Similar -> "Podobne"
         RelationType.Recommended -> "Polecane"
     }
-    
+
     Column(modifier = Modifier.fillMaxSize()) {
-        AppBar(title = appbarTitle, action = {
-            IconButton(onClick = onBackButtonClicked) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "go back",
-                    tint = MaterialTheme.colors.primary
-                )
+        AppBar(
+            title = appbarTitle,
+            action = {
+                IconButton(onClick = onBackButtonClicked) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "go back",
+                        tint = MaterialTheme.colors.primary
+                    )
+                }
             }
-        })
+        )
 
         PresentableGridSection(
             modifier = Modifier.fillMaxSize(),

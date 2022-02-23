@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.example.moviesapp.ui.screens.discover
 
 import androidx.activity.compose.BackHandler
@@ -7,7 +9,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -96,7 +98,7 @@ fun DiscoverTvSeriesScreenContent(
         initialValue = ModalBottomSheetValue.Hidden,
         skipHalfExpanded = true
     )
-    val gridState = rememberLazyListState()
+    val gridState = rememberLazyGridState()
 
     val showFloatingButton = if (gridState.isScrollInProgress) {
         false
