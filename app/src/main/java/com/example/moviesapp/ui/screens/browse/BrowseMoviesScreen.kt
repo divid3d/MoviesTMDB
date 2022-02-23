@@ -19,14 +19,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MovieType
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.PresentableGridSection
 import com.example.moviesapp.ui.components.dialogs.InfoDialog
-import com.example.moviesapp.ui.screens.destinations.BrowseMoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.theme.spacing
@@ -44,31 +42,51 @@ data class BrowseMoviesScreenArgs(
 @Composable
 fun BrowseMoviesScreen(
     viewModel: BrowseMoviesViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator,
-    navBackStackEntry: NavBackStackEntry
+    navigator: DestinationsNavigator
 ) {
-    val navArgs: BrowseMoviesScreenArgs by derivedStateOf {
-        BrowseMoviesScreenDestination.argsFrom(navBackStackEntry)
+    val uiState by viewModel.uiState.collectAsState()
+    val onBackClicked: () -> Unit = { navigator.navigateUp() }
+    val onClearDialogConfirmClicked: () -> Unit = viewModel::onClearClicked
+    val onMovieClicked = { movieId: Int ->
+        val destination = MovieDetailsScreenDestination(
+            movieId = movieId,
+            startRoute = MoviesScreenDestination.route
+        )
+
+        navigator.navigate(destination)
     }
-    val movieType = navArgs.movieType
 
-    val movies = viewModel.movies.collectAsLazyPagingItems()
+    BrowseMoviesScreenContent(
+        uiState = uiState,
+        onBackClicked = onBackClicked,
+        onClearDialogConfirmClicked = onClearDialogConfirmClicked,
+        onMovieClicked = onMovieClicked
+    )
+}
 
-    val favouriteMoviesCount by viewModel.favouriteMoviesCount.collectAsState()
 
-    val appbarTitle = when (movieType) {
+@Composable
+fun BrowseMoviesScreenContent(
+    uiState: BrowseMoviesScreenUiState,
+    onBackClicked: () -> Unit,
+    onClearDialogConfirmClicked: () -> Unit,
+    onMovieClicked: (movieId: Int) -> Unit
+) {
+    val movies = uiState.movies.collectAsLazyPagingItems()
+
+    val appbarTitle = when (uiState.selectedMovieType) {
         MovieType.Upcoming -> stringResource(R.string.all_movies_upcoming_label)
         MovieType.TopRated -> stringResource(R.string.all_movies_top_rated_label)
         MovieType.Favourite -> stringResource(
             R.string.all_movies_favourites_label,
-            favouriteMoviesCount
+            uiState.favouriteMoviesCount
         )
         MovieType.RecentlyBrowsed -> stringResource(R.string.all_movies_recently_browsed_label)
         MovieType.Trending -> stringResource(R.string.all_movies_trending_label)
     }
 
     val showClearButton =
-        movieType == MovieType.RecentlyBrowsed && movies.itemSnapshotList.isNotEmpty()
+        uiState.selectedMovieType == MovieType.RecentlyBrowsed && movies.itemSnapshotList.isNotEmpty()
 
     var showClearDialog by remember { mutableStateOf(false) }
 
@@ -86,7 +104,7 @@ fun BrowseMoviesScreen(
             onDismissRequest = dismissDialog,
             onCancelClick = dismissDialog,
             onConfirmClick = {
-                viewModel.onClearClicked()
+                onClearDialogConfirmClicked()
                 dismissDialog()
             }
         )
@@ -94,7 +112,7 @@ fun BrowseMoviesScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         AppBar(title = appbarTitle, action = {
-            IconButton(onClick = { navigator.navigateUp() }) {
+            IconButton(onClick = onBackClicked) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "go back",
@@ -125,15 +143,8 @@ fun BrowseMoviesScreen(
                 horizontal = MaterialTheme.spacing.small,
                 vertical = MaterialTheme.spacing.medium,
             ),
-            state = movies
-        ) { movieId ->
-            val destination = MovieDetailsScreenDestination(
-                movieId = movieId,
-                startRoute = MoviesScreenDestination.route
-            )
-
-            navigator.navigate(destination)
-        }
+            state = movies,
+            onPresentableClick = onMovieClicked
+        )
     }
-
 }
