@@ -2,19 +2,17 @@ package com.example.moviesapp.ui.screens.details
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
-import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.FavouritesRepository
 import com.example.moviesapp.repository.RecentlyBrowsedRepository
 import com.example.moviesapp.repository.TvSeriesRepository
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -34,58 +32,30 @@ class TvSeriesDetailsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
+    private val navArgs: TvSeriesDetailsScreenArgs =
+        TvSeriesDetailsScreenDestination.argsFrom(savedStateHandle)
+
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
     private val favouriteTvSeriesIds: Flow<List<Int>> =
         favouritesRepository.getFavouriteTvSeriesIds()
 
     private val _tvSeriesDetails: MutableStateFlow<TvSeriesDetails?> = MutableStateFlow(null)
-
-    private val tvSeriesId: Flow<Int> = savedStateHandle.getLiveData<Int>("tvSeriesId").asFlow()
-
-    val similarTvSeries: Flow<PagingData<TvSeries>> = combine(
-        tvSeriesId, deviceLanguage
-    ) { id, deviceLanguage ->
-        tvSeriesRepository.similarTvSeries(
-            tvSeriesId = id,
-            deviceLanguage = deviceLanguage
-        )
-    }.flattenMerge().cachedIn(viewModelScope)
-
-    val tvSeriesRecommendations: Flow<PagingData<TvSeries>> = combine(
-        tvSeriesId, deviceLanguage
-    ) { id, deviceLanguage ->
-        tvSeriesRepository.tvSeriesRecommendations(
-            tvSeriesId = id,
-            deviceLanguage = deviceLanguage
-        )
-    }.flattenMerge().cachedIn(viewModelScope)
-
-    private val _tvSeriesBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
-    private val _videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
-    private val _nextEpisodeDaysRemaining: MutableStateFlow<Long?> = MutableStateFlow(null)
-    private val _watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
-    private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
-
-    val tvSeriesDetails: StateFlow<TvSeriesDetails?> =
-        _tvSeriesDetails
-            .onEach { tvSeriesDetails ->
-                tvSeriesDetails?.let { details ->
-                    recentlyBrowsedRepository.addRecentlyBrowsedTvSeries(details)
-                }
+    private val tvSeriesDetails: StateFlow<TvSeriesDetails?> =
+        _tvSeriesDetails.onEach { tvSeriesDetails ->
+            tvSeriesDetails?.let { details ->
+                recentlyBrowsedRepository.addRecentlyBrowsedTvSeries(details)
             }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
-    val backdrops: StateFlow<List<Image>> = _tvSeriesBackdrops.asStateFlow()
+    private val tvSeriesBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
+    private val videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
+    private val nextEpisodeDaysRemaining: MutableStateFlow<Long?> = MutableStateFlow(null)
+    private val watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
+    private val hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    val isFavourite: StateFlow<Boolean> = combine(
-        tvSeriesId, favouriteTvSeriesIds
-    ) { id, favouritesId ->
-        id in favouritesId
+    private val isFavourite: StateFlow<Boolean> = favouriteTvSeriesIds.map { favouriteIds ->
+        navArgs.tvSeriesId in favouriteIds
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
-
-    val nextEpisodeDaysRemaining: StateFlow<Long?> = _nextEpisodeDaysRemaining.asStateFlow()
-    val watchProviders: StateFlow<WatchProviders?> = _watchProviders.asStateFlow()
-    val videos: StateFlow<List<Video>?> = _videos.asStateFlow()
 
     private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
     val externalIds: StateFlow<List<ExternalId>?> =
@@ -93,18 +63,65 @@ class TvSeriesDetailsViewModel @Inject constructor(
             externalIds.toExternalIdList(type = ExternalContentType.Tv)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
-    val hasReviews: StateFlow<Boolean> = _hasReviews.asStateFlow()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
+    private val additionalInfo: StateFlow<AdditionalTvSeriesDetailsInfo> = combine(
+        isFavourite, nextEpisodeDaysRemaining, watchProviders, hasReviews
+    ) { isFavourite, nextEpisodeDaysRemaining, watchProviders, hasReviews ->
+        AdditionalTvSeriesDetailsInfo(
+            isFavourite = isFavourite,
+            nextEpisodeRemainingDays = nextEpisodeDaysRemaining,
+            watchProviders = watchProviders,
+            hasReviews = hasReviews
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, AdditionalTvSeriesDetailsInfo.default)
+
+    private val associatedTvSeries: StateFlow<AssociatedTvSeries> =
+        deviceLanguage.map { deviceLanguage ->
+            AssociatedTvSeries(
+                similar = tvSeriesRepository.similarTvSeries(
+                    tvSeriesId = navArgs.tvSeriesId,
+                    deviceLanguage = deviceLanguage
+                ),
+                recommendations = tvSeriesRepository.tvSeriesRecommendations(
+                    tvSeriesId = navArgs.tvSeriesId,
+                    deviceLanguage = deviceLanguage
+                )
+            )
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, AssociatedTvSeries.default)
+
+    private val associatedContent: StateFlow<AssociatedContent> = combine(
+        tvSeriesBackdrops, videos, externalIds
+    ) { backdrops, videos, externalIds ->
+        AssociatedContent(
+            backdrops = backdrops,
+            videos = videos,
+            externalIds = externalIds
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, AssociatedContent.default)
+
+    val uiState: StateFlow<TvSeriesDetailsScreenUiState> = combine(
+        tvSeriesDetails, additionalInfo, associatedTvSeries, associatedContent, error
+    ) { details, additionalInfo, associatedTvSeries, visualContent, error ->
+        TvSeriesDetailsScreenUiState(
+            startRoute = navArgs.startRoute,
+            tvSeriesDetails = details,
+            additionalTvSeriesDetailsInfo = additionalInfo,
+            associatedTvSeries = associatedTvSeries,
+            associatedContent = visualContent,
+            error = error
+        )
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        TvSeriesDetailsScreenUiState.getDefault(navArgs.startRoute)
+    )
 
     init {
         viewModelScope.launch {
-            tvSeriesId.collectLatest { tvSeriesId ->
-                deviceLanguage.collectLatest { deviceLanguage ->
-                    getTvSeriesInfo(
-                        tvSeriesId = tvSeriesId,
-                        deviceLanguage = deviceLanguage
-                    )
-                }
+            deviceLanguage.collectLatest { deviceLanguage ->
+                getTvSeriesInfo(
+                    tvSeriesId = navArgs.tvSeriesId,
+                    deviceLanguage = deviceLanguage
+                )
             }
         }
     }
@@ -156,8 +173,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
         tvSeriesRepository.tvSeriesImages(tvSeriesId).request { response ->
             response.onSuccess {
                 viewModelScope.launch {
-                    val imagesResponse = data
-                    _tvSeriesBackdrops.emit(imagesResponse?.backdrops ?: emptyList())
+                    tvSeriesBackdrops.emit(data?.backdrops ?: emptyList())
                 }
             }
 
@@ -175,9 +191,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
         tvSeriesRepository.tvSeriesReview(tvSeriesId).request { response ->
             response.onSuccess {
                 viewModelScope.launch {
-                    val hasReviews = (data?.totalResults ?: 0) > 1
-
-                    _hasReviews.emit(hasReviews)
+                    hasReviews.emit((data?.totalResults ?: 0) > 1)
                 }
             }
 
@@ -198,9 +212,9 @@ class TvSeriesDetailsViewModel @Inject constructor(
             response.onSuccess {
                 viewModelScope.launch {
                     val results = data?.results
-                    val watchProviders = results?.getOrElse(deviceLanguage.region) { null }
+                    val providers = results?.getOrElse(deviceLanguage.region) { null }
 
-                    _watchProviders.emit(watchProviders)
+                    watchProviders.emit(providers)
                 }
             }
 
@@ -244,14 +258,14 @@ class TvSeriesDetailsViewModel @Inject constructor(
             ).request { response ->
                 response.onSuccess {
                     viewModelScope.launch {
-                        val videos = data?.results?.sortedWith(
+                        val data = data?.results?.sortedWith(
                             compareBy(
                                 { video -> video.official },
                                 { video -> video.publishedAt }
                             )
                         )
 
-                        _videos.emit(videos ?: emptyList())
+                        videos.emit(data ?: emptyList())
                     }
                 }
 
@@ -270,7 +284,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
         val millionSeconds = nextEpisodeAirDate.time - Calendar.getInstance().timeInMillis
         val daysDiff = TimeUnit.MILLISECONDS.toDays(millionSeconds)
 
-        _nextEpisodeDaysRemaining.emit(if (daysDiff < 0) 0 else daysDiff)
+        nextEpisodeDaysRemaining.emit(if (daysDiff < 0) 0 else daysDiff)
     }
 
 }

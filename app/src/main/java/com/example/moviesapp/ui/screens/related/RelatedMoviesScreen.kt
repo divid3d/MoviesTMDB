@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.related
 
+import android.os.Parcelable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,10 +10,11 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.moviesapp.model.MovieRelationInfo
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.PresentableGridSection
@@ -20,24 +22,55 @@ import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestinati
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.parcelize.Parcelize
 
-@Destination
+@Parcelize
+data class RelatedMoviesScreenArgs(
+    val movieId: Int,
+    val type: RelationType,
+    val startRoute: String
+) : Parcelable
+
+@Destination(navArgsDelegate = RelatedMoviesScreenArgs::class)
 @Composable
-fun RelatedMovies(
+fun RelatedMoviesScreen(
     viewModel: RelatedMoviesViewModel = hiltViewModel(),
-    movieRelationInfo: MovieRelationInfo,
     navigator: DestinationsNavigator
 ) {
-    val movies = viewModel.movies?.collectAsLazyPagingItems()
+    val uiState by viewModel.uiState.collectAsState()
+    val onBackButtonClicked: () -> Unit = { navigator.navigateUp() }
+    val onMovieClicked: (movieId: Int) -> Unit = { id ->
+        val destination = MovieDetailsScreenDestination(
+            movieId = id,
+            startRoute = uiState.startRoute
+        )
 
-    val appbarTitle = when (movieRelationInfo.type) {
+        navigator.navigate(destination)
+    }
+
+    RelatedMoviesScreenContent(
+        uiState = uiState,
+        onBackButtonClicked = onBackButtonClicked,
+        onMovieClicked = onMovieClicked
+    )
+}
+
+@Composable
+fun RelatedMoviesScreenContent(
+    uiState: RelatedMoviesScreenUiState,
+    onBackButtonClicked: () -> Unit,
+    onMovieClicked: (movieId: Int) -> Unit
+) {
+    val movies = uiState.movies.collectAsLazyPagingItems()
+
+    val appbarTitle = when (uiState.relationType) {
         RelationType.Similar -> "Podobne"
         RelationType.Recommended -> "Polecane"
     }
-
+    
     Column(modifier = Modifier.fillMaxSize()) {
         AppBar(title = appbarTitle, action = {
-            IconButton(onClick = { navigator.navigateUp() }) {
+            IconButton(onClick = onBackButtonClicked) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "go back",
@@ -45,19 +78,15 @@ fun RelatedMovies(
                 )
             }
         })
-        movies?.let { state ->
-            PresentableGridSection(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(
-                    horizontal = MaterialTheme.spacing.small,
-                    vertical = MaterialTheme.spacing.medium,
-                ),
-                state = state
-            ) { movieId ->
-                navigator.navigate(
-                    MovieDetailsScreenDestination(movieId)
-                )
-            }
-        }
+
+        PresentableGridSection(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                horizontal = MaterialTheme.spacing.small,
+                vertical = MaterialTheme.spacing.medium,
+            ),
+            state = movies,
+            onPresentableClick = onMovieClicked
+        )
     }
 }

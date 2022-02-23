@@ -9,6 +9,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,20 +32,33 @@ data class ReviewsScreenNavArgs(
     val type: MediaType
 ) : Parcelable
 
-@Destination
+@Destination(navArgsDelegate = ReviewsScreenNavArgs::class)
 @Composable
 fun ReviewsScreen(
     viewModel: ReviewsViewModel = hiltViewModel(),
-    navArgs: ReviewsScreenNavArgs,
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
 ) {
-    val reviews = viewModel.review?.collectAsLazyPagingItems()
+    val uiState by viewModel.uiState.collectAsState()
+    val onBackClicked: () -> Unit = { navigator.navigateUp() }
+
+    ReviewsScreenContent(
+        uiState = uiState,
+        onBackClicked = onBackClicked
+    )
+}
+
+@Composable
+fun ReviewsScreenContent(
+    uiState: ReviewsScreenUiState,
+    onBackClicked: () -> Unit
+) {
+    val reviewsLazyItems = uiState.reviews.collectAsLazyPagingItems()
 
     Column(modifier = Modifier.fillMaxSize()) {
         AppBar(
             title = stringResource(R.string.reviews_screen_appbar_title),
             action = {
-                IconButton(onClick = { navigator.navigateUp() }) {
+                IconButton(onClick = onBackClicked) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "go back",
@@ -57,27 +72,24 @@ fun ReviewsScreen(
             contentPadding = PaddingValues(MaterialTheme.spacing.medium),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
         ) {
-            reviews?.let { reviews ->
-                itemsIndexed(reviews) { index, review ->
-                    if (review != null) {
-                        val alignment = if (index % 2 == 0) {
-                            Alignment.CenterStart
-                        } else {
-                            Alignment.CenterEnd
-                        }
+            itemsIndexed(reviewsLazyItems) { index, review ->
+                if (review != null) {
+                    val alignment = if (index % 2 == 0) {
+                        Alignment.CenterStart
+                    } else {
+                        Alignment.CenterEnd
+                    }
 
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            ReviewItem(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.9f)
-                                    .align(alignment),
-                                review = review
-                            )
-                        }
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        ReviewItem(
+                            modifier = Modifier
+                                .fillMaxWidth(0.9f)
+                                .align(alignment),
+                            review = review
+                        )
                     }
                 }
             }
         }
     }
-    
 }

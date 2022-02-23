@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.browse
 
+import android.os.Parcelable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -25,35 +26,67 @@ import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.PresentableGridSection
 import com.example.moviesapp.ui.components.dialogs.InfoDialog
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class BrowseMoviesScreenArgs(
+    val movieType: MovieType
+) : Parcelable
 
 @OptIn(ExperimentalFoundationApi::class, kotlinx.coroutines.FlowPreview::class)
-@Destination
+@Destination(navArgsDelegate = BrowseMoviesScreenArgs::class)
 @Composable
 fun BrowseMoviesScreen(
     viewModel: BrowseMoviesViewModel = hiltViewModel(),
-    movieType: MovieType,
     navigator: DestinationsNavigator
 ) {
-    val movies = viewModel.movies?.collectAsLazyPagingItems()
+    val uiState by viewModel.uiState.collectAsState()
+    val onBackClicked: () -> Unit = { navigator.navigateUp() }
+    val onClearDialogConfirmClicked: () -> Unit = viewModel::onClearClicked
+    val onMovieClicked = { movieId: Int ->
+        val destination = MovieDetailsScreenDestination(
+            movieId = movieId,
+            startRoute = MoviesScreenDestination.route
+        )
 
-    val favouriteMoviesCount by viewModel.favouriteMoviesCount.collectAsState()
+        navigator.navigate(destination)
+    }
 
-    val appbarTitle = when (movieType) {
+    BrowseMoviesScreenContent(
+        uiState = uiState,
+        onBackClicked = onBackClicked,
+        onClearDialogConfirmClicked = onClearDialogConfirmClicked,
+        onMovieClicked = onMovieClicked
+    )
+}
+
+
+@Composable
+fun BrowseMoviesScreenContent(
+    uiState: BrowseMoviesScreenUiState,
+    onBackClicked: () -> Unit,
+    onClearDialogConfirmClicked: () -> Unit,
+    onMovieClicked: (movieId: Int) -> Unit
+) {
+    val movies = uiState.movies.collectAsLazyPagingItems()
+
+    val appbarTitle = when (uiState.selectedMovieType) {
         MovieType.Upcoming -> stringResource(R.string.all_movies_upcoming_label)
         MovieType.TopRated -> stringResource(R.string.all_movies_top_rated_label)
         MovieType.Favourite -> stringResource(
             R.string.all_movies_favourites_label,
-            favouriteMoviesCount
+            uiState.favouriteMoviesCount
         )
         MovieType.RecentlyBrowsed -> stringResource(R.string.all_movies_recently_browsed_label)
         MovieType.Trending -> stringResource(R.string.all_movies_trending_label)
     }
 
-    val showClearButton = movieType == MovieType.RecentlyBrowsed
-            && movies?.itemSnapshotList?.isEmpty() != true
+    val showClearButton =
+        uiState.selectedMovieType == MovieType.RecentlyBrowsed && movies.itemSnapshotList.isNotEmpty()
 
     var showClearDialog by remember { mutableStateOf(false) }
 
@@ -71,7 +104,7 @@ fun BrowseMoviesScreen(
             onDismissRequest = dismissDialog,
             onCancelClick = dismissDialog,
             onConfirmClick = {
-                viewModel.onClearClicked()
+                onClearDialogConfirmClicked()
                 dismissDialog()
             }
         )
@@ -79,7 +112,7 @@ fun BrowseMoviesScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         AppBar(title = appbarTitle, action = {
-            IconButton(onClick = { navigator.navigateUp() }) {
+            IconButton(onClick = onBackClicked) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "go back",
@@ -104,20 +137,14 @@ fun BrowseMoviesScreen(
                 }
             }
         })
-        movies?.let { state ->
-            PresentableGridSection(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(
-                    horizontal = MaterialTheme.spacing.small,
-                    vertical = MaterialTheme.spacing.medium,
-                ),
-                state = state
-            ) { movieId ->
-                navigator.navigate(
-                    MovieDetailsScreenDestination(movieId)
-                )
-            }
-        }
+        PresentableGridSection(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                horizontal = MaterialTheme.spacing.small,
+                vertical = MaterialTheme.spacing.medium,
+            ),
+            state = movies,
+            onPresentableClick = onMovieClicked
+        )
     }
-
 }

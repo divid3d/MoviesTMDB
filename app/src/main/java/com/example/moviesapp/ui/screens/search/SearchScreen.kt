@@ -20,7 +20,8 @@ import com.example.moviesapp.other.CaptureSpeechToText
 import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.ui.components.SearchGridSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
-import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
+import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.search.components.QueryTextField
 import com.example.moviesapp.ui.screens.search.components.SearchEmptyState
@@ -35,18 +36,54 @@ fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-    val query by viewModel.query.collectAsState()
-    val queryLoading by viewModel.queryLoading.collectAsState()
-    val searchState by viewModel.searchState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+    val onQueryChanged: (query: String) -> Unit = viewModel::onQueryChange
+    val onQueryCleared: () -> Unit = viewModel::onQueryClear
+    val onResultClicked: (id: Int, type: MediaType) -> Unit = { id, type ->
+        val destination = when (type) {
+            MediaType.Movie -> {
+                MovieDetailsScreenDestination(
+                    movieId = id,
+                    startRoute = MoviesScreenDestination.route
+                )
+            }
 
-    val voiceSearchAvailable by viewModel.voiceSearchAvailable.collectAsState()
+            MediaType.Tv -> {
+                TvSeriesDetailsScreenDestination(
+                    tvSeriesId = id,
+                    startRoute = TvScreenDestination.route
+                )
+            }
 
+            else -> null
+        }
+
+        if (destination != null) {
+            navigator.navigate(destination)
+        }
+    }
+
+    SearchScreenContent(
+        uiState = uiState,
+        onQueryChanged = onQueryChanged,
+        onQueryCleared = onQueryCleared,
+        onResultClicked = onResultClicked
+    )
+}
+
+@Composable
+fun SearchScreenContent(
+    uiState: SearchScreenUiState,
+    onQueryChanged: (query: String) -> Unit,
+    onQueryCleared: () -> Unit,
+    onResultClicked: (id: Int, type: MediaType) -> Unit
+) {
     val focusManager = LocalFocusManager.current
 
     val speechToTextLauncher = rememberLauncherForActivityResult(CaptureSpeechToText()) { result ->
         if (result != null) {
             focusManager.clearFocus()
-            viewModel.onQueryChange(result)
+            onQueryChanged(result)
         }
     }
 
@@ -60,15 +97,15 @@ fun SearchScreen(
                 .fillMaxWidth()
                 .padding(MaterialTheme.spacing.medium)
                 .animateContentSize(),
-            query = query,
-            voiceSearchAvailable = voiceSearchAvailable,
-            loading = queryLoading,
-            showClearButton = searchState !is SearchState.EmptyQuery,
+            query = uiState.query,
+            voiceSearchAvailable = uiState.voiceSearchAvailable,
+            loading = uiState.queryLoading,
+            showClearButton = uiState.searchState !is SearchState.EmptyQuery,
             info = {
                 AnimatedVisibility(
                     enter = fadeIn() + slideInVertically(),
                     exit = fadeOut() + slideOutVertically(),
-                    visible = searchState is SearchState.InsufficientQuery
+                    visible = uiState.searchState is SearchState.InsufficientQuery
                 ) {
                     Text(
                         text = stringResource(R.string.search_insufficient_query_length_info_text),
@@ -76,15 +113,15 @@ fun SearchScreen(
                     )
                 }
             },
-            onQueryChange = viewModel::onQueryChange,
-            onQueryClear = viewModel::onQueryClear,
+            onQueryChange = onQueryChanged,
+            onQueryClear = onQueryCleared,
             onVoiceSearchClick = {
                 speechToTextLauncher.launch(null)
             }
         )
         Crossfade(
             modifier = Modifier.fillMaxSize(),
-            targetState = searchState
+            targetState = uiState.searchState
         ) { state ->
             when (state) {
                 is SearchState.Result -> {
@@ -97,26 +134,9 @@ fun SearchScreen(
                                 horizontal = MaterialTheme.spacing.small,
                                 vertical = MaterialTheme.spacing.medium,
                             ),
-                            state = result
-                        ) { resultId, mediaType ->
-                            val destination = when (mediaType) {
-                                MediaType.Movie -> MovieDetailsScreenDestination(
-                                    movieId = resultId,
-                                    startRoute = SearchScreenDestination.route
-                                )
-
-                                MediaType.Tv -> TvSeriesDetailsScreenDestination(
-                                    tvSeriesId = resultId,
-                                    startRoute = SearchScreenDestination.route
-                                )
-
-                                else -> null
-                            }
-
-                            if (destination != null) {
-                                navigator.navigate(destination)
-                            }
-                        }
+                            state = result,
+                            onSearchResultClick = onResultClicked
+                        )
                     } else {
                         SearchEmptyState(
                             modifier = Modifier.fillMaxSize()
@@ -127,6 +147,5 @@ fun SearchScreen(
             }
         }
     }
-
 }
 

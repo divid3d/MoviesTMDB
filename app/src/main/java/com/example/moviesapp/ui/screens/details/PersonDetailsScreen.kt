@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.details
 
+import android.os.Parcelable
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
@@ -23,6 +24,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.moviesapp.R
+import com.example.moviesapp.model.ExternalId
 import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.other.ifNotNullAndEmpty
 import com.example.moviesapp.other.openExternalId
@@ -31,7 +33,6 @@ import com.example.moviesapp.ui.components.ExternalIdsSection
 import com.example.moviesapp.ui.components.SectionDivider
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
-import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.details.components.CreditsList
 import com.example.moviesapp.ui.screens.details.components.PersonDetailsInfoSection
@@ -42,27 +43,78 @@ import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.statusBarsPadding
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.parcelize.Parcelize
 
-@Destination
+@Parcelize
+data class PersonDetailsScreenArgs(
+    val personId: Int,
+    val startRoute: String
+) : Parcelable
+
+@Destination(navArgsDelegate = PersonDetailsScreenArgs::class)
 @Composable
 fun PersonDetailsScreen(
     viewModel: PersonDetailsViewModel = hiltViewModel(),
-    personId: Int,
-    navigator: DestinationsNavigator,
-    startRoute: String = MoviesScreenDestination.route
+    navigator: DestinationsNavigator
 ) {
     val context = LocalContext.current
 
-    val details by viewModel.personDetails.collectAsState()
-    val externalIds by viewModel.externalIds.collectAsState()
-    val cast by viewModel.cast.collectAsState()
-    val crew by viewModel.crew.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+    val onBackClicked: () -> Unit = { navigator.navigateUp() }
+    val onCloseClicked: () -> Unit = {
+        navigator.popBackStack(uiState.startRoute, inclusive = false)
+    }
+    val onExternalIdClicked = { id: ExternalId ->
+        openExternalId(
+            context = context,
+            externalId = id
+        )
+    }
+    val onMediaClicked = { mediaType: MediaType, id: Int ->
+        val destination = when (mediaType) {
+            MediaType.Movie -> {
+                MovieDetailsScreenDestination(
+                    movieId = id,
+                    startRoute = uiState.startRoute
+                )
+            }
 
+            MediaType.Tv -> {
+                TvSeriesDetailsScreenDestination(
+                    tvSeriesId = id,
+                    startRoute = uiState.startRoute
+                )
+            }
+
+            else -> null
+        }
+
+        if (destination != null) {
+            navigator.navigate(destination)
+        }
+    }
+
+    PersonDetailsScreenContent(
+        uiState = uiState,
+        onBackClicked = onBackClicked,
+        onCloseClicked = onCloseClicked,
+        onExternalIdClicked = onExternalIdClicked,
+        onMediaClicked = onMediaClicked
+    )
+}
+
+@Composable
+fun PersonDetailsScreenContent(
+    uiState: PersonDetailsScreenUiState,
+    onBackClicked: () -> Unit,
+    onCloseClicked: () -> Unit,
+    onExternalIdClicked: (id: ExternalId) -> Unit,
+    onMediaClicked: (type: MediaType, id: Int) -> Unit
+) {
     var showErrorDialog by remember { mutableStateOf(false) }
-    val error: String? by viewModel.error.collectAsState()
 
-    LaunchedEffect(error) {
-        showErrorDialog = error != null
+    LaunchedEffect(uiState.error) {
+        showErrorDialog = uiState.error != null
     }
 
     BackHandler(showErrorDialog) {
@@ -75,28 +127,6 @@ fun PersonDetailsScreen(
         }, onConfirmClick = {
             showErrorDialog = false
         })
-    }
-
-    val navigateToDetails = { mediaType: MediaType, id: Int ->
-        val destination = when (mediaType) {
-            MediaType.Movie -> {
-                MovieDetailsScreenDestination(
-                    movieId = id, startRoute = startRoute
-                )
-            }
-
-            MediaType.Tv -> {
-                TvSeriesDetailsScreenDestination(
-                    tvSeriesId = id, startRoute = startRoute
-                )
-            }
-
-            else -> null
-        }
-
-        if (destination != null) {
-            navigator.navigate(destination)
-        }
     }
 
     Box(
@@ -122,7 +152,7 @@ fun PersonDetailsScreen(
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                     },
-                    profilePath = details?.profilePath
+                    profilePath = uiState.details?.profilePath
                 )
 
                 Column(modifier = Modifier
@@ -139,20 +169,17 @@ fun PersonDetailsScreen(
                 ) {
                     PersonDetailsTopContent(
                         modifier = Modifier.fillMaxWidth(),
-                        personDetails = details
+                        personDetails = uiState.details
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
 
-                    externalIds?.let { ids ->
+                    uiState.externalIds?.let { ids ->
                         ExternalIdsSection(
                             modifier = Modifier.fillMaxWidth(),
-                            externalIds = ids
-                        ) { externalId ->
-                            openExternalId(
-                                context = context, externalId = externalId
-                            )
-                        }
+                            externalIds = ids,
+                            onExternalIdClick = onExternalIdClicked
+                        )
                     }
                 }
             }
@@ -161,14 +188,14 @@ fun PersonDetailsScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .animateContentSize(),
-                personDetails = details
+                personDetails = uiState.details
             )
 
             Crossfade(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
-                targetState = cast
+                targetState = uiState.credits?.cast
             ) { cast ->
                 cast.ifNotNullAndEmpty { members ->
                     Column(
@@ -179,8 +206,9 @@ fun PersonDetailsScreen(
                         CreditsList(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(R.string.person_details_screen_cast),
-                            credits = members
-                        ) { mediaType, id -> navigateToDetails(mediaType, id) }
+                            credits = members,
+                            onCreditsClick = onMediaClicked
+                        )
                     }
                 }
             }
@@ -189,7 +217,7 @@ fun PersonDetailsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
-                targetState = crew
+                targetState = uiState.credits?.crew
             ) { crew ->
                 crew.ifNotNullAndEmpty { members ->
                     Column(
@@ -200,8 +228,9 @@ fun PersonDetailsScreen(
                         CreditsList(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(R.string.person_details_screen_crew),
-                            credits = members
-                        ) { mediaType, id -> navigateToDetails(mediaType, id) }
+                            credits = members,
+                            onCreditsClick = onMediaClicked
+                        )
                     }
                 }
             }
@@ -214,7 +243,7 @@ fun PersonDetailsScreen(
             title = stringResource(R.string.person_details_screen_appbar_label),
             backgroundColor = Color.Black.copy(0.7f),
             action = {
-                IconButton(onClick = { navigator.navigateUp() }) {
+                IconButton(onClick = onBackClicked) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "go back",
@@ -224,9 +253,7 @@ fun PersonDetailsScreen(
             },
             trailing = {
                 Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
-                    IconButton(onClick = {
-                        navigator.popBackStack(startRoute, inclusive = false)
-                    }) {
+                    IconButton(onClick = onCloseClicked) {
                         Icon(
                             imageVector = Icons.Filled.Close,
                             contentDescription = "close",
@@ -237,5 +264,4 @@ fun PersonDetailsScreen(
             }
         )
     }
-
 }

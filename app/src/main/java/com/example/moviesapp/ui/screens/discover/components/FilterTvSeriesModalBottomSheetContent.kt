@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.moviesapp.R
-import com.example.moviesapp.model.TvSeriesFilterState
 import com.example.moviesapp.ui.components.*
+import com.example.moviesapp.ui.screens.discover.TvSeriesFilterState
 import com.example.moviesapp.ui.theme.spacing
 
 @OptIn(ExperimentalMaterialApi::class)

@@ -28,9 +28,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.SortOrder
+import com.example.moviesapp.model.SortType
 import com.example.moviesapp.other.isEmpty
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.discover.components.FilterMoviesModalBottomSheetContent
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsPadding
@@ -52,11 +54,41 @@ fun DiscoverMoviesScreen(
     viewModel: DiscoverMoviesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-    val movies = viewModel.movies.collectAsLazyPagingItems()
+    val uiState by viewModel.uiState.collectAsState()
+    val onBackClicked: () -> Unit = { navigator.navigateUp() }
+    val onSortOrderChanged: (order: SortOrder) -> Unit = viewModel::onSortOrderChange
+    val onSortTypeChanged: (type: SortType) -> Unit = viewModel::onSortTypeChange
+    val onMovieClicked: (movieId: Int) -> Unit = { id ->
+        val destination = MovieDetailsScreenDestination(
+            movieId = id,
+            startRoute = MoviesScreenDestination.route
+        )
 
-    val sortType by viewModel.sortType.collectAsState()
-    val sortOrder by viewModel.sortOrder.collectAsState()
-    val filterState by viewModel.filterState.collectAsState()
+        navigator.navigate(destination)
+    }
+    val onSaveFilterClicked: (state: MovieFilterState) -> Unit = viewModel::onFilterStateChange
+
+    DiscoverMoviesScreenContent(
+        uiState = uiState,
+        onBackClicked = onBackClicked,
+        onSortOrderChanged = onSortOrderChanged,
+        onSortTypeChanged = onSortTypeChanged,
+        onMovieClicked = onMovieClicked,
+        onSaveFilterClicked = onSaveFilterClicked
+    )
+}
+
+@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
+@Composable
+fun DiscoverMoviesScreenContent(
+    uiState: DiscoverMoviesScreenUiState,
+    onBackClicked: () -> Unit,
+    onSortOrderChanged: (order: SortOrder) -> Unit,
+    onSortTypeChanged: (type: SortType) -> Unit,
+    onMovieClicked: (movieId: Int) -> Unit,
+    onSaveFilterClicked: (state: MovieFilterState) -> Unit
+) {
+    val movies = uiState.movies.collectAsLazyPagingItems()
 
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
@@ -71,7 +103,11 @@ fun DiscoverMoviesScreen(
         !sheetState.isVisible
     }
 
-    val orderIconRotation by animateFloatAsState(targetValue = if (sortOrder == SortOrder.Desc) 0f else 180f)
+    val orderIconRotation by animateFloatAsState(
+        targetValue = if (uiState.sortInfo.sortOrder == SortOrder.Desc) {
+            0f
+        } else 180f
+    )
 
     BackHandler(sheetState.isVisible) {
         coroutineScope.launch {
@@ -91,7 +127,7 @@ fun DiscoverMoviesScreen(
                     .fillMaxHeight(0.9f)
                     .navigationBarsPadding(),
                 sheetState = sheetState,
-                filterState = filterState,
+                filterState = uiState.filterState,
                 onCloseClick = {
                     coroutineScope.launch {
                         sheetState.hide()
@@ -101,7 +137,7 @@ fun DiscoverMoviesScreen(
                     coroutineScope.launch {
                         sheetState.hide()
                     }
-                    viewModel.onFilterStateChange(filterState)
+                    onSaveFilterClicked(filterState)
                 }
             )
         }
@@ -111,7 +147,7 @@ fun DiscoverMoviesScreen(
                 AppBar(
                     title = stringResource(R.string.discover_movies_appbar_title),
                     action = {
-                        IconButton(onClick = { navigator.navigateUp() }) {
+                        IconButton(onClick = onBackClicked) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
                                 contentDescription = "go back",
@@ -126,8 +162,13 @@ fun DiscoverMoviesScreen(
                                 modifier = Modifier.rotate(orderIconRotation),
                                 onClick = {
                                     val order =
-                                        if (sortOrder == SortOrder.Desc) SortOrder.Asc else SortOrder.Desc
-                                    viewModel.onSortOrderChange(order)
+                                        if (uiState.sortInfo.sortOrder == SortOrder.Desc) {
+                                            SortOrder.Asc
+                                        } else {
+                                            SortOrder.Desc
+                                        }
+
+                                    onSortOrderChanged(order)
                                 }
                             ) {
                                 Image(
@@ -138,10 +179,9 @@ fun DiscoverMoviesScreen(
                             }
 
                             SortTypeDropdownButton(
-                                selectedType = sortType
-                            ) { type ->
-                                viewModel.onSortTypeChange(type)
-                            }
+                                selectedType = uiState.sortInfo.sortType,
+                                onTypeSelected = onSortTypeChanged
+                            )
                         }
                     })
 
@@ -157,12 +197,9 @@ fun DiscoverMoviesScreen(
                                 horizontal = MaterialTheme.spacing.small,
                                 vertical = MaterialTheme.spacing.medium,
                             ),
-                            state = movies
-                        ) { movieId ->
-                            navigator.navigate(
-                                MovieDetailsScreenDestination(movieId)
-                            )
-                        }
+                            state = movies,
+                            onPresentableClick = onMovieClicked
+                        )
                     } else {
                         FilterEmptyState(
                             modifier = Modifier.fillMaxSize(),
@@ -206,4 +243,3 @@ fun DiscoverMoviesScreen(
         }
     }
 }
-

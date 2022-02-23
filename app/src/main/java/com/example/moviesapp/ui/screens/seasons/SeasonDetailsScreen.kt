@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.seasons
 
+import android.os.Parcelable
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
@@ -25,40 +26,60 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.moviesapp.R
-import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.other.formatted
 import com.example.moviesapp.other.ifNotNullAndEmpty
 import com.example.moviesapp.other.openVideo
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
-import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.parcelize.Parcelize
 
-@Destination
+@Parcelize
+data class SeasonDetailsScreenArgs(
+    val tvSeriesId: Int,
+    val seasonNumber: Int,
+    val startRoute: String
+) : Parcelable
+
+@Destination(navArgsDelegate = SeasonDetailsScreenArgs::class)
 @Composable
 fun SeasonDetailsScreen(
     viewModel: SeasonDetailsViewModel = hiltViewModel(),
-    seasonInfo: SeasonInfo,
-    navigator: DestinationsNavigator,
-    startRoute: String = TvScreenDestination.route
+    navigator: DestinationsNavigator
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val onBackClicked: () -> Unit = { navigator.navigateUp() }
+    val onCloseClicked: () -> Unit = {
+        navigator.popBackStack(uiState.startRoute, inclusive = false)
+    }
+    val onEpisodeExpanded: (episodeNumber: Int) -> Unit = viewModel::getEpisodeStills
+
+    SeasonDetailsContent(
+        uiState = uiState,
+        onCloseClicked = onCloseClicked,
+        onBackClicked = onBackClicked,
+        onEpisodeExpanded = onEpisodeExpanded
+    )
+}
+
+@Composable
+fun SeasonDetailsContent(
+    uiState: SeasonDetailsScreenUiState,
+    onCloseClicked: () -> Unit,
+    onBackClicked: () -> Unit,
+    onEpisodeExpanded: (episodeNumber: Int) -> Unit
 ) {
     val context = LocalContext.current
-
-    val seasonDetails by viewModel.seasonDetails.collectAsState()
-    val videos by viewModel.videos.collectAsState()
-    val episodesCount by viewModel.episodeCount.collectAsState()
-    val episodeStills by viewModel.episodeStills.collectAsState()
 
     val lazyState = rememberLazyListState()
 
     var showErrorDialog by remember { mutableStateOf(false) }
-    val error: String? by viewModel.error.collectAsState()
 
-    LaunchedEffect(error) {
-        showErrorDialog = error != null
+    LaunchedEffect(uiState.error) {
+        showErrorDialog = uiState.error != null
     }
 
     BackHandler(showErrorDialog) {
@@ -87,24 +108,24 @@ fun SeasonDetailsScreen(
                 PresentableDetailsTopSection(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    presentable = seasonDetails
+                    presentable = uiState.seasonDetails
                 ) {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                     ) {
-                        seasonDetails?.seasonNumber?.let { number ->
+                        uiState.seasonDetails?.seasonNumber?.let { number ->
                             LabeledText(
                                 label = stringResource(R.string.season_details_season_number_label),
                                 text = number.toString()
                             )
                         }
-                        episodesCount?.let { count ->
+                        uiState.episodeCount?.let { count ->
                             LabeledText(
                                 label = stringResource(R.string.season_details_episodes_count_label),
                                 text = count.toString()
                             )
                         }
-                        seasonDetails?.airDate?.let { date ->
+                        uiState.seasonDetails?.airDate?.let { date ->
                             LabeledText(
                                 label = stringResource(R.string.season_details_air_date_label),
                                 text = date.formatted()
@@ -120,7 +141,7 @@ fun SeasonDetailsScreen(
                         .fillMaxWidth()
                         .padding(top = MaterialTheme.spacing.medium)
                         .animateContentSize(),
-                    targetState = seasonDetails
+                    targetState = uiState.seasonDetails
                 ) { details ->
                     if (details != null) {
                         Column(
@@ -148,7 +169,7 @@ fun SeasonDetailsScreen(
                         .fillMaxWidth()
                         .padding(top = MaterialTheme.spacing.medium)
                         .animateContentSize(),
-                    targetState = videos
+                    targetState = uiState.videos
                 ) { videos ->
                     videos.ifNotNullAndEmpty { value ->
                         VideosSection(
@@ -166,7 +187,7 @@ fun SeasonDetailsScreen(
                 }
             }
 
-            seasonDetails?.episodes?.let { episodes ->
+            uiState.seasonDetails?.episodes?.let { episodes ->
                 if (episodes.isNotEmpty()) {
                     item {
                         SectionLabel(
@@ -194,7 +215,7 @@ fun SeasonDetailsScreen(
                     }
 
                     val stills by derivedStateOf {
-                        episodeStills.getOrElse(
+                        uiState.episodeStills.getOrElse(
                             episode.episodeNumber,
                             defaultValue = { emptyList() })
                     }
@@ -210,7 +231,7 @@ fun SeasonDetailsScreen(
                     ) {
                         expanded = !expanded
                         if (expanded) {
-                            viewModel.getEpisodeStills(episode.episodeNumber)
+                            onEpisodeExpanded(episode.episodeNumber)
                         }
                     }
                 }
@@ -226,7 +247,7 @@ fun SeasonDetailsScreen(
             title = stringResource(R.string.season_details_appbar_label),
             backgroundColor = Color.Black.copy(0.7f),
             action = {
-                IconButton(onClick = { navigator.navigateUp() }) {
+                IconButton(onClick = onBackClicked) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "go back",
@@ -237,9 +258,7 @@ fun SeasonDetailsScreen(
             trailing = {
                 Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
                     IconButton(
-                        onClick = {
-                            navigator.popBackStack(startRoute, inclusive = false)
-                        }
+                        onClick = onCloseClicked
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Close,
@@ -251,5 +270,4 @@ fun SeasonDetailsScreen(
             }
         )
     }
-
 }

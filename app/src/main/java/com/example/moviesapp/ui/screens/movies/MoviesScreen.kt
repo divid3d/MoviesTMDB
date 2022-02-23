@@ -27,6 +27,7 @@ import com.example.moviesapp.ui.components.dialogs.ExitDialog
 import com.example.moviesapp.ui.screens.destinations.BrowseMoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.DiscoverMoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -35,33 +36,68 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+
 @Destination(start = true)
 @Composable
 fun MoviesScreen(
     viewModel: MoviesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    val onMovieClicked = { movieId: Int ->
+        val destination = MovieDetailsScreenDestination(
+            movieId = movieId,
+            startRoute = MoviesScreenDestination.route
+        )
+
+        navigator.navigate(destination)
+    }
+
+    val onBrowseMoviesClicked = { type: MovieType ->
+        navigator.navigate(BrowseMoviesScreenDestination(type))
+    }
+
+    val onDiscoverMoviesClicked = {
+        navigator.navigate(DiscoverMoviesScreenDestination)
+    }
+
+    MoviesScreenContent(
+        uiState = uiState,
+        onMovieClicked = onMovieClicked,
+        onBrowseMoviesClicked = onBrowseMoviesClicked,
+        onDiscoverMoviesClicked = onDiscoverMoviesClicked
+    )
+}
+
+@Composable
+fun MoviesScreenContent(
+    uiState: MovieScreenUiState,
+    onMovieClicked: (movieId: Int) -> Unit,
+    onBrowseMoviesClicked: (type: MovieType) -> Unit,
+    onDiscoverMoviesClicked: () -> Unit
+) {
     val context = LocalContext.current
     val density = LocalDensity.current
+
+    val discoverLazyItems = uiState.moviesState.discover.collectAsLazyPagingItems()
+    val upcomingLazyItems = uiState.moviesState.upcoming.collectAsLazyPagingItems()
+    val topRatedLazyItems = uiState.moviesState.topRated.collectAsLazyPagingItems()
+    val trendingLazyItems = uiState.moviesState.trending.collectAsLazyPagingItems()
+    val nowPlayingLazyItems = uiState.moviesState.trending.collectAsLazyPagingItems()
+    val favouritesLazyItems = uiState.favourites.collectAsLazyPagingItems()
+    val recentlyBrowsedLazyItems = uiState.recentlyBrowsed.collectAsLazyPagingItems()
+
+    val scrollState = rememberScrollState()
+    var topSectionHeight: Float? by remember { mutableStateOf(null) }
+    val appbarHeight = density.run { 56.dp.toPx() }
+    val topSectionScrollLimitValue: Float? = topSectionHeight?.minus(appbarHeight)
 
     var showExitDialog by remember { mutableStateOf(false) }
 
     val dismissDialog = {
         showExitDialog = false
     }
-
-    val discover = viewModel.discover.collectAsLazyPagingItems()
-    val upcoming = viewModel.upcoming.collectAsLazyPagingItems()
-    val topRated = viewModel.topRated.collectAsLazyPagingItems()
-    val trending = viewModel.trending.collectAsLazyPagingItems()
-    val nowPlaying = viewModel.nowPlaying.collectAsLazyPagingItems()
-    val favourites = viewModel.favourites.collectAsLazyPagingItems()
-    val recentlyBrowsed = viewModel.recentBrowsed.collectAsLazyPagingItems()
-
-    val scrollState = rememberScrollState()
-    var topSectionHeight: Float? by remember { mutableStateOf(null) }
-    val appbarHeight = density.run { 56.dp.toPx() }
-    val topSectionScrollLimitValue: Float? = topSectionHeight?.minus(appbarHeight)
 
     BackHandler {
         showExitDialog = true
@@ -80,11 +116,11 @@ fun MoviesScreen(
 
     val isRefreshing by derivedStateOf {
         listOf(
-            discover,
-            upcoming,
-            topRated,
-            trending,
-            nowPlaying
+            discoverLazyItems,
+            upcomingLazyItems,
+            topRatedLazyItems,
+            trendingLazyItems,
+            nowPlayingLazyItems
         ).any { lazyPagingItems ->
             lazyPagingItems.itemCount > 0 && lazyPagingItems.loadState.refresh is LoadState.Loading
         }
@@ -94,24 +130,12 @@ fun MoviesScreen(
 
     val refreshAllPagingData = {
         listOf(
-            discover,
-            upcoming,
-            topRated,
-            trending,
-            nowPlaying
+            discoverLazyItems,
+            upcomingLazyItems,
+            topRatedLazyItems,
+            trendingLazyItems,
+            nowPlayingLazyItems
         ).forEach { lazyPagingItems -> lazyPagingItems.refresh() }
-    }
-
-    val navigateToMovieDetails: (Int) -> Unit = { movieId ->
-        navigator.navigate(MovieDetailsScreenDestination(movieId))
-    }
-
-    val navigateToBrowseMovies: (MovieType) -> Unit = { type ->
-        navigator.navigate(BrowseMoviesScreenDestination(type))
-    }
-
-    val navigateToDiscoverMovies = {
-        navigator.navigate(DiscoverMoviesScreenDestination)
     }
 
     LaunchedEffect(isRefreshing) {
@@ -145,10 +169,10 @@ fun MoviesScreen(
                         topSectionHeight = coordinates.size.height.toFloat()
                     },
                 title = stringResource(R.string.now_playing_movies),
-                state = nowPlaying,
+                state = nowPlayingLazyItems,
                 scrollState = scrollState,
                 scrollValueLimit = topSectionScrollLimitValue,
-                onPresentableClick = navigateToMovieDetails
+                onPresentableClick = onMovieClicked
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             PresentableSection(
@@ -156,9 +180,9 @@ fun MoviesScreen(
                     .fillMaxWidth()
                     .animateContentSize(),
                 title = stringResource(R.string.explore_movies),
-                state = discover,
-                onPresentableClick = navigateToMovieDetails,
-                onMoreClick = navigateToDiscoverMovies
+                state = discoverLazyItems,
+                onPresentableClick = onMovieClicked,
+                onMoreClick = onDiscoverMoviesClicked
             )
             SectionDivider(
                 modifier = Modifier.padding(
@@ -171,11 +195,9 @@ fun MoviesScreen(
                     .fillMaxWidth()
                     .animateContentSize(),
                 title = stringResource(R.string.upcoming_movies),
-                state = upcoming,
-                onPresentableClick = navigateToMovieDetails,
-                onMoreClick = {
-                    navigateToBrowseMovies(MovieType.Upcoming)
-                }
+                state = upcomingLazyItems,
+                onPresentableClick = onMovieClicked,
+                onMoreClick = { onBrowseMoviesClicked(MovieType.Upcoming) }
             )
             SectionDivider(
                 modifier = Modifier.padding(
@@ -188,11 +210,9 @@ fun MoviesScreen(
                     .fillMaxWidth()
                     .animateContentSize(),
                 title = stringResource(R.string.trending_movies),
-                state = trending,
-                onPresentableClick = navigateToMovieDetails,
-                onMoreClick = {
-                    navigateToBrowseMovies(MovieType.Trending)
-                }
+                state = trendingLazyItems,
+                onPresentableClick = onMovieClicked,
+                onMoreClick = { onBrowseMoviesClicked(MovieType.Trending) }
             )
             SectionDivider(
                 modifier = Modifier.padding(
@@ -205,13 +225,11 @@ fun MoviesScreen(
                     .fillMaxWidth()
                     .animateContentSize(),
                 title = stringResource(R.string.top_rated_movies),
-                state = topRated,
-                onPresentableClick = navigateToMovieDetails,
-                onMoreClick = {
-                    navigateToBrowseMovies(MovieType.TopRated)
-                }
+                state = topRatedLazyItems,
+                onPresentableClick = onMovieClicked,
+                onMoreClick = { onBrowseMoviesClicked(MovieType.TopRated) }
             )
-            if (favourites.isNotEmpty()) {
+            if (favouritesLazyItems.isNotEmpty()) {
                 SectionDivider(
                     modifier = Modifier.padding(
                         top = MaterialTheme.spacing.medium,
@@ -223,14 +241,12 @@ fun MoviesScreen(
                         .fillMaxWidth()
                         .animateContentSize(),
                     title = stringResource(R.string.favourite_movies),
-                    state = favourites,
-                    onPresentableClick = navigateToMovieDetails,
-                    onMoreClick = {
-                        navigateToBrowseMovies(MovieType.Favourite)
-                    }
+                    state = favouritesLazyItems,
+                    onPresentableClick = onMovieClicked,
+                    onMoreClick = { onBrowseMoviesClicked(MovieType.Favourite) }
                 )
             }
-            if (recentlyBrowsed.isNotEmpty()) {
+            if (recentlyBrowsedLazyItems.isNotEmpty()) {
                 SectionDivider(
                     modifier = Modifier.padding(
                         top = MaterialTheme.spacing.medium,
@@ -242,11 +258,9 @@ fun MoviesScreen(
                         .fillMaxWidth()
                         .animateContentSize(),
                     title = stringResource(R.string.recently_browsed_movies),
-                    state = recentlyBrowsed,
-                    onPresentableClick = navigateToMovieDetails,
-                    onMoreClick = {
-                        navigateToBrowseMovies(MovieType.RecentlyBrowsed)
-                    }
+                    state = recentlyBrowsedLazyItems,
+                    onPresentableClick = onMovieClicked,
+                    onMoreClick = { onBrowseMoviesClicked(MovieType.RecentlyBrowsed) }
                 )
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))

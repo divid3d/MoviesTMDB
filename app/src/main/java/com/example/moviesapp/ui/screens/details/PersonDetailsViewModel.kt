@@ -8,9 +8,9 @@ import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
-import com.example.moviesapp.other.asFlow
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.PersonRepository
+import com.example.moviesapp.ui.screens.destinations.PersonDetailsScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -24,61 +24,62 @@ class PersonDetailsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
+    private val navArgs: PersonDetailsScreenArgs =
+        PersonDetailsScreenDestination.argsFrom(savedStateHandle)
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
-    private val personId: Flow<Int?> = savedStateHandle.getLiveData<Int>("personId").asFlow()
 
-    private val _personDetails: MutableStateFlow<PersonDetails?> = MutableStateFlow(null)
-    val personDetails: StateFlow<PersonDetails?> =
-        _personDetails.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+    private val personDetails: MutableStateFlow<PersonDetails?> = MutableStateFlow(null)
 
-    private val _combinedCredits: MutableStateFlow<CombinedCredits?> = MutableStateFlow(null)
-
-    val cast: StateFlow<List<CombinedCreditsCast>> =
-        _combinedCredits
-            .map { credits -> credits?.cast ?: emptyList() }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
-
-    val crew: StateFlow<List<CombinedCreditsCrew>> =
-        _combinedCredits
-            .map { credits -> credits?.crew ?: emptyList() }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), emptyList())
+    private val combinedCredits: MutableStateFlow<CombinedCredits?> = MutableStateFlow(null)
 
     private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
-    val externalIds: StateFlow<List<ExternalId>?> =
+    private val externalIds: StateFlow<List<ExternalId>?> =
         _externalIds.filterNotNull().map { externalIds ->
             externalIds.toExternalIdList(type = ExternalContentType.Person)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
+    val uiState: StateFlow<PersonDetailsScreenUiState> = combine(
+        personDetails, combinedCredits, externalIds, error
+    ) { details, combinedCredits, externalIds, error ->
+        PersonDetailsScreenUiState(
+            startRoute = navArgs.startRoute,
+            details = details,
+            externalIds = externalIds,
+            credits = combinedCredits,
+            error = error
+        )
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        PersonDetailsScreenUiState.getDefault(navArgs.startRoute)
+    )
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            personId.collectLatest { personId ->
-                personId?.let { id ->
-                    deviceLanguage.collectLatest { deviceLanguage ->
-                        personRepository.getPersonDetails(
-                            personId = id,
-                            deviceLanguage = deviceLanguage
-                        ).request { response ->
-                            response.onSuccess {
-                                viewModelScope.launch {
-                                    _personDetails.emit(data)
-                                }
-                            }
-
-                            response.onFailure {
-                                onFailure(this)
-                            }
-
-                            response.onException {
-                                onError(this)
-                            }
+            deviceLanguage.collectLatest { deviceLanguage ->
+                personRepository.getPersonDetails(
+                    personId = navArgs.personId,
+                    deviceLanguage = deviceLanguage
+                ).request { response ->
+                    response.onSuccess {
+                        viewModelScope.launch {
+                            personDetails.emit(data)
                         }
+                    }
 
-                        getPersonInfo(
-                            personId = id,
-                            deviceLanguage = deviceLanguage
-                        )
+                    response.onFailure {
+                        onFailure(this)
+                    }
+
+                    response.onException {
+                        onError(this)
                     }
                 }
+
+                getPersonInfo(
+                    personId = navArgs.personId,
+                    deviceLanguage = deviceLanguage
+                )
             }
         }
     }
@@ -96,7 +97,7 @@ class PersonDetailsViewModel @Inject constructor(
             ).request { response ->
                 response.onSuccess {
                     viewModelScope.launch {
-                        _combinedCredits.emit(data)
+                        combinedCredits.emit(data)
                     }
                 }
 
@@ -133,5 +134,4 @@ class PersonDetailsViewModel @Inject constructor(
             }
         }
     }
-
 }

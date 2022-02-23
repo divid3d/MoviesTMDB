@@ -22,6 +22,7 @@ import com.example.moviesapp.ui.components.PresentableTopSection
 import com.example.moviesapp.ui.components.SectionDivider
 import com.example.moviesapp.ui.screens.destinations.BrowseTvSeriesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.DiscoverTvSeriesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
@@ -37,15 +38,49 @@ fun TvScreen(
     viewModel: TvSeriesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
+    val uiState by viewModel.tvScreenUiState.collectAsState()
+
+    val onTvSeriesClicked: (Int) -> Unit = { tvSeriesId ->
+        val destination = TvSeriesDetailsScreenDestination(
+            tvSeriesId = tvSeriesId,
+            startRoute = TvScreenDestination.route
+        )
+
+        navigator.navigate(destination)
+    }
+
+    val onBrowseTvSeriesClicked: (TvSeriesType) -> Unit = { type ->
+        navigator.navigate(BrowseTvSeriesScreenDestination(type))
+    }
+
+    val onDiscoverTvSeriesClicked = {
+        navigator.navigate(DiscoverTvSeriesScreenDestination)
+    }
+
+    TvScreenContent(
+        uiState = uiState,
+        onTvSeriesClicked = onTvSeriesClicked,
+        onBrowseTvSeriesClicked = onBrowseTvSeriesClicked,
+        onDiscoverTvSeriesClicked = onDiscoverTvSeriesClicked
+    )
+}
+
+@Composable
+fun TvScreenContent(
+    uiState: TvScreenUiState,
+    onTvSeriesClicked: (tvSeriesId: Int) -> Unit,
+    onBrowseTvSeriesClicked: (type: TvSeriesType) -> Unit,
+    onDiscoverTvSeriesClicked: () -> Unit
+) {
     val density = LocalDensity.current
 
-    val topRated = viewModel.topRated.collectAsLazyPagingItems()
-    val discover = viewModel.discover.collectAsLazyPagingItems()
-    val onTheAir = viewModel.onTheAir.collectAsLazyPagingItems()
-    val trending = viewModel.trending.collectAsLazyPagingItems()
-    val airingToday = viewModel.airingToday.collectAsLazyPagingItems()
-    val favourites = viewModel.favourites.collectAsLazyPagingItems()
-    val recentlyBrowsed = viewModel.recentlyBrowsed.collectAsLazyPagingItems()
+    val topRatedLazyItems = uiState.tvSeriesState.topRated.collectAsLazyPagingItems()
+    val discoverLazyItems = uiState.tvSeriesState.discover.collectAsLazyPagingItems()
+    val onTheAirLazyItems = uiState.tvSeriesState.onTheAir.collectAsLazyPagingItems()
+    val trendingLazyItems = uiState.tvSeriesState.trending.collectAsLazyPagingItems()
+    val airingTodayLazyItems = uiState.tvSeriesState.airingToday.collectAsLazyPagingItems()
+    val favouritesLazyItems = uiState.favourites.collectAsLazyPagingItems()
+    val recentlyBrowsedLazyItems = uiState.recentlyBrowsed.collectAsLazyPagingItems()
 
     val scrollState = rememberScrollState()
     var topSectionHeight: Float? by remember { mutableStateOf(null) }
@@ -54,11 +89,11 @@ fun TvScreen(
 
     val isRefreshing by derivedStateOf {
         listOf(
-            discover,
-            topRated,
-            onTheAir,
-            trending,
-            airingToday
+            topRatedLazyItems,
+            discoverLazyItems,
+            onTheAirLazyItems,
+            trendingLazyItems,
+            airingTodayLazyItems
         ).any { lazyPagingItems ->
             lazyPagingItems.itemCount > 0 && lazyPagingItems.loadState.refresh is LoadState.Loading
         }
@@ -68,24 +103,12 @@ fun TvScreen(
 
     val refreshAllPagingData = {
         listOf(
-            discover,
-            topRated,
-            onTheAir,
-            trending,
-            airingToday
+            topRatedLazyItems,
+            discoverLazyItems,
+            onTheAirLazyItems,
+            trendingLazyItems,
+            airingTodayLazyItems
         ).forEach { lazyPagingItems -> lazyPagingItems.refresh() }
-    }
-
-    val navigateToTvSeriesDetails: (Int) -> Unit = { tvSeriesId ->
-        navigator.navigate(TvSeriesDetailsScreenDestination(tvSeriesId))
-    }
-
-    val navigateToBrowseTvSeries: (TvSeriesType) -> Unit = { type ->
-        navigator.navigate(BrowseTvSeriesScreenDestination(type))
-    }
-
-    val navigateToDiscoverTvSeries = {
-        navigator.navigate(DiscoverTvSeriesScreenDestination)
     }
 
     LaunchedEffect(isRefreshing) {
@@ -119,10 +142,10 @@ fun TvScreen(
                         topSectionHeight = coordinates.size.height.toFloat()
                     },
                 title = stringResource(R.string.now_airing_tv_series),
-                state = onTheAir,
+                state = onTheAirLazyItems,
                 scrollState = scrollState,
                 scrollValueLimit = topSectionScrollLimitValue,
-                onPresentableClick = navigateToTvSeriesDetails
+                onPresentableClick = onTvSeriesClicked
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             PresentableSection(
@@ -130,9 +153,9 @@ fun TvScreen(
                     .fillMaxWidth()
                     .animateContentSize(),
                 title = stringResource(R.string.explore_tv_series),
-                state = discover,
-                onPresentableClick = navigateToTvSeriesDetails,
-                onMoreClick = navigateToDiscoverTvSeries
+                state = discoverLazyItems,
+                onPresentableClick = onTvSeriesClicked,
+                onMoreClick = onDiscoverTvSeriesClicked
             )
             SectionDivider(
                 modifier = Modifier.padding(
@@ -145,9 +168,9 @@ fun TvScreen(
                     .fillMaxWidth()
                     .animateContentSize(),
                 title = stringResource(R.string.top_rated_tv_series),
-                state = topRated,
-                onPresentableClick = navigateToTvSeriesDetails,
-                onMoreClick = { navigateToBrowseTvSeries(TvSeriesType.TopRated) }
+                state = topRatedLazyItems,
+                onPresentableClick = onTvSeriesClicked,
+                onMoreClick = { onBrowseTvSeriesClicked(TvSeriesType.TopRated) }
             )
             SectionDivider(
                 modifier = Modifier.padding(
@@ -160,9 +183,9 @@ fun TvScreen(
                     .fillMaxWidth()
                     .animateContentSize(),
                 title = stringResource(R.string.trending_tv_series),
-                state = trending,
-                onPresentableClick = navigateToTvSeriesDetails,
-                onMoreClick = { navigateToBrowseTvSeries(TvSeriesType.Trending) }
+                state = trendingLazyItems,
+                onPresentableClick = onTvSeriesClicked,
+                onMoreClick = { onBrowseTvSeriesClicked(TvSeriesType.Trending) }
             )
             SectionDivider(
                 modifier = Modifier.padding(
@@ -175,11 +198,11 @@ fun TvScreen(
                     .fillMaxWidth()
                     .animateContentSize(),
                 title = stringResource(R.string.today_airing_tv_series),
-                state = airingToday,
-                onPresentableClick = navigateToTvSeriesDetails,
-                onMoreClick = { navigateToBrowseTvSeries(TvSeriesType.AiringToday) }
+                state = airingTodayLazyItems,
+                onPresentableClick = onTvSeriesClicked,
+                onMoreClick = { onBrowseTvSeriesClicked(TvSeriesType.AiringToday) }
             )
-            if (favourites.isNotEmpty()) {
+            if (favouritesLazyItems.isNotEmpty()) {
                 SectionDivider(
                     modifier = Modifier.padding(
                         top = MaterialTheme.spacing.medium,
@@ -191,12 +214,12 @@ fun TvScreen(
                         .fillMaxWidth()
                         .animateContentSize(),
                     title = stringResource(R.string.favourites_tv_series),
-                    state = favourites,
-                    onPresentableClick = navigateToTvSeriesDetails,
-                    onMoreClick = { navigateToBrowseTvSeries(TvSeriesType.Favourite) }
+                    state = favouritesLazyItems,
+                    onPresentableClick = onTvSeriesClicked,
+                    onMoreClick = { onBrowseTvSeriesClicked(TvSeriesType.Favourite) }
                 )
             }
-            if (recentlyBrowsed.isNotEmpty()) {
+            if (recentlyBrowsedLazyItems.isNotEmpty()) {
                 SectionDivider(
                     modifier = Modifier.padding(
                         top = MaterialTheme.spacing.medium,
@@ -208,9 +231,9 @@ fun TvScreen(
                         .fillMaxWidth()
                         .animateContentSize(),
                     title = stringResource(R.string.recently_browsed_tv_series),
-                    state = recentlyBrowsed,
-                    onPresentableClick = navigateToTvSeriesDetails,
-                    onMoreClick = { navigateToBrowseTvSeries(TvSeriesType.RecentlyBrowsed) }
+                    state = recentlyBrowsedLazyItems,
+                    onPresentableClick = onTvSeriesClicked,
+                    onMoreClick = { onBrowseTvSeriesClicked(TvSeriesType.RecentlyBrowsed) }
                 )
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
