@@ -2,8 +2,6 @@ package com.example.moviesapp.ui.screens.details
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
@@ -40,66 +38,87 @@ class MoviesDetailsViewModel @Inject constructor(
     private val favouritesMoviesIdsFlow: Flow<List<Int>> =
         favouritesRepository.getFavouritesMoviesIds()
 
-
-    private val _watchAtTime: MutableStateFlow<Date?> = MutableStateFlow(null)
-    val watchAtTime: StateFlow<Date?> = _watchAtTime.asStateFlow()
+    private val watchAtTime: MutableStateFlow<Date?> = MutableStateFlow(null)
 
     private val _movieDetails: MutableStateFlow<MovieDetails?> = MutableStateFlow(null)
-    private val _credits: MutableStateFlow<Credits?> = MutableStateFlow(null)
-    private val _movieBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
-    private val _movieCollection: MutableStateFlow<MovieCollection?> = MutableStateFlow(null)
-    private val _watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
-    private val _videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
-    private val _hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val isFavourite: Flow<Boolean> = favouritesMoviesIdsFlow.map { favouriteIds ->
+        navArgs.movieId in favouriteIds
+    }
+    private val credits: MutableStateFlow<Credits?> = MutableStateFlow(null)
+    private val movieBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
+    private val movieCollection: MutableStateFlow<MovieCollection?> = MutableStateFlow(null)
+    private val watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
+    private val videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
+    private val hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    val similarMoviesPagingDataFlow: Flow<PagingData<Movie>> =
-        deviceLanguage.map { deviceLanguage ->
-            movieRepository.similarMovies(
-                movieId = navArgs.movieId,
-                deviceLanguage = deviceLanguage
-            )
-        }.flattenMerge().cachedIn(viewModelScope)
-
-    val moviesRecommendationPagingDataFlow: Flow<PagingData<Movie>> =
-        deviceLanguage.map { deviceLanguage ->
-            movieRepository.moviesRecommendations(
-                movieId = navArgs.movieId,
-                deviceLanguage = deviceLanguage
-            )
-        }.flattenMerge().cachedIn(viewModelScope)
-
-    val movieDetails: StateFlow<MovieDetails?> =
+    private val movieDetails: StateFlow<MovieDetails?> =
         _movieDetails.onEach { movieDetails ->
             movieDetails?.let { details ->
                 recentlyBrowsedRepository.addRecentlyBrowsedMovie(details)
             }
-        }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
-
-    val backdrops: StateFlow<List<Image>> = _movieBackdrops.asStateFlow()
-
-    val isFavourite: StateFlow<Boolean> = favouritesMoviesIdsFlow.map { favouriteIds ->
-        navArgs.movieId in favouriteIds
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
-
-    val movieCollection: StateFlow<MovieCollection?> =
-        _movieCollection.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
-
-    val credits: StateFlow<Credits?> =
-        _credits.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
-    val externalIds: StateFlow<List<ExternalId>?> =
+    private val externalIds: StateFlow<List<ExternalId>?> =
         _externalIds.filterNotNull().map { externalIds ->
             externalIds.toExternalIdList(type = ExternalContentType.Movie)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
-    val watchProviders: StateFlow<WatchProviders?> = _watchProviders.asStateFlow()
+    private val additionalInfo: StateFlow<AdditionalMovieDetailsInfo> = combine(
+        isFavourite, watchAtTime, watchProviders, credits, hasReviews
+    ) { isFavourite, watchAtTime, watchProviders, credits, hasReviews ->
+        AdditionalMovieDetailsInfo(
+            isFavourite = isFavourite,
+            watchAtTime = watchAtTime,
+            watchProviders = watchProviders,
+            credits = credits,
+            hasReviews = hasReviews
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, AdditionalMovieDetailsInfo.default)
 
-    val videos: StateFlow<List<Video>?> = _videos.asStateFlow()
+    private val associatedMovies: StateFlow<AssociatedMovies> = combine(
+        deviceLanguage, movieCollection
+    ) { deviceLanguage, collection ->
+        AssociatedMovies(
+            collection = collection,
+            similar = movieRepository.similarMovies(
+                movieId = navArgs.movieId,
+                deviceLanguage = deviceLanguage
+            ),
+            recommendations = movieRepository.moviesRecommendations(
+                movieId = navArgs.movieId,
+                deviceLanguage = deviceLanguage
+            )
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, AssociatedMovies.default)
 
-    val hasReviews: StateFlow<Boolean> = _hasReviews.asStateFlow()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
+    private val associatedContent: StateFlow<AssociatedContent> = combine(
+        movieBackdrops, videos, externalIds
+    ) { backdrops, videos, externalIds ->
+        AssociatedContent(
+            backdrops = backdrops,
+            videos = videos,
+            externalIds = externalIds
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, AssociatedContent.default)
+
+    val uiState: StateFlow<MovieDetailsScreenUiState> = combine(
+        movieDetails, additionalInfo, associatedMovies, associatedContent, error
+    ) { details, additionalInfo, associatedMovies, visualContent, error ->
+        MovieDetailsScreenUiState(
+            startRoute = navArgs.startRoute,
+            movieDetails = details,
+            additionalMovieDetailsInfo = additionalInfo,
+            associatedMovies = associatedMovies,
+            associatedContent = visualContent,
+            error = error
+        )
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        MovieDetailsScreenUiState.getDefault(navArgs.startRoute)
+    )
+
 
     init {
         viewModelScope.launch {
@@ -121,14 +140,14 @@ class MoviesDetailsViewModel @Inject constructor(
                     details?.runtime?.let { runtime ->
                         if (runtime > 0) {
                             runtime.minutes.toComponents { hours, minutes, _, _ ->
-                                val watchAtTime = Calendar.getInstance().apply {
+                                val time = Calendar.getInstance().apply {
                                     time = Date()
 
                                     add(Calendar.HOUR, hours.toInt())
                                     add(Calendar.MINUTE, minutes)
                                 }.time
 
-                                _watchAtTime.emit(watchAtTime)
+                                watchAtTime.emit(time)
                             }
                         }
                     }
@@ -193,8 +212,7 @@ class MoviesDetailsViewModel @Inject constructor(
         ).request { response ->
             response.onSuccess {
                 viewModelScope.launch {
-                    val credits = data
-                    _credits.emit(credits)
+                    credits.emit(data)
                 }
             }
 
@@ -212,8 +230,7 @@ class MoviesDetailsViewModel @Inject constructor(
         movieRepository.movieImages(movieId).request { response ->
             response.onSuccess {
                 viewModelScope.launch {
-                    val imagesResponse = data
-                    _movieBackdrops.emit(imagesResponse?.backdrops ?: emptyList())
+                    movieBackdrops.emit(data?.backdrops ?: emptyList())
                 }
             }
 
@@ -231,9 +248,7 @@ class MoviesDetailsViewModel @Inject constructor(
         movieRepository.movieReview(movieId).request { response ->
             response.onSuccess {
                 viewModelScope.launch {
-                    val hasReviews = (data?.totalResults ?: 0) > 1
-
-                    _hasReviews.emit(hasReviews)
+                    hasReviews.emit((data?.totalResults ?: 0) > 1)
                 }
             }
 
@@ -260,12 +275,12 @@ class MoviesDetailsViewModel @Inject constructor(
                         val name = response.name
                         val parts = response.parts
 
-                        val movieCollection = MovieCollection(
+                        val collection = MovieCollection(
                             name = name,
                             parts = parts
                         )
 
-                        _movieCollection.emit(movieCollection)
+                        movieCollection.emit(collection)
                     }
                 }
             }
@@ -287,9 +302,9 @@ class MoviesDetailsViewModel @Inject constructor(
             response.onSuccess {
                 viewModelScope.launch {
                     val results = data?.results
-                    val watchProviders = results?.getOrElse(deviceLanguage.region) { null }
+                    val providers = results?.getOrElse(deviceLanguage.region) { null }
 
-                    _watchProviders.emit(watchProviders)
+                    watchProviders.emit(providers)
                 }
             }
 
@@ -333,7 +348,7 @@ class MoviesDetailsViewModel @Inject constructor(
             ).request { response ->
                 response.onSuccess {
                     viewModelScope.launch {
-                        val videos = data?.results?.sortedWith(
+                        val data = data?.results?.sortedWith(
                             compareBy<Video> { video ->
                                 video.language == deviceLanguage.languageCode
                             }.thenByDescending { video ->
@@ -341,7 +356,7 @@ class MoviesDetailsViewModel @Inject constructor(
                             }
                         )
 
-                        _videos.emit(videos ?: emptyList())
+                        videos.emit(data ?: emptyList())
                     }
                 }
 

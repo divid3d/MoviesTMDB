@@ -25,12 +25,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
-import com.example.moviesapp.model.ExternalId
-import com.example.moviesapp.model.MediaType
-import com.example.moviesapp.model.RelationType
+import com.example.moviesapp.model.*
 import com.example.moviesapp.other.*
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
@@ -56,86 +53,150 @@ data class MovieDetailsScreenArgs(
 @Composable
 fun MovieDetailsScreen(
     viewModel: MoviesDetailsViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator,
-    navBackStackEntry: NavBackStackEntry
+    navigator: DestinationsNavigator
 ) {
-    val navArgs: MovieDetailsScreenArgs by derivedStateOf {
-        MovieDetailsScreenDestination.argsFrom(navBackStackEntry)
+    val context = LocalContext.current
+
+    val uiState by viewModel.uiState.collectAsState()
+    val onBackClicked: () -> Unit = { navigator.navigateUp() }
+    val onFavouriteClicked: (details: MovieDetails) -> Unit = { details ->
+        if (uiState.additionalMovieDetailsInfo.isFavourite) {
+            viewModel.onUnlikeClick(details)
+        } else {
+            viewModel.onLikeClick(details)
+        }
+    }
+    val onCloseClicked: () -> Unit = {
+        navigator.popBackStack(uiState.startRoute, inclusive = false)
+    }
+    val onExternalIdClicked = { id: ExternalId ->
+        openExternalId(
+            context = context,
+            externalId = id
+        )
+    }
+    val onShareClicked = { details: ShareDetails ->
+        shareImdb(
+            context = context,
+            details = details
+        )
+    }
+    val onVideoClicked = { video: Video ->
+        openVideo(
+            context = context,
+            video = video
+        )
+    }
+    val onMemberClicked = { personId: Int ->
+        val destination = PersonDetailsScreenDestination(
+            personId = personId,
+            startRoute = uiState.startRoute
+        )
+
+        navigator.navigate(destination)
+    }
+    val onMovieClicked = { movieId: Int ->
+        val destination = MovieDetailsScreenDestination(
+            movieId = movieId,
+            startRoute = uiState.startRoute
+        )
+
+        navigator.navigate(destination)
     }
 
-    val context = LocalContext.current
+    val onReviewsClicked: () -> Unit = {
+        val movieId = uiState.movieDetails?.id
+
+        if (movieId != null) {
+            val destination = ReviewsScreenDestination(
+                mediaId = movieId,
+                type = MediaType.Movie
+            )
+
+            navigator.navigate(destination)
+        }
+    }
+
+
+    val onSimilarMoreClicked = {
+        val movieId = uiState.movieDetails?.id
+
+        if (movieId != null) {
+            val destination = RelatedMoviesScreenDestination(
+                movieId = movieId,
+                type = RelationType.Similar,
+                startRoute = uiState.startRoute
+            )
+
+            navigator.navigate(destination)
+        }
+    }
+
+    val onRecommendationsMoreClicked = {
+        val movieId = uiState.movieDetails?.id
+
+        if (movieId != null) {
+            val destination = RelatedMoviesScreenDestination(
+                movieId = movieId,
+                type = RelationType.Recommended,
+                startRoute = uiState.startRoute
+            )
+
+            navigator.navigate(destination)
+        }
+    }
+
+    MovieDetailsScreenContent(
+        uiState = uiState,
+        onBackClicked = onBackClicked,
+        onExternalIdClicked = onExternalIdClicked,
+        onShareClicked = onShareClicked,
+        onVideoClicked = onVideoClicked,
+        onFavouriteClicked = onFavouriteClicked,
+        onCloseClicked = onCloseClicked,
+        onMemberClicked = onMemberClicked,
+        onMovieClicked = onMovieClicked,
+        onSimilarMoreClicked = onSimilarMoreClicked,
+        onRecommendationsMoreClicked = onRecommendationsMoreClicked,
+        onReviewsClicked = onReviewsClicked
+    )
+}
+
+@Composable
+fun MovieDetailsScreenContent(
+    uiState: MovieDetailsScreenUiState,
+    onBackClicked: () -> Unit,
+    onExternalIdClicked: (id: ExternalId) -> Unit,
+    onShareClicked: (details: ShareDetails) -> Unit,
+    onVideoClicked: (video: Video) -> Unit,
+    onFavouriteClicked: (details: MovieDetails) -> Unit,
+    onCloseClicked: () -> Unit,
+    onMemberClicked: (personId: Int) -> Unit,
+    onMovieClicked: (movieId: Int) -> Unit,
+    onSimilarMoreClicked: () -> Unit,
+    onRecommendationsMoreClicked: () -> Unit,
+    onReviewsClicked: () -> Unit
+) {
     val density = LocalDensity.current
 
-    val movieDetails by viewModel.movieDetails.collectAsState()
-    val isFavourite by viewModel.isFavourite.collectAsState()
-
-    val watchAtTime by viewModel.watchAtTime.collectAsState()
-
-    val credits by viewModel.credits.collectAsState()
-    val watchProviders by viewModel.watchProviders.collectAsState()
-    val backdrops by viewModel.backdrops.collectAsState()
-    val videos by viewModel.videos.collectAsState()
-    val movieCollection by viewModel.movieCollection.collectAsState()
-    val externalIds by viewModel.externalIds.collectAsState()
-
-    val similarMoviesState = viewModel.similarMoviesPagingDataFlow.collectAsLazyPagingItems()
+    val similarMoviesState = uiState.associatedMovies.similar.collectAsLazyPagingItems()
     val moviesRecommendationState =
-        viewModel.moviesRecommendationPagingDataFlow.collectAsLazyPagingItems()
-    val hasReviews by viewModel.hasReviews.collectAsState()
+        uiState.associatedMovies.recommendations.collectAsLazyPagingItems()
 
     val scrollState = rememberScrollState()
 
     val imdbExternalId by derivedStateOf {
-        externalIds?.filterIsInstance<ExternalId.Imdb>()?.firstOrNull()
+        uiState.associatedContent.externalIds?.filterIsInstance<ExternalId.Imdb>()?.firstOrNull()
     }
 
     var showErrorDialog by remember { mutableStateOf(false) }
-    val error: String? by viewModel.error.collectAsState()
 
     var topSectionHeight: Float? by remember { mutableStateOf(null) }
     val appbarHeight = density.run { 56.dp.toPx() }
     val topSectionScrollLimitValue: Float? = topSectionHeight?.minus(appbarHeight)
 
-    val navigateToDetails = { movieId: Int ->
-        val destination = MovieDetailsScreenDestination(
-            movieId = movieId,
-            startRoute = navArgs.startRoute
-        )
-
-        navigator.navigate(destination)
-    }
-
-    val navigateToPersonDetails = { personId: Int ->
-        val destination = PersonDetailsScreenDestination(
-            personId = personId,
-            startRoute = navArgs.startRoute
-        )
-
-        navigator.navigate(destination)
-    }
-
-    val navigateToSimilar = {
-        val destination = RelatedMoviesScreenDestination(
-            movieId = navArgs.movieId,
-            type = RelationType.Similar,
-            startRoute = navArgs.startRoute
-        )
-
-        navigator.navigate(destination)
-    }
-
-    val navigateToRecommendations = {
-        val destination = RelatedMoviesScreenDestination(
-            movieId = navArgs.movieId,
-            type = RelationType.Recommended,
-            startRoute = navArgs.startRoute
-        )
-
-        navigator.navigate(destination)
-    }
-
-    LaunchedEffect(error) {
-        showErrorDialog = error != null
+    LaunchedEffect(uiState.error) {
+        showErrorDialog = uiState.error != null
     }
 
     BackHandler(showErrorDialog) {
@@ -168,32 +229,28 @@ fun MovieDetailsScreen(
                     .onGloballyPositioned { coordinates ->
                         topSectionHeight = coordinates.size.height.toFloat()
                     },
-                presentable = movieDetails,
-                backdrops = backdrops,
+                presentable = uiState.movieDetails,
+                backdrops = uiState.associatedContent.backdrops,
                 scrollState = scrollState,
                 scrollValueLimit = topSectionScrollLimitValue
             ) {
                 MovieDetailsTopContent(
                     modifier = Modifier.fillMaxWidth(),
-                    movieDetails = movieDetails
+                    movieDetails = uiState.movieDetails
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
 
                 Crossfade(
                     modifier = Modifier.fillMaxWidth(),
-                    targetState = externalIds
+                    targetState = uiState.associatedContent.externalIds
                 ) { ids ->
                     if (ids != null) {
                         ExternalIdsSection(
                             modifier = Modifier.fillMaxWidth(),
-                            externalIds = ids
-                        ) { externalId ->
-                            openExternalId(
-                                context = context,
-                                externalId = externalId
-                            )
-                        }
+                            externalIds = ids,
+                            onExternalIdClick = onExternalIdClicked
+                        )
                     }
                 }
             }
@@ -203,22 +260,17 @@ fun MovieDetailsScreen(
                     .fillMaxWidth()
                     .padding(horizontal = MaterialTheme.spacing.medium)
                     .animateContentSize(),
-                movieDetails = movieDetails,
-                watchAtTime = watchAtTime,
+                movieDetails = uiState.movieDetails,
+                watchAtTime = uiState.additionalMovieDetailsInfo.watchAtTime,
                 imdbExternalId = imdbExternalId,
-                onShareClicked = { details ->
-                    shareImdb(
-                        context = context,
-                        details = details
-                    )
-                }
+                onShareClicked = onShareClicked
             )
 
             Crossfade(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
-                targetState = watchProviders
+                targetState = uiState.additionalMovieDetailsInfo.watchProviders
             ) { providers ->
                 if (providers != null) {
                     Column(
@@ -239,7 +291,7 @@ fun MovieDetailsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
-                targetState = credits?.cast
+                targetState = uiState.additionalMovieDetailsInfo.credits?.cast
             ) { cast ->
                 cast.ifNotNullAndEmpty { members ->
                     Column(
@@ -252,7 +304,7 @@ fun MovieDetailsScreen(
                             title = "Obsada",
                             members = members,
                             contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                            onMemberClick = { id -> navigateToPersonDetails(id) }
+                            onMemberClick = onMemberClicked
                         )
                     }
                 }
@@ -262,7 +314,7 @@ fun MovieDetailsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
-                targetState = credits?.crew
+                targetState = uiState.additionalMovieDetailsInfo.credits?.crew
             ) { crew ->
                 crew.ifNotNullAndEmpty { members ->
                     Column(
@@ -275,7 +327,7 @@ fun MovieDetailsScreen(
                             title = "Ekipa filmowa",
                             members = members,
                             contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                            onMemberClick = { id -> navigateToPersonDetails(id) }
+                            onMemberClick = onMemberClicked
                         )
                     }
                 }
@@ -286,7 +338,7 @@ fun MovieDetailsScreen(
                     .fillMaxWidth()
                     .background(MaterialTheme.colors.surface)
                     .animateContentSize(),
-                targetState = movieCollection
+                targetState = uiState.associatedMovies.collection
             ) { movieCollection ->
                 if (movieCollection != null && movieCollection.parts.isNotEmpty()) {
                     Column(
@@ -298,8 +350,8 @@ fun MovieDetailsScreen(
                             modifier = Modifier.fillMaxWidth(),
                             title = movieCollection.name,
                             list = movieCollection.parts.sortedBy { part -> part.releaseDate },
-                            selectedId = navArgs.movieId,
-                            onPresentableClick = { id -> navigateToDetails(id) }
+                            selectedId = uiState.movieDetails?.id,
+                            onPresentableClick = onMovieClicked
                         )
                     }
                 }
@@ -321,8 +373,8 @@ fun MovieDetailsScreen(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(R.string.movie_details_similar),
                             state = similarMovies,
-                            onMoreClick = navigateToSimilar,
-                            onPresentableClick = { id -> navigateToDetails(id) }
+                            onMoreClick = onSimilarMoreClicked,
+                            onPresentableClick = onMovieClicked
                         )
                     }
                 }
@@ -344,8 +396,8 @@ fun MovieDetailsScreen(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(R.string.movie_details_recommendations),
                             state = movieRecommendation,
-                            onMoreClick = navigateToRecommendations,
-                            onPresentableClick = { id -> navigateToDetails(id) }
+                            onMoreClick = onRecommendationsMoreClicked,
+                            onPresentableClick = onMovieClicked
                         )
                     }
                 }
@@ -355,7 +407,7 @@ fun MovieDetailsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
-                targetState = videos
+                targetState = uiState.associatedContent.videos
             ) { videos ->
                 videos.ifNotNullAndEmpty { value ->
                     Column(
@@ -367,34 +419,26 @@ fun MovieDetailsScreen(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(R.string.season_details_videos_label),
                             videos = value,
-                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                        ) { video ->
-                            openVideo(
-                                context = context,
-                                video = video
-                            )
-                        }
+                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                            onVideoClicked = onVideoClicked
+                        )
                     }
                 }
             }
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
-                visible = hasReviews
+                visible = uiState.additionalMovieDetailsInfo.hasReviews
             ) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {
                     SectionDivider(modifier = Modifier.fillMaxWidth())
-                    ReviewSection(modifier = Modifier.fillMaxWidth()) {
-                        val destination = ReviewsScreenDestination(
-                            mediaId = navArgs.movieId,
-                            type = MediaType.Movie
-                        )
-
-                        navigator.navigate(destination)
-                    }
+                    ReviewSection(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = onReviewsClicked
+                    )
                 }
             }
 
@@ -410,7 +454,7 @@ fun MovieDetailsScreen(
             scrollState = scrollState,
             transparentScrollValueLimit = topSectionScrollLimitValue,
             action = {
-                IconButton(onClick = { navigator.navigateUp() }) {
+                IconButton(onClick = onBackClicked) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "go back",
@@ -421,21 +465,17 @@ fun MovieDetailsScreen(
             trailing = {
                 Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
                     LikeButton(
-                        isFavourite = isFavourite,
+                        isFavourite = uiState.additionalMovieDetailsInfo.isFavourite,
                         onClick = {
-                            movieDetails?.let { details ->
-                                if (isFavourite) {
-                                    viewModel.onUnlikeClick(details)
-                                } else {
-                                    viewModel.onLikeClick(details)
-                                }
+                            val details = uiState.movieDetails
+
+                            if (details != null) {
+                                onFavouriteClicked(details)
                             }
                         }
                     )
                     IconButton(
-                        onClick = {
-                            navigator.popBackStack(navArgs.startRoute, inclusive = false)
-                        }
+                        onClick = onCloseClicked
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Close,
@@ -447,5 +487,4 @@ fun MovieDetailsScreen(
             }
         )
     }
-
 }
