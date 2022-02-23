@@ -30,14 +30,13 @@ data class ReviewsScreenNavArgs(
     val type: MediaType
 ) : Parcelable
 
-@Destination
+@Destination(navArgsDelegate = ReviewsScreenNavArgs::class)
 @Composable
 fun ReviewsScreen(
     viewModel: ReviewsViewModel = hiltViewModel(),
-    navArgs: ReviewsScreenNavArgs,
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
 ) {
-    val reviews = viewModel.review?.collectAsLazyPagingItems()
+    val reviews = viewModel.review.collectAsLazyPagingItems()
 
     Column(modifier = Modifier.fillMaxSize()) {
         AppBar(
@@ -57,27 +56,25 @@ fun ReviewsScreen(
             contentPadding = PaddingValues(MaterialTheme.spacing.medium),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
         ) {
-            reviews?.let { reviews ->
-                itemsIndexed(reviews) { index, review ->
-                    if (review != null) {
-                        val alignment = if (index % 2 == 0) {
-                            Alignment.CenterStart
-                        } else {
-                            Alignment.CenterEnd
-                        }
+            itemsIndexed(reviews) { index, review ->
+                if (review != null) {
+                    val alignment = if (index % 2 == 0) {
+                        Alignment.CenterStart
+                    } else {
+                        Alignment.CenterEnd
+                    }
 
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            ReviewItem(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.9f)
-                                    .align(alignment),
-                                review = review
-                            )
-                        }
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        ReviewItem(
+                            modifier = Modifier
+                                .fillMaxWidth(0.9f)
+                                .align(alignment),
+                            review = review
+                        )
                     }
                 }
             }
         }
     }
-    
+
 }

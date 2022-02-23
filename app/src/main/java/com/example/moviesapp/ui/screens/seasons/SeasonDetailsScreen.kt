@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.seasons
 
+import android.os.Parcelable
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
@@ -24,27 +25,36 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import com.example.moviesapp.R
-import com.example.moviesapp.model.SeasonInfo
 import com.example.moviesapp.other.formatted
 import com.example.moviesapp.other.ifNotNullAndEmpty
 import com.example.moviesapp.other.openVideo
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
-import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
+import com.example.moviesapp.ui.screens.destinations.SeasonDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.parcelize.Parcelize
 
-@Destination
+@Parcelize
+data class SeasonDetailsScreenArgs(
+    val tvSeriesId: Int,
+    val seasonNumber: Int,
+    val startRoute: String
+) : Parcelable
+
+@Destination(navArgsDelegate = SeasonDetailsScreenArgs::class)
 @Composable
 fun SeasonDetailsScreen(
     viewModel: SeasonDetailsViewModel = hiltViewModel(),
-    seasonInfo: SeasonInfo,
     navigator: DestinationsNavigator,
-    startRoute: String = TvScreenDestination.route
+    backStackEntry: NavBackStackEntry
 ) {
+    val navArgs: SeasonDetailsScreenArgs = SeasonDetailsScreenDestination.argsFrom(backStackEntry)
+
     val context = LocalContext.current
 
     val seasonDetails by viewModel.seasonDetails.collectAsState()
@@ -238,7 +248,7 @@ fun SeasonDetailsScreen(
                 Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
                     IconButton(
                         onClick = {
-                            navigator.popBackStack(startRoute, inclusive = false)
+                            navigator.popBackStack(navArgs.startRoute, inclusive = false)
                         }
                     ) {
                         Icon(

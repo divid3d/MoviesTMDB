@@ -29,6 +29,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.ExternalId
+import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.other.*
 import com.example.moviesapp.ui.components.*
@@ -36,6 +37,7 @@ import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.PersonDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.RelatedMoviesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.ReviewsScreenDestination
 import com.example.moviesapp.ui.screens.details.components.MovieDetailsInfoSection
 import com.example.moviesapp.ui.screens.details.components.MovieDetailsTopContent
 import com.example.moviesapp.ui.theme.spacing
@@ -386,14 +388,12 @@ fun MovieDetailsScreen(
                 ) {
                     SectionDivider(modifier = Modifier.fillMaxWidth())
                     ReviewSection(modifier = Modifier.fillMaxWidth()) {
-//                        val args = ReviewsScreenNavArgs(
-//                            mediaId = movieId,
-//                            type = MediaType.Movie
-//                        )
-//
-//                        navigator.navigate(
-//                            ReviewsScreenDestination(args)
-//                        )
+                        val destination = ReviewsScreenDestination(
+                            mediaId = navArgs.movieId,
+                            type = MediaType.Movie
+                        )
+
+                        navigator.navigate(destination)
                     }
                 }
             }

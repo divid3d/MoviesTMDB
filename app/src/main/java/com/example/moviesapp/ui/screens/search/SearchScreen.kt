@@ -15,9 +15,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
+import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.other.CaptureSpeechToText
 import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.ui.components.SearchGridSection
+import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.search.components.QueryTextField
 import com.example.moviesapp.ui.screens.search.components.SearchEmptyState
 import com.example.moviesapp.ui.theme.spacing
@@ -94,24 +99,28 @@ fun SearchScreen(
                                 vertical = MaterialTheme.spacing.medium,
                             ),
                             state = result
-                        ) { resultId, mediaType ->
-//                            val destination = when (mediaType) {
-//                                MediaType.Movie -> MovieDetailsScreenDestination(
-//                                    movieId = resultId,
-//                                    startRoute = SearchScreenDestination.route
-//                                )
-//
-//                                MediaType.Tv -> TvSeriesDetailsScreenDestination(
-//                                    tvSeriesId = resultId,
-//                                    startRoute = SearchScreenDestination.route
-//                                )
-//
-//                                else -> null
-//                            }
-//
-//                            destination?.let {
-//                                navigator.navigate(direction = destination)
-//                            }
+                        ) { id, mediaType ->
+                            val destination = when (mediaType) {
+                                MediaType.Movie -> {
+                                    MovieDetailsScreenDestination(
+                                        movieId = id,
+                                        startRoute = MoviesScreenDestination.route
+                                    )
+                                }
+
+                                MediaType.Tv -> {
+                                    TvSeriesDetailsScreenDestination(
+                                        tvSeriesId = id,
+                                        startRoute = TvScreenDestination.route
+                                    )
+                                }
+
+                                else -> null
+                            }
+
+                            if (destination != null) {
+                                navigator.navigate(destination)
+                            }
                         }
                     } else {
                         SearchEmptyState(

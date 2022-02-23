@@ -30,6 +30,8 @@ import com.example.moviesapp.R
 import com.example.moviesapp.model.SortOrder
 import com.example.moviesapp.other.isEmpty
 import com.example.moviesapp.ui.components.*
+import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.discover.components.FilterTvSeriesModalBottomSheetContent
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsPadding
@@ -158,9 +160,11 @@ fun DiscoverTvSeriesScreen(
                             ),
                             state = tvSeries
                         ) { tvSeriesId ->
-//                            navigator.navigate(
-//                                TvSeriesDetailsScreenDestination(tvSeriesId)
-//                            )
+                            val destination = TvSeriesDetailsScreenDestination(
+                                tvSeriesId = tvSeriesId,
+                                startRoute = TvScreenDestination.route
+                            )
+                            navigator.navigate(destination)
                         }
                     } else {
                         FilterEmptyState(

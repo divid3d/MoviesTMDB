@@ -7,10 +7,13 @@ import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
-import com.example.moviesapp.model.*
-import com.example.moviesapp.other.asFlow
+import com.example.moviesapp.model.DeviceLanguage
+import com.example.moviesapp.model.Image
+import com.example.moviesapp.model.SeasonDetails
+import com.example.moviesapp.model.Video
 import com.example.moviesapp.repository.ConfigRepository
 import com.example.moviesapp.repository.TvSeriesRepository
+import com.example.moviesapp.ui.screens.destinations.SeasonDetailsScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -24,9 +27,9 @@ class SeasonDetailsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
+    private val navArgs: SeasonDetailsScreenArgs =
+        SeasonDetailsScreenDestination.argsFrom(savedStateHandle)
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
-    private val seasonInfo: Flow<SeasonInfo?> =
-        savedStateHandle.getLiveData<SeasonInfo>("seasonInfo").asFlow()
 
     private val _seasonDetails: MutableStateFlow<SeasonDetails?> = MutableStateFlow(null)
     val seasonDetails: StateFlow<SeasonDetails?> =
@@ -46,37 +49,33 @@ class SeasonDetailsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            seasonInfo.collectLatest { seasonInfo ->
-                seasonInfo?.let { info ->
-                    deviceLanguage.collectLatest { deviceLanguage ->
-                        tvSeriesRepository.seasonDetails(
-                            tvSeriesId = info.tvSeriesId,
-                            seasonNumber = info.seasonNumber,
-                            deviceLanguage = deviceLanguage
-                        ).request { response ->
-                            response.onSuccess {
-                                viewModelScope.launch {
-                                    val seasonDetails = data
-                                    _seasonDetails.emit(seasonDetails)
-                                }
-                            }
-
-                            response.onFailure {
-                                onFailure(this)
-                            }
-
-                            response.onException {
-                                onError(this)
-                            }
+            deviceLanguage.collectLatest { deviceLanguage ->
+                tvSeriesRepository.seasonDetails(
+                    tvSeriesId = navArgs.tvSeriesId,
+                    seasonNumber = navArgs.seasonNumber,
+                    deviceLanguage = deviceLanguage
+                ).request { response ->
+                    response.onSuccess {
+                        viewModelScope.launch {
+                            val seasonDetails = data
+                            _seasonDetails.emit(seasonDetails)
                         }
+                    }
 
-                        getSeasonVideos(
-                            tvSeriesId = info.tvSeriesId,
-                            seasonNumber = info.seasonNumber,
-                            deviceLanguage = deviceLanguage
-                        )
+                    response.onFailure {
+                        onFailure(this)
+                    }
+
+                    response.onException {
+                        onError(this)
                     }
                 }
+
+                getSeasonVideos(
+                    tvSeriesId = navArgs.tvSeriesId,
+                    seasonNumber = navArgs.seasonNumber,
+                    deviceLanguage = deviceLanguage
+                )
             }
         }
     }
@@ -87,33 +86,29 @@ class SeasonDetailsViewModel @Inject constructor(
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            seasonInfo.collectLatest { seasonInfo ->
-                seasonInfo?.let { info ->
-                    tvSeriesRepository.episodeImages(
-                        tvSeriesId = info.tvSeriesId,
-                        seasonNumber = info.seasonNumber,
-                        episodeNumber = episodeNumber
-                    ).request { response ->
-                        response.onSuccess {
-                            viewModelScope.launch {
-                                data?.stills?.let { stills ->
-                                    episodeStills.collectLatest { current ->
-                                        val updatedStills = current.toMutableMap().apply {
-                                            put(episodeNumber, stills)
-                                        }
-                                        _episodesStills.emit(updatedStills)
-                                    }
+            tvSeriesRepository.episodeImages(
+                tvSeriesId = navArgs.tvSeriesId,
+                seasonNumber = navArgs.seasonNumber,
+                episodeNumber = episodeNumber
+            ).request { response ->
+                response.onSuccess {
+                    viewModelScope.launch {
+                        data?.stills?.let { stills ->
+                            episodeStills.collectLatest { current ->
+                                val updatedStills = current.toMutableMap().apply {
+                                    put(episodeNumber, stills)
                                 }
-                            }
-
-                            response.onFailure {
-                                onFailure(this)
-                            }
-
-                            response.onException {
-                                onError(this)
+                                _episodesStills.emit(updatedStills)
                             }
                         }
+                    }
+
+                    response.onFailure {
+                        onFailure(this)
+                    }
+
+                    response.onException {
+                        onError(this)
                     }
                 }
             }

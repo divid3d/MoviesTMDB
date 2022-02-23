@@ -60,22 +60,21 @@ fun RelatedTvSeriesScreen(
                 )
             }
         })
-        tvSeries?.let { state ->
-            PresentableGridSection(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(
-                    horizontal = MaterialTheme.spacing.small,
-                    vertical = MaterialTheme.spacing.medium,
-                ),
-                state = state
-            ) { tvSeriesId ->
-                val destination = TvSeriesDetailsScreenDestination(
-                    tvSeriesId = tvSeriesId,
-                    startRoute = navArgs.startRoute
-                )
 
-                navigator.navigate(destination)
-            }
+        PresentableGridSection(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                horizontal = MaterialTheme.spacing.small,
+                vertical = MaterialTheme.spacing.medium,
+            ),
+            state = tvSeries
+        ) { tvSeriesId ->
+            val destination = TvSeriesDetailsScreenDestination(
+                tvSeriesId = tvSeriesId,
+                startRoute = navArgs.startRoute
+            )
+
+            navigator.navigate(destination)
         }
     }
 }

@@ -29,13 +29,12 @@ import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.ExternalId
+import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.other.*
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
-import com.example.moviesapp.ui.screens.destinations.PersonDetailsScreenDestination
-import com.example.moviesapp.ui.screens.destinations.RelatedTvSeriesScreenDestination
-import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.screens.details.components.TvSeriesDetailsInfoSection
 import com.example.moviesapp.ui.screens.details.components.TvSeriesDetailsTopContent
 import com.example.moviesapp.ui.theme.spacing
@@ -263,19 +262,13 @@ fun TvSeriesDetailsScreen(
                             title = stringResource(R.string.tv_series_details_seasons),
                             seasons = value
                         ) { seasonNumber ->
-//                            tvSeriesDetails?.id?.let { id ->
-//                                val seasonInfo = SeasonInfo(
-//                                    tvSeriesId = id,
-//                                    seasonNumber = seasonNumber
-//                                )
-//
-//                                navigator.navigate(
-//                                    SeasonDetailsScreenDestination(
-//                                        seasonInfo = seasonInfo,
-//                                        startRoute = startRoute
-//                                    )
-//                                )
-//                            }
+                            val destination = SeasonDetailsScreenDestination(
+                                tvSeriesId = navArgs.tvSeriesId,
+                                seasonNumber = seasonNumber,
+                                startRoute = navArgs.startRoute
+                            )
+
+                            navigator.navigate(destination)
                         }
                     }
                 }
@@ -364,14 +357,12 @@ fun TvSeriesDetailsScreen(
                 ) {
                     SectionDivider(modifier = Modifier.fillMaxWidth())
                     ReviewSection(modifier = Modifier.fillMaxWidth()) {
-//                        val args = ReviewsScreenNavArgs(
-//                            mediaId = tvSeriesId,
-//                            type = MediaType.Tv
-//                        )
-//
-//                        navigator.navigate(
-//                            ReviewsScreenDestination(args)
-//                        )
+                        val destination = ReviewsScreenDestination(
+                            mediaId = navArgs.tvSeriesId,
+                            type = MediaType.Tv
+                        )
+
+                        navigator.navigate(destination)
                     }
                 }
             }

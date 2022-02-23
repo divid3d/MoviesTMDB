@@ -14,8 +14,10 @@ import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.ui.components.FavouriteEmptyState
 import com.example.moviesapp.ui.components.FavouriteTypeSelector
 import com.example.moviesapp.ui.components.PresentableGridSection
+import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
 import com.ramcosta.composedestinations.annotation.Destination
@@ -58,18 +60,23 @@ fun FavouritesScreen(
                         ),
                         state = favourites
                     ) { id ->
-//                        navigator.navigate(
-//                            when (selectedFavouriteType) {
-//                                FavouriteType.Movie -> MovieDetailsScreenDestination(
-//                                    movieId = id,
-//                                    startRoute = FavouritesScreenDestination.route
-//                                )
-//                                FavouriteType.TvSeries -> TvSeriesDetailsScreenDestination(
-//                                    tvSeriesId = id,
-//                                    startRoute = FavouritesScreenDestination.route
-//                                )
-//                            }
-//                        )
+                        val destination = when (selectedFavouriteType) {
+                            FavouriteType.Movie -> {
+                                MovieDetailsScreenDestination(
+                                    movieId = id,
+                                    startRoute = MoviesScreenDestination.route
+                                )
+                            }
+
+                            FavouriteType.TvSeries -> {
+                                TvSeriesDetailsScreenDestination(
+                                    tvSeriesId = id,
+                                    startRoute = TvScreenDestination.route
+                                )
+                            }
+                        }
+
+                        navigator.navigate(destination)
                     }
                 }
 

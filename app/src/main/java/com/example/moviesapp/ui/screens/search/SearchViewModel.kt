@@ -1,6 +1,5 @@
 package com.example.moviesapp.ui.screens.search
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.example.moviesapp.BaseViewModel
@@ -21,7 +20,6 @@ import kotlin.time.ExperimentalTime
 class SearchViewModel @Inject constructor(
     private val configRepository: ConfigRepository,
     private val searchRepository: SearchRepository,
-    private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
