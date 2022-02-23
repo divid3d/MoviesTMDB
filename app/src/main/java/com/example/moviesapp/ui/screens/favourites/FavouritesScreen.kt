@@ -29,10 +29,50 @@ fun FavouritesScreen(
     viewModel: FavouritesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-    val selectedFavouriteType by viewModel.selectedFavouriteType.collectAsState()
-    val favourites = viewModel.favourites.collectAsLazyPagingItems()
+    val uiState by viewModel.uiState.collectAsState()
+    val onFavouriteTypeSelected: (type: FavouriteType) -> Unit = viewModel::onFavouriteTypeSelected
+    val onFavouriteClicked: (favouriteId: Int) -> Unit = { id ->
+        val destination = when (uiState.selectedFavouriteType) {
+            FavouriteType.Movie -> {
+                MovieDetailsScreenDestination(
+                    movieId = id,
+                    startRoute = MoviesScreenDestination.route
+                )
+            }
 
-    val notEmpty = favourites.isNotEmpty()
+            FavouriteType.TvSeries -> {
+                TvSeriesDetailsScreenDestination(
+                    tvSeriesId = id,
+                    startRoute = TvScreenDestination.route
+                )
+            }
+        }
+
+        navigator.navigate(destination)
+    }
+    val onNavigateToMoviesButtonClicked: () -> Unit =
+        { navigator.navigate(MoviesScreenDestination) }
+    val onNavigateToTvSeriesButtonClicked: () -> Unit = { navigator.navigate(TvScreenDestination) }
+
+    FavouriteScreenContent(
+        uiState = uiState,
+        onFavouriteTypeSelected = onFavouriteTypeSelected,
+        onFavouriteClicked = onFavouriteClicked,
+        onNavigateToMoviesButtonClicked = onNavigateToMoviesButtonClicked,
+        onNavigateToTvSeriesButtonClicked = onNavigateToTvSeriesButtonClicked
+    )
+}
+
+@Composable
+fun FavouriteScreenContent(
+    uiState: FavouritesScreenUiState,
+    onFavouriteTypeSelected: (type: FavouriteType) -> Unit,
+    onFavouriteClicked: (favouriteId: Int) -> Unit,
+    onNavigateToMoviesButtonClicked: () -> Unit,
+    onNavigateToTvSeriesButtonClicked: () -> Unit
+) {
+    val favouritesLazyItems = uiState.favourites.collectAsLazyPagingItems()
+    val notEmpty = favouritesLazyItems.isNotEmpty()
 
     Column(
         modifier = Modifier
@@ -43,12 +83,12 @@ fun FavouritesScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(MaterialTheme.spacing.medium),
-            selected = selectedFavouriteType,
-            onSelected = { type -> viewModel.onFavouriteTypeSelected(type) }
+            selected = uiState.selectedFavouriteType,
+            onSelected = onFavouriteTypeSelected
         )
         Crossfade(
             modifier = Modifier.fillMaxSize(),
-            targetState = notEmpty to selectedFavouriteType
+            targetState = notEmpty to uiState.selectedFavouriteType
         ) { (notEmpty, type) ->
             when {
                 notEmpty -> {
@@ -58,26 +98,9 @@ fun FavouritesScreen(
                             horizontal = MaterialTheme.spacing.small,
                             vertical = MaterialTheme.spacing.medium,
                         ),
-                        state = favourites
-                    ) { id ->
-                        val destination = when (selectedFavouriteType) {
-                            FavouriteType.Movie -> {
-                                MovieDetailsScreenDestination(
-                                    movieId = id,
-                                    startRoute = MoviesScreenDestination.route
-                                )
-                            }
-
-                            FavouriteType.TvSeries -> {
-                                TvSeriesDetailsScreenDestination(
-                                    tvSeriesId = id,
-                                    startRoute = TvScreenDestination.route
-                                )
-                            }
-                        }
-
-                        navigator.navigate(destination)
-                    }
+                        state = favouritesLazyItems,
+                        onPresentableClick = onFavouriteClicked
+                    )
                 }
 
                 type == FavouriteType.Movie -> {
@@ -86,9 +109,7 @@ fun FavouritesScreen(
                             .fillMaxSize()
                             .padding(MaterialTheme.spacing.medium),
                         type = type,
-                        onButtonClick = {
-                            navigator.navigate(MoviesScreenDestination)
-                        }
+                        onButtonClick = onNavigateToMoviesButtonClicked
                     )
                 }
 
@@ -98,9 +119,7 @@ fun FavouritesScreen(
                             .fillMaxSize()
                             .padding(MaterialTheme.spacing.medium),
                         type = type,
-                        onButtonClick = {
-                            navigator.navigate(TvScreenDestination)
-                        }
+                        onButtonClick = onNavigateToTvSeriesButtonClicked
                     )
                 }
             }
