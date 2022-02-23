@@ -59,7 +59,9 @@ fun PersonDetailsScreen(
     navigator: DestinationsNavigator,
     backStackEntry: NavBackStackEntry
 ) {
-    val navArgs: PersonDetailsScreenArgs = PersonDetailsScreenDestination.argsFrom(backStackEntry)
+    val navArgs: PersonDetailsScreenArgs by derivedStateOf {
+        PersonDetailsScreenDestination.argsFrom(backStackEntry)
+    }
     val context = LocalContext.current
 
     val details by viewModel.personDetails.collectAsState()

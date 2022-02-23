@@ -47,7 +47,9 @@ fun BrowseMoviesScreen(
     navigator: DestinationsNavigator,
     navBackStackEntry: NavBackStackEntry
 ) {
-    val navArgs: BrowseMoviesScreenArgs = BrowseMoviesScreenDestination.argsFrom(navBackStackEntry)
+    val navArgs: BrowseMoviesScreenArgs by derivedStateOf {
+        BrowseMoviesScreenDestination.argsFrom(navBackStackEntry)
+    }
     val movieType = navArgs.movieType
 
     val movies = viewModel.movies.collectAsLazyPagingItems()

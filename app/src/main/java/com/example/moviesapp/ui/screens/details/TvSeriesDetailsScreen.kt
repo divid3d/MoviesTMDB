@@ -57,8 +57,9 @@ fun TvSeriesDetailsScreen(
     navigator: DestinationsNavigator,
     backStackEntry: NavBackStackEntry
 ) {
-    val navArgs: TvSeriesDetailsScreenArgs =
+    val navArgs: TvSeriesDetailsScreenArgs by derivedStateOf {
         TvSeriesDetailsScreenDestination.argsFrom(backStackEntry)
+    }
 
     val context = LocalContext.current
     val density = LocalDensity.current

@@ -10,6 +10,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
@@ -38,8 +40,9 @@ fun RelatedTvSeriesScreen(
     navigator: DestinationsNavigator,
     backStackEntry: NavBackStackEntry
 ) {
-    val navArgs: RelatedTvSeriesScreenArgs =
+    val navArgs: RelatedTvSeriesScreenArgs by derivedStateOf {
         RelatedTvSeriesScreenDestination.argsFrom(backStackEntry)
+    }
     val tvSeries = viewModel.tvSeries.collectAsLazyPagingItems()
 
     val appbarTitle = when (navArgs.type) {
