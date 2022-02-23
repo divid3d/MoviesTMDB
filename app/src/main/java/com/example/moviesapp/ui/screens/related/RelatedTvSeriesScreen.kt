@@ -10,16 +10,14 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.model.RelationType
 import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.PresentableGridSection
-import com.example.moviesapp.ui.screens.destinations.RelatedTvSeriesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
@@ -37,22 +35,42 @@ data class RelatedTvSeriesScreenArgs(
 @Composable
 fun RelatedTvSeriesScreen(
     viewModel: RelatedTvSeriesViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator,
-    backStackEntry: NavBackStackEntry
+    navigator: DestinationsNavigator
 ) {
-    val navArgs: RelatedTvSeriesScreenArgs by derivedStateOf {
-        RelatedTvSeriesScreenDestination.argsFrom(backStackEntry)
-    }
-    val tvSeries = viewModel.tvSeries.collectAsLazyPagingItems()
+    val uiState by viewModel.uiState.collectAsState()
+    val onBackButtonClicked: () -> Unit = { navigator.navigateUp() }
+    val onTvSeriesClicked: (tvSeriesId: Int) -> Unit = { id ->
+        val destination = TvSeriesDetailsScreenDestination(
+            tvSeriesId = id,
+            startRoute = uiState.startRoute
+        )
 
-    val appbarTitle = when (navArgs.type) {
+        navigator.navigate(destination)
+    }
+
+    RelatedTvSeriesScreenContent(
+        uiState = uiState,
+        onBackButtonClicked = onBackButtonClicked,
+        onTvSeriesClicked = onTvSeriesClicked
+    )
+}
+
+@Composable
+fun RelatedTvSeriesScreenContent(
+    uiState: RelatedTvSeriesScreenUiState,
+    onBackButtonClicked: () -> Unit,
+    onTvSeriesClicked: (tvSeriesId: Int) -> Unit
+) {
+    val tvSeries = uiState.tvSeries.collectAsLazyPagingItems()
+
+    val appbarTitle = when (uiState.relationType) {
         RelationType.Similar -> "Podobne"
         RelationType.Recommended -> "Polecane"
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
         AppBar(title = appbarTitle, action = {
-            IconButton(onClick = { navigator.navigateUp() }) {
+            IconButton(onClick = onBackButtonClicked) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "go back",
@@ -67,14 +85,8 @@ fun RelatedTvSeriesScreen(
                 horizontal = MaterialTheme.spacing.small,
                 vertical = MaterialTheme.spacing.medium,
             ),
-            state = tvSeries
-        ) { tvSeriesId ->
-            val destination = TvSeriesDetailsScreenDestination(
-                tvSeriesId = tvSeriesId,
-                startRoute = navArgs.startRoute
-            )
-
-            navigator.navigate(destination)
-        }
+            state = tvSeries,
+            onPresentableClick = onTvSeriesClicked
+        )
     }
 }
