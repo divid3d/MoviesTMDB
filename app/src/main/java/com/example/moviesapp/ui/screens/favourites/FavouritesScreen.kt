@@ -2,6 +2,7 @@
 
 package com.example.moviesapp.ui.screens.favourites
 
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -26,7 +27,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun FavouritesScreen(
+fun AnimatedVisibilityScope.FavouritesScreen(
     viewModel: FavouritesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {

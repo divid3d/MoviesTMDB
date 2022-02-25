@@ -3,6 +3,7 @@
 package com.example.moviesapp.ui.screens.related
 
 import android.os.Parcelable
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -37,7 +38,7 @@ data class RelatedTvSeriesScreenArgs(
 
 @Destination(navArgsDelegate = RelatedTvSeriesScreenArgs::class)
 @Composable
-fun RelatedTvSeriesScreen(
+fun AnimatedVisibilityScope.RelatedTvSeriesScreen(
     viewModel: RelatedTvSeriesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {

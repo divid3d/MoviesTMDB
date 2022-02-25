@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.tv
 
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -35,7 +36,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun TvScreen(
+fun AnimatedVisibilityScope.TvScreen(
     viewModel: TvSeriesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {

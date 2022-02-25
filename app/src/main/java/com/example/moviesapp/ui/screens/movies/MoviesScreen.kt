@@ -4,6 +4,7 @@ package com.example.moviesapp.ui.screens.movies
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -43,7 +44,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination(start = true)
 @Composable
-fun MoviesScreen(
+fun AnimatedVisibilityScope.MoviesScreen(
     viewModel: MoviesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {

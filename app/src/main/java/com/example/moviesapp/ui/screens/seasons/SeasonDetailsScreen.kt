@@ -2,8 +2,8 @@ package com.example.moviesapp.ui.screens.seasons
 
 import android.os.Parcelable
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,17 +26,49 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import com.example.moviesapp.R
 import com.example.moviesapp.other.formatted
 import com.example.moviesapp.other.ifNotNullAndEmpty
 import com.example.moviesapp.other.openVideo
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
+import com.example.moviesapp.ui.screens.destinations.FavouritesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.spec.DestinationStyle
 import kotlinx.parcelize.Parcelize
+
+@OptIn(ExperimentalAnimationApi::class)
+object SeasonDetailsScreenTransitions : DestinationStyle.Animated {
+    override fun AnimatedContentScope<NavBackStackEntry>.exitTransition(): ExitTransition? {
+        return when (targetState.destination.route) {
+            TvSeriesDetailsScreenDestination.route,
+            FavouritesScreenDestination.route,
+            SearchScreenDestination.route -> slideOutOfContainer(
+                towards = AnimatedContentScope.SlideDirection.Down,
+                animationSpec = tween(300)
+            )
+            else -> null
+        }
+    }
+
+    override fun AnimatedContentScope<NavBackStackEntry>.popExitTransition(): ExitTransition? {
+        return when (targetState.destination.route) {
+            TvSeriesDetailsScreenDestination.route,
+            FavouritesScreenDestination.route,
+            SearchScreenDestination.route -> slideOutOfContainer(
+                towards = AnimatedContentScope.SlideDirection.Down,
+                animationSpec = tween(300)
+            )
+            else -> null
+        }
+    }
+}
 
 @Parcelize
 data class SeasonDetailsScreenArgs(
@@ -45,9 +77,12 @@ data class SeasonDetailsScreenArgs(
     val startRoute: String
 ) : Parcelable
 
-@Destination(navArgsDelegate = SeasonDetailsScreenArgs::class)
+@Destination(
+    navArgsDelegate = SeasonDetailsScreenArgs::class,
+    style = SeasonDetailsScreenTransitions::class
+)
 @Composable
-fun SeasonDetailsScreen(
+fun AnimatedVisibilityScope.SeasonDetailsScreen(
     viewModel: SeasonDetailsViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {

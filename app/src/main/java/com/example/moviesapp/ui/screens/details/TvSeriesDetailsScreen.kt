@@ -67,7 +67,7 @@ object TvSeriesDetailsScreenTransitions : DestinationStyle.Animated {
             FavouritesScreenDestination.route,
             SearchScreenDestination.route -> slideIntoContainer(
                 towards = AnimatedContentScope.SlideDirection.Up,
-                animationSpec = tween(500)
+                animationSpec = tween(300)
             )
             else -> null
         }
@@ -79,7 +79,7 @@ object TvSeriesDetailsScreenTransitions : DestinationStyle.Animated {
             FavouritesScreenDestination.route,
             SearchScreenDestination.route -> slideOutOfContainer(
                 towards = AnimatedContentScope.SlideDirection.Down,
-                animationSpec = tween(500)
+                animationSpec = tween(300)
             )
             else -> null
         }
@@ -91,7 +91,7 @@ object TvSeriesDetailsScreenTransitions : DestinationStyle.Animated {
             FavouritesScreenDestination.route,
             SearchScreenDestination.route -> slideOutOfContainer(
                 towards = AnimatedContentScope.SlideDirection.Down,
-                animationSpec = tween(500)
+                animationSpec = tween(300)
             )
             else -> null
         }

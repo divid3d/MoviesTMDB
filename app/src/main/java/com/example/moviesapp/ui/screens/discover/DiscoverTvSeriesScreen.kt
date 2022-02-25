@@ -6,6 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.SortOrder
@@ -35,6 +37,7 @@ import com.example.moviesapp.model.SortType
 import com.example.moviesapp.other.isEmpty
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.discover.components.FilterTvSeriesModalBottomSheetContent
 import com.example.moviesapp.ui.theme.spacing
@@ -42,8 +45,52 @@ import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.spec.DestinationStyle
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
+
+@OptIn(ExperimentalAnimationApi::class)
+object DiscoverTvSeriesScreenTransitions : DestinationStyle.Animated {
+    override fun AnimatedContentScope<NavBackStackEntry>.enterTransition(): EnterTransition? {
+        return when (initialState.destination.route) {
+            TvScreenDestination.route -> slideIntoContainer(
+                towards = AnimatedContentScope.SlideDirection.Up,
+                animationSpec = tween(300)
+            )
+            else -> null
+        }
+    }
+
+    override fun AnimatedContentScope<NavBackStackEntry>.popEnterTransition(): EnterTransition? {
+        return when (initialState.destination.route) {
+            TvScreenDestination.route -> slideIntoContainer(
+                towards = AnimatedContentScope.SlideDirection.Up,
+                animationSpec = tween(300)
+            )
+            else -> null
+        }
+    }
+
+    override fun AnimatedContentScope<NavBackStackEntry>.exitTransition(): ExitTransition? {
+        return when (targetState.destination.route) {
+            TvScreenDestination.route -> slideOutOfContainer(
+                towards = AnimatedContentScope.SlideDirection.Down,
+                animationSpec = tween(300)
+            )
+            else -> null
+        }
+    }
+
+    override fun AnimatedContentScope<NavBackStackEntry>.popExitTransition(): ExitTransition? {
+        return when (targetState.destination.route) {
+            TvScreenDestination.route -> slideOutOfContainer(
+                towards = AnimatedContentScope.SlideDirection.Down,
+                animationSpec = tween(300)
+            )
+            else -> null
+        }
+    }
+}
 
 @OptIn(
     ExperimentalFoundationApi::class,
@@ -51,9 +98,9 @@ import kotlinx.coroutines.launch
     ExperimentalMaterialApi::class,
     ExperimentalAnimationApi::class
 )
-@Destination
+@Destination(style = DiscoverTvSeriesScreenTransitions::class)
 @Composable
-fun DiscoverTvSeriesScreen(
+fun AnimatedVisibilityScope.DiscoverTvSeriesScreen(
     viewModel: DiscoverTvSeriesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {

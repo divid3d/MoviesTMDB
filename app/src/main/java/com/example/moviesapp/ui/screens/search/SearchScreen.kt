@@ -32,7 +32,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun SearchScreen(
+fun AnimatedVisibilityScope.SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {

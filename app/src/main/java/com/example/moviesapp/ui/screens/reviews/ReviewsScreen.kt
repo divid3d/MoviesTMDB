@@ -1,6 +1,7 @@
 package com.example.moviesapp.ui.screens.reviews
 
 import android.os.Parcelable
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,7 +36,7 @@ data class ReviewsScreenNavArgs(
 
 @Destination(navArgsDelegate = ReviewsScreenNavArgs::class)
 @Composable
-fun ReviewsScreen(
+fun AnimatedVisibilityScope.ReviewsScreen(
     viewModel: ReviewsViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
 ) {

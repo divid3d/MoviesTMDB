@@ -7,6 +7,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
@@ -85,7 +88,10 @@ class MainActivity : ComponentActivity() {
             val navController = rememberAnimatedNavController()
             val navHostEngine = rememberAnimatedNavHostEngine(
                 navHostContentAlignment = Alignment.TopCenter,
-                rootDefaultAnimations = RootNavGraphDefaultAnimations.ACCOMPANIST_FADING
+                rootDefaultAnimations = RootNavGraphDefaultAnimations(
+                    enterTransition = { fadeIn(animationSpec = tween(500)) },
+                    exitTransition = { fadeOut(animationSpec = tween(500)) }
+                )
             )
 
             val systemUiController = rememberSystemUiController()

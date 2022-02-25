@@ -2,8 +2,8 @@ package com.example.moviesapp.ui.screens.details
 
 import android.os.Parcelable
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import com.example.moviesapp.R
 import com.example.moviesapp.model.ExternalId
 import com.example.moviesapp.model.MediaType
@@ -33,8 +34,7 @@ import com.example.moviesapp.ui.components.AppBar
 import com.example.moviesapp.ui.components.ExternalIdsSection
 import com.example.moviesapp.ui.components.SectionDivider
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
-import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
-import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.screens.details.components.CreditsList
 import com.example.moviesapp.ui.screens.details.components.PersonDetailsInfoSection
 import com.example.moviesapp.ui.screens.details.components.PersonDetailsTopContent
@@ -44,7 +44,37 @@ import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.statusBarsPadding
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.spec.DestinationStyle
 import kotlinx.parcelize.Parcelize
+
+@OptIn(ExperimentalAnimationApi::class)
+object PersonDetailsScreenTransitions : DestinationStyle.Animated {
+    override fun AnimatedContentScope<NavBackStackEntry>.exitTransition(): ExitTransition? {
+        return when (targetState.destination.route) {
+            TvScreenDestination.route,
+            MoviesScreenDestination.route,
+            FavouritesScreenDestination.route,
+            SearchScreenDestination.route -> slideOutOfContainer(
+                towards = AnimatedContentScope.SlideDirection.Down,
+                animationSpec = tween(300)
+            )
+            else -> null
+        }
+    }
+
+    override fun AnimatedContentScope<NavBackStackEntry>.popExitTransition(): ExitTransition? {
+        return when (targetState.destination.route) {
+            TvScreenDestination.route,
+            MoviesScreenDestination.route,
+            FavouritesScreenDestination.route,
+            SearchScreenDestination.route -> slideOutOfContainer(
+                towards = AnimatedContentScope.SlideDirection.Down,
+                animationSpec = tween(300)
+            )
+            else -> null
+        }
+    }
+}
 
 @Parcelize
 data class PersonDetailsScreenArgs(
@@ -52,9 +82,12 @@ data class PersonDetailsScreenArgs(
     val startRoute: String
 ) : Parcelable
 
-@Destination(navArgsDelegate = PersonDetailsScreenArgs::class)
+@Destination(
+    navArgsDelegate = PersonDetailsScreenArgs::class,
+    style = PersonDetailsScreenTransitions::class
+)
 @Composable
-fun PersonDetailsScreen(
+fun AnimatedVisibilityScope.PersonDetailsScreen(
     viewModel: PersonDetailsViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {

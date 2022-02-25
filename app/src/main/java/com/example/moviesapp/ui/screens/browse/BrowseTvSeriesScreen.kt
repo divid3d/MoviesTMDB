@@ -3,9 +3,8 @@
 package com.example.moviesapp.ui.screens.browse
 
 import android.os.Parcelable
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -22,6 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.TvSeriesType
@@ -33,7 +33,51 @@ import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestin
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.spec.DestinationStyle
 import kotlinx.parcelize.Parcelize
+
+@OptIn(ExperimentalAnimationApi::class)
+object BrowseTvSeriesScreenTransitions : DestinationStyle.Animated {
+    override fun AnimatedContentScope<NavBackStackEntry>.enterTransition(): EnterTransition? {
+        return when (initialState.destination.route) {
+            TvScreenDestination.route -> slideIntoContainer(
+                towards = AnimatedContentScope.SlideDirection.Up,
+                animationSpec = tween(300)
+            )
+            else -> null
+        }
+    }
+
+    override fun AnimatedContentScope<NavBackStackEntry>.popEnterTransition(): EnterTransition? {
+        return when (initialState.destination.route) {
+            TvScreenDestination.route -> slideIntoContainer(
+                towards = AnimatedContentScope.SlideDirection.Up,
+                animationSpec = tween(300)
+            )
+            else -> null
+        }
+    }
+
+    override fun AnimatedContentScope<NavBackStackEntry>.exitTransition(): ExitTransition? {
+        return when (targetState.destination.route) {
+            TvScreenDestination.route -> slideOutOfContainer(
+                towards = AnimatedContentScope.SlideDirection.Down,
+                animationSpec = tween(300)
+            )
+            else -> null
+        }
+    }
+
+    override fun AnimatedContentScope<NavBackStackEntry>.popExitTransition(): ExitTransition? {
+        return when (targetState.destination.route) {
+            TvScreenDestination.route -> slideOutOfContainer(
+                towards = AnimatedContentScope.SlideDirection.Down,
+                animationSpec = tween(300)
+            )
+            else -> null
+        }
+    }
+}
 
 @Parcelize
 data class BrowseTvSeriesScreenArgs(
@@ -41,9 +85,12 @@ data class BrowseTvSeriesScreenArgs(
 ) : Parcelable
 
 @OptIn(ExperimentalFoundationApi::class, kotlinx.coroutines.FlowPreview::class)
-@Destination(navArgsDelegate = BrowseTvSeriesScreenArgs::class)
+@Destination(
+    navArgsDelegate = BrowseTvSeriesScreenArgs::class,
+    style = BrowseTvSeriesScreenTransitions::class
+)
 @Composable
-fun BrowseTvSeriesScreen(
+fun AnimatedVisibilityScope.BrowseTvSeriesScreen(
     viewModel: BrowseTvSeriesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
