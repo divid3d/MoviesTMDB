@@ -4,6 +4,7 @@ package com.example.moviesapp.ui.screens.related
 
 import android.os.Parcelable
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -71,7 +72,11 @@ fun RelatedTvSeriesScreenContent(
         RelationType.Recommended -> "Polecane"
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colors.background)
+    ) {
         AppBar(
             title = appbarTitle,
             action = {

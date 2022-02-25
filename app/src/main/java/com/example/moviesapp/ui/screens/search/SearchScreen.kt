@@ -2,6 +2,7 @@ package com.example.moviesapp.ui.screens.search
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -89,6 +90,7 @@ fun SearchScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = MaterialTheme.colors.background)
             .statusBarsPadding(),
     ) {
         QueryTextField(

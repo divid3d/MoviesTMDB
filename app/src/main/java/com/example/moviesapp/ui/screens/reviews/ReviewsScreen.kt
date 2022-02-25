@@ -1,6 +1,7 @@
 package com.example.moviesapp.ui.screens.reviews
 
 import android.os.Parcelable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
@@ -54,7 +55,11 @@ fun ReviewsScreenContent(
 ) {
     val reviewsLazyItems = uiState.reviews.collectAsLazyPagingItems()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colors.background)
+    ) {
         AppBar(
             title = stringResource(R.string.reviews_screen_appbar_title),
             action = {

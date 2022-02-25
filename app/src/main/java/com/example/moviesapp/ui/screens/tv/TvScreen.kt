@@ -1,6 +1,7 @@
 package com.example.moviesapp.ui.screens.tv
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -116,6 +117,9 @@ fun TvScreenContent(
     }
 
     SwipeRefresh(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colors.background),
         state = swipeRefreshState,
         indicator = { state, trigger ->
             SwipeRefreshIndicator(

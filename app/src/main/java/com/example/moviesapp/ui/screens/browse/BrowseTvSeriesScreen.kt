@@ -7,6 +7,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -110,16 +111,21 @@ fun BrowseTvSeriesScreenContent(
         )
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        AppBar(title = appbarTitle, action = {
-            IconButton(onClick = onBackClicked) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "go back",
-                    tint = MaterialTheme.colors.primary
-                )
-            }
-        },
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colors.background)
+    ) {
+        AppBar(
+            title = appbarTitle, action = {
+                IconButton(onClick = onBackClicked) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "go back",
+                        tint = MaterialTheme.colors.primary
+                    )
+                }
+            },
             trailing = {
                 AnimatedVisibility(
                     visible = showClearButton,

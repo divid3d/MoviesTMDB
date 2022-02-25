@@ -6,6 +6,7 @@ import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -146,6 +147,9 @@ fun MoviesScreenContent(
     }
 
     SwipeRefresh(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colors.background),
         state = swipeRefreshState,
         indicator = { state, trigger ->
             SwipeRefreshIndicator(
