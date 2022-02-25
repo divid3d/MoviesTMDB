@@ -1,14 +1,18 @@
+@file:OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class)
+
 package com.example.moviesapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -18,7 +22,6 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import coil.compose.LocalImageLoader
 import com.example.moviesapp.model.SnackBarEvent
@@ -35,8 +38,12 @@ import com.example.moviesapp.ui.theme.MoviesAppTheme
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
+import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -75,7 +82,12 @@ class MainActivity : ComponentActivity() {
             val snackBarEvent: SnackBarEvent? by mainViewModel.networkSnackBarEvent.collectAsState()
 
             //val useDarkIcons = MaterialTheme.colors.isLight
-            val navController = rememberNavController()
+            val navController = rememberAnimatedNavController()
+            val navHostEngine = rememberAnimatedNavHostEngine(
+                navHostContentAlignment = Alignment.TopCenter,
+                rootDefaultAnimations = RootNavGraphDefaultAnimations.ACCOMPANIST_FADING
+            )
+
             val systemUiController = rememberSystemUiController()
 
             var currentRoute: String? by rememberSaveable {
@@ -170,6 +182,7 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 DestinationsNavHost(
                                     navGraph = NavGraphs.root,
+                                    engine = navHostEngine,
                                     navController = navController
                                 )
                             }

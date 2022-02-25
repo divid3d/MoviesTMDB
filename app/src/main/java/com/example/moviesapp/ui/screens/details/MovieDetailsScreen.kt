@@ -1,10 +1,11 @@
+@file:OptIn(ExperimentalAnimationApi::class)
+
 package com.example.moviesapp.ui.screens.details
 
 import android.os.Parcelable
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -25,23 +26,73 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.*
 import com.example.moviesapp.other.*
 import com.example.moviesapp.ui.components.*
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
-import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
-import com.example.moviesapp.ui.screens.destinations.PersonDetailsScreenDestination
-import com.example.moviesapp.ui.screens.destinations.RelatedMoviesScreenDestination
-import com.example.moviesapp.ui.screens.destinations.ReviewsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.screens.details.components.MovieDetailsInfoSection
 import com.example.moviesapp.ui.screens.details.components.MovieDetailsTopContent
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.spec.DestinationStyle
 import kotlinx.parcelize.Parcelize
+
+@OptIn(ExperimentalAnimationApi::class)
+object MovieDetailsScreenTransitions : DestinationStyle.Animated {
+    override fun AnimatedContentScope<NavBackStackEntry>.enterTransition(): EnterTransition? {
+        return when (initialState.destination.route) {
+            MoviesScreenDestination.route,
+            FavouritesScreenDestination.route,
+            SearchScreenDestination.route -> slideIntoContainer(
+                towards = AnimatedContentScope.SlideDirection.Up,
+                animationSpec = tween(500)
+            )
+            else -> null
+        }
+    }
+
+    override fun AnimatedContentScope<NavBackStackEntry>.popEnterTransition(): EnterTransition? {
+        return when (initialState.destination.route) {
+            MoviesScreenDestination.route,
+            FavouritesScreenDestination.route,
+            SearchScreenDestination.route -> slideIntoContainer(
+                towards = AnimatedContentScope.SlideDirection.Up,
+                animationSpec = tween(500)
+            )
+            else -> null
+        }
+    }
+
+    override fun AnimatedContentScope<NavBackStackEntry>.exitTransition(): ExitTransition? {
+        return when (targetState.destination.route) {
+            MoviesScreenDestination.route,
+            FavouritesScreenDestination.route,
+            SearchScreenDestination.route -> slideOutOfContainer(
+                towards = AnimatedContentScope.SlideDirection.Down,
+                animationSpec = tween(500)
+            )
+            else -> null
+        }
+    }
+
+    override fun AnimatedContentScope<NavBackStackEntry>.popExitTransition(): ExitTransition? {
+        return when (targetState.destination.route) {
+            MoviesScreenDestination.route,
+            FavouritesScreenDestination.route,
+            SearchScreenDestination.route -> slideOutOfContainer(
+                towards = AnimatedContentScope.SlideDirection.Down,
+                animationSpec = tween(500)
+            )
+            else -> null
+        }
+    }
+}
 
 @Parcelize
 data class MovieDetailsScreenArgs(
@@ -49,9 +100,12 @@ data class MovieDetailsScreenArgs(
     val startRoute: String
 ) : Parcelable
 
-@Destination(navArgsDelegate = MovieDetailsScreenArgs::class)
+@Destination(
+    navArgsDelegate = MovieDetailsScreenArgs::class,
+    style = MovieDetailsScreenTransitions::class
+)
 @Composable
-fun MovieDetailsScreen(
+fun AnimatedVisibilityScope.MovieDetailsScreen(
     viewModel: MoviesDetailsViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
@@ -215,7 +269,9 @@ fun MovieDetailsScreenContent(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colors.background)
     ) {
         Column(
             modifier = Modifier

@@ -20,8 +20,7 @@ import com.example.moviesapp.other.CaptureSpeechToText
 import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.ui.components.SearchGridSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
-import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
-import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
+import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.search.components.QueryTextField
 import com.example.moviesapp.ui.screens.search.components.SearchEmptyState
@@ -44,14 +43,14 @@ fun SearchScreen(
             MediaType.Movie -> {
                 MovieDetailsScreenDestination(
                     movieId = id,
-                    startRoute = MoviesScreenDestination.route
+                    startRoute = SearchScreenDestination.route
                 )
             }
 
             MediaType.Tv -> {
                 TvSeriesDetailsScreenDestination(
                     tvSeriesId = id,
-                    startRoute = TvScreenDestination.route
+                    startRoute = SearchScreenDestination.route
                 )
             }
 
