@@ -8,8 +8,8 @@ import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
-import com.example.moviesapp.repository.ConfigRepository
-import com.example.moviesapp.repository.PersonRepository
+import com.example.moviesapp.repository.config.ConfigRepository
+import com.example.moviesapp.repository.person.PersonRepository
 import com.example.moviesapp.ui.screens.destinations.PersonDetailsScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

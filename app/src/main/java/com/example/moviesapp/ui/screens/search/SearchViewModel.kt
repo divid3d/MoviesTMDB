@@ -5,8 +5,8 @@ import androidx.paging.PagingData
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.SearchResult
-import com.example.moviesapp.repository.ConfigRepository
-import com.example.moviesapp.repository.SearchRepository
+import com.example.moviesapp.repository.config.ConfigRepository
+import com.example.moviesapp.repository.search.SearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -19,7 +19,7 @@ import kotlin.time.ExperimentalTime
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val configRepository: ConfigRepository,
-    private val searchRepository: SearchRepository,
+    private val searchRepository: SearchRepository
 ) : BaseViewModel() {
 
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()

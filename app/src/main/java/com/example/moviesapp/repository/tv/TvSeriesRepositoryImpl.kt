@@ -1,4 +1,4 @@
-package com.example.moviesapp.repository
+package com.example.moviesapp.repository.tv
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -14,25 +14,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import retrofit2.Call
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TvSeriesRepository @Inject constructor(
+class TvSeriesRepositoryImpl(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val apiHelper: TmdbApiHelper
-) {
-    fun discoverTvSeries(
-        deviceLanguage: DeviceLanguage = DeviceLanguage.default,
-        sortType: SortType = SortType.Popularity,
-        sortOrder: SortOrder = SortOrder.Desc,
-        genresParam: GenresParam = GenresParam(genres = emptyList()),
-        watchProvidersParam: WatchProvidersParam = WatchProvidersParam(watchProviders = emptyList()),
-        voteRange: ClosedFloatingPointRange<Float> = 0f..10f,
-        onlyWithPosters: Boolean = false,
-        onlyWithScore: Boolean = false,
-        onlyWithOverview: Boolean = false,
-        airDateRange: DateRange = DateRange()
+) : TvSeriesRepository {
+    override fun discoverTvSeries(
+        deviceLanguage: DeviceLanguage,
+        sortType: SortType,
+        sortOrder: SortOrder,
+        genresParam: GenresParam,
+        watchProvidersParam: WatchProvidersParam,
+        voteRange: ClosedFloatingPointRange<Float>,
+        onlyWithPosters: Boolean,
+        onlyWithScore: Boolean,
+        onlyWithOverview: Boolean,
+        airDateRange: DateRange
     ): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
@@ -53,7 +52,7 @@ class TvSeriesRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun topRatedTvSeries(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<TvSeries>> =
+    override fun topRatedTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
@@ -64,7 +63,7 @@ class TvSeriesRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun onTheAirTvSeries(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<TvSeries>> =
+    override fun onTheAirTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
@@ -75,7 +74,7 @@ class TvSeriesRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun trendingTvSeries(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<TvSeries>> =
+    override fun trendingTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
@@ -86,7 +85,7 @@ class TvSeriesRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun popularTvSeries(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<TvSeries>> =
+    override fun popularTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
@@ -97,7 +96,7 @@ class TvSeriesRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun airingTodayTvSeries(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<TvSeries>> =
+    override fun airingTodayTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
@@ -108,9 +107,9 @@ class TvSeriesRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun similarTvSeries(
+    override fun similarTvSeries(
         tvSeriesId: Int,
-        deviceLanguage: DeviceLanguage = DeviceLanguage.default
+        deviceLanguage: DeviceLanguage
     ): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
@@ -123,9 +122,9 @@ class TvSeriesRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun tvSeriesRecommendations(
+    override fun tvSeriesRecommendations(
         tvSeriesId: Int,
-        deviceLanguage: DeviceLanguage = DeviceLanguage.default
+        deviceLanguage: DeviceLanguage
     ): Flow<PagingData<TvSeries>> =
         Pager(
             PagingConfig(pageSize = 20)
@@ -138,37 +137,37 @@ class TvSeriesRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun getTvSeriesDetails(
+    override fun getTvSeriesDetails(
         tvSeriesId: Int,
-        deviceLanguage: DeviceLanguage = DeviceLanguage.default
+        deviceLanguage: DeviceLanguage
     ): Call<TvSeriesDetails> =
         apiHelper.getTvSeriesDetails(tvSeriesId, deviceLanguage.languageCode)
 
-    fun getTvSeason(
+    override fun getTvSeason(
         tvSeriesId: Int,
         seasonNumber: Int,
-        deviceLanguage: DeviceLanguage = DeviceLanguage.default
+        deviceLanguage: DeviceLanguage
     ): Call<TvSeasonsResponse> =
         apiHelper.getTvSeasons(tvSeriesId, seasonNumber, deviceLanguage.languageCode)
 
-    fun tvSeriesImages(
+    override fun tvSeriesImages(
         tvSeriesId: Int
     ): Call<ImagesResponse> = apiHelper.getTvSeriesImages(tvSeriesId)
 
-    fun seasonDetails(
+    override fun seasonDetails(
         tvSeriesId: Int,
         seasonNumber: Int,
-        deviceLanguage: DeviceLanguage = DeviceLanguage.default
+        deviceLanguage: DeviceLanguage
     ): Call<SeasonDetails> =
         apiHelper.getSeasonDetails(tvSeriesId, seasonNumber, deviceLanguage.languageCode)
 
-    fun episodeImages(
+    override fun episodeImages(
         tvSeriesId: Int,
         seasonNumber: Int,
         episodeNumber: Int
     ): Call<ImagesResponse> = apiHelper.getEpisodeImages(tvSeriesId, seasonNumber, episodeNumber)
 
-    fun tvSeriesReviews(tvSeriesId: Int): Flow<PagingData<Review>> =
+    override fun tvSeriesReviews(tvSeriesId: Int): Flow<PagingData<Review>> =
         Pager(
             PagingConfig(pageSize = 5)
         ) {
@@ -178,24 +177,23 @@ class TvSeriesRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun tvSeriesReview(tvSeriesId: Int): Call<ReviewsResponse> =
+    override fun tvSeriesReview(tvSeriesId: Int): Call<ReviewsResponse> =
         apiHelper.getTvSeriesReview(tvSeriesId)
 
-    fun watchProviders(tvSeriesId: Int): Call<WatchProvidersResponse> =
+    override fun watchProviders(tvSeriesId: Int): Call<WatchProvidersResponse> =
         apiHelper.getTvSeriesWatchProviders(tvSeriesId)
 
-    fun getExternalIds(tvSeriesId: Int) = apiHelper.getTvSeriesExternalIds(tvSeriesId)
+    override fun getExternalIds(tvSeriesId: Int): Call<ExternalIds> =
+        apiHelper.getTvSeriesExternalIds(tvSeriesId)
 
-    fun tvSeriesVideos(
+    override fun tvSeriesVideos(
         tvSeriesId: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
-    ) =
-        apiHelper.getTvSeriesVideos(tvSeriesId, isoCode)
+        isoCode: String
+    ): Call<VideosResponse> = apiHelper.getTvSeriesVideos(tvSeriesId, isoCode)
 
-    fun seasonVideos(
+    override fun seasonVideos(
         tvSeriesId: Int,
         seasonNumber: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
-    ) = apiHelper.getSeasonVideos(tvSeriesId, seasonNumber, isoCode)
-
+        isoCode: String
+    ): Call<VideosResponse> = apiHelper.getSeasonVideos(tvSeriesId, seasonNumber, isoCode)
 }

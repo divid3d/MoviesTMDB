@@ -1,4 +1,4 @@
-package com.example.moviesapp.repository
+package com.example.moviesapp.repository.browsed
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -16,21 +16,20 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import java.util.*
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RecentlyBrowsedRepository @Inject constructor(
+class RecentlyBrowsedRepositoryImpl(
     private val externalScope: CoroutineScope,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val recentlyBrowsedMoviesDao: RecentlyBrowsedMoviesDao,
     private val recentlyBrowsedTvSeriesDao: RecentlyBrowsedTvSeriesDao
-) {
+) : RecentlyBrowsedRepository {
     private companion object {
         const val maxItems = 100
     }
 
-    fun addRecentlyBrowsedMovie(movieDetails: MovieDetails) {
+    override fun addRecentlyBrowsedMovie(movieDetails: MovieDetails) {
         externalScope.launch(defaultDispatcher) {
             val recentlyBrowsedMovie = movieDetails.run {
                 RecentlyBrowsedMovie(
@@ -48,25 +47,25 @@ class RecentlyBrowsedRepository @Inject constructor(
         }
     }
 
-    fun clearRecentlyBrowsedMovies() {
+    override fun clearRecentlyBrowsedMovies() {
         externalScope.launch(defaultDispatcher) {
             recentlyBrowsedMoviesDao.clear()
         }
     }
 
-    fun clearRecentlyBrowsedTvSeries() {
+    override fun clearRecentlyBrowsedTvSeries() {
         externalScope.launch(defaultDispatcher) {
             recentlyBrowsedTvSeriesDao.clear()
         }
     }
 
-    fun recentlyBrowsedMovies(): Flow<PagingData<RecentlyBrowsedMovie>> = Pager(
+    override fun recentlyBrowsedMovies(): Flow<PagingData<RecentlyBrowsedMovie>> = Pager(
         PagingConfig(pageSize = 20)
     ) {
         recentlyBrowsedMoviesDao.recentBrowsedMovie().asPagingSourceFactory()()
     }.flow.flowOn(defaultDispatcher)
 
-    fun addRecentlyBrowsedTvSeries(tvSeriesDetails: TvSeriesDetails) {
+    override fun addRecentlyBrowsedTvSeries(tvSeriesDetails: TvSeriesDetails) {
         externalScope.launch(defaultDispatcher) {
             val recentlyBrowsedTvSeries = tvSeriesDetails.run {
                 RecentlyBrowsedTvSeries(
@@ -84,7 +83,7 @@ class RecentlyBrowsedRepository @Inject constructor(
         }
     }
 
-    fun recentlyBrowsedTvSeries(): Flow<PagingData<RecentlyBrowsedTvSeries>> = Pager(
+    override fun recentlyBrowsedTvSeries(): Flow<PagingData<RecentlyBrowsedTvSeries>> = Pager(
         PagingConfig(pageSize = 20)
     ) {
         recentlyBrowsedTvSeriesDao.recentBrowsedTvSeries().asPagingSourceFactory()()

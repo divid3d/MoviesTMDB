@@ -11,8 +11,8 @@ import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Image
 import com.example.moviesapp.model.SeasonDetails
 import com.example.moviesapp.model.Video
-import com.example.moviesapp.repository.ConfigRepository
-import com.example.moviesapp.repository.TvSeriesRepository
+import com.example.moviesapp.repository.config.ConfigRepository
+import com.example.moviesapp.repository.tv.TvSeriesRepository
 import com.example.moviesapp.ui.screens.destinations.SeasonDetailsScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

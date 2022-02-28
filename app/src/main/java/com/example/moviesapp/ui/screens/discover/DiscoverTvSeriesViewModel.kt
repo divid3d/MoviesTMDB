@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviesapp.model.*
-import com.example.moviesapp.repository.ConfigRepository
-import com.example.moviesapp.repository.TvSeriesRepository
+import com.example.moviesapp.repository.config.ConfigRepository
+import com.example.moviesapp.repository.tv.TvSeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
