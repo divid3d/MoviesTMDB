@@ -44,7 +44,7 @@ fun MemberSection(
                     .joinToString(separator = ", ")
 
                 MemberResultChip(
-                    modifier = Modifier.width(80.dp),
+                    modifier = Modifier.width(72.dp),
                     profilePath = profilePath,
                     firstLine = firstLine,
                     secondLine = secondLine,
