@@ -183,6 +183,11 @@
     <string name="person_details_screen_cast">Obsada</string>
     <string name="person_details_screen_crew">Ekipa filmowa</string>
 
+    <string name="related_movies_screen_similar_appbar_label">Podobne</string>
+    <string name="related_movies_screen_recommendations_appbar_label">Polecane</string>
+    <string name="related_tv_series_screen_similar_appbar_label">Podobne</string>
+    <string name="related_tv_series_screen_recommendations_appbar_label">Polecane</string>
+
     <string name="movie_provider_type_rent_label">Wypożycz</string>
     <string name="movie_provider_type_buy_label">Kup</string>
     <string name="movie_provider_type_stream_label">Streaming</string>

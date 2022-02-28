@@ -183,6 +183,11 @@
     <string name="person_details_screen_cast">Cast</string>
     <string name="person_details_screen_crew">Crew</string>
 
+    <string name="related_movies_screen_similar_appbar_label">Similar</string>
+    <string name="related_movies_screen_recommendations_appbar_label">Recommendations</string>
+    <string name="related_tv_series_screen_similar_appbar_label">Similar</string>
+    <string name="related_tv_series_screen_recommendations_appbar_label">Recommendations</string>
+
     <string name="movie_provider_type_rent_label">Rent</string>
     <string name="movie_provider_type_buy_label">Buy</string>
     <string name="movie_provider_type_stream_label">Stream</string>
