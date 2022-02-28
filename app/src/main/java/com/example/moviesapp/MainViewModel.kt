@@ -5,7 +5,7 @@ import com.example.moviesapp.model.SnackBarEvent
 import com.example.moviesapp.other.ImageUrlParser
 import com.example.moviesapp.other.NetworkStatus
 import com.example.moviesapp.other.NetworkStatusTracker
-import com.example.moviesapp.repository.ConfigRepository
+import com.example.moviesapp.repository.config.ConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.map
 import com.example.moviesapp.model.FavouriteType
-import com.example.moviesapp.repository.FavouritesRepository
+import com.example.moviesapp.repository.favourites.FavouritesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

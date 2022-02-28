@@ -6,10 +6,10 @@ import androidx.paging.PagingData
 import androidx.paging.filter
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Movie
-import com.example.moviesapp.repository.ConfigRepository
-import com.example.moviesapp.repository.FavouritesRepository
-import com.example.moviesapp.repository.MovieRepository
-import com.example.moviesapp.repository.RecentlyBrowsedRepository
+import com.example.moviesapp.repository.browsed.RecentlyBrowsedRepository
+import com.example.moviesapp.repository.config.ConfigRepository
+import com.example.moviesapp.repository.favourites.FavouritesRepository
+import com.example.moviesapp.repository.movie.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -18,8 +18,8 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
-    private val favouritesRepository: FavouritesRepository,
     private val configRepository: ConfigRepository,
+    private val favouritesRepository: FavouritesRepository,
     private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
     private val movieRepository: MovieRepository
 ) : ViewModel() {

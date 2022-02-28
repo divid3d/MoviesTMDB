@@ -1,4 +1,4 @@
-package com.example.moviesapp.repository
+package com.example.moviesapp.repository.favourites
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -15,17 +15,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.*
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class FavouritesRepository @Inject constructor(
+class FavouritesRepositoryImpl(
     private val externalScope: CoroutineScope,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val favouritesMoviesDao: FavouritesMoviesDao,
     private val favouritesTvSeriesDao: FavouritesTvSeriesDao
-) {
-    fun likeMovie(movieDetails: MovieDetails) {
+) : FavouritesRepository {
+    override fun likeMovie(movieDetails: MovieDetails) {
         externalScope.launch(defaultDispatcher) {
             val favouriteMovie = movieDetails.run {
                 MovieFavourite(
@@ -41,7 +40,7 @@ class FavouritesRepository @Inject constructor(
         }
     }
 
-    fun likeTvSeries(tvSeriesDetails: TvSeriesDetails) {
+    override fun likeTvSeries(tvSeriesDetails: TvSeriesDetails) {
         externalScope.launch {
             val favouriteTvSeries = tvSeriesDetails.run {
                 TvSeriesFavourite(
@@ -56,36 +55,39 @@ class FavouritesRepository @Inject constructor(
         }
     }
 
-    fun unlikeMovie(movieDetails: MovieDetails) {
+    override fun unlikeMovie(movieDetails: MovieDetails) {
         externalScope.launch {
             favouritesMoviesDao.unlikeMovie(movieDetails.id)
         }
     }
 
-    fun unlikeTvSeries(tvSeriesDetails: TvSeriesDetails) {
+    override fun unlikeTvSeries(tvSeriesDetails: TvSeriesDetails) {
         externalScope.launch {
             favouritesTvSeriesDao.unlikeTvSeries(tvSeriesDetails.id)
         }
     }
 
-    fun favouriteMovies(): Flow<PagingData<MovieFavourite>> = Pager(
+    override fun favouriteMovies(): Flow<PagingData<MovieFavourite>> = Pager(
         PagingConfig(pageSize = 20)
     ) {
         favouritesMoviesDao.favouriteMovies().asPagingSourceFactory()()
     }.flow
 
-    fun favouritesTvSeries(): Flow<PagingData<TvSeriesFavourite>> = Pager(
+    override fun favouritesTvSeries(): Flow<PagingData<TvSeriesFavourite>> = Pager(
         PagingConfig(pageSize = 20)
     ) {
         favouritesTvSeriesDao.favouriteTvSeries().asPagingSourceFactory()()
     }.flow
 
-    fun getFavouritesMoviesIds(): Flow<List<Int>> = favouritesMoviesDao.favouriteMoviesIds()
+    override fun getFavouritesMoviesIds(): Flow<List<Int>> =
+        favouritesMoviesDao.favouriteMoviesIds()
 
-    fun getFavouriteTvSeriesIds(): Flow<List<Int>> = favouritesTvSeriesDao.favouriteTvSeriesIds()
+    override fun getFavouriteTvSeriesIds(): Flow<List<Int>> =
+        favouritesTvSeriesDao.favouriteTvSeriesIds()
 
-    fun getFavouriteMoviesCount(): Flow<Int> = favouritesMoviesDao.favouriteMoviesCount()
+    override fun getFavouriteMoviesCount(): Flow<Int> = favouritesMoviesDao.favouriteMoviesCount()
 
-    fun getFavouriteTvSeriesCount(): Flow<Int> = favouritesTvSeriesDao.favouriteTvSeriesCount()
+    override fun getFavouriteTvSeriesCount(): Flow<Int> =
+        favouritesTvSeriesDao.favouriteTvSeriesCount()
 
 }

@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.map
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.TvSeriesType
-import com.example.moviesapp.repository.ConfigRepository
-import com.example.moviesapp.repository.FavouritesRepository
-import com.example.moviesapp.repository.RecentlyBrowsedRepository
-import com.example.moviesapp.repository.TvSeriesRepository
+import com.example.moviesapp.repository.browsed.RecentlyBrowsedRepository
+import com.example.moviesapp.repository.config.ConfigRepository
+import com.example.moviesapp.repository.favourites.FavouritesRepository
+import com.example.moviesapp.repository.tv.TvSeriesRepository
 import com.example.moviesapp.ui.screens.destinations.BrowseTvSeriesScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview

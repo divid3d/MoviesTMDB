@@ -1,4 +1,4 @@
-package com.example.moviesapp.repository
+package com.example.moviesapp.repository.search
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -11,20 +11,19 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SearchRepository @Inject constructor(
+class SearchRepositoryImpl(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val apiHelper: TmdbApiHelper
-) {
-    fun multiSearch(
+) : SearchRepository {
+    override fun multiSearch(
         query: String,
-        includeAdult: Boolean = false,
-        year: Int? = null,
-        releaseYear: Int? = null,
-        deviceLanguage: DeviceLanguage = DeviceLanguage.default
+        includeAdult: Boolean,
+        year: Int?,
+        releaseYear: Int?,
+        deviceLanguage: DeviceLanguage
     ): Flow<PagingData<SearchResult>> =
         Pager(
             PagingConfig(pageSize = 20)

@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.RelationType
-import com.example.moviesapp.repository.ConfigRepository
-import com.example.moviesapp.repository.TvSeriesRepository
+import com.example.moviesapp.repository.config.ConfigRepository
+import com.example.moviesapp.repository.tv.TvSeriesRepository
 import com.example.moviesapp.ui.screens.destinations.RelatedTvSeriesScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview

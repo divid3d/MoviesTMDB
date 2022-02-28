@@ -8,10 +8,10 @@ import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
-import com.example.moviesapp.repository.ConfigRepository
-import com.example.moviesapp.repository.FavouritesRepository
-import com.example.moviesapp.repository.RecentlyBrowsedRepository
-import com.example.moviesapp.repository.TvSeriesRepository
+import com.example.moviesapp.repository.browsed.RecentlyBrowsedRepository
+import com.example.moviesapp.repository.config.ConfigRepository
+import com.example.moviesapp.repository.favourites.FavouritesRepository
+import com.example.moviesapp.repository.tv.TvSeriesRepository
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

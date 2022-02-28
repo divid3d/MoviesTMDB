@@ -1,4 +1,4 @@
-package com.example.moviesapp.repository
+package com.example.moviesapp.repository.movie
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -14,25 +14,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import retrofit2.Call
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class MovieRepository @Inject constructor(
+class MovieRepositoryImpl(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val apiHelper: TmdbApiHelper
-) {
-    fun discoverMovies(
-        deviceLanguage: DeviceLanguage = DeviceLanguage.default,
-        sortType: SortType = SortType.Popularity,
-        sortOrder: SortOrder = SortOrder.Desc,
-        genresParam: GenresParam = GenresParam(genres = emptyList()),
-        watchProvidersParam: WatchProvidersParam = WatchProvidersParam(watchProviders = emptyList()),
-        voteRange: ClosedFloatingPointRange<Float> = 0f..10f,
-        onlyWithPosters: Boolean = false,
-        onlyWithScore: Boolean = false,
-        onlyWithOverview: Boolean = false,
-        releaseDateRange: DateRange = DateRange()
+) : MovieRepository {
+    override fun discoverMovies(
+        deviceLanguage: DeviceLanguage,
+        sortType: SortType,
+        sortOrder: SortOrder,
+        genresParam: GenresParam,
+        watchProvidersParam: WatchProvidersParam,
+        voteRange: ClosedFloatingPointRange<Float>,
+        onlyWithPosters: Boolean,
+        onlyWithScore: Boolean,
+        onlyWithOverview: Boolean,
+        releaseDateRange: DateRange
     ): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
@@ -53,7 +52,7 @@ class MovieRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun popularMovies(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<Movie>> =
+    override fun popularMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
@@ -64,7 +63,7 @@ class MovieRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun upcomingMovies(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<Movie>> =
+    override fun upcomingMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
@@ -75,7 +74,7 @@ class MovieRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun trendingMovies(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<Movie>> =
+    override fun trendingMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
@@ -86,7 +85,7 @@ class MovieRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun topRatedMovies(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<Movie>> =
+    override fun topRatedMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
@@ -97,7 +96,7 @@ class MovieRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun nowPlayingMovies(deviceLanguage: DeviceLanguage = DeviceLanguage.default): Flow<PagingData<Movie>> =
+    override fun nowPlayingMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
         ) {
@@ -108,9 +107,9 @@ class MovieRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun similarMovies(
+    override fun similarMovies(
         movieId: Int,
-        deviceLanguage: DeviceLanguage = DeviceLanguage.default
+        deviceLanguage: DeviceLanguage
     ): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
@@ -122,9 +121,9 @@ class MovieRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun moviesRecommendations(
+    override fun moviesRecommendations(
         movieId: Int,
-        deviceLanguage: DeviceLanguage = DeviceLanguage.default
+        deviceLanguage: DeviceLanguage
     ): Flow<PagingData<Movie>> =
         Pager(
             PagingConfig(pageSize = 20)
@@ -136,21 +135,21 @@ class MovieRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun movieDetails(
+    override fun movieDetails(
         movieId: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String
     ): Call<MovieDetails> = apiHelper.getMovieDetails(movieId, isoCode)
 
-    fun movieCredits(
+    override fun movieCredits(
         movieId: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
+        isoCode: String
     ): Call<Credits> = apiHelper.getMovieCredits(movieId, isoCode)
 
-    fun movieImages(
+    override fun movieImages(
         movieId: Int
     ): Call<ImagesResponse> = apiHelper.getMovieImages(movieId)
 
-    fun movieReviews(movieId: Int): Flow<PagingData<Review>> =
+    override fun movieReviews(movieId: Int): Flow<PagingData<Review>> =
         Pager(
             PagingConfig(pageSize = 5)
         ) {
@@ -160,19 +159,20 @@ class MovieRepository @Inject constructor(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    fun movieReview(movieId: Int): Call<ReviewsResponse> = apiHelper.getMovieReview(movieId)
+    override fun movieReview(movieId: Int): Call<ReviewsResponse> =
+        apiHelper.getMovieReview(movieId)
 
-    fun collection(
-        collectionId: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
-    ): Call<CollectionResponse> = apiHelper.getCollection(collectionId, isoCode)
+    override fun collection(collectionId: Int, isoCode: String): Call<CollectionResponse> =
+        apiHelper.getCollection(collectionId, isoCode)
 
-    fun watchProviders(movieId: Int): Call<WatchProvidersResponse> =
+    override fun watchProviders(movieId: Int): Call<WatchProvidersResponse> =
         apiHelper.getMovieWatchProviders(movieId)
 
-    fun getExternalIds(movieId: Int) = apiHelper.getMovieExternalIds(movieId)
+    override fun getExternalIds(movieId: Int) = apiHelper.getMovieExternalIds(movieId)
 
-    fun getMovieVideos(movieId: Int, isoCode: String = DeviceLanguage.default.languageCode) =
-        apiHelper.getMovieVideos(movieId, isoCode)
+    override fun getMovieVideos(
+        movieId: Int,
+        isoCode: String
+    ) = apiHelper.getMovieVideos(movieId, isoCode)
 
 }
