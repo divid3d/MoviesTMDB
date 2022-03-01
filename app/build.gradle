@@ -27,6 +27,13 @@ plugins {
 android {
     compileSdk 31
 
+    packagingOptions {
+        exclude "**/attach_hotspot_windows.dll"
+        exclude "META-INF/licenses/**"
+        exclude "META-INF/AL2.0"
+        exclude "META-INF/LGPL2.1"
+    }
+
     defaultConfig {
         applicationId "com.example.moviesapp"
         minSdk 21
@@ -36,7 +43,7 @@ android {
 
         buildConfigField("String", "TMDB_API_KEY", getTmdbApiKey())
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.example.moviesapp.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary true
         }
@@ -144,16 +151,24 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-perf-ktx'
 
-    implementation "io.coil-kt:coil-compose:1.4.0"
-    implementation "androidx.palette:palette-ktx:1.0.0"
-    implementation "androidx.core:core-splashscreen:1.0.0-beta01"
+    implementation "io.coil-kt:coil-compose:$coil_compose_version"
+    implementation "androidx.palette:palette-ktx:$palette_version"
+    implementation "androidx.core:core-splashscreen:$splashscreen_version"
     implementation 'androidx.core:core-ktx:1.7.0'
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
-    implementation 'androidx.activity:activity-compose:1.4.0'
+    implementation "androidx.constraintlayout:constraintlayout-compose:$constraint_layout_compose_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecyclea_runtime_version"
+    implementation "androidx.activity:activity-compose:$activity_compose_version"
     testImplementation 'junit:junit:4.13.2'
+
+    //Instrumented Unit Tests
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
+    androidTestImplementation "android.arch.core:core-testing:$core_testing_version"
+    androidTestImplementation "com.google.truth:truth:$truth_version"
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "org.mockito:mockito-core:$mockito_version"
+    androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_android_testing_version"
+    kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_android_testing_version"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
