@@ -62,9 +62,10 @@ class RecentBrowsedMoviesDaoTest {
 
         recentlyBrowsedMoviesDao.addRecentlyBrowsedMovie(*recentBrowsedMovies.toTypedArray())
 
-        val dataSource =
-            recentlyBrowsedMoviesDao.recentBrowsedMovie().create() as LimitOffsetDataSource
-        val items: List<RecentlyBrowsedMovie> = dataSource.loadRange(0, moviesCount)
+        val dataSource = recentlyBrowsedMoviesDao.recentBrowsedMovie().run {
+            create() as LimitOffsetDataSource
+        }
+        val items = dataSource.loadRange(0, moviesCount)
 
         val recentBrowsedMoviesSortedByAddedDate = recentBrowsedMovies.sortedByDescending { movie ->
             movie.addedDate.time
@@ -83,9 +84,10 @@ class RecentBrowsedMoviesDaoTest {
         )
         recentlyBrowsedMoviesDao.addRecentlyBrowsedMovie(recentlyBrowsedMovie)
 
-        val dataSource =
-            recentlyBrowsedMoviesDao.recentBrowsedMovie().create() as LimitOffsetDataSource
-        val items: List<RecentlyBrowsedMovie> = dataSource.loadRange(0, 1)
+        val dataSource = recentlyBrowsedMoviesDao.recentBrowsedMovie().run {
+            create() as LimitOffsetDataSource
+        }
+        val items = dataSource.loadRange(0, 1)
 
         assertThat(items).containsExactly(recentlyBrowsedMovie)
     }
@@ -108,9 +110,10 @@ class RecentBrowsedMoviesDaoTest {
         )
         recentlyBrowsedMoviesDao.addRecentlyBrowsedMovie(newRecentlyBrowsedMovie)
 
-        val dataSource =
-            recentlyBrowsedMoviesDao.recentBrowsedMovie().create() as LimitOffsetDataSource
-        val items: List<RecentlyBrowsedMovie> = dataSource.loadRange(0, 1)
+        val dataSource = recentlyBrowsedMoviesDao.recentBrowsedMovie().run {
+            create() as LimitOffsetDataSource
+        }
+        val items = dataSource.loadRange(0, 1)
 
         assertThat(items).containsExactly(newRecentlyBrowsedMovie)
     }
@@ -128,9 +131,10 @@ class RecentBrowsedMoviesDaoTest {
         }
         recentlyBrowsedMoviesDao.addRecentlyBrowsedMovie(*recentBrowsedMovies.toTypedArray())
 
-        val dataSource =
-            recentlyBrowsedMoviesDao.recentBrowsedMovie().create() as LimitOffsetDataSource
-        val items: List<RecentlyBrowsedMovie> = dataSource.loadRange(0, moviesCount)
+        val dataSource = recentlyBrowsedMoviesDao.recentBrowsedMovie().run {
+            create() as LimitOffsetDataSource
+        }
+        val items = dataSource.loadRange(0, moviesCount)
 
         val recentBrowsedMoviesSortedByAddedDate = recentBrowsedMovies.sortedByDescending { movie ->
             movie.addedDate.time
@@ -157,73 +161,94 @@ class RecentBrowsedMoviesDaoTest {
         assertThat(count).isEqualTo(moviesCount)
     }
 
-//    @Test
-//    fun limitNumberOfRecentBrowsedMovies() = runTest {
-//        val maxItems = 100
-//        val moviesCount = 100
-//        val recentBrowsedMovies = List(moviesCount) { index ->
-//            RecentlyBrowsedMovie(
-//                id = index,
-//                posterPath = null,
-//                title = "Test title $index",
-//                addedDate = Date()
-//            )
-//        }
-//        recentlyBrowsedMoviesDao.addRecentlyBrowsedMovie(*recentBrowsedMovies.toTypedArray())
-//
-//        val newMoviesCount = 50
-//        val newRecentBrowsedMovies = List(newMoviesCount) { index ->
-//            RecentlyBrowsedMovie(
-//                id = index + moviesCount,
-//                posterPath = null,
-//                title = "Test title ${index + moviesCount}",
-//                addedDate = Date()
-//            )
-//        }
-//        recentlyBrowsedMoviesDao.deleteAndAdd(
-//            *newRecentBrowsedMovies.toTypedArray(),
-//            maxItems = maxItems
-//        )
-//
-//        val dataSource =
-//            recentlyBrowsedMoviesDao.recentBrowsedMovies().create() as LimitOffsetDataSource
-//        val items: List<RecentlyBrowsedMovie> = dataSource.loadRange(0, maxItems)
-//
-//        val recentBrowsedMoviesSortedByAddedDate = buildList {
-//            addAll(recentBrowsedMovies)
-//            addAll(newRecentBrowsedMovies)
-//        }.sortedByDescending { movie ->
-//            movie.addedDate.time
-//        }.take(maxItems)
-//
-//        assertThat(items).containsExactlyElementsIn(recentBrowsedMoviesSortedByAddedDate).inOrder()
-//    }
+    @Test
+    fun clearRecentBrowsedMovies() = runTest {
+        val moviesCount = 20
+        val recentBrowsedMovies = List(moviesCount) { index ->
+            RecentlyBrowsedMovie(
+                id = index,
+                posterPath = null,
+                title = "Test title $index",
+                addedDate = Date()
+            )
+        }
+        recentlyBrowsedMoviesDao.addRecentlyBrowsedMovie(*recentBrowsedMovies.toTypedArray())
+
+        recentlyBrowsedMoviesDao.clear()
+
+        val dataSource = recentlyBrowsedMoviesDao.recentBrowsedMovie().run {
+            create() as LimitOffsetDataSource
+        }
+        val items = dataSource.loadRange(0, moviesCount)
+
+        assertThat(items).isEmpty()
+    }
+
+    @Test
+    fun limitNumberOfRecentBrowsedMovies() = runTest {
+        val maxItems = 100
+        val moviesCount = 100
+        val recentBrowsedMovies = List(moviesCount) { index ->
+            RecentlyBrowsedMovie(
+                id = index,
+                posterPath = null,
+                title = "Test title $index",
+                addedDate = Date()
+            )
+        }
+        recentlyBrowsedMoviesDao.addRecentlyBrowsedMovie(*recentBrowsedMovies.toTypedArray())
+
+        val newMoviesCount = 50
+        val newRecentBrowsedMovies = List(newMoviesCount) { index ->
+            RecentlyBrowsedMovie(
+                id = index + moviesCount,
+                posterPath = null,
+                title = "Test title ${index + moviesCount}",
+                addedDate = Date()
+            )
+        }
+        recentlyBrowsedMoviesDao.deleteAndAdd(
+            *newRecentBrowsedMovies.toTypedArray(),
+            maxItems = maxItems
+        )
+
+        val dataSource = recentlyBrowsedMoviesDao.recentBrowsedMovie().run {
+            create() as LimitOffsetDataSource
+        }
+        val items = dataSource.loadRange(0, maxItems)
+
+        val currentRecentBrowsedMovies = buildList {
+            addAll(recentBrowsedMovies)
+            addAll(newRecentBrowsedMovies)
+        }.takeLast(maxItems)
+
+        assertThat(items).containsExactlyElementsIn(currentRecentBrowsedMovies)
+    }
 
 
-//    @Test
-//    fun deleteLastBrowsedMovie() = runTest {
-//        val moviesCount = 20
-//        val recentBrowsedMovies = List(moviesCount) { index ->
-//            RecentlyBrowsedMovie(
-//                id = index,
-//                posterPath = null,
-//                title = "Test title $index",
-//                addedDate = Date()
-//            )
-//        }
-//
-//        recentlyBrowsedMoviesDao.addRecentlyBrowsedMovie(*recentBrowsedMovies.toTypedArray())
-//        recentlyBrowsedMoviesDao.deleteLast()
-//
-//        val dataSource =
-//            recentlyBrowsedMoviesDao.recentBrowsedMovies().create() as LimitOffsetDataSource
-//        val items: List<RecentlyBrowsedMovie> = dataSource.loadRange(0, moviesCount)
-//
-//        val recentBrowsedMoviesWithoutOldest = recentBrowsedMovies.sortedByDescending { movie ->
-//            movie.addedDate.time
-//        }.take(moviesCount - 1)
-//
-//        assertThat(items).containsExactlyElementsIn(recentBrowsedMoviesWithoutOldest).inOrder()
-//    }
+    @Test
+    fun deleteLastBrowsedMovie() = runTest {
+        val moviesCount = 20
+        val recentBrowsedMovies = List(moviesCount) { index ->
+            RecentlyBrowsedMovie(
+                id = index,
+                posterPath = null,
+                title = "Test title $index",
+                addedDate = Date()
+            )
+        }
+
+        recentlyBrowsedMoviesDao.addRecentlyBrowsedMovie(*recentBrowsedMovies.toTypedArray())
+        recentlyBrowsedMoviesDao.deleteLast()
+
+        val dataSource = recentlyBrowsedMoviesDao.recentBrowsedMovie().run {
+            create() as LimitOffsetDataSource
+        }
+        val items = dataSource.loadRange(0, moviesCount)
+
+        val recentBrowsedMoviesWithoutOldest = recentBrowsedMovies.takeLast(moviesCount - 1)
+
+        assertThat(items).containsExactlyElementsIn(recentBrowsedMoviesWithoutOldest)
+    }
 
 }
