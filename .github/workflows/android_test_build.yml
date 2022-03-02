@@ -9,9 +9,13 @@ jobs:
     strategy:
       matrix:
         api-level: [ 23, 26, 29, 30 ]
-        target: [ default, google_apis ]
 
     steps:
+      - name: JDK setup
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+          
       - uses: actions/checkout@v2
 
       - name: Make gradlew executable
@@ -21,7 +25,6 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
-          target: ${{ matrix.target }}
           arch: x86_64
           profile: Nexus 6
           script: ./gradlew connectedCheck
