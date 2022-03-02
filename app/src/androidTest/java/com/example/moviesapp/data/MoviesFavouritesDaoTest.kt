@@ -6,7 +6,7 @@ import androidx.test.filters.SmallTest
 import com.example.moviesapp.db.FavouritesDatabase
 import com.example.moviesapp.db.FavouritesMoviesDao
 import com.example.moviesapp.model.MovieFavourite
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -57,12 +57,10 @@ class MoviesFavouritesDaoTest {
             originalTitle = "Test original title",
             addedDate = Date()
         )
-
         favouritesMoviesDao.likeMovie(favouriteMovie)
-
         val ids = favouritesMoviesDao.favouriteMoviesIds().first()
 
-        Truth.assertThat(ids).contains(favouriteMovie.id)
+        assertThat(ids).contains(favouriteMovie.id)
     }
 
     @Test
@@ -74,18 +72,15 @@ class MoviesFavouritesDaoTest {
             originalTitle = "Test original title",
             addedDate = Date()
         )
-
         favouritesMoviesDao.likeMovie(favouriteMovie)
-
         val idsAfterLike = favouritesMoviesDao.favouriteMoviesIds().first()
 
-        Truth.assertThat(idsAfterLike).contains(favouriteMovie.id)
+        assertThat(idsAfterLike).contains(favouriteMovie.id)
 
         favouritesMoviesDao.unlikeMovie(favouriteMovie.id)
-
         val idsAfterUnlike = favouritesMoviesDao.favouriteMoviesIds().first()
 
-        Truth.assertThat(idsAfterUnlike).isEmpty()
+        assertThat(idsAfterUnlike).isEmpty()
     }
 
     @Test
@@ -100,12 +95,10 @@ class MoviesFavouritesDaoTest {
                 addedDate = Date()
             )
         }.toTypedArray()
-
         favouritesMoviesDao.likeMovie(*favouriteMovies)
-
         val ids = favouritesMoviesDao.favouriteMoviesIds().first()
 
-        Truth.assertThat(ids).containsExactlyElementsIn(ids)
+        assertThat(ids).containsExactlyElementsIn(ids)
     }
 
     @Test
@@ -120,13 +113,16 @@ class MoviesFavouritesDaoTest {
                 addedDate = Date()
             )
         }
-
         favouritesMoviesDao.likeMovie(*favouriteMovies.toTypedArray())
 
         val dataSource = favouritesMoviesDao.favouriteMovies().create() as LimitOffsetDataSource
         val items: List<MovieFavourite> = dataSource.loadRange(0, moviesCount)
 
-        Truth.assertThat(items).containsExactlyElementsIn(favouriteMovies)
+        val favouriteMoviesSortedByAddedDate = favouriteMovies.sortedByDescending { movie ->
+            movie.addedDate.time
+        }
+
+        assertThat(items).containsExactlyElementsIn(favouriteMoviesSortedByAddedDate).inOrder()
     }
 
     @Test
@@ -141,12 +137,10 @@ class MoviesFavouritesDaoTest {
                 addedDate = Date()
             )
         }.toTypedArray()
-
         favouritesMoviesDao.likeMovie(*favouriteMovies)
-
         val count = favouritesMoviesDao.favouriteMoviesCount().first()
 
-        Truth.assertThat(favouriteMovies.count()).isEqualTo(count)
+        assertThat(favouriteMovies.count()).isEqualTo(count)
     }
 
 }

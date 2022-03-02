@@ -62,7 +62,7 @@ class RecentlyBrowsedRepositoryImpl(
     override fun recentlyBrowsedMovies(): Flow<PagingData<RecentlyBrowsedMovie>> = Pager(
         PagingConfig(pageSize = 20)
     ) {
-        recentlyBrowsedMoviesDao.recentBrowsedMovie().asPagingSourceFactory()()
+        recentlyBrowsedMoviesDao.recentBrowsedMovies().asPagingSourceFactory()()
     }.flow.flowOn(defaultDispatcher)
 
     override fun addRecentlyBrowsedTvSeries(tvSeriesDetails: TvSeriesDetails) {

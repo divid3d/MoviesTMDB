@@ -3,8 +3,31 @@ name: Android Build
 on: pull_request
 
 jobs:
-  build:
+  test:
+    runs-on: macos-latest
 
+    strategy:
+      matrix:
+        api-level: [ 23, 26, 29, 30 ]
+        target: [ default, google_apis ]
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
+          arch: x86_64
+          profile: Nexus 6
+          script: ./gradlew connectedCheck
+
+  build:
     runs-on: ubuntu-latest
 
     steps:
