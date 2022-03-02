@@ -21,7 +21,7 @@ buildscript {
 
         //Instrumentation Tests
         coroutines_test_version = "1.6.0-RC"
-        core_testing_version = "1.1.1"
+        core_testing_version = "2.1.0"
         truth_version = "1.1.3"
         mockito_version = "4.3.1"
         hilt_android_testing_version = "2.38.1"
