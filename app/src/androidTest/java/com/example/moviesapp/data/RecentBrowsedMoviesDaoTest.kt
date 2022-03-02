@@ -63,7 +63,7 @@ class RecentBrowsedMoviesDaoTest {
         recentlyBrowsedMoviesDao.addRecentlyBrowsedMovie(*recentBrowsedMovies.toTypedArray())
 
         val dataSource =
-            recentlyBrowsedMoviesDao.recentBrowsedMovies().create() as LimitOffsetDataSource
+            recentlyBrowsedMoviesDao.recentBrowsedMovie().create() as LimitOffsetDataSource
         val items: List<RecentlyBrowsedMovie> = dataSource.loadRange(0, moviesCount)
 
         assertThat(items).containsExactlyElementsIn(recentBrowsedMovies).inOrder()
@@ -80,7 +80,7 @@ class RecentBrowsedMoviesDaoTest {
         recentlyBrowsedMoviesDao.addRecentlyBrowsedMovie(recentlyBrowsedMovie)
 
         val dataSource =
-            recentlyBrowsedMoviesDao.recentBrowsedMovies().create() as LimitOffsetDataSource
+            recentlyBrowsedMoviesDao.recentBrowsedMovie().create() as LimitOffsetDataSource
         val items: List<RecentlyBrowsedMovie> = dataSource.loadRange(0, 1)
 
         assertThat(items).containsExactly(recentlyBrowsedMovie)
@@ -105,7 +105,7 @@ class RecentBrowsedMoviesDaoTest {
         recentlyBrowsedMoviesDao.addRecentlyBrowsedMovie(newRecentlyBrowsedMovie)
 
         val dataSource =
-            recentlyBrowsedMoviesDao.recentBrowsedMovies().create() as LimitOffsetDataSource
+            recentlyBrowsedMoviesDao.recentBrowsedMovie().create() as LimitOffsetDataSource
         val items: List<RecentlyBrowsedMovie> = dataSource.loadRange(0, 1)
 
         assertThat(items).containsExactly(newRecentlyBrowsedMovie)
@@ -125,7 +125,7 @@ class RecentBrowsedMoviesDaoTest {
         recentlyBrowsedMoviesDao.addRecentlyBrowsedMovie(*recentBrowsedMovies.toTypedArray())
 
         val dataSource =
-            recentlyBrowsedMoviesDao.recentBrowsedMovies().create() as LimitOffsetDataSource
+            recentlyBrowsedMoviesDao.recentBrowsedMovie().create() as LimitOffsetDataSource
         val items: List<RecentlyBrowsedMovie> = dataSource.loadRange(0, moviesCount)
 
         val recentBrowsedMoviesSortedByAddedDate = recentBrowsedMovies.sortedByDescending { movie ->

@@ -8,7 +8,7 @@ import com.example.moviesapp.model.RecentlyBrowsedMovie
 interface RecentlyBrowsedMoviesDao {
 
     @Query("SELECT * FROM RecentlyBrowsedMovie ORDER BY added_date DESC")
-    fun recentBrowsedMovies(): DataSource.Factory<Int, RecentlyBrowsedMovie>
+    fun recentBrowsedMovie(): DataSource.Factory<Int, RecentlyBrowsedMovie>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addRecentlyBrowsedMovie(vararg recentlyBrowsedMovie: RecentlyBrowsedMovie)
