@@ -19,5 +19,5 @@ data class MovieFavourite(
     val originalTitle: String,
 
     @ColumnInfo(name = "added_date")
-    val addedDate: Date?
+    val addedDate: Date
 ) : Presentable

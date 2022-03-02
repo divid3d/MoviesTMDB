@@ -16,5 +16,5 @@ data class RecentlyBrowsedMovie(
     override val title: String,
 
     @ColumnInfo(name = "added_date")
-    val addedDate: Date?
+    val addedDate: Date
 ) : Presentable

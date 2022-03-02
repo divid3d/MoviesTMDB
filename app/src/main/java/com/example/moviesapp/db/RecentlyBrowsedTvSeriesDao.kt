@@ -1,7 +1,10 @@
 package com.example.moviesapp.db
 
 import androidx.paging.DataSource
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.example.moviesapp.model.RecentlyBrowsedTvSeries
 
 @Dao
@@ -16,10 +19,9 @@ interface RecentlyBrowsedTvSeriesDao {
     @Query("SELECT COUNT(id) FROM RecentlyBrowsedTvSeries")
     suspend fun recentlyBrowsedTvSeriesCount(): Int
 
-    @Query("DELETE FROM RecentlyBrowsedTvSeries WHERE added_date = (SELECT MIN(added_date) FROM RecentlyBrowsedTvSeries)")
-    suspend fun deleteLast()
+    @Query("DELETE FROM RecentlyBrowsedTvSeries WHERE id IN (SELECT id FROM RecentlyBrowsedTvSeries ORDER BY added_date ASC LIMIT :limit)")
+    suspend fun deleteLast(limit: Int = 1)
 
-    @Transaction
     suspend fun deleteAndAdd(
         vararg recentlyBrowsedTvSeries: RecentlyBrowsedTvSeries,
         maxItems: Int = 100
@@ -29,10 +31,7 @@ interface RecentlyBrowsedTvSeriesDao {
 
         val removeCount = (currentCount + addCount - maxItems).coerceAtLeast(0)
 
-        repeat(removeCount) {
-            deleteLast()
-        }
-
+        deleteLast(removeCount)
         addRecentlyBrowsedTvSeries(*recentlyBrowsedTvSeries)
     }
 

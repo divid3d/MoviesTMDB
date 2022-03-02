@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Singleton
@@ -80,14 +81,15 @@ class FavouritesRepositoryImpl(
     }.flow
 
     override fun getFavouritesMoviesIds(): Flow<List<Int>> =
-        favouritesMoviesDao.favouriteMoviesIds()
+        favouritesMoviesDao.favouriteMoviesIds().distinctUntilChanged()
 
     override fun getFavouriteTvSeriesIds(): Flow<List<Int>> =
-        favouritesTvSeriesDao.favouriteTvSeriesIds()
+        favouritesTvSeriesDao.favouriteTvSeriesIds().distinctUntilChanged()
 
-    override fun getFavouriteMoviesCount(): Flow<Int> = favouritesMoviesDao.favouriteMoviesCount()
+    override fun getFavouriteMoviesCount(): Flow<Int> =
+        favouritesMoviesDao.favouriteMoviesCount().distinctUntilChanged()
 
     override fun getFavouriteTvSeriesCount(): Flow<Int> =
-        favouritesTvSeriesDao.favouriteTvSeriesCount()
+        favouritesTvSeriesDao.favouriteTvSeriesCount().distinctUntilChanged()
 
 }
