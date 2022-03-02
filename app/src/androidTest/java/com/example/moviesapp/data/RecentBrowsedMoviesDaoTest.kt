@@ -66,7 +66,11 @@ class RecentBrowsedMoviesDaoTest {
             recentlyBrowsedMoviesDao.recentBrowsedMovie().create() as LimitOffsetDataSource
         val items: List<RecentlyBrowsedMovie> = dataSource.loadRange(0, moviesCount)
 
-        assertThat(items).containsExactlyElementsIn(recentBrowsedMovies).inOrder()
+        val recentBrowsedMoviesSortedByAddedDate = recentBrowsedMovies.sortedByDescending { movie ->
+            movie.addedDate.time
+        }
+
+        assertThat(items).containsExactlyElementsIn(recentBrowsedMoviesSortedByAddedDate).inOrder()
     }
 
     @Test
