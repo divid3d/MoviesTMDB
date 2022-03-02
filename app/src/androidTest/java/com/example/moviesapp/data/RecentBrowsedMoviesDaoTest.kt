@@ -1,6 +1,6 @@
 package com.example.moviesapp.data
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.paging.LimitOffsetDataSource
 import androidx.test.filters.SmallTest
 import com.example.moviesapp.db.RecentlyBrowsedDatabase
