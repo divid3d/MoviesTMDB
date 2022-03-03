@@ -155,9 +155,19 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout-compose:$constraint_layout_compose_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecyclea_runtime_version"
     implementation "androidx.activity:activity-compose:$activity_compose_version"
+
+    //Unit Test
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
+    testImplementation "com.google.truth:truth:$truth_version"
+    testImplementation "androidx.arch.core:core-testing:$core_testing_version"
+    testImplementation "com.google.dagger:hilt-android-testing:$hilt_android_testing_version"
+    testImplementation 'androidx.test.ext:junit:1.1.3'
     testImplementation 'junit:junit:4.13.2'
+    kaptTest "com.google.dagger:hilt-android-compiler:$hilt_android_testing_version"
 
     //Instrumented Unit Tests
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:$mock_webserver_vesion"
+    androidTestImplementation 'junit:junit:4.13.2'
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
     androidTestImplementation "androidx.arch.core:core-testing:$core_testing_version"
     androidTestImplementation "com.google.truth:truth:$truth_version"

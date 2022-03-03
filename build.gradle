@@ -5,7 +5,7 @@ buildscript {
         hilt_version = "2.38.1"
         room_version = "2.4.2"
         okhttp_version = "4.9.3"
-        retrofit_version = "2.9.0"
+        retrofit_version = "2.7.2"
         hilt_navigation_compose_version = "1.0.0"
         paging_compose_version = "1.0.0-alpha14"
         moshi_version = "1.13.0"
@@ -26,6 +26,9 @@ buildscript {
         mockito_version = "4.3.1"
         hilt_android_testing_version = "2.38.1"
         espresso_version = "3.4.0"
+
+        //Unit Test
+        mock_webserver_vesion = "4.9.3"
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 

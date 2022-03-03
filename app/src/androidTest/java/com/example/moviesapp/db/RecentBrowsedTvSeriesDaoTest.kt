@@ -1,10 +1,8 @@
-package com.example.moviesapp.data
+package com.example.moviesapp.db
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.paging.LimitOffsetDataSource
 import androidx.test.filters.SmallTest
-import com.example.moviesapp.db.RecentlyBrowsedDatabase
-import com.example.moviesapp.db.RecentlyBrowsedTvSeriesDao
 import com.example.moviesapp.model.RecentlyBrowsedTvSeries
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule

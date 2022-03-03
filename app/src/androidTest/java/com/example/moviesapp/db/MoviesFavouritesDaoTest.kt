@@ -1,10 +1,8 @@
-package com.example.moviesapp.data
+package com.example.moviesapp.db
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.paging.LimitOffsetDataSource
 import androidx.test.filters.SmallTest
-import com.example.moviesapp.db.FavouritesDatabase
-import com.example.moviesapp.db.FavouritesMoviesDao
 import com.example.moviesapp.model.MovieFavourite
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -99,6 +97,34 @@ class MoviesFavouritesDaoTest {
         val ids = favouritesMoviesDao.favouriteMoviesIds().first()
 
         assertThat(ids).containsExactlyElementsIn(ids)
+    }
+
+    @Test
+    fun addFavouriteMovieConflict() = runTest {
+        val favouriteMovie = MovieFavourite(
+            id = 0,
+            posterPath = null,
+            title = "Test title",
+            originalTitle = "Test original title",
+            addedDate = Date()
+        )
+        favouritesMoviesDao.likeMovie(favouriteMovie)
+
+        val newFavouriteMovie = MovieFavourite(
+            id = 0,
+            posterPath = null,
+            title = "Test new title",
+            originalTitle = "Test original new title",
+            addedDate = Date()
+        )
+        favouritesMoviesDao.likeMovie(newFavouriteMovie)
+
+        val dataSource = favouritesMoviesDao.favouriteMovies().run {
+            create() as LimitOffsetDataSource
+        }
+        val items = dataSource.loadRange(0, 1)
+
+        assertThat(items).containsExactly(newFavouriteMovie)
     }
 
     @Test
