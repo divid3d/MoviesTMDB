@@ -49,7 +49,7 @@ class RelatedMoviesViewModel @Inject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.Eagerly,
+        SharingStarted.WhileSubscribed(10),
         RelatedMoviesScreenUiState.getDefault(navArgs.type)
     )
 }

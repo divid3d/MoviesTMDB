@@ -43,7 +43,7 @@ class SearchViewModel @Inject constructor(
             searchState = searchState,
             queryLoading = queryLoading
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, SearchScreenUiState.default)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), SearchScreenUiState.default)
 
     fun onQueryChange(queryText: String) {
         viewModelScope.launch {

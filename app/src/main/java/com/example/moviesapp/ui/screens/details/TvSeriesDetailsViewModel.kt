@@ -72,7 +72,11 @@ class TvSeriesDetailsViewModel @Inject constructor(
             watchProviders = watchProviders,
             hasReviews = hasReviews
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, AdditionalTvSeriesDetailsInfo.default)
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(10),
+        AdditionalTvSeriesDetailsInfo.default
+    )
 
     private val associatedTvSeries: StateFlow<AssociatedTvSeries> =
         deviceLanguage.map { deviceLanguage ->
@@ -86,7 +90,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
                     deviceLanguage = deviceLanguage
                 )
             )
-        }.stateIn(viewModelScope, SharingStarted.Eagerly, AssociatedTvSeries.default)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), AssociatedTvSeries.default)
 
     private val associatedContent: StateFlow<AssociatedContent> = combine(
         tvSeriesBackdrops, videos, externalIds
@@ -96,7 +100,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
             videos = videos,
             externalIds = externalIds
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, AssociatedContent.default)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), AssociatedContent.default)
 
     val uiState: StateFlow<TvSeriesDetailsScreenUiState> = combine(
         tvSeriesDetails, additionalInfo, associatedTvSeries, associatedContent, error
@@ -111,7 +115,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.Eagerly,
+        SharingStarted.WhileSubscribed(10),
         TvSeriesDetailsScreenUiState.getDefault(navArgs.startRoute)
     )
 

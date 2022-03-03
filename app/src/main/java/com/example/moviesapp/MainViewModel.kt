@@ -32,7 +32,7 @@ class MainViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     val imageUrlParser: StateFlow<ImageUrlParser?> = configRepository.getImageUrlParser()
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     val isConfigInitialised: StateFlow<Boolean> = configRepository.isInitialised()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)

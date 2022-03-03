@@ -53,7 +53,7 @@ class BrowseMoviesViewModel @Inject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.Eagerly,
+        SharingStarted.WhileSubscribed(10),
         BrowseMoviesScreenUiState.getDefault(navArgs.movieType)
     )
 

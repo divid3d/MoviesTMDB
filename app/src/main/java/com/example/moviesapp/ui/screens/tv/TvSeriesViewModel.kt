@@ -36,7 +36,7 @@ class TvSeriesViewModel @Inject constructor(
             trending = tvSeriesRepository.trendingTvSeries(deviceLanguage),
             airingToday = tvSeriesRepository.airingTodayTvSeries(deviceLanguage)
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, TvSeriesState.default)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), TvSeriesState.default)
 
     val tvScreenUiState: StateFlow<TvScreenUiState> = tvSeriesState.map { tvSeriesState ->
         TvScreenUiState(
@@ -44,7 +44,7 @@ class TvSeriesViewModel @Inject constructor(
             favourites = favouritesRepository.favouritesTvSeries(),
             recentlyBrowsed = recentlyBrowsedRepository.recentlyBrowsedTvSeries()
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, TvScreenUiState.default)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), TvScreenUiState.default)
 
     private fun PagingData<TvSeries>.filterCompleteInfo(): PagingData<TvSeries> {
         return filter { tvSeries ->

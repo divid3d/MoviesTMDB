@@ -74,7 +74,11 @@ class MoviesDetailsViewModel @Inject constructor(
             credits = credits,
             hasReviews = hasReviews
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, AdditionalMovieDetailsInfo.default)
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(10),
+        AdditionalMovieDetailsInfo.default
+    )
 
     private val associatedMovies: StateFlow<AssociatedMovies> = combine(
         deviceLanguage, movieCollection
@@ -90,7 +94,7 @@ class MoviesDetailsViewModel @Inject constructor(
                 deviceLanguage = deviceLanguage
             )
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, AssociatedMovies.default)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), AssociatedMovies.default)
 
     private val associatedContent: StateFlow<AssociatedContent> = combine(
         movieBackdrops, videos, externalIds
@@ -100,7 +104,7 @@ class MoviesDetailsViewModel @Inject constructor(
             videos = videos,
             externalIds = externalIds
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, AssociatedContent.default)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), AssociatedContent.default)
 
     val uiState: StateFlow<MovieDetailsScreenUiState> = combine(
         movieDetails, additionalInfo, associatedMovies, associatedContent, error
@@ -115,7 +119,7 @@ class MoviesDetailsViewModel @Inject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.Eagerly,
+        SharingStarted.WhileSubscribed(10),
         MovieDetailsScreenUiState.getDefault(navArgs.startRoute)
     )
 

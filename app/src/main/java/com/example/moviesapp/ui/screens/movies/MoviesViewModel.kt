@@ -36,7 +36,7 @@ class MoviesViewModel @Inject constructor(
                 pagingDate.filterCompleteInfo()
             }
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, MoviesState.default)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), MoviesState.default)
 
     val uiState: StateFlow<MovieScreenUiState> = moviesState.map { moviesState ->
         MovieScreenUiState(
@@ -44,7 +44,7 @@ class MoviesViewModel @Inject constructor(
             favourites = favouritesRepository.favouriteMovies(),
             recentlyBrowsed = recentlyBrowsedRepository.recentlyBrowsedMovies()
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, MovieScreenUiState.default)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), MovieScreenUiState.default)
 
     private fun PagingData<Movie>.filterCompleteInfo(): PagingData<Movie> {
         return filter { tvSeries ->

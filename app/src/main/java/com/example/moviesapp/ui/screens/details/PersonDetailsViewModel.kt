@@ -50,7 +50,7 @@ class PersonDetailsViewModel @Inject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.Eagerly,
+        SharingStarted.WhileSubscribed(10),
         PersonDetailsScreenUiState.getDefault(navArgs.startRoute)
     )
 

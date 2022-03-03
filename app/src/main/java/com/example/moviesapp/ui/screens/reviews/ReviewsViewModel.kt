@@ -28,5 +28,5 @@ class ReviewsViewModel @Inject constructor(
                 else -> emptyFlow()
             }
         )
-    ).stateIn(viewModelScope, SharingStarted.Eagerly, ReviewsScreenUiState.default)
+    ).stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), ReviewsScreenUiState.default)
 }

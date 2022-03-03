@@ -53,7 +53,7 @@ class BrowseTvSeriesViewModel @Inject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.Eagerly,
+        SharingStarted.WhileSubscribed(10),
         BrowseTvSeriesScreenUiState.getDefault(navArgs.tvSeriesType)
     )
 

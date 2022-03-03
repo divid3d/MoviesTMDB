@@ -49,7 +49,11 @@ class SeasonDetailsViewModel @Inject constructor(
             episodeStills = stills,
             error = error
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, SeasonDetailsScreenUiState.default)
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(10),
+        SeasonDetailsScreenUiState.default
+    )
 
     init {
         viewModelScope.launch(Dispatchers.IO) {

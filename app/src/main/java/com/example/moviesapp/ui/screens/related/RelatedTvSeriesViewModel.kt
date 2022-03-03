@@ -49,7 +49,7 @@ class RelatedTvSeriesViewModel @Inject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.Eagerly,
+        SharingStarted.WhileSubscribed(10),
         RelatedTvSeriesScreenUiState.getDefault(navArgs.type)
     )
 }

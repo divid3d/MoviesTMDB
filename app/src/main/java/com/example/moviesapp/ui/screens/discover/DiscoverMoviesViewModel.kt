@@ -60,7 +60,11 @@ class DiscoverMoviesViewModel @Inject constructor(
             filterState = filterState,
             movies = movies
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, DiscoverMoviesScreenUiState.default)
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(10),
+        DiscoverMoviesScreenUiState.default
+    )
 
     fun onSortTypeChange(sortType: SortType) {
         viewModelScope.launch {

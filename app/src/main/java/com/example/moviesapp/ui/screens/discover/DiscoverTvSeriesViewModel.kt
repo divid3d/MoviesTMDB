@@ -60,7 +60,11 @@ class DiscoverTvSeriesViewModel @Inject constructor(
             filterState = filterState,
             tvSeries = tvSeries
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, DiscoverTvSeriesScreenUiState.default)
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(10),
+        DiscoverTvSeriesScreenUiState.default
+    )
 
     fun onSortTypeChange(sortType: SortType) {
         viewModelScope.launch {
