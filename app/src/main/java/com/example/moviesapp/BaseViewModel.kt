@@ -22,7 +22,7 @@ open class BaseViewModel : ViewModel() {
 
     fun <T> onFailure(response: ApiResponse.Failure<T>) {
         viewModelScope.launch {
-            _error.emit(response.message)
+            _error.emit(response.apiError.statusMessage)
         }
     }
 }

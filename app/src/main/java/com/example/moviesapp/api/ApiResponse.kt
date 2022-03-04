@@ -1,25 +1,22 @@
 package com.example.moviesapp.api
 
+import org.json.JSONException
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
 
 sealed class ApiResponse<out T> {
 
-    class Success<T>(response: Response<T>) : ApiResponse<T>() {
-        val data = response.body()
-    }
+    class Success<T>(val data: T?) : ApiResponse<T>()
 
-
-    class Failure<T>(response: Response<T>) : ApiResponse<T>() {
-        val message: String = response.errorBody().toString()
-    }
-
+    class Failure<T>(val apiError: ApiError) : ApiResponse<T>()
 
     class Exception<T>(val exception: Throwable) : ApiResponse<T>()
 }
 
 fun <T> ApiResponse<T>.onSuccess(onResult: ApiResponse.Success<T>.() -> Unit): ApiResponse<T> {
-    if (this is ApiResponse.Success) onResult(this)
+    if (this is ApiResponse.Success)
+        onResult(this)
     return this
 }
 
@@ -30,7 +27,8 @@ fun <T> ApiResponse<T>.onFailure(onResult: ApiResponse.Failure<*>.() -> Unit): A
 }
 
 fun <T> ApiResponse<T>.onException(onResult: ApiResponse.Exception<*>.() -> Unit): ApiResponse<T> {
-    if (this is ApiResponse.Exception<*>) onResult(this)
+    if (this is ApiResponse.Exception<*>)
+        onResult(this)
     return this
 }
 
@@ -38,9 +36,33 @@ inline fun <T> Call<T>.request(crossinline onResult: (response: ApiResponse<T>) 
     enqueue(object : retrofit2.Callback<T> {
         override fun onResponse(call: Call<T>, response: Response<T>) {
             if (response.isSuccessful) {
-                onResult(ApiResponse.Success(response))
+                onResult(ApiResponse.Success(response.body()))
             } else {
-                onResult(ApiResponse.Failure(response))
+                val code = response.code()
+                val errorBody = response.errorBody()?.toString()
+
+                val message = errorBody?.let { body ->
+                    try {
+                        JSONObject(body).getString("status_message")
+                    } catch (e: JSONException) {
+                        null
+                    }
+                }
+                val statusCode = errorBody?.let { body ->
+                    try {
+                        JSONObject(body).getInt("status_code")
+                    } catch (e: JSONException) {
+                        null
+                    }
+                }
+
+                val apiError = ApiError(
+                    errorCode = code,
+                    statusMessage = message,
+                    statusCode = statusCode
+                )
+
+                onResult(ApiResponse.Failure(apiError))
             }
         }
 
