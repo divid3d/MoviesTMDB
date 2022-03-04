@@ -27,9 +27,9 @@ import com.example.moviesapp.model.ShareDetails
 import com.example.moviesapp.other.formattedRuntime
 import com.example.moviesapp.other.timeString
 import com.example.moviesapp.other.yearString
-import com.example.moviesapp.ui.components.AdditionalInfoText
-import com.example.moviesapp.ui.components.ExpandableText
-import com.example.moviesapp.ui.components.GenresSection
+import com.example.moviesapp.ui.components.sections.GenresSection
+import com.example.moviesapp.ui.components.texts.AdditionalInfoText
+import com.example.moviesapp.ui.components.texts.ExpandableText
 import com.example.moviesapp.ui.theme.spacing
 import java.util.*
 

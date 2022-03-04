@@ -19,7 +19,7 @@ import com.example.moviesapp.R
 import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.other.CaptureSpeechToText
 import com.example.moviesapp.other.isNotEmpty
-import com.example.moviesapp.ui.components.SearchGridSection
+import com.example.moviesapp.ui.components.sections.SearchGridSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination

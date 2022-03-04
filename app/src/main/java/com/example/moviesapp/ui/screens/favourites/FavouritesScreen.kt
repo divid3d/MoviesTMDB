@@ -16,9 +16,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.model.FavouriteType
 import com.example.moviesapp.other.isNotEmpty
-import com.example.moviesapp.ui.components.FavouriteEmptyState
-import com.example.moviesapp.ui.components.FavouriteTypeSelector
-import com.example.moviesapp.ui.components.PresentableGridSection
+import com.example.moviesapp.ui.components.others.FavouriteEmptyState
+import com.example.moviesapp.ui.components.sections.PresentableGridSection
+import com.example.moviesapp.ui.components.selectors.FavouriteTypeSelector
 import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding

@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import coil.size.OriginalSize
 import coil.size.Scale
 import com.example.moviesapp.other.ImageUrlParser
-import com.example.moviesapp.ui.components.NoPhotoPresentableItem
-import com.example.moviesapp.ui.components.TmdbImage
+import com.example.moviesapp.ui.components.items.NoPhotoPresentableItem
+import com.example.moviesapp.ui.components.others.TmdbImage
 import com.example.moviesapp.ui.theme.Size
 import com.example.moviesapp.ui.theme.sizes
 

@@ -25,9 +25,9 @@ import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MovieType
-import com.example.moviesapp.ui.components.AppBar
-import com.example.moviesapp.ui.components.PresentableGridSection
 import com.example.moviesapp.ui.components.dialogs.InfoDialog
+import com.example.moviesapp.ui.components.others.AppBar
+import com.example.moviesapp.ui.components.sections.PresentableGridSection
 import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination

@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MovieDetails
 import com.example.moviesapp.other.formattedMoney
-import com.example.moviesapp.ui.components.LabeledText
+import com.example.moviesapp.ui.components.texts.LabeledText
 import com.example.moviesapp.ui.theme.spacing
 
 @Composable

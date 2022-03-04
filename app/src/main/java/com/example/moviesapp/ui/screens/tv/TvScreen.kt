@@ -19,9 +19,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.TvSeriesType
 import com.example.moviesapp.other.isNotEmpty
-import com.example.moviesapp.ui.components.PresentableSection
-import com.example.moviesapp.ui.components.PresentableTopSection
-import com.example.moviesapp.ui.components.SectionDivider
+import com.example.moviesapp.ui.components.others.SectionDivider
+import com.example.moviesapp.ui.components.sections.PresentableSection
+import com.example.moviesapp.ui.components.sections.PresentableTopSection
 import com.example.moviesapp.ui.screens.destinations.BrowseTvSeriesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.DiscoverTvSeriesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination

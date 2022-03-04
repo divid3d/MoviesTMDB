@@ -35,7 +35,10 @@ import com.example.moviesapp.R
 import com.example.moviesapp.model.SortOrder
 import com.example.moviesapp.model.SortType
 import com.example.moviesapp.other.isEmpty
-import com.example.moviesapp.ui.components.*
+import com.example.moviesapp.ui.components.buttons.FilterFloatingButton
+import com.example.moviesapp.ui.components.buttons.SortTypeDropdownButton
+import com.example.moviesapp.ui.components.others.FilterEmptyState
+import com.example.moviesapp.ui.components.sections.PresentableGridSection
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
@@ -199,7 +202,7 @@ fun DiscoverTvSeriesScreenContent(
                 .background(color = MaterialTheme.colors.background)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                AppBar(
+                com.example.moviesapp.ui.components.others.AppBar(
                     title = stringResource(R.string.discover_tv_series_appbar_title),
                     action = {
                         IconButton(onClick = onBackClicked) {

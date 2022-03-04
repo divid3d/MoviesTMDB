@@ -31,8 +31,14 @@ import com.example.moviesapp.R
 import com.example.moviesapp.other.formatted
 import com.example.moviesapp.other.ifNotNullAndEmpty
 import com.example.moviesapp.other.openVideo
-import com.example.moviesapp.ui.components.*
+import com.example.moviesapp.ui.components.chips.EpisodeChip
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
+import com.example.moviesapp.ui.components.others.AppBar
+import com.example.moviesapp.ui.components.sections.PresentableDetailsTopSection
+import com.example.moviesapp.ui.components.sections.VideosSection
+import com.example.moviesapp.ui.components.texts.ExpandableText
+import com.example.moviesapp.ui.components.texts.LabeledText
+import com.example.moviesapp.ui.components.texts.SectionLabel
 import com.example.moviesapp.ui.screens.destinations.FavouritesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination

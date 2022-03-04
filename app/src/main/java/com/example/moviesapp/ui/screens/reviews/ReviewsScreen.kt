@@ -21,8 +21,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MediaType
-import com.example.moviesapp.ui.components.AppBar
-import com.example.moviesapp.ui.components.ReviewItem
+import com.example.moviesapp.ui.components.items.ReviewItem
+import com.example.moviesapp.ui.components.others.AppBar
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

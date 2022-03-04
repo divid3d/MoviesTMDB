@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.moviesapp.model.CreditsPresentable
 import com.example.moviesapp.model.MediaType
-import com.example.moviesapp.ui.components.SectionLabel
+import com.example.moviesapp.ui.components.texts.SectionLabel
 import com.example.moviesapp.ui.theme.spacing
 
 @OptIn(ExperimentalFoundationApi::class)

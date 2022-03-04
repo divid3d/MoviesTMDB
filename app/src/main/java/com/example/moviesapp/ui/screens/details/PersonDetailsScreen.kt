@@ -30,10 +30,10 @@ import com.example.moviesapp.model.ExternalId
 import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.other.ifNotNullAndEmpty
 import com.example.moviesapp.other.openExternalId
-import com.example.moviesapp.ui.components.AppBar
-import com.example.moviesapp.ui.components.ExternalIdsSection
-import com.example.moviesapp.ui.components.SectionDivider
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
+import com.example.moviesapp.ui.components.others.AppBar
+import com.example.moviesapp.ui.components.others.SectionDivider
+import com.example.moviesapp.ui.components.sections.ExternalIdsSection
 import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.screens.details.components.CreditsList
 import com.example.moviesapp.ui.screens.details.components.PersonDetailsInfoSection

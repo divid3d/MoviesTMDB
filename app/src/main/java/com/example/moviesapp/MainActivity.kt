@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class)
-
 package com.example.moviesapp
 
 import android.os.Bundle
@@ -30,7 +28,7 @@ import coil.compose.LocalImageLoader
 import com.example.moviesapp.model.SnackBarEvent
 import com.example.moviesapp.other.ImageUrlParser
 import com.example.moviesapp.other.safeNavigate
-import com.example.moviesapp.ui.components.BottomBar
+import com.example.moviesapp.ui.components.others.BottomBar
 import com.example.moviesapp.ui.screens.NavGraphs
 import com.example.moviesapp.ui.screens.destinations.FavouritesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
@@ -48,13 +46,16 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
 
 val LocalImageUrlParser = staticCompositionLocalOf<ImageUrlParser?> { null }
 
 @AndroidEntryPoint
-@OptIn(InternalCoroutinesApi::class, ExperimentalComposeUiApi::class)
+@OptIn(
+    ExperimentalAnimationApi::class,
+    ExperimentalMaterialNavigationApi::class,
+    ExperimentalComposeUiApi::class
+)
 class MainActivity : ComponentActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()

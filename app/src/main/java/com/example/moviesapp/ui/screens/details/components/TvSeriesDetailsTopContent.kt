@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.moviesapp.R
 import com.example.moviesapp.model.TvSeriesDetails
-import com.example.moviesapp.ui.components.LabeledText
+import com.example.moviesapp.ui.components.texts.LabeledText
 import com.example.moviesapp.ui.theme.spacing
 
 @Composable

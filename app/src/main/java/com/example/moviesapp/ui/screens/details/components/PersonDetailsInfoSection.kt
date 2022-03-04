@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.moviesapp.model.PersonDetails
-import com.example.moviesapp.ui.components.ExpandableText
+import com.example.moviesapp.ui.components.texts.ExpandableText
 import com.example.moviesapp.ui.theme.spacing
 
 @Composable

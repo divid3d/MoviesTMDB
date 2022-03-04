@@ -25,9 +25,9 @@ import com.example.moviesapp.model.ExternalId
 import com.example.moviesapp.model.ShareDetails
 import com.example.moviesapp.model.TvSeriesDetails
 import com.example.moviesapp.other.yearRangeString
-import com.example.moviesapp.ui.components.AdditionalInfoText
-import com.example.moviesapp.ui.components.ExpandableText
-import com.example.moviesapp.ui.components.GenresSection
+import com.example.moviesapp.ui.components.sections.GenresSection
+import com.example.moviesapp.ui.components.texts.AdditionalInfoText
+import com.example.moviesapp.ui.components.texts.ExpandableText
 import com.example.moviesapp.ui.theme.spacing
 
 @OptIn(ExperimentalAnimationApi::class)
