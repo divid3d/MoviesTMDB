@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.paging.compose.LazyPagingItems
@@ -133,11 +132,13 @@ fun PresentableTopSection(
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .height(128.dp)
+                        .matchParentSize()
                         .background(
                             brush = Brush.verticalGradient(
-                                colors = listOf(Color.Transparent, MaterialTheme.colors.background),
+                                colors = listOf(
+                                    Color.Transparent,
+                                    MaterialTheme.colors.background
+                                )
                             )
                         )
                 )
@@ -148,7 +149,7 @@ fun PresentableTopSection(
                         .scale(backdropScale.value),
                     painter = backgroundPainter,
                     contentDescription = null,
-                    contentScale = ContentScale.FillBounds
+                    contentScale = ContentScale.FillHeight
                 )
             }
         }
@@ -156,14 +157,13 @@ fun PresentableTopSection(
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .height(126.dp)
+                .matchParentSize()
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
                             MaterialTheme.colors.background
-                        ),
+                        )
                     )
                 )
         )

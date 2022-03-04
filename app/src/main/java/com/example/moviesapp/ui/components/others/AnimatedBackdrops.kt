@@ -85,7 +85,7 @@ fun AnimatedBackdrops(
                     .scale(backdropScale.value),
                 painter = backgroundPainter,
                 contentDescription = null,
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.FillHeight
             )
         }
     }

@@ -69,14 +69,13 @@ fun PresentableDetailsTopSection(
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .height(126.dp)
+                .matchParentSize()
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
                             MaterialTheme.colors.background
-                        ),
+                        )
                     )
                 )
         )
