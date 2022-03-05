@@ -9,7 +9,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
@@ -17,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MediaType
+import com.example.moviesapp.model.SearchQuery
 import com.example.moviesapp.other.CaptureSpeechToText
 import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.ui.components.sections.SearchGridSection
@@ -29,6 +32,7 @@ import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.statusBarsPadding
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import java.util.*
 
 @Destination
 @Composable
@@ -37,8 +41,11 @@ fun AnimatedVisibilityScope.SearchScreen(
     navigator: DestinationsNavigator
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
     val onQueryChanged: (query: String) -> Unit = viewModel::onQueryChange
     val onQueryCleared: () -> Unit = viewModel::onQueryClear
+    val onAddSearchQuerySuggestion: (SearchQuery) -> Unit = viewModel::addQuerySuggestion
+
     val onResultClicked: (id: Int, type: MediaType) -> Unit = { id, type ->
         val destination = when (type) {
             MediaType.Movie -> {
@@ -59,15 +66,23 @@ fun AnimatedVisibilityScope.SearchScreen(
         }
 
         if (destination != null) {
+            val searchQuery = SearchQuery(
+                query = uiState.query.orEmpty(),
+                lastUseDate = Date()
+            )
+            onAddSearchQuerySuggestion(searchQuery)
+
             navigator.navigate(destination)
         }
     }
+    val onQuerySuggestionSelected: (String) -> Unit = viewModel::onQuerySuggestionSelected
 
     SearchScreenContent(
         uiState = uiState,
         onQueryChanged = onQueryChanged,
         onQueryCleared = onQueryCleared,
-        onResultClicked = onResultClicked
+        onResultClicked = onResultClicked,
+        onQuerySuggestionSelected = onQuerySuggestionSelected
     )
 }
 
@@ -76,9 +91,14 @@ fun SearchScreenContent(
     uiState: SearchScreenUiState,
     onQueryChanged: (query: String) -> Unit,
     onQueryCleared: () -> Unit,
-    onResultClicked: (id: Int, type: MediaType) -> Unit
+    onResultClicked: (id: Int, type: MediaType) -> Unit,
+    onQuerySuggestionSelected: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
+
+    val queryTextFieldFocusRequester = remember { FocusRequester() }
+    val clearFocus = { focusManager.clearFocus(force = true) }
+
 
     val speechToTextLauncher = rememberLauncherForActivityResult(CaptureSpeechToText()) { result ->
         if (result != null) {
@@ -99,9 +119,11 @@ fun SearchScreenContent(
                 .padding(MaterialTheme.spacing.medium)
                 .animateContentSize(),
             query = uiState.query,
+            suggestions = uiState.suggestions,
             voiceSearchAvailable = uiState.voiceSearchAvailable,
             loading = uiState.queryLoading,
             showClearButton = uiState.searchState !is SearchState.EmptyQuery,
+            focusRequester = queryTextFieldFocusRequester,
             info = {
                 AnimatedVisibility(
                     enter = fadeIn() + slideInVertically(),
@@ -114,10 +136,17 @@ fun SearchScreenContent(
                     )
                 }
             },
+            onKeyboardSearchClicked = {
+                clearFocus()
+            },
             onQueryChange = onQueryChanged,
             onQueryClear = onQueryCleared,
             onVoiceSearchClick = {
                 speechToTextLauncher.launch(null)
+            },
+            onSuggestionClick = { suggestion ->
+                clearFocus()
+                onQuerySuggestionSelected(suggestion)
             }
         )
         Crossfade(
@@ -136,7 +165,10 @@ fun SearchScreenContent(
                                 vertical = MaterialTheme.spacing.medium,
                             ),
                             state = result,
-                            onSearchResultClick = onResultClicked
+                            onSearchResultClick = { id, mediaType ->
+                                clearFocus()
+                                onResultClicked(id, mediaType)
+                            }
                         )
                     } else {
                         SearchEmptyState(

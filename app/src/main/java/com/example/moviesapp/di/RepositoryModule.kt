@@ -3,10 +3,7 @@ package com.example.moviesapp.di
 import android.content.Context
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.data.ConfigDataSource
-import com.example.moviesapp.db.FavouritesMoviesDao
-import com.example.moviesapp.db.FavouritesTvSeriesDao
-import com.example.moviesapp.db.RecentlyBrowsedMoviesDao
-import com.example.moviesapp.db.RecentlyBrowsedTvSeriesDao
+import com.example.moviesapp.db.*
 import com.example.moviesapp.repository.browsed.RecentlyBrowsedRepository
 import com.example.moviesapp.repository.browsed.RecentlyBrowsedRepositoryImpl
 import com.example.moviesapp.repository.config.ConfigRepository
@@ -107,10 +104,14 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideSearchRepository(
+        externalScope: CoroutineScope,
         dispatcher: CoroutineDispatcher,
-        apiHelper: TmdbApiHelper
+        apiHelper: TmdbApiHelper,
+        searchQueryDao: SearchQueryDao
     ): SearchRepository = SearchRepositoryImpl(
         defaultDispatcher = dispatcher,
-        apiHelper = apiHelper
+        externalScope = externalScope,
+        apiHelper = apiHelper,
+        searchQueryDao = searchQueryDao
     )
 }

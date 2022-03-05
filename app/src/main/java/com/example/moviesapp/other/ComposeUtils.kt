@@ -15,8 +15,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -123,6 +128,40 @@ fun LazyPagingItems<*>.isNotEmpty(): Boolean = !isEmpty()
 inline fun <T> List<T>?.ifNotNullAndEmpty(scope: (List<T>) -> Unit) {
     if (!this.isNullOrEmpty()) {
         scope(this)
+    }
+}
+
+@Composable
+fun partiallyAnnotatedString(
+    text: String,
+    content: String,
+    textStyle: SpanStyle = SpanStyle(Color.White),
+    contentStyle: SpanStyle = SpanStyle(MaterialTheme.colors.primary)
+): AnnotatedString = buildAnnotatedString {
+    if (text.contains(content)) {
+        val (beforeText, afterText) = text.split(content).run {
+            firstOrNull() to lastOrNull()
+        }
+
+        if (!beforeText.isNullOrBlank()) {
+            withStyle(textStyle) {
+                append(beforeText)
+            }
+        }
+
+        withStyle(contentStyle) {
+            append(content)
+        }
+
+        if (!afterText.isNullOrBlank()) {
+            withStyle(textStyle) {
+                append(afterText)
+            }
+        }
+    } else {
+        withStyle(textStyle) {
+            append(text)
+        }
     }
 }
 

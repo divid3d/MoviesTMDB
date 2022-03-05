@@ -30,8 +30,8 @@ class MoviesFavouritesDaoTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    @Named("test_favourite_database")
-    lateinit var database: FavouritesDatabase
+    @Named("test_app_database")
+    lateinit var database: AppDatabase
 
     private lateinit var favouritesMoviesDao: FavouritesMoviesDao
 

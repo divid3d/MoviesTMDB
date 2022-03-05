@@ -2,8 +2,7 @@ package com.example.moviesapp.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.moviesapp.db.FavouritesDatabase
-import com.example.moviesapp.db.RecentlyBrowsedDatabase
+import com.example.moviesapp.db.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,20 +15,12 @@ import javax.inject.Named
 object DatabaseTestModule {
 
     @Provides
-    @Named("test_favourite_database")
-    fun provideInMemoryFavouriteDatabase(
+    @Named("test_app_database")
+    fun provideInMemoryAppDatabase(
         @ApplicationContext context: Context
-    ): FavouritesDatabase = Room.inMemoryDatabaseBuilder(context, FavouritesDatabase::class.java)
+    ): AppDatabase = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
         .allowMainThreadQueries()
         .build()
 
-    @Provides
-    @Named("test_recently_browsed_database")
-    fun provideInMemoryRecentlyBrowsedDatabase(
-        @ApplicationContext context: Context
-    ): RecentlyBrowsedDatabase =
-        Room.inMemoryDatabaseBuilder(context, RecentlyBrowsedDatabase::class.java)
-            .allowMainThreadQueries()
-            .build()
 
 }

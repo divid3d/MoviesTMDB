@@ -29,8 +29,8 @@ class RecentBrowsedMoviesDaoTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    @Named("test_recently_browsed_database")
-    lateinit var database: RecentlyBrowsedDatabase
+    @Named("test_app_database")
+    lateinit var database: AppDatabase
 
     private lateinit var recentlyBrowsedMoviesDao: RecentlyBrowsedMoviesDao
 

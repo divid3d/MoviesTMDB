@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.model.DeviceLanguage
+import com.example.moviesapp.model.SearchQuery
 import com.example.moviesapp.model.SearchResult
 import com.example.moviesapp.repository.config.ConfigRepository
 import com.example.moviesapp.repository.search.SearchRepository
@@ -28,6 +29,7 @@ class SearchViewModel @Inject constructor(
 
     private val voiceSearchAvailable: Flow<Boolean> = configRepository.getSpeechToTextAvailable()
     private val query: MutableStateFlow<String?> = MutableStateFlow(null)
+    private val suggestions: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
     private val searchState: MutableStateFlow<SearchState> =
         MutableStateFlow(SearchState.EmptyQuery)
     private val queryLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -35,11 +37,12 @@ class SearchViewModel @Inject constructor(
     private var queryJob: Job? = null
 
     val uiState: StateFlow<SearchScreenUiState> = combine(
-        voiceSearchAvailable, query, searchState, queryLoading
-    ) { voiceSearchAvailable, query, searchState, queryLoading ->
+        voiceSearchAvailable, query, suggestions, searchState, queryLoading
+    ) { voiceSearchAvailable, query, suggestions, searchState, queryLoading ->
         SearchScreenUiState(
             voiceSearchAvailable = voiceSearchAvailable,
             query = query,
+            suggestions = suggestions,
             searchState = searchState,
             queryLoading = queryLoading
         )
@@ -54,13 +57,18 @@ class SearchViewModel @Inject constructor(
             when {
                 queryText.isBlank() -> {
                     searchState.emit(SearchState.EmptyQuery)
+                    suggestions.emit(emptyList())
                 }
 
                 queryText.length < minQueryLength -> {
                     searchState.emit(SearchState.InsufficientQuery)
+                    suggestions.emit(emptyList())
                 }
 
                 else -> {
+                    val querySuggestions = searchRepository.searchQueries(queryText)
+                    suggestions.emit(querySuggestions)
+
                     queryJob = createQueryJob(queryText).apply {
                         start()
                     }
@@ -71,6 +79,18 @@ class SearchViewModel @Inject constructor(
 
     fun onQueryClear() {
         onQueryChange("")
+    }
+
+    fun onQuerySuggestionSelected(searchQuery: String) {
+        onQueryChange(searchQuery)
+
+        viewModelScope.launch {
+            suggestions.emit(emptyList())
+        }
+    }
+
+    fun addQuerySuggestion(searchQuery: SearchQuery) {
+        searchRepository.addSearchQuery(searchQuery)
     }
 
     @OptIn(FlowPreview::class)
