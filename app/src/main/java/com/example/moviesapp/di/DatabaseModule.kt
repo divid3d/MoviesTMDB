@@ -50,4 +50,16 @@ object DatabaseModule {
     @Provides
     fun provideRecentlyBrowsedTvSeriesDao(database: RecentlyBrowsedDatabase): RecentlyBrowsedTvSeriesDao =
         database.recentlyBrowsedTvSeries()
+
+    @Singleton
+    @Provides
+    fun provideQueryDatabase(@ApplicationContext context: Context) =
+        Room.databaseBuilder(context, QueryDatabase::class.java, "query")
+            .fallbackToDestructiveMigration()
+            .build()
+
+    @Singleton
+    @Provides
+    fun provideSearchQueryDao(database: QueryDatabase): SearchQueryDao =
+        database.searchQueryDao()
 }

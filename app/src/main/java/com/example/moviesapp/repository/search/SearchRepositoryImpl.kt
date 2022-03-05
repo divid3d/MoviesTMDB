@@ -5,18 +5,24 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.data.MultiSearchResponseDataSource
+import com.example.moviesapp.db.SearchQueryDao
 import com.example.moviesapp.model.DeviceLanguage
+import com.example.moviesapp.model.SearchQuery
 import com.example.moviesapp.model.SearchResult
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import javax.inject.Singleton
 
 @Singleton
 class SearchRepositoryImpl(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val apiHelper: TmdbApiHelper
+    private val externalScope: CoroutineScope,
+    private val apiHelper: TmdbApiHelper,
+    private val searchQueryDao: SearchQueryDao
 ) : SearchRepository {
     override fun multiSearch(
         query: String,
@@ -37,4 +43,14 @@ class SearchRepositoryImpl(
                 language = deviceLanguage.languageCode
             )
         }.flow.flowOn(defaultDispatcher)
+
+    override suspend fun searchQueries(query: String): List<String> =
+        searchQueryDao.searchQueries(query)
+
+    override fun addSearchQuery(searchQuery: SearchQuery) {
+        externalScope.launch(defaultDispatcher) {
+            searchQueryDao.addQuery(searchQuery)
+        }
+    }
+
 }
