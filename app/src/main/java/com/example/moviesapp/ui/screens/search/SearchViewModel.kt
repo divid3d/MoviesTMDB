@@ -82,8 +82,9 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onQuerySuggestionSelected(searchQuery: String) {
+        onQueryChange(searchQuery)
+
         viewModelScope.launch {
-            query.emit(searchQuery)
             suggestions.emit(emptyList())
         }
     }
