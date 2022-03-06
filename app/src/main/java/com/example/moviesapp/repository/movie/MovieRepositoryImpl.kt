@@ -4,10 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.moviesapp.api.TmdbApiHelper
-import com.example.moviesapp.data.DiscoverMoviesDataSource
-import com.example.moviesapp.data.MovieDetailsResponseDataSource
-import com.example.moviesapp.data.MovieResponseDataSource
-import com.example.moviesapp.data.ReviewsDataSource
+import com.example.moviesapp.data.*
 import com.example.moviesapp.model.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -174,5 +171,19 @@ class MovieRepositoryImpl(
         movieId: Int,
         isoCode: String
     ) = apiHelper.getMovieVideos(movieId, isoCode)
+
+    override fun moviesOfDirector(
+        directorId: Int,
+        deviceLanguage: DeviceLanguage
+    ): Flow<PagingData<Movie>> = Pager(
+        PagingConfig(pageSize = 20)
+    ) {
+        DirectorOtherMoviesDataSource(
+            apiHelper = apiHelper,
+            language = deviceLanguage.languageCode,
+            region = deviceLanguage.region,
+            directorId = directorId
+        )
+    }.flow.flowOn(defaultDispatcher)
 
 }

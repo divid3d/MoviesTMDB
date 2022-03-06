@@ -285,4 +285,11 @@ class TmdbApiHelperImpl @Inject constructor(
     ): Call<VideosResponse> =
         tmdbApi.getSeasonVideos(tvSeriesId, seasonNumber, "en-US")
 
+    override suspend fun getOtherMoviesOfDirector(
+        page: Int,
+        isoCode: String,
+        region: String,
+        directorId: Int
+    ): MoviesResponse = tmdbApi.getOtherMoviesOfDirector(page, isoCode, region, directorId)
+
 }

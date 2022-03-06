@@ -94,4 +94,5 @@ interface TvSeriesRepository {
         seasonNumber: Int,
         isoCode: String = DeviceLanguage.default.languageCode
     ): Call<VideosResponse>
+
 }

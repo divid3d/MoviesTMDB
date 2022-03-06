@@ -239,6 +239,8 @@ fun MovieDetailsScreenContent(
     val similarMoviesState = uiState.associatedMovies.similar.collectAsLazyPagingItems()
     val moviesRecommendationState =
         uiState.associatedMovies.recommendations.collectAsLazyPagingItems()
+    val otherDirectorMovies =
+        uiState.associatedMovies.directorMovies.movies.collectAsLazyPagingItems()
 
     val scrollState = rememberScrollState()
 
@@ -360,7 +362,7 @@ fun MovieDetailsScreenContent(
                         SectionDivider(modifier = Modifier.fillMaxWidth())
                         MemberSection(
                             modifier = Modifier.fillMaxWidth(),
-                            title = "Obsada",
+                            title = stringResource(R.string.movie_details_cast),
                             members = members,
                             contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
                             onMemberClick = onMemberClicked
@@ -383,7 +385,7 @@ fun MovieDetailsScreenContent(
                         SectionDivider(modifier = Modifier.fillMaxWidth())
                         MemberSection(
                             modifier = Modifier.fillMaxWidth(),
-                            title = "Ekipa filmowa",
+                            title = stringResource(R.string.movie_details_crew),
                             members = members,
                             contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
                             onMemberClick = onMemberClicked
@@ -420,9 +422,37 @@ fun MovieDetailsScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
+                targetState = otherDirectorMovies
+            ) { otherDirectorMovies ->
+                if (otherDirectorMovies.hasItems()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                    ) {
+                        SectionDivider(modifier = Modifier.fillMaxWidth())
+                        PresentableSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(
+                                id = R.string.movie_details_director_movies,
+                                uiState.associatedMovies.directorMovies.directorName
+                            ),
+                            state = otherDirectorMovies,
+                            showLoadingAtRefresh = false,
+                            showMoreButton = false,
+                            onMoreClick = onSimilarMoreClicked,
+                            onPresentableClick = onMovieClicked
+                        )
+                    }
+                }
+            }
+
+            Crossfade(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
                 targetState = similarMoviesState
             ) { similarMovies ->
-                if (similarMovies.isNotEmpty()) {
+                if (similarMovies.hasItems()) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
@@ -432,6 +462,7 @@ fun MovieDetailsScreenContent(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(R.string.movie_details_similar),
                             state = similarMovies,
+                            showLoadingAtRefresh = false,
                             onMoreClick = onSimilarMoreClicked,
                             onPresentableClick = onMovieClicked
                         )
@@ -445,7 +476,7 @@ fun MovieDetailsScreenContent(
                     .animateContentSize(),
                 targetState = moviesRecommendationState
             ) { movieRecommendation ->
-                if (movieRecommendation.isNotEmpty()) {
+                if (movieRecommendation.hasItems()) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
@@ -455,6 +486,7 @@ fun MovieDetailsScreenContent(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(R.string.movie_details_recommendations),
                             state = movieRecommendation,
+                            showLoadingAtRefresh = false,
                             onMoreClick = onRecommendationsMoreClicked,
                             onPresentableClick = onMovieClicked
                         )

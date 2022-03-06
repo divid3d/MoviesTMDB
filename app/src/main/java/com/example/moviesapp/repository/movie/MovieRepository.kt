@@ -81,4 +81,9 @@ interface MovieRepository {
         isoCode: String = DeviceLanguage.default.languageCode
     ): Call<VideosResponse>
 
+    fun moviesOfDirector(
+        directorId: Int,
+        deviceLanguage: DeviceLanguage = DeviceLanguage.default
+    ): Flow<PagingData<Movie>>
+
 }

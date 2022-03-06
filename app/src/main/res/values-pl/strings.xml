@@ -48,6 +48,9 @@
     <string name="movie_details_status">Status</string>
     <string name="movie_details_boxoffice">Boxoffice</string>
     <string name="movie_details_genres">Gatunki</string>
+    <string name="movie_details_cast">Cast</string>
+    <string name="movie_details_crew">Crew</string>
+    <string name="movie_details_director_movies" formatted="true">Więcej od %s</string>
     <string name="movie_details_similar">Podobne</string>
     <string name="movie_details_videos">Wideo</string>
     <string name="movie_details_recommendations">Polecane</string>

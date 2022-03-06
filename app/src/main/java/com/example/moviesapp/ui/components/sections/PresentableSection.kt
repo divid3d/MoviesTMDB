@@ -3,7 +3,6 @@ package com.example.moviesapp.ui.components.sections
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -36,13 +35,13 @@ import com.example.moviesapp.ui.components.texts.SectionLabel
 import com.example.moviesapp.ui.theme.spacing
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PresentableSection(
     modifier: Modifier = Modifier,
     title: String,
     state: LazyPagingItems<out Presentable>,
     scrollToBeginningItemsStart: Int = 30,
+    showLoadingAtRefresh: Boolean = true,
     showMoreButton: Boolean = true,
     onMoreClick: () -> Unit = {},
     onPresentableClick: (Int) -> Unit = {}
@@ -65,7 +64,11 @@ fun PresentableSection(
 
     val isNotEmpty by derivedStateOf {
         state.run {
-            loadState.refresh is LoadState.Loading || itemCount > 0
+            if (showLoadingAtRefresh) {
+                loadState.refresh is LoadState.Loading || itemCount > 0
+            } else {
+                itemCount > 0
+            }
         }
     }
 

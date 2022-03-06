@@ -1,6 +1,5 @@
 package com.example.moviesapp.ui.screens.details.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -12,7 +11,7 @@ import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.ui.components.texts.SectionLabel
 import com.example.moviesapp.ui.theme.spacing
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @Composable
 fun CreditsList(
     modifier: Modifier = Modifier,

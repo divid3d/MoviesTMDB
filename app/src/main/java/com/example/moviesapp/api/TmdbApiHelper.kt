@@ -240,4 +240,11 @@ interface TmdbApiHelper {
         isoCode: String = DeviceLanguage.default.languageCode,
     ): Call<VideosResponse>
 
+    suspend fun getOtherMoviesOfDirector(
+        page: Int,
+        isoCode: String,
+        region: String,
+        directorId: Int
+    ): MoviesResponse
+
 }

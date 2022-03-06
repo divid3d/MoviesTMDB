@@ -1,6 +1,5 @@
 package com.example.moviesapp.ui.components.sections
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -15,7 +14,7 @@ import com.example.moviesapp.ui.components.items.PresentableItem
 import com.example.moviesapp.ui.components.texts.SectionLabel
 import com.example.moviesapp.ui.theme.spacing
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @Composable
 fun PresentableListSection(
     modifier: Modifier = Modifier,

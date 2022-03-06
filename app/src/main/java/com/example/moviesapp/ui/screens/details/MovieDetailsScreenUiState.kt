@@ -31,14 +31,29 @@ data class MovieDetailsScreenUiState(
 data class AssociatedMovies(
     val collection: MovieCollection?,
     val similar: Flow<PagingData<Movie>>,
-    val recommendations: Flow<PagingData<Movie>>
+    val recommendations: Flow<PagingData<Movie>>,
+    val directorMovies: DirectorMovies
 ) {
     companion object {
         val default: AssociatedMovies
             get() = AssociatedMovies(
                 collection = null,
                 similar = emptyFlow(),
-                recommendations = emptyFlow()
+                recommendations = emptyFlow(),
+                directorMovies = DirectorMovies.default
+            )
+    }
+}
+
+data class DirectorMovies(
+    val directorName: String,
+    val movies: Flow<PagingData<Movie>>
+) {
+    companion object {
+        val default: DirectorMovies
+            get() = DirectorMovies(
+                directorName = "",
+                movies = emptyFlow()
             )
     }
 }

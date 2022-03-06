@@ -48,6 +48,9 @@
     <string name="movie_details_status">Status</string>
     <string name="movie_details_boxoffice">Boxoffice</string>
     <string name="movie_details_genres">Genres</string>
+    <string name="movie_details_cast">Obsada</string>
+    <string name="movie_details_crew">Ekipa filmowa</string>
+    <string name="movie_details_director_movies" formatted="true">More of %s</string>
     <string name="movie_details_similar">Similar</string>
     <string name="movie_details_recommendations">Recommendations</string>
     <string name="movie_details_videos">Videos</string>
@@ -63,7 +66,7 @@
     <string name="tv_series_details_recommendations">Recommendations</string>
     <string name="tv_series_details_networks">Available on</string>
     <string name="tv_series_details_seasons">Seasons</string>
-    <string name="tv_series_details_creators">Seasons</string>
+    <string name="tv_series_details_creators">Creators</string>
 
     <string name="all_movies_top_rated_label">Top rated movies</string>
     <string name="all_movies_upcoming_label">Upcoming movies</string>

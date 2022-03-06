@@ -402,7 +402,7 @@ fun TvSeriesDetailsScreenContent(
                     .animateContentSize(),
                 targetState = similar
             ) { similar ->
-                if (similar.isNotEmpty()) {
+                if (similar.hasItems()) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
@@ -412,6 +412,7 @@ fun TvSeriesDetailsScreenContent(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(R.string.tv_series_details_similar),
                             state = similar,
+                            showLoadingAtRefresh = false,
                             onMoreClick = onSimilarMoreClicked,
                             onPresentableClick = onTvSeriesClicked
                         )
@@ -425,7 +426,7 @@ fun TvSeriesDetailsScreenContent(
                     .animateContentSize(),
                 targetState = recommendations
             ) { recommendations ->
-                if (recommendations.isNotEmpty()) {
+                if (recommendations.hasItems()) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
@@ -435,6 +436,7 @@ fun TvSeriesDetailsScreenContent(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(R.string.tv_series_details_recommendations),
                             state = recommendations,
+                            showLoadingAtRefresh = false,
                             onMoreClick = onRecommendationsMoreClicked,
                             onPresentableClick = onTvSeriesClicked
                         )

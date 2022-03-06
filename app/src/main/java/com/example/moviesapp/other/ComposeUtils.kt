@@ -115,6 +115,10 @@ fun <T : Any> LazyGridScope.items(
     }
 }
 
+fun LazyPagingItems<*>.hasItems() = itemCount > 0
+
+fun LazyPagingItems<*>.hasNoItems() = !hasItems()
+
 fun LazyPagingItems<*>.isEmpty(): Boolean {
     return run {
         loadState.source.refresh is LoadState.NotLoading

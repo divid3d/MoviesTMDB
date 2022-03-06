@@ -57,7 +57,7 @@ class MoviesDetailsViewModel @Inject constructor(
     private val isFavourite: Flow<Boolean> = favouritesMoviesIdsFlow.map { favouriteIds ->
         navArgs.movieId in favouriteIds
     }
-    
+
     private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
     private val externalIds: StateFlow<List<ExternalId>?> =
         _externalIds.filterNotNull().map { externalIds ->
@@ -81,8 +81,11 @@ class MoviesDetailsViewModel @Inject constructor(
     )
 
     private val associatedMovies: StateFlow<AssociatedMovies> = combine(
-        deviceLanguage, movieCollection
-    ) { deviceLanguage, collection ->
+        deviceLanguage, movieCollection, credits
+    ) { deviceLanguage, collection, credits ->
+        val directors = credits?.crew?.filter { member -> member.job == "Director" }
+        val mainDirector = if (directors?.count() == 1) directors.first() else null
+
         AssociatedMovies(
             collection = collection,
             similar = movieRepository.similarMovies(
@@ -92,7 +95,16 @@ class MoviesDetailsViewModel @Inject constructor(
             recommendations = movieRepository.moviesRecommendations(
                 movieId = navArgs.movieId,
                 deviceLanguage = deviceLanguage
-            )
+            ),
+            directorMovies = if (mainDirector != null) {
+                DirectorMovies(
+                    directorName = mainDirector.name,
+                    movies = movieRepository.moviesOfDirector(
+                        directorId = mainDirector.id,
+                        deviceLanguage = deviceLanguage
+                    )
+                )
+            } else DirectorMovies.default
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), AssociatedMovies.default)
 

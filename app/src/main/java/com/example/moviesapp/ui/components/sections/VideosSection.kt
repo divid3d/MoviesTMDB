@@ -8,10 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -95,15 +92,6 @@ private fun VideoItem(
                 ),
                 contentScale = ContentScale.FillWidth,
                 contentDescription = null
-            )
-
-            Icon(
-                modifier = Modifier
-                    .size(60.dp)
-                    .align(Alignment.Center),
-                imageVector = Icons.Filled.PlayArrow,
-                contentDescription = null,
-                tint = MaterialTheme.colors.primary.copy(0.7f)
             )
 
             SiteIcon(
