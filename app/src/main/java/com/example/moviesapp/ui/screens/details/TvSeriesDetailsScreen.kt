@@ -383,7 +383,9 @@ fun TvSeriesDetailsScreenContent(
             ) { seasons ->
                 seasons.ifNotNullAndEmpty { value ->
                     Column(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = MaterialTheme.spacing.medium),
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                     ) {
                         SectionDivider(modifier = Modifier.fillMaxWidth())

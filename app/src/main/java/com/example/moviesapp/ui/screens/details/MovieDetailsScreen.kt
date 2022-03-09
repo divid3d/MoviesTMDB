@@ -403,7 +403,9 @@ fun MovieDetailsScreenContent(
             ) { movieCollection ->
                 if (movieCollection != null && movieCollection.parts.isNotEmpty()) {
                     Column(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = MaterialTheme.spacing.medium),
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                     ) {
                         SectionDivider(modifier = Modifier.fillMaxWidth())
@@ -427,7 +429,7 @@ fun MovieDetailsScreenContent(
                 if (otherDirectorMovies.hasItems()) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                     ) {
                         SectionDivider(modifier = Modifier.fillMaxWidth())
                         PresentableSection(

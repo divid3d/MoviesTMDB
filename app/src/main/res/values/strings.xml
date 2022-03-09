@@ -48,8 +48,8 @@
     <string name="movie_details_status">Status</string>
     <string name="movie_details_boxoffice">Boxoffice</string>
     <string name="movie_details_genres">Genres</string>
-    <string name="movie_details_cast">Obsada</string>
-    <string name="movie_details_crew">Ekipa filmowa</string>
+    <string name="movie_details_cast">Cast</string>
+    <string name="movie_details_crew">Crew</string>
     <string name="movie_details_director_movies" formatted="true">More of %s</string>
     <string name="movie_details_similar">Similar</string>
     <string name="movie_details_recommendations">Recommendations</string>

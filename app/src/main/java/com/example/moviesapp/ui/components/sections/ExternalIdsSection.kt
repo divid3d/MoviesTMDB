@@ -31,7 +31,7 @@ fun ExternalIdsSection(
             mainAxisAlignment = FlowMainAxisAlignment.Start,
             crossAxisAlignment = FlowCrossAxisAlignment.Start,
             crossAxisSpacing = MaterialTheme.spacing.small,
-            mainAxisSpacing = MaterialTheme.spacing.small
+            mainAxisSpacing = MaterialTheme.spacing.extraSmall
         ) {
             externalIds.map { id ->
                 IdChip(drawableRes = id.drawableRes) {

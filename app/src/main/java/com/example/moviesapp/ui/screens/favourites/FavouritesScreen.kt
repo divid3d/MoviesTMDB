@@ -102,6 +102,7 @@ fun FavouriteScreenContent(
                             vertical = MaterialTheme.spacing.medium,
                         ),
                         state = favouritesLazyItems,
+                        showRefreshLoading = false,
                         onPresentableClick = onFavouriteClicked
                     )
                 }

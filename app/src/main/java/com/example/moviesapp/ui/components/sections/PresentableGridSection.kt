@@ -36,6 +36,7 @@ fun PresentableGridSection(
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState(),
     state: LazyPagingItems<out Presentable>,
+    showRefreshLoading: Boolean = true,
     contentPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.default),
     scrollToBeginningItemsStart: Int = 30,
     onPresentableClick: (Int) -> Unit = {}
@@ -75,7 +76,7 @@ fun PresentableGridSection(
 
             state.apply {
                 when {
-                    loadState.refresh is LoadState.Loading -> {
+                    loadState.refresh is LoadState.Loading && showRefreshLoading -> {
                         items(12) {
                             PresentableItem(presentableState = PresentableItemState.Loading)
                         }
