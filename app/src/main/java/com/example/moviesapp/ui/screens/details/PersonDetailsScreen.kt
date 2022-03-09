@@ -39,6 +39,7 @@ import com.example.moviesapp.ui.screens.details.components.CreditsList
 import com.example.moviesapp.ui.screens.details.components.PersonDetailsInfoSection
 import com.example.moviesapp.ui.screens.details.components.PersonDetailsTopContent
 import com.example.moviesapp.ui.screens.details.components.PersonProfileImage
+import com.example.moviesapp.ui.theme.Black300
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.statusBarsPadding
@@ -203,10 +204,20 @@ fun PersonDetailsScreenContent(
                     }
                     .padding(start = MaterialTheme.spacing.medium)
                 ) {
-                    PersonDetailsTopContent(
-                        modifier = Modifier.fillMaxWidth(),
-                        personDetails = uiState.details
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = Black300,
+                                shape = MaterialTheme.shapes.small
+                            )
+                            .padding(MaterialTheme.spacing.small)
+                    ) {
+                        PersonDetailsTopContent(
+                            modifier = Modifier.fillMaxWidth(),
+                            personDetails = uiState.details
+                        )
+                    }
 
                     Spacer(modifier = Modifier.weight(1f))
 

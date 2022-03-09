@@ -37,6 +37,7 @@ import com.example.moviesapp.ui.components.sections.*
 import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.screens.details.components.TvSeriesDetailsInfoSection
 import com.example.moviesapp.ui.screens.details.components.TvSeriesDetailsTopContent
+import com.example.moviesapp.ui.theme.Black300
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
@@ -303,10 +304,20 @@ fun TvSeriesDetailsScreenContent(
                 scrollState = scrollState,
                 scrollValueLimit = topSectionScrollLimitValue
             ) {
-                TvSeriesDetailsTopContent(
-                    modifier = Modifier.fillMaxWidth(),
-                    tvSeriesDetails = uiState.tvSeriesDetails
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = Black300,
+                            shape = MaterialTheme.shapes.small
+                        )
+                        .padding(MaterialTheme.spacing.small)
+                ) {
+                    TvSeriesDetailsTopContent(
+                        modifier = Modifier.fillMaxWidth(),
+                        tvSeriesDetails = uiState.tvSeriesDetails
+                    )
+                }
 
                 Spacer(modifier = Modifier.weight(1f))
 

@@ -39,6 +39,7 @@ import com.example.moviesapp.ui.components.sections.*
 import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.screens.details.components.MovieDetailsInfoSection
 import com.example.moviesapp.ui.screens.details.components.MovieDetailsTopContent
+import com.example.moviesapp.ui.theme.Black300
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
@@ -295,10 +296,20 @@ fun MovieDetailsScreenContent(
                 scrollState = scrollState,
                 scrollValueLimit = topSectionScrollLimitValue
             ) {
-                MovieDetailsTopContent(
-                    modifier = Modifier.fillMaxWidth(),
-                    movieDetails = uiState.movieDetails
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = Black300,
+                            shape = MaterialTheme.shapes.small
+                        )
+                        .padding(MaterialTheme.spacing.small)
+                ) {
+                    MovieDetailsTopContent(
+                        modifier = Modifier.fillMaxWidth(),
+                        movieDetails = uiState.movieDetails
+                    )
+                }
 
                 Spacer(modifier = Modifier.weight(1f))
 

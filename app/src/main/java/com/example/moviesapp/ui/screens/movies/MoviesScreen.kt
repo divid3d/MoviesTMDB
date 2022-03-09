@@ -1,11 +1,8 @@
-@file:OptIn(ExperimentalAnimationApi::class)
-
 package com.example.moviesapp.ui.screens.movies
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -89,7 +86,7 @@ fun MoviesScreenContent(
     val upcomingLazyItems = uiState.moviesState.upcoming.collectAsLazyPagingItems()
     val topRatedLazyItems = uiState.moviesState.topRated.collectAsLazyPagingItems()
     val trendingLazyItems = uiState.moviesState.trending.collectAsLazyPagingItems()
-    val nowPlayingLazyItems = uiState.moviesState.trending.collectAsLazyPagingItems()
+    val nowPlayingLazyItems = uiState.moviesState.nowPlaying.collectAsLazyPagingItems()
     val favouritesLazyItems = uiState.favourites.collectAsLazyPagingItems()
     val recentlyBrowsedLazyItems = uiState.recentlyBrowsed.collectAsLazyPagingItems()
 
