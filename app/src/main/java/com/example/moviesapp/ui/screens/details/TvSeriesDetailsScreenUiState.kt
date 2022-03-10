@@ -46,7 +46,7 @@ data class AdditionalTvSeriesDetailsInfo(
     val isFavourite: Boolean,
     val nextEpisodeRemainingDays: Long?,
     val watchProviders: WatchProviders?,
-    val hasReviews: Boolean
+    val reviewsCount: Int
 ) {
     companion object {
         val default: AdditionalTvSeriesDetailsInfo
@@ -54,7 +54,7 @@ data class AdditionalTvSeriesDetailsInfo(
                 isFavourite = false,
                 nextEpisodeRemainingDays = null,
                 watchProviders = null,
-                hasReviews = false
+                reviewsCount = 0
             )
     }
 }

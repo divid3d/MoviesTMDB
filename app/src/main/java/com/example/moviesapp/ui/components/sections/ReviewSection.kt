@@ -11,12 +11,15 @@ import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.example.moviesapp.R
 import com.example.moviesapp.ui.components.texts.SectionLabel
 import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun ReviewSection(
     modifier: Modifier = Modifier,
+    count: Int,
     onClick: () -> Unit = {}
 ) {
     Row(
@@ -31,7 +34,7 @@ fun ReviewSection(
     ) {
         SectionLabel(
             modifier = Modifier.weight(1f),
-            text = "Recenzje"
+            text = stringResource(R.string.movie_details_reviews, count)
         )
         Icon(
             imageVector = Icons.Filled.KeyboardArrowRight,

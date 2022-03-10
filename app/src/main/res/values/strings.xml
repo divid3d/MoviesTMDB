@@ -55,6 +55,7 @@
     <string name="movie_details_recommendations">Recommendations</string>
     <string name="movie_details_videos">Videos</string>
     <string name="movie_details_watch_at">End watching at %s</string>
+    <string name="movie_details_reviews" formatted="true">Reviews (%d)</string>
 
     <string name="tv_series_details_label">Tv series details</string>
     <string name="tv_series_details_type">Type</string>
@@ -67,6 +68,7 @@
     <string name="tv_series_details_networks">Available on</string>
     <string name="tv_series_details_seasons">Seasons</string>
     <string name="tv_series_details_creators">Creators</string>
+    <string name="tv_series_details_reviews" formatted="true">Reviews (%d)</string>
 
     <string name="all_movies_top_rated_label">Top rated movies</string>
     <string name="all_movies_upcoming_label">Upcoming movies</string>

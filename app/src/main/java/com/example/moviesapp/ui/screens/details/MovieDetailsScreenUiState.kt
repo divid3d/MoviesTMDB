@@ -63,7 +63,7 @@ data class AdditionalMovieDetailsInfo(
     val watchAtTime: Date?,
     val watchProviders: WatchProviders?,
     val credits: Credits?,
-    val hasReviews: Boolean
+    val reviewsCount: Int
 ) {
     companion object {
         val default: AdditionalMovieDetailsInfo
@@ -72,7 +72,7 @@ data class AdditionalMovieDetailsInfo(
                 watchAtTime = null,
                 watchProviders = null,
                 credits = null,
-                hasReviews = false
+                reviewsCount = 0
             )
     }
 }

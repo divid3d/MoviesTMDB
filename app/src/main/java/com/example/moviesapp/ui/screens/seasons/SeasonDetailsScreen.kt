@@ -41,7 +41,7 @@ import com.example.moviesapp.ui.components.texts.LabeledText
 import com.example.moviesapp.ui.components.texts.SectionLabel
 import com.example.moviesapp.ui.screens.destinations.FavouritesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
-import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
@@ -53,7 +53,7 @@ import kotlinx.parcelize.Parcelize
 object SeasonDetailsScreenTransitions : DestinationStyle.Animated {
     override fun AnimatedContentScope<NavBackStackEntry>.exitTransition(): ExitTransition? {
         return when (targetState.destination.route) {
-            TvSeriesDetailsScreenDestination.route,
+            TvScreenDestination.route,
             FavouritesScreenDestination.route,
             SearchScreenDestination.route -> slideOutOfContainer(
                 towards = AnimatedContentScope.SlideDirection.Down,
@@ -65,7 +65,7 @@ object SeasonDetailsScreenTransitions : DestinationStyle.Animated {
 
     override fun AnimatedContentScope<NavBackStackEntry>.popExitTransition(): ExitTransition? {
         return when (targetState.destination.route) {
-            TvSeriesDetailsScreenDestination.route,
+            TvScreenDestination.route,
             FavouritesScreenDestination.route,
             SearchScreenDestination.route -> slideOutOfContainer(
                 towards = AnimatedContentScope.SlideDirection.Down,

@@ -51,7 +51,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
     private val videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
     private val nextEpisodeDaysRemaining: MutableStateFlow<Long?> = MutableStateFlow(null)
     private val watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
-    private val hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val reviewsCount: MutableStateFlow<Int> = MutableStateFlow(0)
 
     private val isFavourite: StateFlow<Boolean> = favouriteTvSeriesIds.map { favouriteIds ->
         navArgs.tvSeriesId in favouriteIds
@@ -64,13 +64,13 @@ class TvSeriesDetailsViewModel @Inject constructor(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     private val additionalInfo: StateFlow<AdditionalTvSeriesDetailsInfo> = combine(
-        isFavourite, nextEpisodeDaysRemaining, watchProviders, hasReviews
-    ) { isFavourite, nextEpisodeDaysRemaining, watchProviders, hasReviews ->
+        isFavourite, nextEpisodeDaysRemaining, watchProviders, reviewsCount
+    ) { isFavourite, nextEpisodeDaysRemaining, watchProviders, reviewsCount ->
         AdditionalTvSeriesDetailsInfo(
             isFavourite = isFavourite,
             nextEpisodeRemainingDays = nextEpisodeDaysRemaining,
             watchProviders = watchProviders,
-            hasReviews = hasReviews
+            reviewsCount = reviewsCount
         )
     }.stateIn(
         viewModelScope,
@@ -195,7 +195,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
         tvSeriesRepository.tvSeriesReview(tvSeriesId).request { response ->
             response.onSuccess {
                 viewModelScope.launch {
-                    hasReviews.emit((data?.totalResults ?: 0) > 1)
+                    reviewsCount.emit(data?.totalResults ?: 0)
                 }
             }
 

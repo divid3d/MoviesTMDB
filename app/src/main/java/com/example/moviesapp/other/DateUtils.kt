@@ -23,13 +23,6 @@ fun yearRangeString(from: Date?, to: Date?): String {
         .joinToString(separator = " - ")
 }
 
-
-fun Date.getYearInt(): Int {
-    return Calendar.getInstance().apply {
-        time = this@getYearInt
-    }.get(Calendar.YEAR)
-}
-
 fun createDateDialog(
     context: Context,
     initialDate: Date?,

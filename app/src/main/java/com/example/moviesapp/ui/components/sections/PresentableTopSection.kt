@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,7 +63,7 @@ fun PresentableTopSection(
 
     val pagerState = rememberPagerState()
 
-    var isDark by remember { mutableStateOf(true) }
+    var isDark by rememberSaveable { mutableStateOf(true) }
 
     val contentColor by animateColorAsState(targetValue = if (isDark) Color.White else Color.Black)
 

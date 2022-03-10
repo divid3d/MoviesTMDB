@@ -167,6 +167,7 @@ fun AnimatedVisibilityScope.MovieDetailsScreen(
 
         if (movieId != null) {
             val destination = ReviewsScreenDestination(
+                startRoute = uiState.startRoute,
                 mediaId = movieId,
                 type = MediaType.Movie
             )
@@ -532,7 +533,7 @@ fun MovieDetailsScreenContent(
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
-                visible = uiState.additionalMovieDetailsInfo.hasReviews
+                visible = uiState.additionalMovieDetailsInfo.reviewsCount > 0
             ) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -541,6 +542,7 @@ fun MovieDetailsScreenContent(
                     SectionDivider(modifier = Modifier.fillMaxWidth())
                     ReviewSection(
                         modifier = Modifier.fillMaxWidth(),
+                        count = uiState.additionalMovieDetailsInfo.reviewsCount,
                         onClick = onReviewsClicked
                     )
                 }

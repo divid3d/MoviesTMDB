@@ -56,6 +56,7 @@
     <string name="movie_details_recommendations">Polecane</string>
     <string name="tv_series_details_seasons">Sezony</string>
     <string name="movie_details_watch_at">Skończ oglądać o %s</string>
+    <string name="movie_details_reviews" formatted="true">Recenzje (%d)</string>
 
     <string name="tv_series_details_label">Szczegóły serialu</string>
     <string name="tv_series_details_type">Typ</string>
@@ -67,6 +68,7 @@
     <string name="tv_series_details_recommendations">Rekomendacje</string>
     <string name="tv_series_details_networks">Zobacz w</string>
     <string name="tv_series_details_creators">Twórcy</string>
+    <string name="tv_series_details_reviews" formatted="true">Recenzje (%d)</string>
 
     <string name="all_movies_top_rated_label">Najwyżej oceniane filmy</string>
     <string name="all_movies_upcoming_label">Nachodzące filmy</string>

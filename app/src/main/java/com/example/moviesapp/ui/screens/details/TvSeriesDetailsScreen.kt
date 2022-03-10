@@ -165,6 +165,7 @@ fun AnimatedVisibilityScope.TvSeriesDetailsScreen(
 
         if (tvSeriesId != null) {
             val destination = ReviewsScreenDestination(
+                startRoute = uiState.startRoute,
                 mediaId = tvSeriesId,
                 type = MediaType.Movie
             )
@@ -482,7 +483,7 @@ fun TvSeriesDetailsScreenContent(
 
             AnimatedVisibility(
                 modifier = Modifier.fillMaxWidth(),
-                visible = uiState.additionalTvSeriesDetailsInfo.hasReviews
+                visible = uiState.additionalTvSeriesDetailsInfo.reviewsCount > 0
             ) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -491,6 +492,7 @@ fun TvSeriesDetailsScreenContent(
                     SectionDivider(modifier = Modifier.fillMaxWidth())
                     ReviewSection(
                         modifier = Modifier.fillMaxWidth(),
+                        count = uiState.additionalTvSeriesDetailsInfo.reviewsCount,
                         onClick = onReviewsClicked
                     )
                 }

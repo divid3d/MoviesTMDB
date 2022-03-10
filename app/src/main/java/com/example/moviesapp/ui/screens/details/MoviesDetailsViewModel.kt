@@ -52,7 +52,7 @@ class MoviesDetailsViewModel @Inject constructor(
     private val movieCollection: MutableStateFlow<MovieCollection?> = MutableStateFlow(null)
     private val watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
     private val videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
-    private val hasReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val reviewsCount: MutableStateFlow<Int> = MutableStateFlow(0)
 
     private val isFavourite: Flow<Boolean> = favouritesMoviesIdsFlow.map { favouriteIds ->
         navArgs.movieId in favouriteIds
@@ -65,14 +65,14 @@ class MoviesDetailsViewModel @Inject constructor(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     private val additionalInfo: StateFlow<AdditionalMovieDetailsInfo> = combine(
-        isFavourite, watchAtTime, watchProviders, credits, hasReviews
-    ) { isFavourite, watchAtTime, watchProviders, credits, hasReviews ->
+        isFavourite, watchAtTime, watchProviders, credits, reviewsCount
+    ) { isFavourite, watchAtTime, watchProviders, credits, reviewsCount ->
         AdditionalMovieDetailsInfo(
             isFavourite = isFavourite,
             watchAtTime = watchAtTime,
             watchProviders = watchProviders,
             credits = credits,
-            hasReviews = hasReviews
+            reviewsCount = reviewsCount
         )
     }.stateIn(
         viewModelScope,
@@ -264,7 +264,7 @@ class MoviesDetailsViewModel @Inject constructor(
         movieRepository.movieReview(movieId).request { response ->
             response.onSuccess {
                 viewModelScope.launch {
-                    hasReviews.emit((data?.totalResults ?: 0) > 1)
+                    reviewsCount.emit(data?.totalResults ?: 0)
                 }
             }
 

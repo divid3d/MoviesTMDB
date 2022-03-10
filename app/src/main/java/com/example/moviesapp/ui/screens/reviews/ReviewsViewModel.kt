@@ -22,6 +22,7 @@ class ReviewsViewModel @Inject constructor(
 
     val uiState: StateFlow<ReviewsScreenUiState> = MutableStateFlow(
         ReviewsScreenUiState(
+            startRoute = navArgs.startRoute,
             reviews = when (navArgs.type) {
                 MediaType.Movie -> movieRepository.movieReviews(navArgs.mediaId)
                 MediaType.Tv -> tvSeriesRepository.tvSeriesReviews(navArgs.mediaId)
