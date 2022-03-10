@@ -110,8 +110,9 @@ fun FavouriteScreenContent(
                 type == FavouriteType.Movie -> {
                     FavouriteEmptyState(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(MaterialTheme.spacing.medium),
+                            .fillMaxWidth()
+                            .padding(vertical = MaterialTheme.spacing.medium)
+                            .padding(top = MaterialTheme.spacing.extraLarge),
                         type = type,
                         onButtonClick = onNavigateToMoviesButtonClicked
                     )
@@ -120,8 +121,9 @@ fun FavouriteScreenContent(
                 type == FavouriteType.TvSeries -> {
                     FavouriteEmptyState(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(MaterialTheme.spacing.medium),
+                            .fillMaxWidth()
+                            .padding(vertical = MaterialTheme.spacing.medium)
+                            .padding(top = MaterialTheme.spacing.extraLarge),
                         type = type,
                         onButtonClick = onNavigateToTvSeriesButtonClicked
                     )

@@ -8,7 +8,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -70,7 +70,7 @@ fun ExpandableSection(
 
             Icon(
                 modifier = Modifier.rotate(iconRotation),
-                imageVector = Icons.Filled.ArrowDropDown,
+                imageVector = Icons.Filled.KeyboardArrowDown,
                 tint = MaterialTheme.colors.primary,
                 contentDescription = null
             )
