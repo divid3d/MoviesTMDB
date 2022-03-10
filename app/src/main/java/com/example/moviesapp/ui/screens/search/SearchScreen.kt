@@ -26,7 +26,6 @@ import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.ui.components.sections.PresentableGridSection
 import com.example.moviesapp.ui.components.sections.SearchGridSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
-import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.search.components.QueryTextField
@@ -82,7 +81,7 @@ fun AnimatedVisibilityScope.SearchScreen(
     val onMovieClicked = { movieId: Int ->
         val destination = MovieDetailsScreenDestination(
             movieId = movieId,
-            startRoute = MoviesScreenDestination.route
+            startRoute = SearchScreenDestination.route
         )
 
         navigator.navigate(destination)

@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.discover.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -22,6 +23,7 @@ import com.example.moviesapp.ui.components.sections.ExpandableSection
 import com.example.moviesapp.ui.components.selectors.DateRangeSelector
 import com.example.moviesapp.ui.components.selectors.GenresSelector
 import com.example.moviesapp.ui.screens.discover.TvSeriesFilterState
+import com.example.moviesapp.ui.theme.Charcoal
 import com.example.moviesapp.ui.theme.spacing
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -314,7 +316,8 @@ fun FilterTvSeriesModalBottomSheetContent(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = MaterialTheme.spacing.small),
+                .background(Charcoal)
+                .padding(vertical = MaterialTheme.spacing.medium),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
         ) {
             OutlinedButton(
