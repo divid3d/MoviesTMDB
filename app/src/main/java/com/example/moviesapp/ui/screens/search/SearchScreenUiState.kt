@@ -5,6 +5,7 @@ data class SearchScreenUiState(
     val query: String?,
     val suggestions: List<String>,
     val searchState: SearchState,
+    val resultState: ResultState,
     val queryLoading: Boolean
 ) {
     companion object {
@@ -14,6 +15,7 @@ data class SearchScreenUiState(
                 query = null,
                 suggestions = emptyList(),
                 searchState = SearchState.EmptyQuery,
+                resultState = ResultState.Default(),
                 queryLoading = false
             )
     }

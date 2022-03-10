@@ -2,11 +2,14 @@ package com.example.moviesapp.ui.screens.search
 
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.model.DeviceLanguage
+import com.example.moviesapp.model.Movie
 import com.example.moviesapp.model.SearchQuery
 import com.example.moviesapp.model.SearchResult
 import com.example.moviesapp.repository.config.ConfigRepository
+import com.example.moviesapp.repository.movie.MovieRepository
 import com.example.moviesapp.repository.search.SearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -16,10 +19,11 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.ExperimentalTime
 
 
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, FlowPreview::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val configRepository: ConfigRepository,
+    private val movieRepository: MovieRepository,
     private val searchRepository: SearchRepository
 ) : BaseViewModel() {
 
@@ -27,30 +31,36 @@ class SearchViewModel @Inject constructor(
     private val queryDelay = 500.milliseconds
     private val minQueryLength = 3
 
+    private val popularMovies: Flow<PagingData<Movie>> = deviceLanguage.map { deviceLanguage ->
+        movieRepository.popularMovies(deviceLanguage)
+    }.flattenMerge().cachedIn(viewModelScope)
     private val voiceSearchAvailable: Flow<Boolean> = configRepository.getSpeechToTextAvailable()
-    private val query: MutableStateFlow<String?> = MutableStateFlow(null)
+    private val queryState: MutableStateFlow<QueryState> = MutableStateFlow(QueryState.default)
     private val suggestions: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
     private val searchState: MutableStateFlow<SearchState> =
         MutableStateFlow(SearchState.EmptyQuery)
+    private val resultState: MutableStateFlow<ResultState> =
+        MutableStateFlow(ResultState.Default(popularMovies))
     private val queryLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     private var queryJob: Job? = null
 
     val uiState: StateFlow<SearchScreenUiState> = combine(
-        voiceSearchAvailable, query, suggestions, searchState, queryLoading
-    ) { voiceSearchAvailable, query, suggestions, searchState, queryLoading ->
+        voiceSearchAvailable, queryState, suggestions, searchState, resultState
+    ) { voiceSearchAvailable, queryState, suggestions, searchState, resultState ->
         SearchScreenUiState(
             voiceSearchAvailable = voiceSearchAvailable,
-            query = query,
+            query = queryState.query,
             suggestions = suggestions,
             searchState = searchState,
-            queryLoading = queryLoading
+            resultState = resultState,
+            queryLoading = queryState.loading
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), SearchScreenUiState.default)
 
     fun onQueryChange(queryText: String) {
         viewModelScope.launch {
-            query.emit(queryText)
+            queryState.emit(queryState.value.copy(query = queryText))
 
             queryJob?.cancel()
 
@@ -58,6 +68,7 @@ class SearchViewModel @Inject constructor(
                 queryText.isBlank() -> {
                     searchState.emit(SearchState.EmptyQuery)
                     suggestions.emit(emptyList())
+                    resultState.emit(ResultState.Default(popularMovies))
                 }
 
                 queryText.length < minQueryLength -> {
@@ -83,10 +94,6 @@ class SearchViewModel @Inject constructor(
 
     fun onQuerySuggestionSelected(searchQuery: String) {
         onQueryChange(searchQuery)
-
-        viewModelScope.launch {
-            suggestions.emit(emptyList())
-        }
     }
 
     fun addQuerySuggestion(searchQuery: SearchQuery) {
@@ -108,12 +115,8 @@ class SearchViewModel @Inject constructor(
                     )
                 }.flattenMerge()
 
-                searchState.emit(
-                    SearchState.Result(
-                        query = query,
-                        data = response
-                    )
-                )
+                searchState.emit(SearchState.ValidQuery)
+                resultState.emit(ResultState.Search(response))
             } catch (_: CancellationException) {
 
             } finally {
@@ -130,12 +133,26 @@ class SearchViewModel @Inject constructor(
     }
 }
 
-
 sealed class SearchState {
     object EmptyQuery : SearchState()
     object InsufficientQuery : SearchState()
-    data class Result(
-        val query: String,
-        val data: Flow<PagingData<SearchResult>>
-    ) : SearchState()
+    object ValidQuery : SearchState()
+}
+
+sealed class ResultState {
+    data class Default(val popular: Flow<PagingData<Movie>> = emptyFlow()) : ResultState()
+    data class Search(val result: Flow<PagingData<SearchResult>>) : ResultState()
+}
+
+data class QueryState(
+    val query: String?,
+    val loading: Boolean
+) {
+    companion object {
+        val default: QueryState
+            get() = QueryState(
+                query = null,
+                loading = false
+            )
+    }
 }

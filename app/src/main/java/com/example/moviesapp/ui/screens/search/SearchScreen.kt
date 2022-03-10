@@ -2,6 +2,7 @@ package com.example.moviesapp.ui.screens.search
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -22,8 +23,10 @@ import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.model.SearchQuery
 import com.example.moviesapp.other.CaptureSpeechToText
 import com.example.moviesapp.other.isNotEmpty
+import com.example.moviesapp.ui.components.sections.PresentableGridSection
 import com.example.moviesapp.ui.components.sections.SearchGridSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.search.components.QueryTextField
@@ -34,6 +37,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import java.util.*
 
+@OptIn(ExperimentalFoundationApi::class)
 @Destination
 @Composable
 fun AnimatedVisibilityScope.SearchScreen(
@@ -75,6 +79,14 @@ fun AnimatedVisibilityScope.SearchScreen(
             navigator.navigate(destination)
         }
     }
+    val onMovieClicked = { movieId: Int ->
+        val destination = MovieDetailsScreenDestination(
+            movieId = movieId,
+            startRoute = MoviesScreenDestination.route
+        )
+
+        navigator.navigate(destination)
+    }
     val onQuerySuggestionSelected: (String) -> Unit = viewModel::onQuerySuggestionSelected
 
     SearchScreenContent(
@@ -82,23 +94,25 @@ fun AnimatedVisibilityScope.SearchScreen(
         onQueryChanged = onQueryChanged,
         onQueryCleared = onQueryCleared,
         onResultClicked = onResultClicked,
+        onMovieClicked = onMovieClicked,
         onQuerySuggestionSelected = onQuerySuggestionSelected
     )
 }
 
+@ExperimentalFoundationApi
 @Composable
 fun SearchScreenContent(
     uiState: SearchScreenUiState,
     onQueryChanged: (query: String) -> Unit,
     onQueryCleared: () -> Unit,
     onResultClicked: (id: Int, type: MediaType) -> Unit,
+    onMovieClicked: (Int) -> Unit,
     onQuerySuggestionSelected: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
     val queryTextFieldFocusRequester = remember { FocusRequester() }
     val clearFocus = { focusManager.clearFocus(force = true) }
-
 
     val speechToTextLauncher = rememberLauncherForActivityResult(CaptureSpeechToText()) { result ->
         if (result != null) {
@@ -140,7 +154,10 @@ fun SearchScreenContent(
                 clearFocus()
             },
             onQueryChange = onQueryChanged,
-            onQueryClear = onQueryCleared,
+            onQueryClear = {
+                onQueryCleared()
+                queryTextFieldFocusRequester.requestFocus()
+            },
             onVoiceSearchClick = {
                 speechToTextLauncher.launch(null)
             },
@@ -151,11 +168,27 @@ fun SearchScreenContent(
         )
         Crossfade(
             modifier = Modifier.fillMaxSize(),
-            targetState = uiState.searchState
+            targetState = uiState.resultState
         ) { state ->
             when (state) {
-                is SearchState.Result -> {
-                    val result = state.data.collectAsLazyPagingItems()
+                is ResultState.Default -> {
+                    val popular = state.popular.collectAsLazyPagingItems()
+
+                    if (popular.isNotEmpty()) {
+                        PresentableGridSection(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(
+                                horizontal = MaterialTheme.spacing.small,
+                                vertical = MaterialTheme.spacing.medium,
+                            ),
+                            state = popular,
+                            onPresentableClick = onMovieClicked
+                        )
+                    }
+                }
+
+                is ResultState.Search -> {
+                    val result = state.result.collectAsLazyPagingItems()
 
                     if (result.isNotEmpty()) {
                         SearchGridSection(
@@ -179,7 +212,6 @@ fun SearchScreenContent(
                         )
                     }
                 }
-                else -> Unit
             }
         }
     }
