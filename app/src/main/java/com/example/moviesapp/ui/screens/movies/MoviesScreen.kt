@@ -151,7 +151,9 @@ fun MoviesScreenContent(
         state = swipeRefreshState,
         indicator = { state, trigger ->
             SwipeRefreshIndicator(
-                modifier = Modifier.statusBarsPadding(),
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(top = MaterialTheme.spacing.large),
                 state = state,
                 refreshTriggerDistance = trigger,
                 fade = true,
