@@ -6,9 +6,9 @@ import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.rememberLazyGridState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -60,7 +60,7 @@ fun SearchGridSection(
             state = gridState,
             modifier = Modifier.fillMaxSize(),
             contentPadding = contentPadding,
-            cells = GridCells.Adaptive(MaterialTheme.sizes.presentableItemSmall.width),
+            columns = GridCells.Adaptive(MaterialTheme.sizes.presentableItemSmall.width),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
         ) {

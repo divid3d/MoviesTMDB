@@ -77,9 +77,7 @@ fun PresentableTopSection(
 
     val ratio = if (currentScrollValue != null && scrollValueLimit != null) {
         (currentScrollValue / scrollValueLimit).coerceIn(0f, 1f)
-    } else {
-        0f
-    }
+    } else 0f
 
     val itemHeight = density.run { MaterialTheme.sizes.presentableItemBig.height.toPx() }
 
@@ -247,7 +245,6 @@ fun PresentableTopSection(
         }
     }
 }
-
 
 @Composable
 fun PresentableTopSectionItem(
