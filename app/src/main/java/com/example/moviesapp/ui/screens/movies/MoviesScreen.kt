@@ -179,7 +179,10 @@ fun MoviesScreenContent(
                 state = nowPlayingLazyItems,
                 scrollState = scrollState,
                 scrollValueLimit = topSectionScrollLimitValue,
-                onPresentableClick = onMovieClicked
+                onPresentableClick = onMovieClicked,
+                onMoreClick = {
+                    onBrowseMoviesClicked(MovieType.NowPlaying)
+                }
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             PresentableSection(

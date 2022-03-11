@@ -39,6 +39,7 @@ class BrowseTvSeriesViewModel @Inject constructor(
         deviceLanguage, favouriteTvSeriesCount
     ) { deviceLanguage, favouriteTvSeriesCount ->
         val tvSeries = when (navArgs.tvSeriesType) {
+            TvSeriesType.OnTheAir -> tvSeriesRepository.onTheAirTvSeries(deviceLanguage)
             TvSeriesType.TopRated -> tvSeriesRepository.topRatedTvSeries(deviceLanguage)
             TvSeriesType.AiringToday -> tvSeriesRepository.airingTodayTvSeries(deviceLanguage)
             TvSeriesType.Trending -> tvSeriesRepository.trendingTvSeries(deviceLanguage)

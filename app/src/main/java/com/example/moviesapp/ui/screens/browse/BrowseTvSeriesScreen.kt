@@ -124,6 +124,7 @@ fun BrowseTvSeriesScreenContent(
     val tvSeries = uiState.tvSeries.collectAsLazyPagingItems()
 
     val appbarTitle = when (uiState.selectedTvSeriesType) {
+        TvSeriesType.OnTheAir -> stringResource(R.string.all_tv_series_on_the_air_label)
         TvSeriesType.TopRated -> stringResource(R.string.all_tv_series_top_rated_label)
         TvSeriesType.AiringToday -> stringResource(R.string.all_tv_series_airing_today_label)
         TvSeriesType.Favourite -> stringResource(

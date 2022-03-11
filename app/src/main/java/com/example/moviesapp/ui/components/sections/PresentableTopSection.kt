@@ -8,8 +8,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -22,6 +26,7 @@ import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.lerp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
@@ -30,6 +35,7 @@ import androidx.paging.compose.LazyPagingItems
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.transform.BlurTransformation
+import com.example.moviesapp.R
 import com.example.moviesapp.model.DetailPresentable
 import com.example.moviesapp.model.DetailPresentableItemState
 import com.example.moviesapp.other.BottomRoundedArcShape
@@ -54,9 +60,11 @@ fun PresentableTopSection(
     modifier: Modifier = Modifier,
     title: String,
     state: LazyPagingItems<out DetailPresentable>,
+    showMoreButton: Boolean = true,
     scrollState: ScrollState? = null,
     scrollValueLimit: Float? = null,
-    onPresentableClick: (Int) -> Unit = {}
+    onPresentableClick: (Int) -> Unit = {},
+    onMoreClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
@@ -172,15 +180,34 @@ fun PresentableTopSection(
                 .fillMaxWidth()
                 .statusBarsPadding()
         ) {
-            Text(
+            Row(
                 modifier = Modifier
-                    .padding(horizontal = MaterialTheme.spacing.medium)
-                    .padding(top = MaterialTheme.spacing.small),
-                text = title,
-                color = contentColor,
-                style = MaterialTheme.typography.h5,
-                fontWeight = FontWeight.Bold
-            )
+                    .fillMaxWidth()
+                    .padding(start = MaterialTheme.spacing.medium),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = title,
+                    color = contentColor,
+                    style = MaterialTheme.typography.h5,
+                    fontWeight = FontWeight.Bold
+                )
+
+                if (showMoreButton) {
+                    TextButton(onClick = onMoreClick) {
+                        Text(
+                            text = stringResource(R.string.movies_more),
+                            color = contentColor,
+                            fontSize = 12.sp
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowRight,
+                            contentDescription = null
+                        )
+                    }
+                }
+            }
             HorizontalPager(
                 modifier = Modifier
                     .fillMaxWidth()

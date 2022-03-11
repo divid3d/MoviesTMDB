@@ -152,7 +152,10 @@ fun TvScreenContent(
                 state = onTheAirLazyItems,
                 scrollState = scrollState,
                 scrollValueLimit = topSectionScrollLimitValue,
-                onPresentableClick = onTvSeriesClicked
+                onPresentableClick = onTvSeriesClicked,
+                onMoreClick = {
+                    onBrowseTvSeriesClicked(TvSeriesType.OnTheAir)
+                }
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             PresentableSection(

@@ -130,6 +130,7 @@ fun BrowseMoviesScreenContent(
     val movies = uiState.movies.collectAsLazyPagingItems()
 
     val appbarTitle = when (uiState.selectedMovieType) {
+        MovieType.NowPlaying -> stringResource(R.string.all_movies_now_playing_label)
         MovieType.Upcoming -> stringResource(R.string.all_movies_upcoming_label)
         MovieType.TopRated -> stringResource(R.string.all_movies_top_rated_label)
         MovieType.Favourite -> stringResource(

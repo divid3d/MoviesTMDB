@@ -71,12 +71,14 @@
     <string name="tv_series_details_reviews" formatted="true">Reviews (%d)</string>
 
     <string name="all_movies_top_rated_label">Top rated movies</string>
+    <string name="all_movies_now_playing_label">Now playing movies</string>
     <string name="all_movies_upcoming_label">Upcoming movies</string>
     <string name="all_movies_popular_label">Popular movies</string>
     <string name="all_movies_favourites_label" formatted="true">Favourites movies (%d)</string>
     <string name="all_movies_recently_browsed_label">Recently browsed movies</string>
     <string name="all_movies_trending_label">Trending movies</string>
 
+    <string name="all_tv_series_on_the_air_label">On the air tv series</string>
     <string name="all_tv_series_top_rated_label">Top rated tv series</string>
     <string name="all_tv_series_airing_today_label">Airing today tv series</string>
     <string name="all_tv_series_popular_label">Popular tv series</string>

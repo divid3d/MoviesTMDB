@@ -39,6 +39,7 @@ class BrowseMoviesViewModel @Inject constructor(
         deviceLanguage, favouriteMoviesCount
     ) { deviceLanguage, favouriteMoviesCount ->
         val movies = when (navArgs.movieType) {
+            MovieType.NowPlaying -> movieRepository.nowPlayingMovies(deviceLanguage)
             MovieType.TopRated -> movieRepository.topRatedMovies(deviceLanguage)
             MovieType.Upcoming -> movieRepository.upcomingMovies(deviceLanguage)
             MovieType.Favourite -> favouritesRepository.favouriteMovies()

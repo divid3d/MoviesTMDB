@@ -70,6 +70,7 @@
     <string name="tv_series_details_creators">Twórcy</string>
     <string name="tv_series_details_reviews" formatted="true">Recenzje (%d)</string>
 
+    <string name="all_movies_now_playing_label">Teraz grane filmy</string>
     <string name="all_movies_top_rated_label">Najwyżej oceniane filmy</string>
     <string name="all_movies_upcoming_label">Nachodzące filmy</string>
     <string name="all_movies_popular_label">Popularne filmy</string>
@@ -77,6 +78,7 @@
     <string name="all_movies_recently_browsed_label">Ostatnio przeglądane filmy</string>
     <string name="all_movies_trending_label">Filmy zyskujące na popularności</string>
 
+    <string name="all_tv_series_on_the_air_label">Seriale na antenie</string>
     <string name="all_tv_series_top_rated_label">Najwyżej oceniane seriale</string>
     <string name="all_tv_series_airing_today_label">Seriale emitowane dzisiaj</string>
     <string name="all_tv_series_popular_label">Popularne seriale</string>
