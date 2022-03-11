@@ -52,9 +52,20 @@ fun AnimatedVisibilityScope.FavouritesScreen(
 
         navigator.navigate(destination)
     }
-    val onNavigateToMoviesButtonClicked: () -> Unit =
-        { navigator.navigate(MoviesScreenDestination) }
-    val onNavigateToTvSeriesButtonClicked: () -> Unit = { navigator.navigate(TvScreenDestination) }
+    val onNavigateToMoviesButtonClicked: () -> Unit = {
+        navigator.navigate(MoviesScreenDestination) {
+            popUpTo(MoviesScreenDestination.route) {
+                inclusive = true
+            }
+        }
+    }
+    val onNavigateToTvSeriesButtonClicked: () -> Unit = {
+        navigator.navigate(TvScreenDestination) {
+            popUpTo(MoviesScreenDestination.route) {
+                inclusive = false
+            }
+        }
+    }
 
     FavouriteScreenContent(
         uiState = uiState,
