@@ -102,43 +102,31 @@ fun FavouriteScreenContent(
         )
         Crossfade(
             modifier = Modifier.fillMaxSize(),
-            targetState = notEmpty to uiState.selectedFavouriteType
-        ) { (notEmpty, type) ->
-            when {
-                notEmpty -> {
-                    PresentableGridSection(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(
-                            horizontal = MaterialTheme.spacing.small,
-                            vertical = MaterialTheme.spacing.medium,
-                        ),
-                        state = favouritesLazyItems,
-                        showRefreshLoading = false,
-                        onPresentableClick = onFavouriteClicked
-                    )
-                }
-
-                type == FavouriteType.Movie -> {
-                    FavouriteEmptyState(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = MaterialTheme.spacing.medium)
-                            .padding(top = MaterialTheme.spacing.extraLarge),
-                        type = type,
-                        onButtonClick = onNavigateToMoviesButtonClicked
-                    )
-                }
-
-                type == FavouriteType.TvSeries -> {
-                    FavouriteEmptyState(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = MaterialTheme.spacing.medium)
-                            .padding(top = MaterialTheme.spacing.extraLarge),
-                        type = type,
-                        onButtonClick = onNavigateToTvSeriesButtonClicked
-                    )
-                }
+            targetState = notEmpty
+        ) { notEmpty ->
+            if (notEmpty) {
+                PresentableGridSection(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(
+                        horizontal = MaterialTheme.spacing.small,
+                        vertical = MaterialTheme.spacing.medium,
+                    ),
+                    state = favouritesLazyItems,
+                    showRefreshLoading = false,
+                    onPresentableClick = onFavouriteClicked
+                )
+            } else {
+                FavouriteEmptyState(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = MaterialTheme.spacing.medium)
+                        .padding(top = MaterialTheme.spacing.extraLarge),
+                    type = uiState.selectedFavouriteType,
+                    onButtonClick = when (uiState.selectedFavouriteType) {
+                        FavouriteType.Movie -> onNavigateToMoviesButtonClicked
+                        FavouriteType.TvSeries -> onNavigateToTvSeriesButtonClicked
+                    }
+                )
             }
         }
     }

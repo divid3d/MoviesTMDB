@@ -94,7 +94,9 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onQuerySuggestionSelected(searchQuery: String) {
-        onQueryChange(searchQuery)
+        if (queryState.value.query != searchQuery) {
+            onQueryChange(searchQuery)
+        }
     }
 
     fun addQuerySuggestion(searchQuery: SearchQuery) {
