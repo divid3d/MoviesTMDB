@@ -54,13 +54,15 @@ class MoviesDetailsViewModel @Inject constructor(
     private val videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
     private val reviewsCount: MutableStateFlow<Int> = MutableStateFlow(0)
 
-    private val isFavourite: Flow<Boolean> = favouritesMoviesIdsFlow.map { favouriteIds ->
+    private val isFavourite: Flow<Boolean> = favouritesMoviesIdsFlow.mapLatest { favouriteIds ->
         navArgs.movieId in favouriteIds
     }
 
     private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val externalIds: StateFlow<List<ExternalId>?> =
-        _externalIds.filterNotNull().map { externalIds ->
+        _externalIds.filterNotNull().mapLatest { externalIds ->
             externalIds.toExternalIdList(type = ExternalContentType.Movie)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 

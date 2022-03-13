@@ -15,15 +15,13 @@ import com.example.moviesapp.model.ProviderSource
 import com.example.moviesapp.other.ImageUrlParser
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Singleton
 class ConfigDataSource @Inject constructor(
     @ApplicationContext
@@ -49,7 +47,7 @@ class ConfigDataSource @Inject constructor(
         MutableStateFlow(getCurrentDeviceLanguage())
     val deviceLanguage: StateFlow<DeviceLanguage> = _deviceLanguage.asStateFlow()
 
-    val imageUrlParser: Flow<ImageUrlParser?> = _config.map { config ->
+    val imageUrlParser: Flow<ImageUrlParser?> = _config.mapLatest { config ->
         if (config != null) {
             ImageUrlParser(config.imagesConfig)
         } else null

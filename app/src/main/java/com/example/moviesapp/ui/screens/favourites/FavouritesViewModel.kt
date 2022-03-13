@@ -6,10 +6,12 @@ import androidx.paging.map
 import com.example.moviesapp.model.FavouriteType
 import com.example.moviesapp.repository.favourites.FavouritesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class FavouritesViewModel @Inject constructor(
     private val favouritesRepository: FavouritesRepository
@@ -18,11 +20,11 @@ class FavouritesViewModel @Inject constructor(
     private val _selectedFavouriteType: MutableStateFlow<FavouriteType> =
         MutableStateFlow(FavouriteType.Movie)
 
-    val uiState: StateFlow<FavouritesScreenUiState> = _selectedFavouriteType.map { type ->
+    val uiState: StateFlow<FavouritesScreenUiState> = _selectedFavouriteType.mapLatest { type ->
         val favourites = when (type) {
             FavouriteType.Movie -> favouritesRepository.favouriteMovies()
             FavouriteType.TvSeries -> favouritesRepository.favouritesTvSeries()
-        }.map { data -> data.map { tvSeries -> tvSeries } }
+        }.mapLatest { data -> data.map { tvSeries -> tvSeries } }
 
         FavouritesScreenUiState(
             selectedFavouriteType = type,

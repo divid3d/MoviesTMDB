@@ -25,17 +25,18 @@ class RelatedTvSeriesViewModel @Inject constructor(
         RelatedTvSeriesScreenDestination.argsFrom(savedStateHandle)
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
-    val uiState: StateFlow<RelatedTvSeriesScreenUiState> = deviceLanguage.map { deviceLanguage ->
-        val tvSeries = when (navArgs.type) {
-            RelationType.Similar -> {
-                tvSeriesRepository.similarTvSeries(
-                    tvSeriesId = navArgs.tvSeriesId,
-                    deviceLanguage = deviceLanguage
-                )
-            }
+    val uiState: StateFlow<RelatedTvSeriesScreenUiState> =
+        deviceLanguage.mapLatest { deviceLanguage ->
+            val tvSeries = when (navArgs.type) {
+                RelationType.Similar -> {
+                    tvSeriesRepository.similarTvSeries(
+                        tvSeriesId = navArgs.tvSeriesId,
+                        deviceLanguage = deviceLanguage
+                    )
+                }
 
-            RelationType.Recommended -> {
-                tvSeriesRepository.tvSeriesRecommendations(
+                RelationType.Recommended -> {
+                    tvSeriesRepository.tvSeriesRecommendations(
                     tvSeriesId = navArgs.tvSeriesId,
                     deviceLanguage = deviceLanguage
                 )

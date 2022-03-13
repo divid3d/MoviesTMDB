@@ -11,6 +11,7 @@ import com.example.moviesapp.repository.config.ConfigRepository
 import com.example.moviesapp.repository.favourites.FavouritesRepository
 import com.example.moviesapp.repository.movie.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -26,19 +27,21 @@ class MoviesViewModel @Inject constructor(
 
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
-    private val moviesState: StateFlow<MoviesState> = deviceLanguage.map { deviceLanguage ->
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val moviesState: StateFlow<MoviesState> = deviceLanguage.mapLatest { deviceLanguage ->
         MoviesState(
             discover = movieRepository.discoverMovies(deviceLanguage),
             upcoming = movieRepository.upcomingMovies(deviceLanguage),
             trending = movieRepository.trendingMovies(deviceLanguage),
             topRated = movieRepository.topRatedMovies(deviceLanguage),
-            nowPlaying = movieRepository.nowPlayingMovies(deviceLanguage).map { pagingDate ->
+            nowPlaying = movieRepository.nowPlayingMovies(deviceLanguage).mapLatest { pagingDate ->
                 pagingDate.filterCompleteInfo()
             }
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), MoviesState.default)
 
-    val uiState: StateFlow<MovieScreenUiState> = moviesState.map { moviesState ->
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val uiState: StateFlow<MovieScreenUiState> = moviesState.mapLatest { moviesState ->
         MovieScreenUiState(
             moviesState = moviesState,
             favourites = favouritesRepository.favouriteMovies(),

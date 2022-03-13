@@ -34,7 +34,7 @@ class PersonDetailsViewModel @Inject constructor(
 
     private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
     private val externalIds: StateFlow<List<ExternalId>?> =
-        _externalIds.filterNotNull().map { externalIds ->
+        _externalIds.filterNotNull().mapLatest { externalIds ->
             externalIds.toExternalIdList(type = ExternalContentType.Person)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 

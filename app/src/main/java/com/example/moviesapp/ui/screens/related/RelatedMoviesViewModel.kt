@@ -25,17 +25,18 @@ class RelatedMoviesViewModel @Inject constructor(
         RelatedMoviesScreenDestination.argsFrom(savedStateHandle)
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
-    val uiState: StateFlow<RelatedMoviesScreenUiState> = deviceLanguage.map { deviceLanguage ->
-        val movies = when (navArgs.type) {
-            RelationType.Similar -> {
-                movieRepository.similarMovies(
-                    movieId = navArgs.movieId,
-                    deviceLanguage = deviceLanguage
-                )
-            }
+    val uiState: StateFlow<RelatedMoviesScreenUiState> =
+        deviceLanguage.mapLatest { deviceLanguage ->
+            val movies = when (navArgs.type) {
+                RelationType.Similar -> {
+                    movieRepository.similarMovies(
+                        movieId = navArgs.movieId,
+                        deviceLanguage = deviceLanguage
+                    )
+                }
 
-            RelationType.Recommended -> {
-                movieRepository.moviesRecommendations(
+                RelationType.Recommended -> {
+                    movieRepository.moviesRecommendations(
                     movieId = navArgs.movieId,
                     deviceLanguage = deviceLanguage
                 )

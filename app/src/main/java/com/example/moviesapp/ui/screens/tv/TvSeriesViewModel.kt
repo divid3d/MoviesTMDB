@@ -26,19 +26,21 @@ class TvSeriesViewModel @Inject constructor(
 
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
-    private val tvSeriesState: StateFlow<TvSeriesState> = deviceLanguage.map { deviceLanguage ->
-        TvSeriesState(
-            onTheAir = tvSeriesRepository.onTheAirTvSeries(deviceLanguage).map { pagingData ->
-                pagingData.filterCompleteInfo()
-            },
-            discover = tvSeriesRepository.discoverTvSeries(deviceLanguage),
-            topRated = tvSeriesRepository.topRatedTvSeries(deviceLanguage),
-            trending = tvSeriesRepository.trendingTvSeries(deviceLanguage),
-            airingToday = tvSeriesRepository.airingTodayTvSeries(deviceLanguage)
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), TvSeriesState.default)
+    private val tvSeriesState: StateFlow<TvSeriesState> =
+        deviceLanguage.mapLatest { deviceLanguage ->
+            TvSeriesState(
+                onTheAir = tvSeriesRepository.onTheAirTvSeries(deviceLanguage)
+                    .mapLatest { pagingData ->
+                        pagingData.filterCompleteInfo()
+                    },
+                discover = tvSeriesRepository.discoverTvSeries(deviceLanguage),
+                topRated = tvSeriesRepository.topRatedTvSeries(deviceLanguage),
+                trending = tvSeriesRepository.trendingTvSeries(deviceLanguage),
+                airingToday = tvSeriesRepository.airingTodayTvSeries(deviceLanguage)
+            )
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), TvSeriesState.default)
 
-    val tvScreenUiState: StateFlow<TvScreenUiState> = tvSeriesState.map { tvSeriesState ->
+    val tvScreenUiState: StateFlow<TvScreenUiState> = tvSeriesState.mapLatest { tvSeriesState ->
         TvScreenUiState(
             tvSeriesState = tvSeriesState,
             favourites = favouritesRepository.favouritesTvSeries(),

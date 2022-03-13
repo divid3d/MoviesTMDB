@@ -7,9 +7,11 @@ import com.example.moviesapp.other.NetworkStatus
 import com.example.moviesapp.other.NetworkStatusTracker
 import com.example.moviesapp.repository.config.ConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val networkStatusTracker: NetworkStatusTracker,
@@ -22,7 +24,7 @@ class MainViewModel @Inject constructor(
 //    val snackBarEventFlow: StateFlow<SnackBarEvent?> = snackBarEventChannel.receiveAsFlow()
 //        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
-    val networkSnackBarEvent: StateFlow<SnackBarEvent?> = connectionStatus.map { status ->
+    val networkSnackBarEvent: StateFlow<SnackBarEvent?> = connectionStatus.mapLatest { status ->
         when (status) {
             NetworkStatus.Connected -> SnackBarEvent.NetworkConnected
             NetworkStatus.Disconnected -> SnackBarEvent.NetworkDisconnected

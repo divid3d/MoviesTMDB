@@ -12,10 +12,12 @@ import com.example.moviesapp.repository.favourites.FavouritesRepository
 import com.example.moviesapp.repository.movie.MovieRepository
 import com.example.moviesapp.ui.screens.destinations.BrowseMoviesScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @FlowPreview
 @HiltViewModel
 class BrowseMoviesViewModel @Inject constructor(
@@ -45,7 +47,7 @@ class BrowseMoviesViewModel @Inject constructor(
             MovieType.Favourite -> favouritesRepository.favouriteMovies()
             MovieType.RecentlyBrowsed -> recentlyBrowsedRepository.recentlyBrowsedMovies()
             MovieType.Trending -> movieRepository.trendingMovies(deviceLanguage)
-        }.map { data -> data.map { movie -> movie } }
+        }.mapLatest { data -> data.map { movie -> movie } }
 
         BrowseMoviesScreenUiState(
             selectedMovieType = navArgs.movieType,

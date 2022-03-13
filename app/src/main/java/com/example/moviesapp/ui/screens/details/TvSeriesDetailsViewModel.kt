@@ -53,13 +53,13 @@ class TvSeriesDetailsViewModel @Inject constructor(
     private val watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
     private val reviewsCount: MutableStateFlow<Int> = MutableStateFlow(0)
 
-    private val isFavourite: StateFlow<Boolean> = favouriteTvSeriesIds.map { favouriteIds ->
+    private val isFavourite: StateFlow<Boolean> = favouriteTvSeriesIds.mapLatest { favouriteIds ->
         navArgs.tvSeriesId in favouriteIds
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
 
     private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
     val externalIds: StateFlow<List<ExternalId>?> =
-        _externalIds.filterNotNull().map { externalIds ->
+        _externalIds.filterNotNull().mapLatest { externalIds ->
             externalIds.toExternalIdList(type = ExternalContentType.Tv)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
@@ -79,7 +79,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
     )
 
     private val associatedTvSeries: StateFlow<AssociatedTvSeries> =
-        deviceLanguage.map { deviceLanguage ->
+        deviceLanguage.mapLatest { deviceLanguage ->
             AssociatedTvSeries(
                 similar = tvSeriesRepository.similarTvSeries(
                     tvSeriesId = navArgs.tvSeriesId,

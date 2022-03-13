@@ -31,9 +31,10 @@ class SearchViewModel @Inject constructor(
     private val queryDelay = 500.milliseconds
     private val minQueryLength = 3
 
-    private val popularMovies: Flow<PagingData<Movie>> = deviceLanguage.map { deviceLanguage ->
-        movieRepository.popularMovies(deviceLanguage)
-    }.flattenMerge().cachedIn(viewModelScope)
+    private val popularMovies: Flow<PagingData<Movie>> =
+        deviceLanguage.mapLatest { deviceLanguage ->
+            movieRepository.popularMovies(deviceLanguage)
+        }.flattenMerge().cachedIn(viewModelScope)
     private val voiceSearchAvailable: Flow<Boolean> = configRepository.getSpeechToTextAvailable()
     private val queryState: MutableStateFlow<QueryState> = MutableStateFlow(QueryState.default)
     private val suggestions: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
@@ -100,7 +101,7 @@ class SearchViewModel @Inject constructor(
         searchRepository.addSearchQuery(searchQuery)
     }
 
-    @OptIn(FlowPreview::class)
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     private fun createQueryJob(query: String): Job {
         return viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -108,7 +109,7 @@ class SearchViewModel @Inject constructor(
 
                 queryLoading.emit(true)
 
-                val response = deviceLanguage.map { deviceLanguage ->
+                val response = deviceLanguage.mapLatest { deviceLanguage ->
                     searchRepository.multiSearch(
                         query = query,
                         deviceLanguage = deviceLanguage
