@@ -43,6 +43,7 @@ import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyle
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -248,11 +249,17 @@ fun TvSeriesDetailsScreenContent(
     onReviewsClicked: () -> Unit
 ) {
     val density = LocalDensity.current
+    val coroutineScope = rememberCoroutineScope()
 
     val similar = uiState.associatedTvSeries.similar.collectAsLazyPagingItems()
     val recommendations = uiState.associatedTvSeries.recommendations.collectAsLazyPagingItems()
 
     val scrollState = rememberScrollState()
+    val scrollToStart = {
+        coroutineScope.launch {
+            scrollState.animateScrollTo(0)
+        }
+    }
 
     val imdbExternalId by derivedStateOf {
         uiState.associatedContent.externalIds?.filterIsInstance<ExternalId.Imdb>()?.firstOrNull()
@@ -428,7 +435,13 @@ fun TvSeriesDetailsScreenContent(
                             state = similar,
                             showLoadingAtRefresh = false,
                             onMoreClick = onSimilarMoreClicked,
-                            onPresentableClick = onTvSeriesClicked
+                            onPresentableClick = { tvSeriesId ->
+                                if (tvSeriesId != uiState.tvSeriesDetails?.id) {
+                                    onTvSeriesClicked(tvSeriesId)
+                                } else {
+                                    scrollToStart()
+                                }
+                            }
                         )
                     }
                 }
@@ -452,7 +465,13 @@ fun TvSeriesDetailsScreenContent(
                             state = recommendations,
                             showLoadingAtRefresh = false,
                             onMoreClick = onRecommendationsMoreClicked,
-                            onPresentableClick = onTvSeriesClicked
+                            onPresentableClick = { tvSeriesId ->
+                                if (tvSeriesId != uiState.tvSeriesDetails?.id) {
+                                    onTvSeriesClicked(tvSeriesId)
+                                } else {
+                                    scrollToStart()
+                                }
+                            }
                         )
                     }
                 }

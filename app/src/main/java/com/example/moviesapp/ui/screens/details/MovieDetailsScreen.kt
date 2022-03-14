@@ -45,6 +45,7 @@ import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyle
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -237,6 +238,7 @@ fun MovieDetailsScreenContent(
     onReviewsClicked: () -> Unit
 ) {
     val density = LocalDensity.current
+    val coroutineScope = rememberCoroutineScope()
 
     val similarMoviesState = uiState.associatedMovies.similar.collectAsLazyPagingItems()
     val moviesRecommendationState =
@@ -245,6 +247,11 @@ fun MovieDetailsScreenContent(
         uiState.associatedMovies.directorMovies.movies.collectAsLazyPagingItems()
 
     val scrollState = rememberScrollState()
+    val scrollToStart = {
+        coroutineScope.launch {
+            scrollState.animateScrollTo(0)
+        }
+    }
 
     val imdbExternalId by derivedStateOf {
         uiState.associatedContent.externalIds?.filterIsInstance<ExternalId.Imdb>()?.firstOrNull()
@@ -426,7 +433,13 @@ fun MovieDetailsScreenContent(
                             title = movieCollection.name,
                             list = movieCollection.parts.sortedBy { part -> part.releaseDate },
                             selectedId = uiState.movieDetails?.id,
-                            onPresentableClick = onMovieClicked
+                            onPresentableClick = { movieId ->
+                                if (movieId != uiState.movieDetails?.id) {
+                                    onMovieClicked(movieId)
+                                } else {
+                                    scrollToStart()
+                                }
+                            }
                         )
                     }
                 }
@@ -454,7 +467,13 @@ fun MovieDetailsScreenContent(
                             showLoadingAtRefresh = false,
                             showMoreButton = false,
                             onMoreClick = onSimilarMoreClicked,
-                            onPresentableClick = onMovieClicked
+                            onPresentableClick = { movieId ->
+                                if (movieId != uiState.movieDetails?.id) {
+                                    onMovieClicked(movieId)
+                                } else {
+                                    scrollToStart()
+                                }
+                            }
                         )
                     }
                 }
@@ -478,7 +497,13 @@ fun MovieDetailsScreenContent(
                             state = similarMovies,
                             showLoadingAtRefresh = false,
                             onMoreClick = onSimilarMoreClicked,
-                            onPresentableClick = onMovieClicked
+                            onPresentableClick = { movieId ->
+                                if (movieId != uiState.movieDetails?.id) {
+                                    onMovieClicked(movieId)
+                                } else {
+                                    scrollToStart()
+                                }
+                            }
                         )
                     }
                 }
@@ -502,7 +527,13 @@ fun MovieDetailsScreenContent(
                             state = movieRecommendation,
                             showLoadingAtRefresh = false,
                             onMoreClick = onRecommendationsMoreClicked,
-                            onPresentableClick = onMovieClicked
+                            onPresentableClick = { movieId ->
+                                if (movieId != uiState.movieDetails?.id) {
+                                    onMovieClicked(movieId)
+                                } else {
+                                    scrollToStart()
+                                }
+                            }
                         )
                     }
                 }
