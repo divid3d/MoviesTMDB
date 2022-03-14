@@ -9,11 +9,11 @@ import com.example.moviesapp.repository.config.ConfigRepository
 import com.example.moviesapp.repository.movie.MovieRepository
 import com.example.moviesapp.ui.screens.destinations.RelatedMoviesScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-@OptIn(FlowPreview::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class RelatedMoviesViewModel @Inject constructor(
     private val configRepository: ConfigRepository,

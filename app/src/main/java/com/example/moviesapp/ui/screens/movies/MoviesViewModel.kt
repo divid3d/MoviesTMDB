@@ -12,11 +12,9 @@ import com.example.moviesapp.repository.favourites.FavouritesRepository
 import com.example.moviesapp.repository.movie.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-@OptIn(FlowPreview::class)
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
     private val configRepository: ConfigRepository,

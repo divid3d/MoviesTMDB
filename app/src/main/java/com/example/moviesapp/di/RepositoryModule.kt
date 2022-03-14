@@ -26,9 +26,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {

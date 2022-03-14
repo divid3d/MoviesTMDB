@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalAnimationApi::class)
-
 package com.example.moviesapp.ui.screens.details
 
 import android.os.Parcelable

@@ -62,7 +62,7 @@ fun MemberResultChip(
                 crossfade(true)
             }
         } else {
-            MemberNoPhotoChip(onClick = { onClick() })
+            MemberNoPhotoChip(onClick = onClick)
         }
 
         firstLine?.let { firstLine ->

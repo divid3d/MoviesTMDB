@@ -3,9 +3,7 @@ package com.example.moviesapp.other
 import java.text.NumberFormat
 import java.util.*
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 fun Int.formattedRuntime(): String? {
     return minutes.toComponents { hours, minutes, _, _ ->
         val hoursString = if (hours > 0) "${hours}h" else null

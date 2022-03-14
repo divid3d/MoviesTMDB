@@ -12,9 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {

@@ -11,11 +11,11 @@ import com.example.moviesapp.repository.config.ConfigRepository
 import com.example.moviesapp.repository.favourites.FavouritesRepository
 import com.example.moviesapp.repository.tv.TvSeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-@OptIn(FlowPreview::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class TvSeriesViewModel @Inject constructor(
     private val configRepository: ConfigRepository,

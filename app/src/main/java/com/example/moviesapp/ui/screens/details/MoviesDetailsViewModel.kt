@@ -20,9 +20,8 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class, FlowPreview::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class MoviesDetailsViewModel @Inject constructor(
     private val configRepository: ConfigRepository,

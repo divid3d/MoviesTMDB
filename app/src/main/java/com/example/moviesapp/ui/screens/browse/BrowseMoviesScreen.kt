@@ -1,11 +1,8 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.example.moviesapp.ui.screens.browse
 
 import android.os.Parcelable
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -33,6 +30,7 @@ import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyle
+import kotlinx.coroutines.FlowPreview
 import kotlinx.parcelize.Parcelize
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -89,7 +87,7 @@ data class BrowseMoviesScreenArgs(
     val movieType: MovieType
 ) : Parcelable
 
-@OptIn(ExperimentalFoundationApi::class, kotlinx.coroutines.FlowPreview::class)
+@OptIn(FlowPreview::class)
 @Destination(
     navArgsDelegate = BrowseMoviesScreenArgs::class,
     style = BrowseMoviesScreenTransitions::class
