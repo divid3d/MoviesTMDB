@@ -211,7 +211,10 @@ fun SearchScreenContent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = MaterialTheme.spacing.medium)
-                                .padding(top = MaterialTheme.spacing.extraLarge)
+                                .padding(top = MaterialTheme.spacing.extraLarge),
+                            onEditButtonClicked = {
+                                queryTextFieldFocusRequester.requestFocus()
+                            }
                         )
                     }
                 }

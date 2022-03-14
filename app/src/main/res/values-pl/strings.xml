@@ -93,6 +93,7 @@
 
     <string name="search_placeholder">Wpisz tytuł, aby wyszukać</string>
     <string name="search_empty_state">Brak wyników wyszukiwania</string>
+    <string name="search_empty_state_edit_button_label">Edytuj</string>
     <string name="search_insufficient_query_length_info_text">Wpisz conajmniej 3 znaki, aby zacząć wyszukiwanie</string>
 
     <string name="status_rumored_label">Plotki</string>

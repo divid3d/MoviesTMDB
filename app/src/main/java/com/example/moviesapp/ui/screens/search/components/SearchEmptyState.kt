@@ -4,6 +4,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +22,7 @@ import com.example.moviesapp.ui.theme.spacing
 @Composable
 fun SearchEmptyState(
     modifier: Modifier = Modifier,
+    onEditButtonClicked: () -> Unit = {}
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lottie_search))
     val dynamicProperties = rememberLottieDynamicProperties(
@@ -53,5 +55,9 @@ fun SearchEmptyState(
             text = stringResource(R.string.search_empty_state),
             color = White300
         )
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+        OutlinedButton(onClick = onEditButtonClicked) {
+            Text(text = stringResource(R.string.search_empty_state_edit_button_label))
+        }
     }
 }
