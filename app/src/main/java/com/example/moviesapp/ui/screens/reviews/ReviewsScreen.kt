@@ -138,7 +138,12 @@ fun ReviewsScreenContent(
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(MaterialTheme.spacing.medium),
+            contentPadding = PaddingValues(
+                top = MaterialTheme.spacing.medium,
+                start = MaterialTheme.spacing.medium,
+                end = MaterialTheme.spacing.medium,
+                bottom = MaterialTheme.spacing.large
+            ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
         ) {
             itemsIndexed(reviewsLazyItems) { index, review ->

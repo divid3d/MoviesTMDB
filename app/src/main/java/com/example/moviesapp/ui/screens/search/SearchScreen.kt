@@ -177,8 +177,10 @@ fun SearchScreenContent(
                         PresentableGridSection(
                             modifier = Modifier.fillMaxSize(),
                             contentPadding = PaddingValues(
-                                horizontal = MaterialTheme.spacing.small,
-                                vertical = MaterialTheme.spacing.medium,
+                                top = MaterialTheme.spacing.medium,
+                                start = MaterialTheme.spacing.small,
+                                end = MaterialTheme.spacing.small,
+                                bottom = MaterialTheme.spacing.large
                             ),
                             state = popular,
                             onPresentableClick = onMovieClicked
@@ -193,8 +195,10 @@ fun SearchScreenContent(
                         SearchGridSection(
                             modifier = Modifier.fillMaxSize(),
                             contentPadding = PaddingValues(
-                                horizontal = MaterialTheme.spacing.small,
-                                vertical = MaterialTheme.spacing.medium,
+                                top = MaterialTheme.spacing.medium,
+                                start = MaterialTheme.spacing.small,
+                                end = MaterialTheme.spacing.small,
+                                bottom = MaterialTheme.spacing.large
                             ),
                             state = result,
                             onSearchResultClick = { id, mediaType ->
