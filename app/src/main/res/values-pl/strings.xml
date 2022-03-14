@@ -179,7 +179,7 @@
     <string name="tv_series_filter_bottom_sheet_availability_label">Źródła</string>
     <string name="tv_series_filter_bottom_sheet_availability_info_label">Wybierz jedno lub więcej źródeł</string>
 
-    <string name="filter_empty_info_text">Nrak wyników</string>
+    <string name="filter_empty_info_text">Brak wyników</string>
     <string name="filter_empty_button_change_filters_label">Edytuj filtry</string>
 
     <string name="person_details_screen_appbar_label">Szczegóły osoby</string>

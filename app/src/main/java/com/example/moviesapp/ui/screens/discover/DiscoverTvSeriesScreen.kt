@@ -255,7 +255,10 @@ fun DiscoverTvSeriesScreenContent(
                         )
                     } else {
                         FilterEmptyState(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = MaterialTheme.spacing.medium)
+                                .padding(top = MaterialTheme.spacing.extraLarge),
                             onFilterButtonClicked = {
                                 coroutineScope.launch {
                                     sheetState.show()
