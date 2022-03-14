@@ -68,7 +68,7 @@ class ConfigDataSource @Inject constructor(
     val tvSeriesWatchProviders: StateFlow<List<ProviderSource>> =
         _tvSeriesWatchProviders.asStateFlow()
 
-    val isInitialized: Flow<Boolean> = combine(
+    val isInitialized: StateFlow<Boolean> = combine(
         _config, _movieGenres, _tvSeriesGenres, _movieWatchProviders, _tvSeriesWatchProviders
     ) { imageUrlParser, movieGenres, tvSeriesGenres, movieWatchProviders, tvSeriesWatchProviders ->
         val imageUrlParserInit = imageUrlParser != null
@@ -84,7 +84,7 @@ class ConfigDataSource @Inject constructor(
             movieWatchProvidersInit,
             tvSeriesWatchProvidersInit
         ).all { init -> init }
-    }
+    }.stateIn(externalScope, SharingStarted.WhileSubscribed(10), false)
 
     fun init() {
         apiHelper.getConfig().request { response ->

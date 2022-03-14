@@ -18,7 +18,8 @@ buildscript {
         constraint_layout_compose_version = "1.0.0"
         lifecyclea_runtime_version = "2.4.1"
         activity_compose_version = "1.4.0"
-        lottie_compose = "5.0.3"
+        lottie_compose_version = "5.0.3"
+        timber_version = "5.0.1"
 
         //Instrumentation Tests
         coroutines_test_version = "1.6.0-RC"

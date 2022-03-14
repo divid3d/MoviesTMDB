@@ -159,7 +159,8 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout-compose:$constraint_layout_compose_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecyclea_runtime_version"
     implementation "androidx.activity:activity-compose:$activity_compose_version"
-    implementation "com.airbnb.android:lottie-compose:$lottie_compose"
+    implementation "com.airbnb.android:lottie-compose:$lottie_compose_version"
+    implementation "com.jakewharton.timber:timber:$timber_version"
 
     //Unit Test
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"

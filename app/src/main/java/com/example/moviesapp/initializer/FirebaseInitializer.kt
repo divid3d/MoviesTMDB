@@ -1,7 +1,6 @@
-package com.example.moviesapp.di
+package com.example.moviesapp.initializer
 
 import android.app.Application
-import com.example.moviesapp.initializer.AppInitializer
 import com.google.firebase.FirebaseApp
 import javax.inject.Inject
 

@@ -3,7 +3,6 @@ package com.example.moviesapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -17,14 +16,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import coil.ImageLoader
 import coil.compose.LocalImageLoader
+import com.example.moviesapp.data.ConfigDataSource
 import com.example.moviesapp.model.SnackBarEvent
 import com.example.moviesapp.other.ImageUrlParser
 import com.example.moviesapp.other.safeNavigate
@@ -46,7 +47,8 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+import timber.log.Timber
+import javax.inject.Inject
 
 val LocalImageUrlParser = staticCompositionLocalOf<ImageUrlParser?> { null }
 
@@ -58,7 +60,8 @@ val LocalImageUrlParser = staticCompositionLocalOf<ImageUrlParser?> { null }
 )
 class MainActivity : ComponentActivity() {
 
-    private val mainViewModel: MainViewModel by viewModels()
+    @Inject
+    lateinit var configDataSource: ConfigDataSource
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,18 +70,16 @@ class MainActivity : ComponentActivity() {
 
         installSplashScreen().apply {
             setKeepOnScreenCondition(
-                condition = { mainViewModel.isConfigInitialised.value }
+                condition = { configDataSource.isInitialized.value }
             )
         }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mainViewModel.updateLocale()
-            }
-        }
-
         setContent {
+            val mainViewModel: MainViewModel = hiltViewModel()
+
             val context = LocalContext.current
+            val lifecycleOwner = LocalLifecycleOwner.current
+
             val keyboardController = LocalSoftwareKeyboardController.current
             val imageUrlParser by mainViewModel.imageUrlParser.collectAsState()
 
@@ -139,6 +140,14 @@ class MainActivity : ComponentActivity() {
                             /* dismissed, no action needed */
                         }
                     }
+                }
+            }
+
+            LaunchedEffect(lifecycleOwner) {
+                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    Timber.d("Update locale")
+
+                    mainViewModel.updateLocale()
                 }
             }
 

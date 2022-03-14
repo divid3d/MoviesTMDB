@@ -1,6 +1,8 @@
 package com.example.moviesapp.di
 
 import com.example.moviesapp.initializer.AppInitializer
+import com.example.moviesapp.initializer.ConfigDataSourceInitializer
+import com.example.moviesapp.initializer.FirebaseInitializer
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

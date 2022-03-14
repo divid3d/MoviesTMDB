@@ -1,8 +1,7 @@
-package com.example.moviesapp.di
+package com.example.moviesapp.initializer
 
 import android.app.Application
 import com.example.moviesapp.data.ConfigDataSource
-import com.example.moviesapp.initializer.AppInitializer
 import javax.inject.Inject
 
 class ConfigDataSourceInitializer @Inject constructor(
