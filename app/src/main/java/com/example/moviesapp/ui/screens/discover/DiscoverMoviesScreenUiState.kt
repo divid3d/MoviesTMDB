@@ -1,10 +1,12 @@
 package com.example.moviesapp.ui.screens.discover
 
+import androidx.compose.runtime.Stable
 import androidx.paging.PagingData
 import com.example.moviesapp.model.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
+@Stable
 data class DiscoverMoviesScreenUiState(
     val sortInfo: SortInfo,
     val filterState: MovieFilterState,
@@ -20,6 +22,7 @@ data class DiscoverMoviesScreenUiState(
     }
 }
 
+@Stable
 data class SortInfo(
     val sortType: SortType,
     val sortOrder: SortOrder
@@ -33,6 +36,7 @@ data class SortInfo(
     }
 }
 
+@Stable
 data class MovieFilterState(
     val selectedGenres: List<Genre>,
     val availableGenres: List<Genre>,

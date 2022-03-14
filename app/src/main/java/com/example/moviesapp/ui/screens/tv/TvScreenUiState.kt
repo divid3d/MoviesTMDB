@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.tv
 
+import androidx.compose.runtime.Stable
 import androidx.paging.PagingData
 import com.example.moviesapp.model.RecentlyBrowsedTvSeries
 import com.example.moviesapp.model.TvSeries
@@ -7,6 +8,7 @@ import com.example.moviesapp.model.TvSeriesFavourite
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
+@Stable
 data class TvScreenUiState(
     val tvSeriesState: TvSeriesState,
     val favourites: Flow<PagingData<TvSeriesFavourite>>,

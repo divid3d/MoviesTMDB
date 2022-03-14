@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.movies
 
+import androidx.compose.runtime.Stable
 import androidx.paging.PagingData
 import com.example.moviesapp.model.Movie
 import com.example.moviesapp.model.MovieFavourite
@@ -7,6 +8,7 @@ import com.example.moviesapp.model.RecentlyBrowsedMovie
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
+@Stable
 data class MovieScreenUiState(
     val moviesState: MoviesState,
     val favourites: Flow<PagingData<MovieFavourite>>,
@@ -22,6 +24,7 @@ data class MovieScreenUiState(
     }
 }
 
+@Stable
 data class MoviesState(
     val discover: Flow<PagingData<Movie>>,
     val upcoming: Flow<PagingData<Movie>>,

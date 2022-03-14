@@ -1,5 +1,8 @@
 package com.example.moviesapp.ui.screens.search
 
+import androidx.compose.runtime.Stable
+
+@Stable
 data class SearchScreenUiState(
     val voiceSearchAvailable: Boolean,
     val query: String?,

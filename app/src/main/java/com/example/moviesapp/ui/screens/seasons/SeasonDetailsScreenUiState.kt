@@ -1,10 +1,12 @@
 package com.example.moviesapp.ui.screens.seasons
 
+import androidx.compose.runtime.Stable
 import com.example.moviesapp.model.Image
 import com.example.moviesapp.model.SeasonDetails
 import com.example.moviesapp.model.Video
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 
+@Stable
 data class SeasonDetailsScreenUiState(
     val startRoute: String,
     val seasonDetails: SeasonDetails?,
