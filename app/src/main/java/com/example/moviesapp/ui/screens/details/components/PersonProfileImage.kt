@@ -10,14 +10,17 @@ import androidx.compose.ui.Modifier
 import coil.size.OriginalSize
 import coil.size.Scale
 import com.example.moviesapp.other.ImageUrlParser
+import com.example.moviesapp.ui.components.items.ErrorPresentableItem
+import com.example.moviesapp.ui.components.items.LoadingPresentableItem
 import com.example.moviesapp.ui.components.items.NoPhotoPresentableItem
 import com.example.moviesapp.ui.components.others.TmdbImage
+import com.example.moviesapp.ui.screens.details.PersonDetailsState
 import com.example.moviesapp.ui.theme.Size
 import com.example.moviesapp.ui.theme.sizes
 
 @Composable
 fun PersonProfileImage(
-    profilePath: String?,
+    personDetailsState: PersonDetailsState,
     modifier: Modifier = Modifier,
     size: Size = MaterialTheme.sizes.presentableItemBig
 ) {
@@ -27,20 +30,37 @@ fun PersonProfileImage(
             .height(size.height),
         shape = MaterialTheme.shapes.medium
     ) {
-        if (profilePath != null) {
-            TmdbImage(
-                modifier = Modifier.fillMaxSize(),
-                imagePath = profilePath,
-                imageType = ImageUrlParser.ImageType.Profile
-            ) {
-                size(OriginalSize)
-                scale(Scale.FILL)
-                crossfade(true)
+        when (personDetailsState) {
+            is PersonDetailsState.Loading -> {
+                LoadingPresentableItem(
+                    modifier = Modifier.fillMaxSize()
+                )
             }
-        } else {
-            NoPhotoPresentableItem(
-                modifier = Modifier.fillMaxSize()
-            )
+            is PersonDetailsState.Error -> {
+                ErrorPresentableItem(
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
+            is PersonDetailsState.Result -> {
+                val profilePath = personDetailsState.details.profilePath
+
+                if (profilePath != null) {
+                    TmdbImage(
+                        modifier = Modifier.fillMaxSize(),
+                        imagePath = profilePath,
+                        imageType = ImageUrlParser.ImageType.Profile
+                    ) {
+                        size(OriginalSize)
+                        scale(Scale.FILL)
+                        crossfade(true)
+                    }
+                } else {
+                    NoPhotoPresentableItem(
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
         }
     }
 }

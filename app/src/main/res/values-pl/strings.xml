@@ -4,6 +4,9 @@
     <string name="yes">Tak</string>
     <string name="no">Nie</string>
 
+    <string name="snack_bar_network_connected_label">Przywrócono połączenie z siecią</string>
+    <string name="snack_bar_network_disconnected_label">Utracono połączenie z siecią</string>
+
     <string name="next_episode_today_text">Nowy odcinek dzisiaj</string>
     <string name="next_episode_tomorrow_text">Nowy odcinek jutro</string>
     <string name="next_episode_days_text" formatted="true">Nowy odcinek za %d dni</string>

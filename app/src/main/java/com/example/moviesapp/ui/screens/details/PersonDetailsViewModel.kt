@@ -13,10 +13,12 @@ import com.example.moviesapp.repository.person.PersonRepository
 import com.example.moviesapp.ui.screens.destinations.PersonDetailsScreenDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class PersonDetailsViewModel @Inject constructor(
     private val configRepository: ConfigRepository,

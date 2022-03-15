@@ -146,6 +146,11 @@ fun PersonDetailsScreenContent(
     onExternalIdClicked: (id: ExternalId) -> Unit,
     onMediaClicked: (type: MediaType, id: Int) -> Unit
 ) {
+    val personDetailsState by derivedStateOf {
+        uiState.details?.let { PersonDetailsState.Result(it) }
+            ?: PersonDetailsState.Loading
+    }
+
     var showErrorDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(uiState.error) {
@@ -189,7 +194,7 @@ fun PersonDetailsScreenContent(
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                     },
-                    profilePath = uiState.details?.profilePath
+                    personDetailsState = personDetailsState
                 )
 
                 Column(modifier = Modifier

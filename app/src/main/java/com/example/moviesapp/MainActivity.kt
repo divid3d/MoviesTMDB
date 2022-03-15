@@ -128,18 +128,9 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(snackBarEvent) {
                 snackBarEvent?.let { event ->
-                    val result = snackBarHostState.showSnackbar(
-                        message = event.message
+                    snackBarHostState.showSnackbar(
+                        message = getString(event.messageStringRes)
                     )
-
-                    when (result) {
-                        SnackbarResult.ActionPerformed -> {
-                            /* action has been performed */
-                        }
-                        SnackbarResult.Dismissed -> {
-                            /* dismissed, no action needed */
-                        }
-                    }
                 }
             }
 
@@ -190,9 +181,7 @@ class MainActivity : ComponentActivity() {
                                     .padding(
                                         bottom = if (showBottomBar) {
                                             innerPadding.calculateBottomPadding()
-                                        } else {
-                                            MaterialTheme.spacing.default
-                                        }
+                                        } else MaterialTheme.spacing.default
                                     ),
                                 color = MaterialTheme.colors.background
                             ) {

@@ -23,3 +23,9 @@ data class PersonDetailsScreenUiState(
         }
     }
 }
+
+sealed class PersonDetailsState {
+    object Loading : PersonDetailsState()
+    object Error : PersonDetailsState()
+    data class Result(val details: PersonDetails) : PersonDetailsState()
+}

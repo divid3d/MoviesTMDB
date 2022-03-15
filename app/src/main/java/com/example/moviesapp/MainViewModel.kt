@@ -20,10 +20,6 @@ class MainViewModel @Inject constructor(
 
     private val connectionStatus = networkStatusTracker.connectionStatus
 
-//    private val snackBarEventChannel = Channel<SnackBarEvent?>(Channel.BUFFERED)
-//    val snackBarEventFlow: StateFlow<SnackBarEvent?> = snackBarEventChannel.receiveAsFlow()
-//        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
-
     val networkSnackBarEvent: StateFlow<SnackBarEvent?> = connectionStatus.mapLatest { status ->
         when (status) {
             NetworkStatus.Connected -> SnackBarEvent.NetworkConnected
@@ -31,13 +27,10 @@ class MainViewModel @Inject constructor(
         }
     }
         .distinctUntilChanged()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val imageUrlParser: StateFlow<ImageUrlParser?> = configRepository.getImageUrlParser()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
-
-    val isConfigInitialised: StateFlow<Boolean> = configRepository.isInitialised()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun updateLocale() {
         configRepository.updateLocale()
