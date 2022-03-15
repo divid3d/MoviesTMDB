@@ -14,9 +14,9 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun CreditsList(
-    modifier: Modifier = Modifier,
     title: String,
     credits: List<CreditsPresentable>,
+    modifier: Modifier = Modifier,
     onCreditsClick: (MediaType, Int) -> Unit = { _, _ -> }
 ) {
     val creditsGroups = credits.groupBy { credit -> credit.id }.toList()

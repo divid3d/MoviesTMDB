@@ -36,9 +36,9 @@ import java.util.*
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MovieDetailsInfoSection(
-    modifier: Modifier = Modifier,
     movieDetails: MovieDetails?,
     watchAtTime: Date?,
+    modifier: Modifier = Modifier,
     imdbExternalId: ExternalId.Imdb? = null,
     onShareClicked: (ShareDetails) -> Unit = {}
 ) {

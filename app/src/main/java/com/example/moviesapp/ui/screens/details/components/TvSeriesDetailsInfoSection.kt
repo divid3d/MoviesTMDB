@@ -33,9 +33,9 @@ import com.example.moviesapp.ui.theme.spacing
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TvSeriesDetailsInfoSection(
-    modifier: Modifier = Modifier,
     tvSeriesDetails: TvSeriesDetails?,
     nextEpisodeDaysRemaining: Long?,
+    modifier: Modifier = Modifier,
     imdbExternalId: ExternalId.Imdb? = null,
     onShareClicked: (ShareDetails) -> Unit = {}
 ) {

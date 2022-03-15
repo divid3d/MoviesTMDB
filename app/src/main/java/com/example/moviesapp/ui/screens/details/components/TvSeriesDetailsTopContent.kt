@@ -14,8 +14,8 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun TvSeriesDetailsTopContent(
-    modifier: Modifier = Modifier,
-    tvSeriesDetails: TvSeriesDetails?
+    tvSeriesDetails: TvSeriesDetails?,
+    modifier: Modifier = Modifier
 ) {
     Crossfade(
         modifier = modifier,

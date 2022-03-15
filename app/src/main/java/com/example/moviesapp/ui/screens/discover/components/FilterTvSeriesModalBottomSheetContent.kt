@@ -29,9 +29,9 @@ import com.example.moviesapp.ui.theme.spacing
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FilterTvSeriesModalBottomSheetContent(
-    modifier: Modifier = Modifier,
-    sheetState: ModalBottomSheetState,
     filterState: TvSeriesFilterState,
+    sheetState: ModalBottomSheetState,
+    modifier: Modifier = Modifier,
     onCloseClick: () -> Unit = {},
     onSaveFilterClick: (TvSeriesFilterState) -> Unit = {}
 ) {
