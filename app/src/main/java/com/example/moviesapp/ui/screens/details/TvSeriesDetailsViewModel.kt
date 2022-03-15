@@ -115,7 +115,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(10),
+        SharingStarted.Eagerly,
         TvSeriesDetailsScreenUiState.getDefault(navArgs.startRoute)
     )
 

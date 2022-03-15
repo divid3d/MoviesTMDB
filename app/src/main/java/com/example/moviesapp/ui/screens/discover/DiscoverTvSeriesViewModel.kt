@@ -37,7 +37,7 @@ class DiscoverTvSeriesViewModel @Inject constructor(
             availableGenres = genres,
             availableWatchProviders = watchProviders
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), TvSeriesFilterState.default)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, TvSeriesFilterState.default)
 
     val uiState: StateFlow<DiscoverTvSeriesScreenUiState> = combine(
         deviceLanguage, sortInfo, filterState
@@ -62,7 +62,7 @@ class DiscoverTvSeriesViewModel @Inject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(10),
+        SharingStarted.Eagerly,
         DiscoverTvSeriesScreenUiState.default
     )
 

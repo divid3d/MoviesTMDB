@@ -37,7 +37,7 @@ class DiscoverMoviesViewModel @Inject constructor(
             availableGenres = genres,
             availableWatchProviders = watchProviders
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), MovieFilterState.default)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, MovieFilterState.default)
 
     val uiState: StateFlow<DiscoverMoviesScreenUiState> = combine(
         deviceLanguage, sortInfo, filterState
@@ -62,7 +62,7 @@ class DiscoverMoviesViewModel @Inject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(10),
+        SharingStarted.Eagerly,
         DiscoverMoviesScreenUiState.default
     )
 

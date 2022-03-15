@@ -132,7 +132,7 @@ class MoviesDetailsViewModel @Inject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(10),
+        SharingStarted.Eagerly,
         MovieDetailsScreenUiState.getDefault(navArgs.startRoute)
     )
 

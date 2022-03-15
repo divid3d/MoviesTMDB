@@ -45,7 +45,7 @@ class MoviesViewModel @Inject constructor(
             favourites = favouritesRepository.favouriteMovies(),
             recentlyBrowsed = recentlyBrowsedRepository.recentlyBrowsedMovies()
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), MovieScreenUiState.default)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, MovieScreenUiState.default)
 
     private fun PagingData<Movie>.filterCompleteInfo(): PagingData<Movie> {
         return filter { tvSeries ->

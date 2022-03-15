@@ -37,20 +37,20 @@ class RelatedMoviesViewModel @Inject constructor(
 
                 RelationType.Recommended -> {
                     movieRepository.moviesRecommendations(
-                    movieId = navArgs.movieId,
-                    deviceLanguage = deviceLanguage
-                )
+                        movieId = navArgs.movieId,
+                        deviceLanguage = deviceLanguage
+                    )
+                }
             }
-        }
 
-        RelatedMoviesScreenUiState(
-            relationType = navArgs.type,
-            movies = movies,
-            startRoute = navArgs.startRoute
+            RelatedMoviesScreenUiState(
+                relationType = navArgs.type,
+                movies = movies,
+                startRoute = navArgs.startRoute
+            )
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            RelatedMoviesScreenUiState.getDefault(navArgs.type)
         )
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(10),
-        RelatedMoviesScreenUiState.getDefault(navArgs.type)
-    )
 }

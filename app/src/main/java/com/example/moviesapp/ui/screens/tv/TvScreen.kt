@@ -40,7 +40,7 @@ fun AnimatedVisibilityScope.TvScreen(
     viewModel: TvSeriesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-    val uiState by viewModel.tvScreenUiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     val onTvSeriesClicked: (Int) -> Unit = { tvSeriesId ->
         val destination = TvSeriesDetailsScreenDestination(

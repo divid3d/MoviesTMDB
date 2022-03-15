@@ -2,11 +2,7 @@ package com.example.moviesapp.di
 
 import android.content.Context
 import com.example.moviesapp.BuildConfig
-import com.example.moviesapp.api.Timeouts
-import com.example.moviesapp.api.TmdbApi
-import com.example.moviesapp.api.TmdbApiHelper
-import com.example.moviesapp.api.TmdbApiHelperImpl
-import com.example.moviesapp.other.ApiParams
+import com.example.moviesapp.api.*
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -84,7 +80,7 @@ object NetworkModule {
     fun provideRetrofit(client: OkHttpClient, moshi: Moshi): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(ApiParams.baseUrl.toHttpUrl())
+            .baseUrl(ApiParams.secureBaseUrl.toHttpUrl())
             .client(client)
             .build()
 

@@ -40,13 +40,13 @@ class TvSeriesViewModel @Inject constructor(
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), TvSeriesState.default)
 
-    val tvScreenUiState: StateFlow<TvScreenUiState> = tvSeriesState.mapLatest { tvSeriesState ->
+    val uiState: StateFlow<TvScreenUiState> = tvSeriesState.mapLatest { tvSeriesState ->
         TvScreenUiState(
             tvSeriesState = tvSeriesState,
             favourites = favouritesRepository.favouritesTvSeries(),
             recentlyBrowsed = recentlyBrowsedRepository.recentlyBrowsedTvSeries()
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), TvScreenUiState.default)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, TvScreenUiState.default)
 
     private fun PagingData<TvSeries>.filterCompleteInfo(): PagingData<TvSeries> {
         return filter { tvSeries ->

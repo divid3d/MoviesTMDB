@@ -37,20 +37,20 @@ class RelatedTvSeriesViewModel @Inject constructor(
 
                 RelationType.Recommended -> {
                     tvSeriesRepository.tvSeriesRecommendations(
-                    tvSeriesId = navArgs.tvSeriesId,
-                    deviceLanguage = deviceLanguage
-                )
+                        tvSeriesId = navArgs.tvSeriesId,
+                        deviceLanguage = deviceLanguage
+                    )
+                }
             }
-        }
 
-        RelatedTvSeriesScreenUiState(
-            relationType = navArgs.type,
-            tvSeries = tvSeries,
-            startRoute = navArgs.startRoute
+            RelatedTvSeriesScreenUiState(
+                relationType = navArgs.type,
+                tvSeries = tvSeries,
+                startRoute = navArgs.startRoute
+            )
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            RelatedTvSeriesScreenUiState.getDefault(navArgs.type)
         )
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(10),
-        RelatedTvSeriesScreenUiState.getDefault(navArgs.type)
-    )
 }

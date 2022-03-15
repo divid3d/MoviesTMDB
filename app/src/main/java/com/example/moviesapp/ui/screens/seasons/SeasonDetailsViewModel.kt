@@ -51,7 +51,7 @@ class SeasonDetailsViewModel @Inject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(10),
+        SharingStarted.Eagerly,
         SeasonDetailsScreenUiState.default
     )
 

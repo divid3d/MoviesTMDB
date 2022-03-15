@@ -30,7 +30,7 @@ class FavouritesViewModel @Inject constructor(
             selectedFavouriteType = type,
             favourites = favourites
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), FavouritesScreenUiState.default)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, FavouritesScreenUiState.default)
 
     fun onFavouriteTypeSelected(type: FavouriteType) {
         viewModelScope.launch {
