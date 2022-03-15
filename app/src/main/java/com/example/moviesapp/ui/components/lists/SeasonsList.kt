@@ -40,9 +40,9 @@ fun SeasonsList(
 
 @Composable
 fun SeasonButton(
+    label: String,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
-    label: String,
     onClick: () -> Unit = {}
 ) {
     val backgroundColor by animateColorAsState(

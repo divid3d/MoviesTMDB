@@ -44,8 +44,8 @@ fun ExternalIdsSection(
 
 @Composable
 fun IdChip(
-    modifier: Modifier = Modifier,
     @DrawableRes drawableRes: Int,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     Box(modifier = modifier

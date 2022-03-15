@@ -51,9 +51,9 @@ fun FavouriteTypeSelector(
 
 @Composable
 fun FavouriteTypeButton(
-    modifier: Modifier = Modifier,
-    selected: Boolean,
     type: FavouriteType,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     val backgroundColor by animateColorAsState(

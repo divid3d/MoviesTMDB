@@ -102,10 +102,10 @@ fun BottomBar(
 
 @Composable
 fun RowScope.BottomBarNavigationItem(
-    modifier: Modifier = Modifier,
-    selected: Boolean,
     label: String,
+    selected: Boolean,
     @DrawableRes selectedIcon: Int,
+    modifier: Modifier = Modifier,
     @DrawableRes unselectedIcon: Int = selectedIcon,
     contentDescription: String? = null,
     selectedColor: Color = MaterialTheme.colors.primary,

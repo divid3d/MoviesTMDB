@@ -128,9 +128,9 @@ fun QueryTextField(
 
 @Composable
 private fun SuggestionsDropdown(
-    modifier: Modifier = Modifier,
-    expanded: Boolean,
     query: String?,
+    expanded: Boolean,
+    modifier: Modifier = Modifier,
     suggestions: List<String> = emptyList(),
     onSuggestionClick: (String) -> Unit = {}
 ) {

@@ -89,5 +89,4 @@ fun AnimatedBackdrops(
             )
         }
     }
-
 }

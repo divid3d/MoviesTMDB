@@ -42,5 +42,4 @@ fun ReviewSection(
             tint = MaterialTheme.colors.primary
         )
     }
-
 }

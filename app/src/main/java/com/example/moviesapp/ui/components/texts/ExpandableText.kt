@@ -113,5 +113,4 @@ fun ExpandableText(
             ) { isExpanded = !isExpanded }
             .animateContentSize(),
     )
-
 }

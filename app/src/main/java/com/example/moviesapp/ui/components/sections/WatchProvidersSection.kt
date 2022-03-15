@@ -94,6 +94,5 @@ fun WatchProvidersSection(
             }
         }
     }
-
 }
 

@@ -51,5 +51,4 @@ fun EpisodesList(
             }
         }
     }
-
 }

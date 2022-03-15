@@ -121,8 +121,8 @@ fun DateRangeSelector(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DateChip(
-    modifier: Modifier = Modifier,
     initialDate: Date?,
+    modifier: Modifier = Modifier,
     minDate: Date? = null,
     maxDate: Date? = null,
     onDateChanged: (Date) -> Unit = {},
@@ -180,6 +180,5 @@ fun DateChip(
                 )
             }
         }
-
     }
 }
