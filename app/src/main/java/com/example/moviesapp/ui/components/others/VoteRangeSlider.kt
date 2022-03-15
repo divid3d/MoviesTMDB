@@ -1,4 +1,4 @@
-package com.example.moviesapp.ui.components
+package com.example.moviesapp.ui.components.others
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,8 +19,8 @@ import com.example.moviesapp.other.singleDecimalPlaceFormatted
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun VoteRangeSlider(
-    modifier: Modifier = Modifier,
     voteRange: VoteRange,
+    modifier: Modifier = Modifier,
     onCurrentVoteRangeChange: (ClosedFloatingPointRange<Float>) -> Unit = {}
 ) {
     Column(modifier = modifier) {

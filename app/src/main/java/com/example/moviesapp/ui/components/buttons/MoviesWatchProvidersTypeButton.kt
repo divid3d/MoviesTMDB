@@ -18,9 +18,9 @@ import com.example.moviesapp.ui.components.dropdowns.MovieWatchProviderTypeDropd
 
 @Composable
 fun MoviesWatchProvidersTypeButton(
-    modifier: Modifier = Modifier,
     availableTypes: List<MovieWatchProviderType>,
     selectedType: MovieWatchProviderType,
+    modifier: Modifier = Modifier,
     onTypeSelected: (MovieWatchProviderType) -> Unit = {}
 ) {
     var showMovieWatchProviderTypeDropdown by remember { mutableStateOf(false) }

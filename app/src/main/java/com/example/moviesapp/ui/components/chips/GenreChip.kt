@@ -19,8 +19,8 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun GenreChip(
-    modifier: Modifier = Modifier,
     text: String,
+    modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null
 ) {
     Box(

@@ -9,8 +9,8 @@ import com.example.moviesapp.R
 
 @Composable
 fun InfoDialog(
-    modifier: Modifier = Modifier,
     infoText: String?,
+    modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit = {},
     onConfirmClick: () -> Unit = {},
     onCancelClick: () -> Unit = {}

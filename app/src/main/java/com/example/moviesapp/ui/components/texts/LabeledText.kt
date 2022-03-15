@@ -14,9 +14,9 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun LabeledText(
-    modifier: Modifier = Modifier,
     label: String,
     text: String,
+    modifier: Modifier = Modifier,
     spacing: Dp = MaterialTheme.spacing.default
 ) {
     Column(

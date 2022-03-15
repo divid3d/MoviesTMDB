@@ -28,8 +28,8 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun ResultDetailPresentableItem(
-    modifier: Modifier = Modifier,
     presentable: DetailPresentable,
+    modifier: Modifier = Modifier,
     showScore: Boolean = false,
     showTitle: Boolean = true,
     showAdult: Boolean = false,

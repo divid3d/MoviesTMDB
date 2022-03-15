@@ -28,8 +28,8 @@ import com.example.moviesapp.ui.theme.*
 
 @Composable
 fun PresentableScoreItem(
-    modifier: Modifier = Modifier,
     score: Float,
+    modifier: Modifier = Modifier,
     scoreRange: ClosedFloatingPointRange<Float> = 0f..10f,
     strokeWidth: Dp = 3.dp
 ) {

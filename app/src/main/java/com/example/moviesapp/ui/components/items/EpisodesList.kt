@@ -17,8 +17,8 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun EpisodesList(
-    modifier: Modifier = Modifier,
     episodes: List<Episode>,
+    modifier: Modifier = Modifier,
     onEpisodeClick: (Int) -> Unit = {}
 ) {
     val context = LocalContext.current

@@ -18,9 +18,9 @@ import com.example.moviesapp.ui.theme.spacing
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WatchProvidersSection(
-    modifier: Modifier = Modifier,
+    title: String,
     watchProviders: WatchProviders,
-    title: String
+    modifier: Modifier = Modifier
 ) {
     val stream = watchProviders.flatrate?.sortedBy { provider ->
         provider.displayPriority

@@ -22,10 +22,10 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun ExpandableSection(
-    modifier: Modifier = Modifier,
     label: String,
-    infoText: String? = null,
     expanded: Boolean,
+    modifier: Modifier = Modifier,
+    infoText: String? = null,
     onClick: () -> Unit = {},
     trailing: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit = {}

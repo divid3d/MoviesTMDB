@@ -13,8 +13,8 @@ import com.google.accompanist.flowlayout.MainAxisAlignment
 
 @Composable
 fun NetworksList(
-    modifier: Modifier = Modifier,
-    networks: List<Network>
+    networks: List<Network>,
+    modifier: Modifier = Modifier
 ) {
     FlowRow(
         modifier = modifier,

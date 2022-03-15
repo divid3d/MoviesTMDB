@@ -30,8 +30,8 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun EpisodeChip(
-    modifier: Modifier = Modifier,
     episode: Episode,
+    modifier: Modifier = Modifier,
     expanded: Boolean = false,
     stills: List<Image> = emptyList(),
     onClick: () -> Unit = {}

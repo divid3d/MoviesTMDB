@@ -15,10 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.moviesapp.R
-import com.example.moviesapp.ui.components.VoteRangeSlider
 import com.example.moviesapp.ui.components.lists.ProvidersSourceList
 import com.example.moviesapp.ui.components.others.LabeledSwitch
 import com.example.moviesapp.ui.components.others.SectionDivider
+import com.example.moviesapp.ui.components.others.VoteRangeSlider
 import com.example.moviesapp.ui.components.sections.ExpandableSection
 import com.example.moviesapp.ui.components.selectors.DateRangeSelector
 import com.example.moviesapp.ui.components.selectors.GenresSelector

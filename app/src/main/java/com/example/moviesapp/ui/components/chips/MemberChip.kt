@@ -29,10 +29,10 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun MemberResultChip(
-    modifier: Modifier = Modifier,
     profilePath: String?,
     firstLine: String?,
     secondLine: String?,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     var secondLineExpanded by remember {

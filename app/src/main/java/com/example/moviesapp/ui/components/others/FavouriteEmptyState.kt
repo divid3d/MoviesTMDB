@@ -24,8 +24,8 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun FavouriteEmptyState(
-    modifier: Modifier,
     type: FavouriteType,
+    modifier: Modifier,
     onButtonClick: () -> Unit = {}
 ) {
     @StringRes

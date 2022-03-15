@@ -21,8 +21,8 @@ import com.google.accompanist.flowlayout.FlowRow
 
 @Composable
 fun ExternalIdsSection(
-    modifier: Modifier = Modifier,
     externalIds: List<ExternalId>,
+    modifier: Modifier = Modifier,
     onExternalIdClick: (ExternalId) -> Unit = {}
 ) {
     if (externalIds.isNotEmpty()) {

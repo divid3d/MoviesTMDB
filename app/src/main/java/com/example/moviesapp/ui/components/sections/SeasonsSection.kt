@@ -16,9 +16,9 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun SeasonsSection(
-    modifier: Modifier = Modifier,
     title: String,
     seasons: List<Season>,
+    modifier: Modifier = Modifier,
     onSeasonClick: (Int) -> Unit = {}
 ) {
     val state = rememberLazyListState()

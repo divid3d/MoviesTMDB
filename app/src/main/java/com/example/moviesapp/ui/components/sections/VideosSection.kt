@@ -28,10 +28,10 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun VideosSection(
-    modifier: Modifier = Modifier,
-    title: String? = null,
     videos: List<Video>,
     contentPadding: PaddingValues,
+    modifier: Modifier = Modifier,
+    title: String? = null,
     onVideoClicked: (Video) -> Unit = { }
 ) {
     Column(modifier = modifier) {

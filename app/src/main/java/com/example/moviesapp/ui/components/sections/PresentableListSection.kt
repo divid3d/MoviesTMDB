@@ -17,9 +17,9 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun PresentableListSection(
-    modifier: Modifier = Modifier,
     title: String,
     list: List<Presentable>,
+    modifier: Modifier = Modifier,
     selectedId: Int? = null,
     onPresentableClick: (Int) -> Unit = {}
 ) {

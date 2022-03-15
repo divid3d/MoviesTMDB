@@ -12,10 +12,10 @@ import com.example.moviesapp.model.SortType
 
 @Composable
 fun SortTypeDropdown(
-    modifier: Modifier = Modifier,
     expanded: Boolean,
-    onDismissRequest: () -> Unit = {},
     selectedSortType: SortType,
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit = {},
     onSortTypeSelected: (SortType) -> Unit = {}
 ) {
     val items = SortType.values().map { type -> type to type.getLabelResId() }

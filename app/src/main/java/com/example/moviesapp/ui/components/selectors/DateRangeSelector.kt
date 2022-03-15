@@ -33,9 +33,9 @@ import java.util.*
 
 @Composable
 fun DateRangeSelector(
-    modifier: Modifier = Modifier,
     fromDate: Date?,
     toDate: Date?,
+    modifier: Modifier = Modifier,
     onFromDateChanged: (Date) -> Unit = {},
     onToDateChanged: (Date) -> Unit = {},
     onFromDateClearClicked: () -> Unit = {},

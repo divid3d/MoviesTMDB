@@ -18,10 +18,10 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun SeasonsList(
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.default),
     seasons: List<Season>,
     selectedSeasonId: Int?,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.default),
     onSeasonClick: (Int) -> Unit = {}
 ) {
     Column(modifier = modifier) {

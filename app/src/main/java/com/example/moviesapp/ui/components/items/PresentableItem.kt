@@ -17,9 +17,9 @@ import com.example.moviesapp.ui.theme.sizes
 
 @Composable
 fun PresentableItem(
+    presentableState: PresentableItemState,
     modifier: Modifier = Modifier,
     size: Size = MaterialTheme.sizes.presentableItemSmall,
-    presentableState: PresentableItemState,
     selected: Boolean = false,
     showTitle: Boolean = true,
     transformations: GraphicsLayerScope.() -> Unit = {},

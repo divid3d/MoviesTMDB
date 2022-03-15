@@ -33,9 +33,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PresentableGridSection(
+    state: LazyPagingItems<out Presentable>,
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState(),
-    state: LazyPagingItems<out Presentable>,
     showRefreshLoading: Boolean = true,
     contentPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.default),
     scrollToBeginningItemsStart: Int = 30,

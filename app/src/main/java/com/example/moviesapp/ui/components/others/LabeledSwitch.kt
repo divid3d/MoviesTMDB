@@ -15,9 +15,9 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun LabeledSwitch(
-    modifier: Modifier = Modifier,
     label: String,
     checked: Boolean,
+    modifier: Modifier = Modifier,
     onCheckedChanged: (Boolean) -> Unit = {}
 ) {
     Row(

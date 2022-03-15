@@ -10,8 +10,8 @@ import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun SectionLabel(
-    modifier: Modifier = Modifier,
-    text: String
+    text: String,
+    modifier: Modifier = Modifier
 ) {
     Text(
         modifier = modifier,
