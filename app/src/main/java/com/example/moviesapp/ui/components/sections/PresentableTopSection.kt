@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.paging.compose.LazyPagingItems
@@ -153,7 +154,15 @@ fun PresentableTopSection(
                 Image(
                     modifier = Modifier
                         .fillMaxSize()
-                        .scale(backdropScale.value),
+                        .scale(backdropScale.value)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Transparent,
+                                    MaterialTheme.colors.background
+                                )
+                            )
+                        ),
                     painter = backgroundPainter,
                     contentDescription = null,
                     contentScale = ContentScale.FillHeight
@@ -165,6 +174,21 @@ fun PresentableTopSection(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .matchParentSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            MaterialTheme.colors.background
+                        )
+                    )
+                )
+        )
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .height(160.dp)
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
