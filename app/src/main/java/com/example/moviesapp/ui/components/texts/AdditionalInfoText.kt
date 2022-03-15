@@ -8,8 +8,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun AdditionalInfoText(
-    modifier: Modifier = Modifier,
-    infoTexts: List<String>
+    infoTexts: List<String>,
+    modifier: Modifier = Modifier
 ) {
     val text = infoTexts.joinToString(separator = " · ")
 

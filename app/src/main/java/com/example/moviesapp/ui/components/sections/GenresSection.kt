@@ -10,8 +10,8 @@ import com.google.accompanist.flowlayout.FlowRow
 
 @Composable
 fun GenresSection(
-    modifier: Modifier = Modifier,
-    genres: List<Genre>
+    genres: List<Genre>,
+    modifier: Modifier = Modifier
 ) {
     FlowRow(
         modifier = modifier,

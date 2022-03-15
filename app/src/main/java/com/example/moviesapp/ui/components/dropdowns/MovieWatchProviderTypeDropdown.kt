@@ -12,11 +12,11 @@ import com.example.moviesapp.model.MovieWatchProviderType
 
 @Composable
 fun MovieWatchProviderTypeDropdown(
-    modifier: Modifier = Modifier,
     expanded: Boolean,
-    onDismissRequest: () -> Unit = {},
     availableTypes: List<MovieWatchProviderType>,
     selectedType: MovieWatchProviderType,
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit = {},
     onTypeSelected: (MovieWatchProviderType) -> Unit = {}
 ) {
     val items = availableTypes.map { type -> type to type.getLabelResId() }

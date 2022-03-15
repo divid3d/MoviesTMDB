@@ -21,8 +21,8 @@ import com.google.accompanist.pager.rememberPagerState
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun StillBrowser(
-    modifier: Modifier = Modifier,
-    stillPaths: List<Image>
+    stillPaths: List<Image>,
+    modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState()
 
@@ -56,5 +56,4 @@ fun StillBrowser(
             )
         }
     }
-
 }

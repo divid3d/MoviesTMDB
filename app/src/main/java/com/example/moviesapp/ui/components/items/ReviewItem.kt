@@ -34,8 +34,8 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun ReviewItem(
-    modifier: Modifier,
-    review: Review
+    review: Review,
+    modifier: Modifier = Modifier
 ) {
     val avatarPath = review.authorDetails.avatarPath
 

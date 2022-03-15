@@ -14,10 +14,10 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun MemberSection(
-    modifier: Modifier = Modifier,
-    title: String? = null,
     members: List<Member>,
     contentPadding: PaddingValues,
+    modifier: Modifier = Modifier,
+    title: String? = null,
     onMemberClick: (Int) -> Unit = {}
 ) {
     val membersGroups = members.groupBy { member -> member.id }.toList()

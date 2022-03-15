@@ -37,9 +37,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun PresentableSection(
-    modifier: Modifier = Modifier,
     title: String,
     state: LazyPagingItems<out Presentable>,
+    modifier: Modifier = Modifier,
     scrollToBeginningItemsStart: Int = 30,
     showLoadingAtRefresh: Boolean = true,
     showMoreButton: Boolean = true,
@@ -160,5 +160,4 @@ fun PresentableSection(
             }
         }
     }
-
 }

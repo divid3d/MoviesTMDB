@@ -33,8 +33,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchGridSection(
-    modifier: Modifier = Modifier,
     state: LazyPagingItems<SearchResult>,
+    modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(MaterialTheme.spacing.default),
     scrollToBeginningItemsStart: Int = 30,
     onSearchResultClick: (Int, MediaType) -> Unit = { _, _ -> }

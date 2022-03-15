@@ -17,9 +17,9 @@ import com.example.moviesapp.ui.theme.sizes
 
 @Composable
 fun PersonProfileImage(
+    profilePath: String?,
     modifier: Modifier = Modifier,
-    size: Size = MaterialTheme.sizes.presentableItemBig,
-    profilePath: String?
+    size: Size = MaterialTheme.sizes.presentableItemBig
 ) {
     Card(
         modifier = modifier

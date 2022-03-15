@@ -10,9 +10,9 @@ import com.google.accompanist.flowlayout.FlowRow
 
 @Composable
 fun ProvidersSourceList(
-    modifier: Modifier = Modifier,
     selectedProvidersSources: List<ProviderSource>,
     availableProvidersSources: List<ProviderSource>,
+    modifier: Modifier = Modifier,
     onProviderSourceSelected: (ProviderSource) -> Unit = {}
 ) {
     FlowRow(

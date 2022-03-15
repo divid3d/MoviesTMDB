@@ -40,9 +40,9 @@ inline fun rememberTmdbImagePainter(
 
 @Composable
 fun TmdbImage(
-    modifier: Modifier = Modifier,
     imagePath: String?,
     imageType: ImageUrlParser.ImageType,
+    modifier: Modifier = Modifier,
     strategy: ImageUrlParser.MatchingStrategy = ImageUrlParser.MatchingStrategy.FirstBiggerWidth,
     contentScale: ContentScale = ContentScale.FillBounds,
     colorFilter: ColorFilter? = null,

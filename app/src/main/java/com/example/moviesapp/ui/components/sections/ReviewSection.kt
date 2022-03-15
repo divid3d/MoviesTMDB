@@ -18,8 +18,8 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun ReviewSection(
-    modifier: Modifier = Modifier,
     count: Int,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     Row(
@@ -42,5 +42,4 @@ fun ReviewSection(
             tint = MaterialTheme.colors.primary
         )
     }
-
 }

@@ -30,9 +30,9 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun QueryTextField(
-    modifier: Modifier = Modifier,
-    focusRequester: FocusRequester,
     query: String?,
+    focusRequester: FocusRequester,
+    modifier: Modifier = Modifier,
     suggestions: List<String> = emptyList(),
     loading: Boolean = false,
     showClearButton: Boolean = false,
@@ -128,9 +128,9 @@ fun QueryTextField(
 
 @Composable
 private fun SuggestionsDropdown(
-    modifier: Modifier = Modifier,
-    expanded: Boolean,
     query: String?,
+    expanded: Boolean,
+    modifier: Modifier = Modifier,
     suggestions: List<String> = emptyList(),
     onSuggestionClick: (String) -> Unit = {}
 ) {

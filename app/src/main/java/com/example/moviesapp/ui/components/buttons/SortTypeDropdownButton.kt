@@ -16,8 +16,8 @@ import com.example.moviesapp.ui.components.dropdowns.SortTypeDropdown
 
 @Composable
 fun SortTypeDropdownButton(
-    modifier: Modifier = Modifier,
     selectedType: SortType,
+    modifier: Modifier = Modifier,
     onTypeSelected: (SortType) -> Unit = {}
 ) {
     var showSortTypeDropdown by remember { mutableStateOf(false) }

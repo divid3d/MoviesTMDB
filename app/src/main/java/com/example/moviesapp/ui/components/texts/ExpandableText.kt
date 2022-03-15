@@ -19,8 +19,8 @@ import com.example.moviesapp.R
 
 @Composable
 fun ExpandableText(
-    modifier: Modifier = Modifier,
     text: String,
+    modifier: Modifier = Modifier,
     postfixColor: Color = MaterialTheme.colors.primary,
     minLines: Int = 3
 ) {
@@ -113,5 +113,4 @@ fun ExpandableText(
             ) { isExpanded = !isExpanded }
             .animateContentSize(),
     )
-
 }

@@ -28,10 +28,10 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun VideosSection(
-    modifier: Modifier = Modifier,
-    title: String? = null,
     videos: List<Video>,
     contentPadding: PaddingValues,
+    modifier: Modifier = Modifier,
+    title: String? = null,
     onVideoClicked: (Video) -> Unit = { }
 ) {
     Column(modifier = modifier) {
@@ -64,8 +64,8 @@ fun VideosSection(
 
 @Composable
 private fun VideoItem(
-    modifier: Modifier = Modifier,
     video: Video,
+    modifier: Modifier = Modifier,
     onVideoClick: () -> Unit = {}
 ) {
     Card(
@@ -105,11 +105,10 @@ private fun VideoItem(
             )
         }
     }
-
 }
 
 @Composable
-private fun SiteIcon(modifier: Modifier = Modifier, site: VideoSite) {
+private fun SiteIcon(site: VideoSite, modifier: Modifier = Modifier) {
     @DrawableRes
     val drawableRes = when (site) {
         VideoSite.YouTube -> R.drawable.ic_youtube

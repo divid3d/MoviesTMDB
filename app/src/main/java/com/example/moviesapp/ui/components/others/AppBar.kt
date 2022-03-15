@@ -18,8 +18,8 @@ import com.google.accompanist.insets.statusBarsPadding
 
 @Composable
 fun AppBar(
-    modifier: Modifier = Modifier,
     title: String?,
+    modifier: Modifier = Modifier,
     scrollState: ScrollState? = null,
     transparentScrollValueLimit: Float? = null,
     backgroundColor: Color = Color.Black,

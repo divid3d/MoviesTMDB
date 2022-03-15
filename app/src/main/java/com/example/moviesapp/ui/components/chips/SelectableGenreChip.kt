@@ -20,9 +20,9 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun SelectableGenreChip(
-    modifier: Modifier = Modifier,
     text: String,
     selected: Boolean,
+    modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null
 ) {
     val backgroundColor by animateColorAsState(targetValue = if (selected) MaterialTheme.colors.primary else Color.Black)

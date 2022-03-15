@@ -8,8 +8,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun InfoText(
-    modifier: Modifier = Modifier,
-    text: String
+    text: String,
+    modifier: Modifier = Modifier
 ) {
     Text(
         modifier = modifier,

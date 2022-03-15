@@ -32,10 +32,10 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun CreditsItem(
-    modifier: Modifier = Modifier,
     posterPath: String?,
     title: String?,
     infoText: String?,
+    modifier: Modifier = Modifier,
     size: Size = MaterialTheme.sizes.presentableItemSmall,
     onClick: () -> Unit = {}
 ) {

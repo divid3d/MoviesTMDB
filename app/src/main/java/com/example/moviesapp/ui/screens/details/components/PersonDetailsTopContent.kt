@@ -16,8 +16,8 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun PersonDetailsTopContent(
-    modifier: Modifier = Modifier,
-    personDetails: PersonDetails?
+    personDetails: PersonDetails?,
+    modifier: Modifier = Modifier
 ) {
     Crossfade(
         modifier = modifier,

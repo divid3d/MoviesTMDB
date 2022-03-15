@@ -24,8 +24,8 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun FavouriteTypeSelector(
-    modifier: Modifier = Modifier,
     selected: FavouriteType,
+    modifier: Modifier = Modifier,
     onSelected: (FavouriteType) -> Unit = {}
 ) {
     Row(
@@ -51,9 +51,9 @@ fun FavouriteTypeSelector(
 
 @Composable
 fun FavouriteTypeButton(
-    modifier: Modifier = Modifier,
-    selected: Boolean,
     type: FavouriteType,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     val backgroundColor by animateColorAsState(

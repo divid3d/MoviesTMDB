@@ -27,8 +27,8 @@ import com.google.accompanist.insets.statusBarsPadding
 
 @Composable
 fun PresentableDetailsTopSection(
-    modifier: Modifier = Modifier,
     presentable: DetailPresentable?,
+    modifier: Modifier = Modifier,
     backdrops: List<Image> = emptyList(),
     scrollState: ScrollState? = null,
     scrollValueLimit: Float? = null,

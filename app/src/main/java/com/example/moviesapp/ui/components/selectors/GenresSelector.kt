@@ -11,9 +11,9 @@ import com.google.accompanist.flowlayout.FlowRow
 
 @Composable
 fun GenresSelector(
-    modifier: Modifier = Modifier,
     genres: List<Genre>,
     selectedGenres: List<Genre>,
+    modifier: Modifier = Modifier,
     onGenreClick: (Genre) -> Unit = {}
 ) {
     FlowRow(

@@ -57,9 +57,9 @@ import kotlin.math.absoluteValue
 @OptIn(ExperimentalPagerApi::class, ExperimentalCoilApi::class)
 @Composable
 fun PresentableTopSection(
-    modifier: Modifier = Modifier,
     title: String,
     state: LazyPagingItems<out DetailPresentable>,
+    modifier: Modifier = Modifier,
     showMoreButton: Boolean = true,
     scrollState: ScrollState? = null,
     scrollValueLimit: Float? = null,
@@ -275,12 +275,12 @@ fun PresentableTopSection(
 
 @Composable
 fun PresentableTopSectionItem(
-    modifier: Modifier = Modifier,
     presentableItemState: DetailPresentableItemState,
-    presentableSize: Size = MaterialTheme.sizes.presentableItemBig,
-    contentColor: Color = Color.White,
-    onPresentableClick: () -> Unit = {},
     isSelected: Boolean,
+    modifier: Modifier = Modifier,
+    contentColor: Color = Color.White,
+    presentableSize: Size = MaterialTheme.sizes.presentableItemBig,
+    onPresentableClick: () -> Unit = {},
     itemTransformations: GraphicsLayerScope.() -> Unit = {},
     contentTransformations: GraphicsLayerScope.() -> Unit = {}
 ) {

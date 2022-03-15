@@ -29,9 +29,9 @@ import com.example.moviesapp.ui.theme.spacing
 
 @Composable
 fun LogoChip(
+    text: String,
     modifier: Modifier = Modifier,
     logoPath: String? = null,
-    text: String,
     selected: Boolean = true,
     onClick: (() -> Unit)? = null
 ) {

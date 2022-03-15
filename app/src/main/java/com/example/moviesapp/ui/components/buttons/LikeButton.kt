@@ -15,8 +15,8 @@ import com.example.moviesapp.R
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun LikeButton(
-    modifier: Modifier = Modifier,
     isFavourite: Boolean,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     IconButton(

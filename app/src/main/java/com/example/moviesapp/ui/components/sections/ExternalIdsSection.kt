@@ -21,8 +21,8 @@ import com.google.accompanist.flowlayout.FlowRow
 
 @Composable
 fun ExternalIdsSection(
-    modifier: Modifier = Modifier,
     externalIds: List<ExternalId>,
+    modifier: Modifier = Modifier,
     onExternalIdClick: (ExternalId) -> Unit = {}
 ) {
     if (externalIds.isNotEmpty()) {
@@ -44,8 +44,8 @@ fun ExternalIdsSection(
 
 @Composable
 fun IdChip(
-    modifier: Modifier = Modifier,
     @DrawableRes drawableRes: Int,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     Box(modifier = modifier

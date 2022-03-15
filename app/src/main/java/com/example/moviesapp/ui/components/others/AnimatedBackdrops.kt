@@ -22,8 +22,8 @@ import com.example.moviesapp.other.getMaxSizeInt
 
 @Composable
 fun AnimatedBackdrops(
-    modifier: Modifier = Modifier,
-    paths: List<String>
+    paths: List<String>,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
 
@@ -89,5 +89,4 @@ fun AnimatedBackdrops(
             )
         }
     }
-
 }
