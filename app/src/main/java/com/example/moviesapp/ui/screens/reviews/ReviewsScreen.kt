@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -21,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -154,12 +156,19 @@ fun ReviewsScreenContent(
                         Alignment.CenterEnd
                     }
 
+                    val shape = if (index % 2 == 0) {
+                        MaterialTheme.shapes.medium.copy(bottomStart = CornerSize(0.dp))
+                    } else {
+                        MaterialTheme.shapes.medium.copy(bottomEnd = CornerSize(0.dp))
+                    }
+
                     Box(modifier = Modifier.fillMaxWidth()) {
                         ReviewItem(
                             modifier = Modifier
                                 .fillMaxWidth(0.9f)
                                 .align(alignment),
-                            review = review
+                            review = review,
+                            shape = shape
                         )
                     }
                 }

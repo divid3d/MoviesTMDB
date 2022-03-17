@@ -144,10 +144,14 @@ fun TvSeriesDetailsInfoSection(
                         }
                     }
 
-                    ExpandableText(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = details.overview
-                    )
+                    details.overview.let { overview ->
+                        if (overview.isNotBlank()) {
+                            ExpandableText(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = overview
+                            )
+                        }
+                    }
                 }
             }
         }

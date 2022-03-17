@@ -32,7 +32,6 @@ import com.example.moviesapp.other.ifNotNullAndEmpty
 import com.example.moviesapp.other.openExternalId
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.components.others.AppBar
-import com.example.moviesapp.ui.components.others.SectionDivider
 import com.example.moviesapp.ui.components.sections.ExternalIdsSection
 import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.screens.details.components.CreditsList
@@ -250,18 +249,13 @@ fun PersonDetailsScreenContent(
                 targetState = uiState.credits?.cast
             ) { cast ->
                 cast.ifNotNullAndEmpty { members ->
-                    Column(
+                    CreditsList(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        CreditsList(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.person_details_screen_cast),
-                            credits = members,
-                            onCreditsClick = onMediaClicked
-                        )
-                    }
+                        title = stringResource(R.string.person_details_screen_cast),
+                        credits = members,
+                        onCreditsClick = onMediaClicked
+                    )
+
                 }
             }
 
@@ -272,22 +266,16 @@ fun PersonDetailsScreenContent(
                 targetState = uiState.credits?.crew
             ) { crew ->
                 crew.ifNotNullAndEmpty { members ->
-                    Column(
+                    CreditsList(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        CreditsList(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.person_details_screen_crew),
-                            credits = members,
-                            onCreditsClick = onMediaClicked
-                        )
-                    }
+                        title = stringResource(R.string.person_details_screen_crew),
+                        credits = members,
+                        onCreditsClick = onMediaClicked
+                    )
                 }
             }
 
-            Spacer(modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.large))
+            Spacer(modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.medium))
         }
 
         AppBar(

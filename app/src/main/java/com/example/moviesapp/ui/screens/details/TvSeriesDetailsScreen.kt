@@ -32,7 +32,6 @@ import com.example.moviesapp.other.*
 import com.example.moviesapp.ui.components.buttons.LikeButton
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.components.others.AppBar
-import com.example.moviesapp.ui.components.others.SectionDivider
 import com.example.moviesapp.ui.components.sections.*
 import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.screens.details.components.TvSeriesDetailsInfoSection
@@ -356,17 +355,11 @@ fun TvSeriesDetailsScreenContent(
                 targetState = uiState.additionalTvSeriesDetailsInfo.watchProviders
             ) { providers ->
                 if (providers != null) {
-                    Column(
+                    WatchProvidersSection(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        WatchProvidersSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            watchProviders = providers,
-                            title = stringResource(R.string.available_at)
-                        )
-                    }
+                        watchProviders = providers,
+                        title = stringResource(R.string.available_at)
+                    )
                 }
             }
 
@@ -377,73 +370,32 @@ fun TvSeriesDetailsScreenContent(
                 targetState = uiState.tvSeriesDetails?.creators
             ) { creators ->
                 creators.ifNotNullAndEmpty { members ->
-                    Column(
+                    MemberSection(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        MemberSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.tv_series_details_creators),
-                            members = members,
-                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                            onMemberClick = onCreatorClicked
-                        )
-                    }
+                        title = stringResource(R.string.tv_series_details_creators),
+                        members = members,
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                        onMemberClick = onCreatorClicked
+                    )
                 }
             }
 
             Crossfade(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colors.surface)
                     .animateContentSize(),
                 targetState = uiState.tvSeriesDetails?.seasons
             ) { seasons ->
                 seasons.ifNotNullAndEmpty { value ->
-                    Column(
+                    SeasonsSection(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = MaterialTheme.spacing.medium),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        SeasonsSection(
-                            title = stringResource(R.string.tv_series_details_seasons),
-                            seasons = value,
-                            onSeasonClick = onSeasonClicked
-                        )
-                    }
-                }
-            }
-
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = similar
-            ) { similar ->
-                if (similar.hasItems()) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        PresentableSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.tv_series_details_similar),
-                            state = similar,
-                            showLoadingAtRefresh = false,
-                            onMoreClick = onSimilarMoreClicked,
-                            onPresentableClick = { tvSeriesId ->
-                                if (tvSeriesId != uiState.tvSeriesDetails?.id) {
-                                    onTvSeriesClicked(tvSeriesId)
-                                } else {
-                                    scrollToStart()
-                                }
-                            }
-                        )
-                    }
+                            .background(MaterialTheme.colors.surface)
+                            .padding(vertical = MaterialTheme.spacing.small),
+                        title = stringResource(R.string.tv_series_details_seasons),
+                        seasons = value,
+                        onSeasonClick = onSeasonClicked
+                    )
                 }
             }
 
@@ -454,26 +406,44 @@ fun TvSeriesDetailsScreenContent(
                 targetState = recommendations
             ) { recommendations ->
                 if (recommendations.hasItems()) {
-                    Column(
+                    PresentableSection(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        PresentableSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.tv_series_details_recommendations),
-                            state = recommendations,
-                            showLoadingAtRefresh = false,
-                            onMoreClick = onRecommendationsMoreClicked,
-                            onPresentableClick = { tvSeriesId ->
-                                if (tvSeriesId != uiState.tvSeriesDetails?.id) {
-                                    onTvSeriesClicked(tvSeriesId)
-                                } else {
-                                    scrollToStart()
-                                }
+                        title = stringResource(R.string.tv_series_details_recommendations),
+                        state = recommendations,
+                        showLoadingAtRefresh = false,
+                        onMoreClick = onRecommendationsMoreClicked,
+                        onPresentableClick = { tvSeriesId ->
+                            if (tvSeriesId != uiState.tvSeriesDetails?.id) {
+                                onTvSeriesClicked(tvSeriesId)
+                            } else {
+                                scrollToStart()
                             }
-                        )
-                    }
+                        }
+                    )
+                }
+            }
+
+            Crossfade(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                targetState = similar
+            ) { similar ->
+                if (similar.hasItems()) {
+                    PresentableSection(
+                        modifier = Modifier.fillMaxWidth(),
+                        title = stringResource(R.string.tv_series_details_similar),
+                        state = similar,
+                        showLoadingAtRefresh = false,
+                        onMoreClick = onSimilarMoreClicked,
+                        onPresentableClick = { tvSeriesId ->
+                            if (tvSeriesId != uiState.tvSeriesDetails?.id) {
+                                onTvSeriesClicked(tvSeriesId)
+                            } else {
+                                scrollToStart()
+                            }
+                        }
+                    )
                 }
             }
 
@@ -484,19 +454,13 @@ fun TvSeriesDetailsScreenContent(
                 targetState = uiState.associatedContent.videos
             ) { videos ->
                 videos.ifNotNullAndEmpty { value ->
-                    Column(
+                    VideosSection(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        VideosSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.tv_series_details_videos),
-                            videos = value,
-                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                            onVideoClicked = onVideoClicked
-                        )
-                    }
+                        title = stringResource(R.string.tv_series_details_videos),
+                        videos = value,
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                        onVideoClicked = onVideoClicked
+                    )
                 }
             }
 
@@ -504,21 +468,15 @@ fun TvSeriesDetailsScreenContent(
                 modifier = Modifier.fillMaxWidth(),
                 visible = uiState.additionalTvSeriesDetailsInfo.reviewsCount > 0
             ) {
-                Column(
+                ReviewSection(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                ) {
-                    SectionDivider(modifier = Modifier.fillMaxWidth())
-                    ReviewSection(
-                        modifier = Modifier.fillMaxWidth(),
-                        count = uiState.additionalTvSeriesDetailsInfo.reviewsCount,
-                        onClick = onReviewsClicked
-                    )
-                }
+                    count = uiState.additionalTvSeriesDetailsInfo.reviewsCount,
+                    onClick = onReviewsClicked
+                )
             }
 
             Spacer(
-                modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.large)
+                modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.medium)
             )
         }
 

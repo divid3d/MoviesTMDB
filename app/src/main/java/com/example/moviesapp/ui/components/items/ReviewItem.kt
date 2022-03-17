@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,7 +36,8 @@ import com.example.moviesapp.ui.theme.spacing
 @Composable
 fun ReviewItem(
     review: Review,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    shape: Shape = MaterialTheme.shapes.medium
 ) {
     val avatarPath = review.authorDetails.avatarPath
 
@@ -51,7 +53,7 @@ fun ReviewItem(
 
     Card(
         modifier = modifier,
-        shape = MaterialTheme.shapes.medium,
+        shape = shape,
         backgroundColor = MaterialTheme.colors.surface,
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.primary.copy(0.5f))
     ) {

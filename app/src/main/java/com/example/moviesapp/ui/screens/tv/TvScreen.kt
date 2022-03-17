@@ -19,7 +19,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.TvSeriesType
 import com.example.moviesapp.other.isNotEmpty
-import com.example.moviesapp.ui.components.others.SectionDivider
 import com.example.moviesapp.ui.components.sections.PresentableSection
 import com.example.moviesapp.ui.components.sections.PresentableTopSection
 import com.example.moviesapp.ui.screens.destinations.BrowseTvSeriesScreenDestination
@@ -141,6 +140,7 @@ fun TvScreenContent(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
         ) {
             PresentableTopSection(
                 modifier = Modifier
@@ -157,7 +157,7 @@ fun TvScreenContent(
                     onBrowseTvSeriesClicked(TvSeriesType.OnTheAir)
                 }
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
             PresentableSection(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -167,12 +167,7 @@ fun TvScreenContent(
                 onPresentableClick = onTvSeriesClicked,
                 onMoreClick = onDiscoverTvSeriesClicked
             )
-            SectionDivider(
-                modifier = Modifier.padding(
-                    top = MaterialTheme.spacing.medium,
-                    bottom = MaterialTheme.spacing.small
-                )
-            )
+
             PresentableSection(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -182,12 +177,7 @@ fun TvScreenContent(
                 onPresentableClick = onTvSeriesClicked,
                 onMoreClick = { onBrowseTvSeriesClicked(TvSeriesType.TopRated) }
             )
-            SectionDivider(
-                modifier = Modifier.padding(
-                    top = MaterialTheme.spacing.medium,
-                    bottom = MaterialTheme.spacing.small
-                )
-            )
+
             PresentableSection(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -197,12 +187,7 @@ fun TvScreenContent(
                 onPresentableClick = onTvSeriesClicked,
                 onMoreClick = { onBrowseTvSeriesClicked(TvSeriesType.Trending) }
             )
-            SectionDivider(
-                modifier = Modifier.padding(
-                    top = MaterialTheme.spacing.medium,
-                    bottom = MaterialTheme.spacing.small
-                )
-            )
+
             PresentableSection(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -212,13 +197,8 @@ fun TvScreenContent(
                 onPresentableClick = onTvSeriesClicked,
                 onMoreClick = { onBrowseTvSeriesClicked(TvSeriesType.AiringToday) }
             )
+
             if (favouritesLazyItems.isNotEmpty()) {
-                SectionDivider(
-                    modifier = Modifier.padding(
-                        top = MaterialTheme.spacing.medium,
-                        bottom = MaterialTheme.spacing.small
-                    )
-                )
                 PresentableSection(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -229,13 +209,8 @@ fun TvScreenContent(
                     onMoreClick = { onBrowseTvSeriesClicked(TvSeriesType.Favourite) }
                 )
             }
+
             if (recentlyBrowsedLazyItems.isNotEmpty()) {
-                SectionDivider(
-                    modifier = Modifier.padding(
-                        top = MaterialTheme.spacing.medium,
-                        bottom = MaterialTheme.spacing.small
-                    )
-                )
                 PresentableSection(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -246,6 +221,7 @@ fun TvScreenContent(
                     onMoreClick = { onBrowseTvSeriesClicked(TvSeriesType.RecentlyBrowsed) }
                 )
             }
+
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         }
     }

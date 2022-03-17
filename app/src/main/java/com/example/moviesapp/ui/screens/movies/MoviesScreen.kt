@@ -23,7 +23,6 @@ import com.example.moviesapp.R
 import com.example.moviesapp.model.MovieType
 import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.ui.components.dialogs.ExitDialog
-import com.example.moviesapp.ui.components.others.SectionDivider
 import com.example.moviesapp.ui.components.sections.PresentableSection
 import com.example.moviesapp.ui.components.sections.PresentableTopSection
 import com.example.moviesapp.ui.screens.destinations.BrowseMoviesScreenDestination
@@ -168,6 +167,7 @@ fun MoviesScreenContent(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
         ) {
             PresentableTopSection(
                 modifier = Modifier
@@ -184,7 +184,7 @@ fun MoviesScreenContent(
                     onBrowseMoviesClicked(MovieType.NowPlaying)
                 }
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
             PresentableSection(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -194,12 +194,7 @@ fun MoviesScreenContent(
                 onPresentableClick = onMovieClicked,
                 onMoreClick = onDiscoverMoviesClicked
             )
-            SectionDivider(
-                modifier = Modifier.padding(
-                    top = MaterialTheme.spacing.medium,
-                    bottom = MaterialTheme.spacing.small
-                )
-            )
+
             PresentableSection(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -209,12 +204,7 @@ fun MoviesScreenContent(
                 onPresentableClick = onMovieClicked,
                 onMoreClick = { onBrowseMoviesClicked(MovieType.Upcoming) }
             )
-            SectionDivider(
-                modifier = Modifier.padding(
-                    top = MaterialTheme.spacing.medium,
-                    bottom = MaterialTheme.spacing.small
-                )
-            )
+
             PresentableSection(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -224,12 +214,7 @@ fun MoviesScreenContent(
                 onPresentableClick = onMovieClicked,
                 onMoreClick = { onBrowseMoviesClicked(MovieType.Trending) }
             )
-            SectionDivider(
-                modifier = Modifier.padding(
-                    top = MaterialTheme.spacing.medium,
-                    bottom = MaterialTheme.spacing.small
-                )
-            )
+
             PresentableSection(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -239,13 +224,8 @@ fun MoviesScreenContent(
                 onPresentableClick = onMovieClicked,
                 onMoreClick = { onBrowseMoviesClicked(MovieType.TopRated) }
             )
+
             if (favouritesLazyItems.isNotEmpty()) {
-                SectionDivider(
-                    modifier = Modifier.padding(
-                        top = MaterialTheme.spacing.medium,
-                        bottom = MaterialTheme.spacing.small
-                    )
-                )
                 PresentableSection(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -256,13 +236,8 @@ fun MoviesScreenContent(
                     onMoreClick = { onBrowseMoviesClicked(MovieType.Favourite) }
                 )
             }
+
             if (recentlyBrowsedLazyItems.isNotEmpty()) {
-                SectionDivider(
-                    modifier = Modifier.padding(
-                        top = MaterialTheme.spacing.medium,
-                        bottom = MaterialTheme.spacing.small
-                    )
-                )
                 PresentableSection(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -273,6 +248,7 @@ fun MoviesScreenContent(
                     onMoreClick = { onBrowseMoviesClicked(MovieType.RecentlyBrowsed) }
                 )
             }
+
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         }
     }

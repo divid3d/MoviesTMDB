@@ -32,7 +32,6 @@ import com.example.moviesapp.other.*
 import com.example.moviesapp.ui.components.buttons.LikeButton
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.components.others.AppBar
-import com.example.moviesapp.ui.components.others.SectionDivider
 import com.example.moviesapp.ui.components.sections.*
 import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.screens.details.components.MovieDetailsInfoSection
@@ -351,17 +350,11 @@ fun MovieDetailsScreenContent(
                 targetState = uiState.additionalMovieDetailsInfo.watchProviders
             ) { providers ->
                 if (providers != null) {
-                    Column(
+                    WatchProvidersSection(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        WatchProvidersSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            watchProviders = providers,
-                            title = stringResource(R.string.available_at)
-                        )
-                    }
+                        watchProviders = providers,
+                        title = stringResource(R.string.available_at)
+                    )
                 }
             }
 
@@ -372,19 +365,13 @@ fun MovieDetailsScreenContent(
                 targetState = uiState.additionalMovieDetailsInfo.credits?.cast
             ) { cast ->
                 cast.ifNotNullAndEmpty { members ->
-                    Column(
+                    MemberSection(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        MemberSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.movie_details_cast),
-                            members = members,
-                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                            onMemberClick = onMemberClicked
-                        )
-                    }
+                        title = stringResource(R.string.movie_details_cast),
+                        members = members,
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                        onMemberClick = onMemberClicked
+                    )
                 }
             }
 
@@ -395,51 +382,39 @@ fun MovieDetailsScreenContent(
                 targetState = uiState.additionalMovieDetailsInfo.credits?.crew
             ) { crew ->
                 crew.ifNotNullAndEmpty { members ->
-                    Column(
+                    MemberSection(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        MemberSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.movie_details_crew),
-                            members = members,
-                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                            onMemberClick = onMemberClicked
-                        )
-                    }
+                        title = stringResource(R.string.movie_details_crew),
+                        members = members,
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                        onMemberClick = onMemberClicked
+                    )
                 }
             }
 
             Crossfade(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colors.surface)
                     .animateContentSize(),
                 targetState = uiState.associatedMovies.collection
             ) { movieCollection ->
                 if (movieCollection != null && movieCollection.parts.isNotEmpty()) {
-                    Column(
+                    PresentableListSection(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = MaterialTheme.spacing.medium),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        PresentableListSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = movieCollection.name,
-                            list = movieCollection.parts.sortedBy { part -> part.releaseDate },
-                            selectedId = uiState.movieDetails?.id,
-                            onPresentableClick = { movieId ->
-                                if (movieId != uiState.movieDetails?.id) {
-                                    onMovieClicked(movieId)
-                                } else {
-                                    scrollToStart()
-                                }
+                            .background(MaterialTheme.colors.surface)
+                            .padding(vertical = MaterialTheme.spacing.small),
+                        title = movieCollection.name,
+                        list = movieCollection.parts.sortedBy { part -> part.releaseDate },
+                        selectedId = uiState.movieDetails?.id,
+                        onPresentableClick = { movieId ->
+                            if (movieId != uiState.movieDetails?.id) {
+                                onMovieClicked(movieId)
+                            } else {
+                                scrollToStart()
                             }
-                        )
-                    }
+                        }
+                    )
                 }
             }
 
@@ -450,60 +425,24 @@ fun MovieDetailsScreenContent(
                 targetState = otherDirectorMovies
             ) { otherDirectorMovies ->
                 if (otherDirectorMovies.hasItems()) {
-                    Column(
+                    PresentableSection(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        PresentableSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(
-                                id = R.string.movie_details_director_movies,
-                                uiState.associatedMovies.directorMovies.directorName
-                            ),
-                            state = otherDirectorMovies,
-                            showLoadingAtRefresh = false,
-                            showMoreButton = false,
-                            onMoreClick = onSimilarMoreClicked,
-                            onPresentableClick = { movieId ->
-                                if (movieId != uiState.movieDetails?.id) {
-                                    onMovieClicked(movieId)
-                                } else {
-                                    scrollToStart()
-                                }
+                        title = stringResource(
+                            id = R.string.movie_details_director_movies,
+                            uiState.associatedMovies.directorMovies.directorName
+                        ),
+                        state = otherDirectorMovies,
+                        showLoadingAtRefresh = false,
+                        showMoreButton = false,
+                        onMoreClick = onSimilarMoreClicked,
+                        onPresentableClick = { movieId ->
+                            if (movieId != uiState.movieDetails?.id) {
+                                onMovieClicked(movieId)
+                            } else {
+                                scrollToStart()
                             }
-                        )
-                    }
-                }
-            }
-
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = similarMoviesState
-            ) { similarMovies ->
-                if (similarMovies.hasItems()) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        PresentableSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.movie_details_similar),
-                            state = similarMovies,
-                            showLoadingAtRefresh = false,
-                            onMoreClick = onSimilarMoreClicked,
-                            onPresentableClick = { movieId ->
-                                if (movieId != uiState.movieDetails?.id) {
-                                    onMovieClicked(movieId)
-                                } else {
-                                    scrollToStart()
-                                }
-                            }
-                        )
-                    }
+                        }
+                    )
                 }
             }
 
@@ -514,26 +453,44 @@ fun MovieDetailsScreenContent(
                 targetState = moviesRecommendationState
             ) { movieRecommendation ->
                 if (movieRecommendation.hasItems()) {
-                    Column(
+                    PresentableSection(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        PresentableSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.movie_details_recommendations),
-                            state = movieRecommendation,
-                            showLoadingAtRefresh = false,
-                            onMoreClick = onRecommendationsMoreClicked,
-                            onPresentableClick = { movieId ->
-                                if (movieId != uiState.movieDetails?.id) {
-                                    onMovieClicked(movieId)
-                                } else {
-                                    scrollToStart()
-                                }
+                        title = stringResource(R.string.movie_details_recommendations),
+                        state = movieRecommendation,
+                        showLoadingAtRefresh = false,
+                        onMoreClick = onRecommendationsMoreClicked,
+                        onPresentableClick = { movieId ->
+                            if (movieId != uiState.movieDetails?.id) {
+                                onMovieClicked(movieId)
+                            } else {
+                                scrollToStart()
                             }
-                        )
-                    }
+                        }
+                    )
+                }
+            }
+
+            Crossfade(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                targetState = similarMoviesState
+            ) { similarMovies ->
+                if (similarMovies.hasItems()) {
+                    PresentableSection(
+                        modifier = Modifier.fillMaxWidth(),
+                        title = stringResource(R.string.movie_details_similar),
+                        state = similarMovies,
+                        showLoadingAtRefresh = false,
+                        onMoreClick = onSimilarMoreClicked,
+                        onPresentableClick = { movieId ->
+                            if (movieId != uiState.movieDetails?.id) {
+                                onMovieClicked(movieId)
+                            } else {
+                                scrollToStart()
+                            }
+                        }
+                    )
                 }
             }
 
@@ -544,19 +501,13 @@ fun MovieDetailsScreenContent(
                 targetState = uiState.associatedContent.videos
             ) { videos ->
                 videos.ifNotNullAndEmpty { value ->
-                    Column(
+                    VideosSection(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                    ) {
-                        SectionDivider(modifier = Modifier.fillMaxWidth())
-                        VideosSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.season_details_videos_label),
-                            videos = value,
-                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                            onVideoClicked = onVideoClicked
-                        )
-                    }
+                        title = stringResource(R.string.season_details_videos_label),
+                        videos = value,
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                        onVideoClicked = onVideoClicked
+                    )
                 }
             }
 
@@ -564,21 +515,15 @@ fun MovieDetailsScreenContent(
                 modifier = Modifier.fillMaxWidth(),
                 visible = uiState.additionalMovieDetailsInfo.reviewsCount > 0
             ) {
-                Column(
+                ReviewSection(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                ) {
-                    SectionDivider(modifier = Modifier.fillMaxWidth())
-                    ReviewSection(
-                        modifier = Modifier.fillMaxWidth(),
-                        count = uiState.additionalMovieDetailsInfo.reviewsCount,
-                        onClick = onReviewsClicked
-                    )
-                }
+                    count = uiState.additionalMovieDetailsInfo.reviewsCount,
+                    onClick = onReviewsClicked
+                )
             }
 
             Spacer(
-                modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.large)
+                modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.medium)
             )
         }
 
