@@ -46,7 +46,8 @@ buildscript {
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.17.1"
         //ASM8 error when up to date
         classpath 'com.google.firebase:perf-plugin:1.4.1'
-        classpath 'com.google.gms:google-services:4.3.10'
+        //Firebase init random crash at newer
+        classpath 'com.google.gms:google-services:4.3.4'
     }
 }
 
