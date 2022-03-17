@@ -198,10 +198,13 @@ fun SeasonDetailsContent(
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold
                             )
-                            ExpandableText(
-                                modifier = Modifier.fillMaxSize(),
-                                text = details.overview
-                            )
+
+                            if (details.overview.isNotBlank()) {
+                                ExpandableText(
+                                    modifier = Modifier.fillMaxSize(),
+                                    text = details.overview
+                                )
+                            }
                         }
                     }
                 }
