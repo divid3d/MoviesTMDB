@@ -264,7 +264,7 @@ fun SeasonDetailsContent(
                     val stills by derivedStateOf {
                         uiState.episodeStills.getOrElse(
                             episode.episodeNumber,
-                            defaultValue = { emptyList() })
+                            defaultValue = { null })
                     }
 
                     EpisodeChip(

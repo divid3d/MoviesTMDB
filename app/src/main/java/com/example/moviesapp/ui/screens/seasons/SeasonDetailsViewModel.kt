@@ -100,10 +100,10 @@ class SeasonDetailsViewModel @Inject constructor(
             ).request { response ->
                 response.onSuccess {
                     viewModelScope.launch {
-                        data?.stills?.let { stills ->
+                        data?.stills.let { stills ->
                             episodesStills.collectLatest { current ->
                                 val updatedStills = current.toMutableMap().apply {
-                                    put(episodeNumber, stills)
+                                    put(episodeNumber, stills ?: emptyList())
                                 }
                                 episodesStills.emit(updatedStills)
                             }

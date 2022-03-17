@@ -1,10 +1,7 @@
 package com.example.moviesapp.ui.components.chips
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,17 +12,22 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.moviesapp.R
 import com.example.moviesapp.model.Episode
 import com.example.moviesapp.model.Image
 import com.example.moviesapp.other.formatted
 import com.example.moviesapp.ui.components.others.StillBrowser
+import com.example.moviesapp.ui.theme.White300
 import com.example.moviesapp.ui.theme.spacing
 
 @Composable
@@ -33,10 +35,17 @@ fun EpisodeChip(
     episode: Episode,
     modifier: Modifier = Modifier,
     expanded: Boolean = false,
-    stills: List<Image> = emptyList(),
+    stills: List<Image>? = null,
     onClick: () -> Unit = {}
 ) {
     val iconRotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
+
+    //Stills equal to null means request is in progress
+    val hasAdditionalContent by derivedStateOf {
+        episode.run {
+            overview.isNotBlank() || stills == null || stills.isNotEmpty()
+        }
+    }
 
     Card(
         modifier = modifier.clickable { onClick() },
@@ -87,16 +96,35 @@ fun EpisodeChip(
                 exit = fadeOut(),
                 visible = expanded
             ) {
-                Column(
+                Crossfade(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-                ) {
-                    Text(text = episode.overview, fontSize = 12.sp)
-
-                    if (stills.isNotEmpty()) {
-                        StillBrowser(
+                    targetState = hasAdditionalContent
+                ) { hasContent ->
+                    if (hasContent) {
+                        Column(
                             modifier = Modifier.fillMaxWidth(),
-                            stillPaths = stills
+                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                        ) {
+                            if (episode.overview.isNotBlank()) {
+                                Text(text = episode.overview, fontSize = 12.sp)
+
+                            }
+
+                            stills?.let { stills ->
+                                if (stills.isNotEmpty()) {
+                                    StillBrowser(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        stillPaths = stills
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(R.string.episode_chip_no_info_text),
+                            color = White300,
+                            textAlign = TextAlign.Center
                         )
                     }
                 }

@@ -203,4 +203,6 @@
     <string name="movie_provider_type_buy_label">Kup</string>
     <string name="movie_provider_type_stream_label">Streaming</string>
 
+    <string name="episode_chip_no_info_text">Brak dodatkowych informacji</string>
+
 </resources>
