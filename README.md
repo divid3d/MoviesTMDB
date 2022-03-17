@@ -1,5 +1,5 @@
-[![Build](https://img.shields.io/github/workflow/status/divid3d/TMDbComposeClient/Android%20Build/master?style=for-the-badge)]()
-[![Release](https://img.shields.io/github/v/release/divid3d/TMDbComposeClient?style=for-the-badge&display_name=release&include_prereleases)]()
+[![Build](https://img.shields.io/github/workflow/status/divid3d/TMDbComposeClient/Android%20Build/master?style=for-the-badge)](https://github.com/divid3d/MoviesTMDB/actions)
+[![Release](https://img.shields.io/github/v/release/divid3d/TMDbComposeClient?style=for-the-badge&display_name=release&include_prereleases)](https://github.com/divid3d/MoviesTMDB/releases)
 [![Android API](https://img.shields.io/badge/api-23%2B-brightgreen.svg?style=for-the-badge)](https://android-arsenal.com/api?level=23)
 [![kotlin](https://img.shields.io/github/languages/top/divid3d/TMDbComposeClient.svg?style=for-the-badge&color=blueviolet)](https://kotlinlang.org/)
 
@@ -17,7 +17,7 @@ Project is created with:
 * Accompanist
 * Coroutines and Flow
 * Hilt
-* Paging Compose
+* Paging3 Compose
 * OkHttp
 * Retrofit
 * Moshi
