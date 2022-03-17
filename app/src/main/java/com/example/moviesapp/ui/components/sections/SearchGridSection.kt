@@ -26,7 +26,6 @@ import com.example.moviesapp.other.isScrollingTowardsStart
 import com.example.moviesapp.other.items
 import com.example.moviesapp.ui.components.buttons.ScrollToTop
 import com.example.moviesapp.ui.components.items.PresentableItem
-import com.example.moviesapp.ui.theme.sizes
 import com.example.moviesapp.ui.theme.spacing
 import kotlinx.coroutines.launch
 
@@ -60,7 +59,7 @@ fun SearchGridSection(
             state = gridState,
             modifier = Modifier.fillMaxSize(),
             contentPadding = contentPadding,
-            columns = GridCells.Adaptive(MaterialTheme.sizes.presentableItemSmall.width),
+            columns = GridCells.Fixed(3),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
         ) {

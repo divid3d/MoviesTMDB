@@ -13,10 +13,9 @@ data class FavouritesScreenUiState(
     val favourites: Flow<PagingData<Presentable>>,
 ) {
     companion object {
-        val default: FavouritesScreenUiState
-            get() = FavouritesScreenUiState(
-                selectedFavouriteType = FavouriteType.Movie,
-                favourites = emptyFlow()
-            )
+        val default: FavouritesScreenUiState = FavouritesScreenUiState(
+            selectedFavouriteType = FavouriteType.Movie,
+            favourites = emptyFlow()
+        )
     }
 }

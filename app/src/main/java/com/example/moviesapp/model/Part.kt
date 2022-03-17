@@ -38,6 +38,5 @@ data class Part(
     @Json(name = "vote_count")
     override val voteCount: Int
 ) : DetailPresentable {
-    override val backdropPath: String?
-        get() = null
+    override val backdropPath: String? = null
 }

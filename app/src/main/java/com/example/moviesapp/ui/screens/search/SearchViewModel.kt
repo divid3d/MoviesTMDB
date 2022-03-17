@@ -151,10 +151,9 @@ data class QueryState(
     val loading: Boolean
 ) {
     companion object {
-        val default: QueryState
-            get() = QueryState(
-                query = null,
-                loading = false
-            )
+        val default: QueryState = QueryState(
+            query = null,
+            loading = false
+        )
     }
 }

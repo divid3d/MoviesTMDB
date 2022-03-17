@@ -31,8 +31,7 @@ data class CrewMember(
 
     val job: String
 ) : Member {
-    override val firstLine: String
-        get() = name
-    override val secondLine: String
-        get() = job
+    override val firstLine: String = name
+
+    override val secondLine: String = job
 }

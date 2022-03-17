@@ -13,12 +13,11 @@ data class DiscoverMoviesScreenUiState(
     val movies: Flow<PagingData<Movie>>
 ) {
     companion object {
-        val default: DiscoverMoviesScreenUiState
-            get() = DiscoverMoviesScreenUiState(
-                sortInfo = SortInfo.default,
-                filterState = MovieFilterState.default,
-                movies = emptyFlow()
-            )
+        val default: DiscoverMoviesScreenUiState = DiscoverMoviesScreenUiState(
+            sortInfo = SortInfo.default,
+            filterState = MovieFilterState.default,
+            movies = emptyFlow()
+        )
     }
 }
 
@@ -28,11 +27,10 @@ data class SortInfo(
     val sortOrder: SortOrder
 ) {
     companion object {
-        val default: SortInfo
-            get() = SortInfo(
-                sortType = SortType.Popularity,
-                sortOrder = SortOrder.Desc
-            )
+        val default: SortInfo = SortInfo(
+            sortType = SortType.Popularity,
+            sortOrder = SortOrder.Desc
+        )
     }
 }
 
@@ -49,18 +47,17 @@ data class MovieFilterState(
     val releaseDateRange: DateRange
 ) {
     companion object {
-        val default: MovieFilterState
-            get() = MovieFilterState(
-                selectedGenres = emptyList(),
-                availableGenres = emptyList(),
-                availableWatchProviders = emptyList(),
-                selectedWatchProviders = emptyList(),
-                showOnlyWithPoster = false,
-                showOnlyWithScore = false,
-                showOnlyWithOverview = false,
-                voteRange = VoteRange(),
-                releaseDateRange = DateRange()
-            )
+        val default: MovieFilterState = MovieFilterState(
+            selectedGenres = emptyList(),
+            availableGenres = emptyList(),
+            availableWatchProviders = emptyList(),
+            selectedWatchProviders = emptyList(),
+            showOnlyWithPoster = false,
+            showOnlyWithScore = false,
+            showOnlyWithOverview = false,
+            voteRange = VoteRange(),
+            releaseDateRange = DateRange()
+        )
     }
 
     fun clear(): MovieFilterState = copy(

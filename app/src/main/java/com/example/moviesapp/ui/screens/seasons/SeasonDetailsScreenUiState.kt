@@ -16,14 +16,13 @@ data class SeasonDetailsScreenUiState(
     val error: String?
 ) {
     companion object {
-        val default: SeasonDetailsScreenUiState
-            get() = SeasonDetailsScreenUiState(
-                startRoute = TvScreenDestination.route,
-                seasonDetails = null,
-                videos = null,
-                episodeCount = null,
-                episodeStills = emptyMap(),
-                error = null
-            )
+        val default: SeasonDetailsScreenUiState = SeasonDetailsScreenUiState(
+            startRoute = TvScreenDestination.route,
+            seasonDetails = null,
+            videos = null,
+            episodeCount = null,
+            episodeStills = emptyMap(),
+            error = null
+        )
     }
 }

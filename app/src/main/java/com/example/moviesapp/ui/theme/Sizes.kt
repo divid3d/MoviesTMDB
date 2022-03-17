@@ -13,7 +13,9 @@ data class Sizes(
     val videoItem: Size = Size(200.dp, 110.dp)
 )
 
-data class Size(val width: Dp, val height: Dp)
+data class Size(val width: Dp, val height: Dp) {
+    val ratio: Float = width / height
+}
 
 val LocalSizes = compositionLocalOf { Sizes() }
 

@@ -13,10 +13,9 @@ data class ReviewsScreenUiState(
     val reviews: Flow<PagingData<Review>>
 ) {
     companion object {
-        val default: ReviewsScreenUiState
-            get() = ReviewsScreenUiState(
-                startRoute = MoviesScreenDestination.route,
-                reviews = emptyFlow()
-            )
+        val default: ReviewsScreenUiState = ReviewsScreenUiState(
+            startRoute = MoviesScreenDestination.route,
+            reviews = emptyFlow()
+        )
     }
 }

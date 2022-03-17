@@ -15,12 +15,11 @@ data class TvScreenUiState(
     val recentlyBrowsed: Flow<PagingData<RecentlyBrowsedTvSeries>>
 ) {
     companion object {
-        val default: TvScreenUiState
-            get() = TvScreenUiState(
-                tvSeriesState = TvSeriesState.default,
-                favourites = emptyFlow(),
-                recentlyBrowsed = emptyFlow()
-            )
+        val default: TvScreenUiState = TvScreenUiState(
+            tvSeriesState = TvSeriesState.default,
+            favourites = emptyFlow(),
+            recentlyBrowsed = emptyFlow()
+        )
     }
 }
 
@@ -32,13 +31,12 @@ data class TvSeriesState(
     val airingToday: Flow<PagingData<TvSeries>>
 ) {
     companion object {
-        val default: TvSeriesState
-            get() = TvSeriesState(
-                onTheAir = emptyFlow(),
-                discover = emptyFlow(),
-                topRated = emptyFlow(),
-                trending = emptyFlow(),
-                airingToday = emptyFlow()
-            )
+        val default: TvSeriesState = TvSeriesState(
+            onTheAir = emptyFlow(),
+            discover = emptyFlow(),
+            topRated = emptyFlow(),
+            trending = emptyFlow(),
+            airingToday = emptyFlow()
+        )
     }
 }

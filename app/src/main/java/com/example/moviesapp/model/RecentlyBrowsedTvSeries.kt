@@ -18,6 +18,6 @@ data class RecentlyBrowsedTvSeries(
     @ColumnInfo(name = "added_date")
     val addedDate: Date
 ) : Presentable {
-    override val title: String
-        get() = name
+    @Transient
+    override val title: String = name
 }

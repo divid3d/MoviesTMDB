@@ -15,12 +15,11 @@ data class MovieScreenUiState(
     val recentlyBrowsed: Flow<PagingData<RecentlyBrowsedMovie>>
 ) {
     companion object {
-        val default: MovieScreenUiState
-            get() = MovieScreenUiState(
-                moviesState = MoviesState.default,
-                favourites = emptyFlow(),
-                recentlyBrowsed = emptyFlow()
-            )
+        val default: MovieScreenUiState = MovieScreenUiState(
+            moviesState = MoviesState.default,
+            favourites = emptyFlow(),
+            recentlyBrowsed = emptyFlow()
+        )
     }
 }
 
@@ -33,13 +32,12 @@ data class MoviesState(
     val nowPlaying: Flow<PagingData<Movie>>
 ) {
     companion object {
-        val default: MoviesState
-            get() = MoviesState(
-                discover = emptyFlow(),
-                upcoming = emptyFlow(),
-                topRated = emptyFlow(),
-                trending = emptyFlow(),
-                nowPlaying = emptyFlow()
-            )
+        val default: MoviesState = MoviesState(
+            discover = emptyFlow(),
+            upcoming = emptyFlow(),
+            topRated = emptyFlow(),
+            trending = emptyFlow(),
+            nowPlaying = emptyFlow()
+        )
     }
 }

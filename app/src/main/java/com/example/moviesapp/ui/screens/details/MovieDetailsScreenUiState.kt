@@ -35,13 +35,12 @@ data class AssociatedMovies(
     val directorMovies: DirectorMovies
 ) {
     companion object {
-        val default: AssociatedMovies
-            get() = AssociatedMovies(
-                collection = null,
-                similar = emptyFlow(),
-                recommendations = emptyFlow(),
-                directorMovies = DirectorMovies.default
-            )
+        val default: AssociatedMovies = AssociatedMovies(
+            collection = null,
+            similar = emptyFlow(),
+            recommendations = emptyFlow(),
+            directorMovies = DirectorMovies.default
+        )
     }
 }
 
@@ -50,11 +49,10 @@ data class DirectorMovies(
     val movies: Flow<PagingData<Movie>>
 ) {
     companion object {
-        val default: DirectorMovies
-            get() = DirectorMovies(
-                directorName = "",
-                movies = emptyFlow()
-            )
+        val default: DirectorMovies = DirectorMovies(
+            directorName = "",
+            movies = emptyFlow()
+        )
     }
 }
 
@@ -66,14 +64,13 @@ data class AdditionalMovieDetailsInfo(
     val reviewsCount: Int
 ) {
     companion object {
-        val default: AdditionalMovieDetailsInfo
-            get() = AdditionalMovieDetailsInfo(
-                isFavourite = false,
-                watchAtTime = null,
-                watchProviders = null,
-                credits = null,
-                reviewsCount = 0
-            )
+        val default: AdditionalMovieDetailsInfo = AdditionalMovieDetailsInfo(
+            isFavourite = false,
+            watchAtTime = null,
+            watchProviders = null,
+            credits = null,
+            reviewsCount = 0
+        )
     }
 }
 
@@ -83,11 +80,10 @@ data class AssociatedContent(
     val externalIds: List<ExternalId>?
 ) {
     companion object {
-        val default: AssociatedContent
-            get() = AssociatedContent(
-                backdrops = emptyList(),
-                videos = null,
-                externalIds = null
-            )
+        val default: AssociatedContent = AssociatedContent(
+            backdrops = emptyList(),
+            videos = null,
+            externalIds = null
+        )
     }
 }

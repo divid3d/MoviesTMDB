@@ -22,10 +22,9 @@ data class SearchResult(
     override val posterPath: String?
 ) : Presentable {
 
-    override val title: String
-        get() = when {
-            !movieTitle.isNullOrEmpty() -> movieTitle
-            !tvSeriesName.isNullOrEmpty() -> tvSeriesName
-            else -> ""
-        }
+    override val title: String = when {
+        !movieTitle.isNullOrEmpty() -> movieTitle
+        !tvSeriesName.isNullOrEmpty() -> tvSeriesName
+        else -> ""
+    }
 }

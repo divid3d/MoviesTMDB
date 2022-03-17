@@ -41,9 +41,7 @@ data class TvSeries(
     @Json(name = "vote_average")
     override val voteAverage: Float
 ) : DetailPresentable {
-    override val adult: Boolean?
-        get() = null
+    override val adult: Boolean? = null
 
-    override val title: String
-        get() = name.orEmpty()
+    override val title: String = name.orEmpty()
 }

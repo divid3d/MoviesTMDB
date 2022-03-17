@@ -23,6 +23,5 @@ data class Season(
     @Json(name = "poster_path")
     override val posterPath: String?
 ) : Presentable {
-    override val title: String
-        get() = name
+    override val title: String = name
 }

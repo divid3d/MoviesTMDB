@@ -27,11 +27,11 @@ fun LikeButton(
             targetState = isFavourite,
             contentAlignment = Alignment.Center,
             transitionSpec = {
-                fadeIn(animationSpec = tween(150)) + scaleIn(
-                    animationSpec = tween(150),
+                fadeIn(animationSpec = tween(200)) + scaleIn(
+                    animationSpec = tween(200, delayMillis = 200),
                     initialScale = 0.8f
-                ) with fadeOut(animationSpec = tween(150)) + scaleOut(
-                    animationSpec = tween(150),
+                ) with scaleOut(
+                    animationSpec = tween(200),
                     targetScale = 0.8f
                 )
             }

@@ -34,11 +34,10 @@ data class AssociatedTvSeries(
     val recommendations: Flow<PagingData<TvSeries>>
 ) {
     companion object {
-        val default: AssociatedTvSeries
-            get() = AssociatedTvSeries(
-                similar = emptyFlow(),
-                recommendations = emptyFlow()
-            )
+        val default: AssociatedTvSeries = AssociatedTvSeries(
+            similar = emptyFlow(),
+            recommendations = emptyFlow()
+        )
     }
 }
 
@@ -49,12 +48,11 @@ data class AdditionalTvSeriesDetailsInfo(
     val reviewsCount: Int
 ) {
     companion object {
-        val default: AdditionalTvSeriesDetailsInfo
-            get() = AdditionalTvSeriesDetailsInfo(
-                isFavourite = false,
-                nextEpisodeRemainingDays = null,
-                watchProviders = null,
-                reviewsCount = 0
-            )
+        val default: AdditionalTvSeriesDetailsInfo = AdditionalTvSeriesDetailsInfo(
+            isFavourite = false,
+            nextEpisodeRemainingDays = null,
+            watchProviders = null,
+            reviewsCount = 0
+        )
     }
 }

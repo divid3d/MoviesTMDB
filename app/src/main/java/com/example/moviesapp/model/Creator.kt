@@ -17,8 +17,6 @@ data class Creator(
     @Json(name = "profile_path")
     override val profilePath: String?
 ) : Member {
-    override val firstLine: String
-        get() = name
-    override val secondLine: String?
-        get() = null
+    override val firstLine: String = name
+    override val secondLine: String? = null
 }

@@ -23,6 +23,5 @@ data class TvSeasonsResponse(
     val episodes: List<Episode>
 ) : Presentable {
 
-    override val title: String
-        get() = name
+    override val title: String = name
 }

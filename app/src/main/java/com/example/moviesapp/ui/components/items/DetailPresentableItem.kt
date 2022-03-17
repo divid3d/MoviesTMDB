@@ -1,8 +1,8 @@
 package com.example.moviesapp.ui.components.items
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -30,7 +30,7 @@ fun DetailPresentableItem(
     Card(
         modifier = modifier
             .width(size.width)
-            .height(size.height)
+            .aspectRatio(size.ratio)
             .graphicsLayer {
                 transformations()
             },

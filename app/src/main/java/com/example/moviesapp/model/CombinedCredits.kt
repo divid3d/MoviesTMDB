@@ -26,8 +26,7 @@ data class CombinedCreditsCast(
     @Json(name = "poster_path")
     override val posterPath: String?
 ) : CreditsPresentable {
-    override val infoText: String?
-        get() = character
+    override val infoText: String? = character
 }
 
 @JsonClass(generateAdapter = true)
@@ -46,8 +45,7 @@ data class CombinedCreditsCrew(
     @Json(name = "poster_path")
     override val posterPath: String?
 ) : CreditsPresentable {
-    override val infoText: String
-        get() = job
+    override val infoText: String = job
 }
 
 interface CreditsPresentable {

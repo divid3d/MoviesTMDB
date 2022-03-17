@@ -34,9 +34,7 @@ data class CastMember(
 
     val order: Int
 ) : Member {
-    override val firstLine: String
-        get() = name
-    override val secondLine: String?
-        get() = character
+    override val firstLine: String = name
+    override val secondLine: String? = character
 }
 

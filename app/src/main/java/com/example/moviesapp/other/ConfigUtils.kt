@@ -75,15 +75,13 @@ class ImageUrlParser(private val imagesConfig: ImagesConfig) {
         object Original : Dimension(code = "original")
         data class Width(val value: Int) : Dimension(code = code) {
             companion object {
-                val code: String
-                    get() = "w"
+                const val code = "w"
             }
         }
 
         data class Height(val value: Int) : Dimension(code = code) {
             companion object {
-                val code: String
-                    get() = "h"
+                const val code = "h"
             }
         }
 

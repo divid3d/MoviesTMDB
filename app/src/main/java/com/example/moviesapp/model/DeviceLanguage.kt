@@ -5,10 +5,9 @@ data class DeviceLanguage(
     val languageCode: String
 ) {
     companion object {
-        val default: DeviceLanguage
-            get() = DeviceLanguage(
-                region = "US",
-                languageCode = "en-US"
-            )
+        val default: DeviceLanguage = DeviceLanguage(
+            region = "US",
+            languageCode = "en-US"
+        )
     }
 }

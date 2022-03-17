@@ -13,12 +13,11 @@ data class DiscoverTvSeriesScreenUiState(
     val tvSeries: Flow<PagingData<TvSeries>>
 ) {
     companion object {
-        val default: DiscoverTvSeriesScreenUiState
-            get() = DiscoverTvSeriesScreenUiState(
-                sortInfo = SortInfo.default,
-                filterState = TvSeriesFilterState.default,
-                tvSeries = emptyFlow()
-            )
+        val default: DiscoverTvSeriesScreenUiState = DiscoverTvSeriesScreenUiState(
+            sortInfo = SortInfo.default,
+            filterState = TvSeriesFilterState.default,
+            tvSeries = emptyFlow()
+        )
     }
 }
 
@@ -35,18 +34,17 @@ data class TvSeriesFilterState(
     val airDateRange: DateRange = DateRange()
 ) {
     companion object {
-        val default: TvSeriesFilterState
-            get() = TvSeriesFilterState(
-                selectedGenres = emptyList(),
-                availableGenres = emptyList(),
-                selectedWatchProviders = emptyList(),
-                availableWatchProviders = emptyList(),
-                showOnlyWithPoster = false,
-                showOnlyWithScore = false,
-                showOnlyWithOverview = false,
-                voteRange = VoteRange(),
-                airDateRange = DateRange()
-            )
+        val default: TvSeriesFilterState = TvSeriesFilterState(
+            selectedGenres = emptyList(),
+            availableGenres = emptyList(),
+            selectedWatchProviders = emptyList(),
+            availableWatchProviders = emptyList(),
+            showOnlyWithPoster = false,
+            showOnlyWithScore = false,
+            showOnlyWithOverview = false,
+            voteRange = VoteRange(),
+            airDateRange = DateRange()
+        )
     }
 
     fun clear(): TvSeriesFilterState = copy(
