@@ -1,8 +1,14 @@
 package com.example.moviesapp.di
 
 import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.chuckerteam.chucker.api.RetentionManager
 import com.example.moviesapp.BuildConfig
-import com.example.moviesapp.api.*
+import com.example.moviesapp.api.ApiParams
+import com.example.moviesapp.api.TmdbApi
+import com.example.moviesapp.api.TmdbApiHelper
+import com.example.moviesapp.api.TmdbApiHelperImpl
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -50,9 +56,27 @@ object NetworkModule {
 
     @Singleton
     @Provides
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+        val collector = ChuckerCollector(
+            context = context,
+            showNotification = true,
+            retentionPeriod = RetentionManager.Period.ONE_HOUR
+        )
+
+        return ChuckerInterceptor.Builder(context)
+            .collector(collector)
+            .maxContentLength(250_000L)
+            .redactHeaders("Auth-Token", "Bearer")
+            .alwaysReadResponseBody(true)
+            .build()
+    }
+
+    @Singleton
+    @Provides
     fun provideOkHttpClient(
         cache: Cache,
-        authenticationInterceptor: Interceptor
+        authenticationInterceptor: Interceptor,
+        chuckerInterceptor: ChuckerInterceptor
     ): OkHttpClient = OkHttpClient.Builder()
         .apply {
             if (BuildConfig.DEBUG) {
@@ -62,11 +86,12 @@ object NetworkModule {
                 addInterceptor(loggingInterceptor)
             }
         }
+        .addInterceptor(chuckerInterceptor)
         .addInterceptor(authenticationInterceptor)
         .cache(cache)
-        .connectTimeout(Timeouts.connect.toJavaDuration())
-        .writeTimeout(Timeouts.write.toJavaDuration())
-        .readTimeout(Timeouts.read.toJavaDuration())
+        .connectTimeout(ApiParams.Timeouts.connect.toJavaDuration())
+        .writeTimeout(ApiParams.Timeouts.write.toJavaDuration())
+        .readTimeout(ApiParams.Timeouts.read.toJavaDuration())
         .build()
 
     @Singleton

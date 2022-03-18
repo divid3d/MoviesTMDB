@@ -187,4 +187,7 @@ dependencies {
 
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leak_canary_version"
+    debugImplementation "com.github.chuckerteam.chucker:library:$chucker_version"
+
+    releaseImplementation "com.github.chuckerteam.chucker:library-no-op:$chucker_version"
 }

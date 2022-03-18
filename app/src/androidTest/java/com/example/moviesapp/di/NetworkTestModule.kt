@@ -1,7 +1,7 @@
 package com.example.moviesapp.di
 
 import com.example.moviesapp.BuildConfig
-import com.example.moviesapp.api.Timeouts
+import com.example.moviesapp.api.ApiParams
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,8 +30,8 @@ object NetworkTestModule {
                 addInterceptor(loggingInterceptor)
             }
         }
-        .connectTimeout(Timeouts.connect.toJavaDuration())
-        .writeTimeout(Timeouts.write.toJavaDuration())
-        .readTimeout(Timeouts.read.toJavaDuration())
+        .connectTimeout(ApiParams.Timeouts.connect.toJavaDuration())
+        .writeTimeout(ApiParams.Timeouts.write.toJavaDuration())
+        .readTimeout(ApiParams.Timeouts.read.toJavaDuration())
         .build()
 }
