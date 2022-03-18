@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.moviesapp.MainViewModel
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MovieType
 import com.example.moviesapp.other.isNotEmpty
@@ -36,15 +38,26 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.flow.collectLatest
 
 
 @Destination(start = true)
 @Composable
 fun AnimatedVisibilityScope.MoviesScreen(
+    mainViewModel: MainViewModel,
     viewModel: MoviesViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(Unit) {
+        mainViewModel.sameBottomBarRoute.collectLatest { sameRoute ->
+            if (sameRoute == MoviesScreenDestination.route) {
+                scrollState.animateScrollTo(0)
+            }
+        }
+    }
 
     val onMovieClicked = { movieId: Int ->
         val destination = MovieDetailsScreenDestination(
@@ -65,6 +78,7 @@ fun AnimatedVisibilityScope.MoviesScreen(
 
     MoviesScreenContent(
         uiState = uiState,
+        scrollState = scrollState,
         onMovieClicked = onMovieClicked,
         onBrowseMoviesClicked = onBrowseMoviesClicked,
         onDiscoverMoviesClicked = onDiscoverMoviesClicked
@@ -74,6 +88,7 @@ fun AnimatedVisibilityScope.MoviesScreen(
 @Composable
 fun MoviesScreenContent(
     uiState: MovieScreenUiState,
+    scrollState: ScrollState,
     onMovieClicked: (movieId: Int) -> Unit,
     onBrowseMoviesClicked: (type: MovieType) -> Unit,
     onDiscoverMoviesClicked: () -> Unit
@@ -89,7 +104,6 @@ fun MoviesScreenContent(
     val favouritesLazyItems = uiState.favourites.collectAsLazyPagingItems()
     val recentlyBrowsedLazyItems = uiState.recentlyBrowsed.collectAsLazyPagingItems()
 
-    val scrollState = rememberScrollState()
     var topSectionHeight: Float? by remember { mutableStateOf(null) }
     val appbarHeight = density.run { 56.dp.toPx() }
     val topSectionScrollLimitValue: Float? = topSectionHeight?.minus(appbarHeight)

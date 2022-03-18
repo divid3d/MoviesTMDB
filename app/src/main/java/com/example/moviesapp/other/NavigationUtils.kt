@@ -3,10 +3,14 @@ package com.example.moviesapp.other
 import androidx.navigation.NavController
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
 
-fun NavController.safeNavigate(route: String) {
+fun NavController.safeNavigate(
+    route: String,
+    onSameRouteSelected: (String) -> Unit = {}
+) {
     val currentRoute = currentBackStackEntry?.destination?.route
 
     if (currentRoute == route) {
+        onSameRouteSelected(route)
         return
     }
 

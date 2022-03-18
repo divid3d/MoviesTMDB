@@ -46,6 +46,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
+import com.ramcosta.composedestinations.navigation.dependency
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -75,7 +76,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val mainViewModel: MainViewModel = hiltViewModel()
+            val mainViewModel: MainViewModel = hiltViewModel(this)
 
             val context = LocalContext.current
             val lifecycleOwner = LocalLifecycleOwner.current
@@ -171,7 +172,12 @@ class MainActivity : ComponentActivity() {
                                     backQueueRoutes = backQueueRoutes,
                                     visible = showBottomBar
                                 ) { route ->
-                                    navController.safeNavigate(route)
+                                    navController.safeNavigate(
+                                        route = route,
+                                        onSameRouteSelected = { sameRoute ->
+                                            mainViewModel.onSameRouteSelected(sameRoute)
+                                        }
+                                    )
                                 }
                             }
                         ) { innerPadding ->
@@ -188,7 +194,10 @@ class MainActivity : ComponentActivity() {
                                 DestinationsNavHost(
                                     navGraph = NavGraphs.root,
                                     engine = navHostEngine,
-                                    navController = navController
+                                    navController = navController,
+                                    dependenciesContainerBuilder = {
+                                        dependency(mainViewModel)
+                                    }
                                 )
                             }
                         }

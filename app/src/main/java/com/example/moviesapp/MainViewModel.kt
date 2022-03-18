@@ -8,7 +8,9 @@ import com.example.moviesapp.other.NetworkStatusTracker
 import com.example.moviesapp.repository.config.ConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -29,10 +31,19 @@ class MainViewModel @Inject constructor(
         .distinctUntilChanged()
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    private val sameBottomBarRouteChannel: Channel<String> = Channel()
+    val sameBottomBarRoute: Flow<String> = sameBottomBarRouteChannel.receiveAsFlow()
+
     val imageUrlParser: StateFlow<ImageUrlParser?> = configRepository.getImageUrlParser()
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun updateLocale() {
         configRepository.updateLocale()
+    }
+
+    fun onSameRouteSelected(route: String) {
+        viewModelScope.launch {
+            sameBottomBarRouteChannel.send(route)
+        }
     }
 }
