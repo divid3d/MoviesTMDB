@@ -8,8 +8,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -19,17 +17,14 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemsIndexed
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MediaType
-import com.example.moviesapp.ui.components.items.ReviewItem
+import com.example.moviesapp.ui.components.lists.ReviewsList
 import com.example.moviesapp.ui.components.others.AppBar
 import com.example.moviesapp.ui.screens.destinations.FavouritesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.MoviesScreenDestination
@@ -138,7 +133,8 @@ fun ReviewsScreenContent(
             }
         )
 
-        LazyColumn(
+        ReviewsList(
+            reviews = reviewsLazyItems,
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
                 top = MaterialTheme.spacing.medium,
@@ -146,33 +142,7 @@ fun ReviewsScreenContent(
                 end = MaterialTheme.spacing.medium,
                 bottom = MaterialTheme.spacing.large
             ),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
-        ) {
-            itemsIndexed(reviewsLazyItems) { index, review ->
-                if (review != null) {
-                    val alignment = if (index % 2 == 0) {
-                        Alignment.CenterStart
-                    } else {
-                        Alignment.CenterEnd
-                    }
-
-                    val shape = if (index % 2 == 0) {
-                        MaterialTheme.shapes.medium.copy(bottomStart = CornerSize(0.dp))
-                    } else {
-                        MaterialTheme.shapes.medium.copy(bottomEnd = CornerSize(0.dp))
-                    }
-
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        ReviewItem(
-                            modifier = Modifier
-                                .fillMaxWidth(0.9f)
-                                .align(alignment),
-                            review = review,
-                            shape = shape
-                        )
-                    }
-                }
-            }
-        }
+            arrangement = Arrangement.spacedBy(MaterialTheme.spacing.large)
+        )
     }
 }
