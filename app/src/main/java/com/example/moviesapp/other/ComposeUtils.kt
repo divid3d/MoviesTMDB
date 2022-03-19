@@ -66,7 +66,6 @@ fun LazyListState.isScrollingTowardsStart(): Boolean {
     }.value
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LazyGridState.isScrollingTowardsStart(): Boolean {
     var previousIndex by remember(this) {

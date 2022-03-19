@@ -50,6 +50,9 @@ class MoviesDetailsViewModel @Inject constructor(
     private val credits: MutableStateFlow<Credits?> = MutableStateFlow(null)
     private val movieBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
     private val movieCollection: MutableStateFlow<MovieCollection?> = MutableStateFlow(null)
+    private val otherDirectorMovies: MutableStateFlow<DirectorMovies> = MutableStateFlow(
+        DirectorMovies.default
+    )
     private val watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
     private val videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
     private val reviewsCount: MutableStateFlow<Int> = MutableStateFlow(0)
@@ -83,11 +86,8 @@ class MoviesDetailsViewModel @Inject constructor(
     )
 
     private val associatedMovies: StateFlow<AssociatedMovies> = combine(
-        deviceLanguage, movieCollection, credits
-    ) { deviceLanguage, collection, credits ->
-        val directors = credits?.crew?.filter { member -> member.job == "Director" }
-        val mainDirector = if (directors?.count() == 1) directors.first() else null
-
+        deviceLanguage, movieCollection, otherDirectorMovies
+    ) { deviceLanguage, collection, otherDirectorMovies ->
         AssociatedMovies(
             collection = collection,
             similar = movieRepository.similarMovies(
@@ -98,15 +98,7 @@ class MoviesDetailsViewModel @Inject constructor(
                 movieId = navArgs.movieId,
                 deviceLanguage = deviceLanguage
             ).cachedIn(viewModelScope),
-            directorMovies = if (mainDirector != null) {
-                DirectorMovies(
-                    directorName = mainDirector.name,
-                    movies = movieRepository.moviesOfDirector(
-                        directorId = mainDirector.id,
-                        deviceLanguage = deviceLanguage
-                    ).cachedIn(viewModelScope)
-                )
-            } else DirectorMovies.default
+            directorMovies = otherDirectorMovies
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), AssociatedMovies.default)
 
@@ -227,6 +219,15 @@ class MoviesDetailsViewModel @Inject constructor(
             response.onSuccess {
                 viewModelScope.launch {
                     credits.emit(data)
+                }
+                val directors = data?.crew?.filter { member -> member.job == "Director" }
+                val mainDirector = if (directors?.count() == 1) directors.first() else null
+
+                if (mainDirector != null) {
+                    getOtherDirectorMovies(
+                        mainDirector = mainDirector,
+                        deviceLanguage = deviceLanguage
+                    )
                 }
             }.onFailure {
                 onFailure(this)
@@ -354,6 +355,20 @@ class MoviesDetailsViewModel @Inject constructor(
                     onError(this)
                 }
             }
+        }
+    }
+
+    private fun getOtherDirectorMovies(mainDirector: CrewMember, deviceLanguage: DeviceLanguage) {
+        val directorMovies = DirectorMovies(
+            directorName = mainDirector.name,
+            movies = movieRepository.moviesOfDirector(
+                directorId = mainDirector.id,
+                deviceLanguage = deviceLanguage
+            ).cachedIn(viewModelScope)
+        )
+
+        viewModelScope.launch {
+            otherDirectorMovies.emit(directorMovies)
         }
     }
 
