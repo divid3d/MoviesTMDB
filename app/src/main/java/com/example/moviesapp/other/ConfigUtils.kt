@@ -97,16 +97,11 @@ class ImageUrlParser(private val imagesConfig: ImagesConfig) {
         return codes.mapNotNull { code ->
             when {
                 code.contains(Dimension.Original.code) -> Dimension.Original
-                code.contains(Dimension.Width.code) -> {
-                    val value = getValueFromCode(code)
-
-                    if (value != null) Dimension.Width(value) else null
-
+                code.contains(Dimension.Width.code) -> getValueFromCode(code)?.let { value ->
+                    Dimension.Width(value)
                 }
-                code.contains(Dimension.Height.code) -> {
-                    val value = getValueFromCode(code)
-
-                    if (value != null) Dimension.Height(value) else null
+                code.contains(Dimension.Height.code) -> getValueFromCode(code)?.let { value ->
+                    Dimension.Height(value)
                 }
                 else -> null
             }

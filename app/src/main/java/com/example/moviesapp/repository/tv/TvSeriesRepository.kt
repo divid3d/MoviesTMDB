@@ -95,4 +95,10 @@ interface TvSeriesRepository {
         isoCode: String = DeviceLanguage.default.languageCode
     ): Call<VideosResponse>
 
+    fun seasonCredits(
+        tvSeriesId: Int,
+        seasonNumber: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): Call<AggregatedCredits>
+
 }

@@ -247,4 +247,10 @@ interface TmdbApiHelper {
         directorId: Int
     ): MoviesResponse
 
+    fun getSeasonCredits(
+        tvSeriesId: Int,
+        seasonNumber: Int,
+        isoCode: String = DeviceLanguage.default.languageCode
+    ): Call<AggregatedCredits>
+
 }

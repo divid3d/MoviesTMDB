@@ -292,4 +292,10 @@ class TmdbApiHelperImpl @Inject constructor(
         directorId: Int
     ): MoviesResponse = tmdbApi.getOtherMoviesOfDirector(page, isoCode, region, directorId)
 
+    override fun getSeasonCredits(
+        tvSeriesId: Int,
+        seasonNumber: Int,
+        isoCode: String
+    ): Call<AggregatedCredits> = tmdbApi.getSeasonCredits(tvSeriesId, seasonNumber, isoCode)
+
 }

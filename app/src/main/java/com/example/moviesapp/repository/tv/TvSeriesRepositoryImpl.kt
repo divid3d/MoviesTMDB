@@ -197,4 +197,7 @@ class TvSeriesRepositoryImpl(
         isoCode: String
     ): Call<VideosResponse> = apiHelper.getSeasonVideos(tvSeriesId, seasonNumber, isoCode)
 
+    override fun seasonCredits(tvSeriesId: Int, seasonNumber: Int, isoCode: String) =
+        apiHelper.getSeasonCredits(tvSeriesId, seasonNumber, isoCode)
+
 }

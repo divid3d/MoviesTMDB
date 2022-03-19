@@ -34,12 +34,14 @@ import com.example.moviesapp.other.openVideo
 import com.example.moviesapp.ui.components.chips.EpisodeChip
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
 import com.example.moviesapp.ui.components.others.AppBar
+import com.example.moviesapp.ui.components.sections.MemberSection
 import com.example.moviesapp.ui.components.sections.PresentableDetailsTopSection
 import com.example.moviesapp.ui.components.sections.VideosSection
 import com.example.moviesapp.ui.components.texts.ExpandableText
 import com.example.moviesapp.ui.components.texts.LabeledText
 import com.example.moviesapp.ui.components.texts.SectionLabel
 import com.example.moviesapp.ui.screens.destinations.FavouritesScreenDestination
+import com.example.moviesapp.ui.screens.destinations.PersonDetailsScreenDestination
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.theme.spacing
@@ -97,12 +99,21 @@ fun AnimatedVisibilityScope.SeasonDetailsScreen(
     val onCloseClicked: () -> Unit = {
         navigator.popBackStack(uiState.startRoute, inclusive = false)
     }
+    val onMemberClicked = { personId: Int ->
+        val destination = PersonDetailsScreenDestination(
+            personId = personId,
+            startRoute = uiState.startRoute
+        )
+
+        navigator.navigate(destination)
+    }
     val onEpisodeExpanded: (episodeNumber: Int) -> Unit = viewModel::getEpisodeStills
 
     SeasonDetailsContent(
         uiState = uiState,
         onCloseClicked = onCloseClicked,
         onBackClicked = onBackClicked,
+        onMemberClicked = onMemberClicked,
         onEpisodeExpanded = onEpisodeExpanded
     )
 }
@@ -112,6 +123,7 @@ fun SeasonDetailsContent(
     uiState: SeasonDetailsScreenUiState,
     onCloseClicked: () -> Unit,
     onBackClicked: () -> Unit,
+    onMemberClicked: (Int) -> Unit,
     onEpisodeExpanded: (episodeNumber: Int) -> Unit
 ) {
     val context = LocalContext.current
@@ -206,6 +218,46 @@ fun SeasonDetailsContent(
                                 )
                             }
                         }
+                    }
+                }
+            }
+
+            item {
+                Crossfade(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = MaterialTheme.spacing.medium)
+                        .animateContentSize(),
+                    targetState = uiState.aggregatedCredits?.cast
+                ) { cast ->
+                    cast.ifNotNullAndEmpty { members ->
+                        MemberSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.season_details_cast_label),
+                            members = members,
+                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                            onMemberClick = onMemberClicked
+                        )
+                    }
+                }
+            }
+
+            item {
+                Crossfade(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = MaterialTheme.spacing.medium)
+                        .animateContentSize(),
+                    targetState = uiState.aggregatedCredits?.crew
+                ) { cast ->
+                    cast.ifNotNullAndEmpty { members ->
+                        MemberSection(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(R.string.season_details_crew_label),
+                            members = members,
+                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                            onMemberClick = onMemberClicked
+                        )
                     }
                 }
             }

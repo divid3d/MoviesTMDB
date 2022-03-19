@@ -7,10 +7,7 @@ import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
-import com.example.moviesapp.model.DeviceLanguage
-import com.example.moviesapp.model.Image
-import com.example.moviesapp.model.SeasonDetails
-import com.example.moviesapp.model.Video
+import com.example.moviesapp.model.*
 import com.example.moviesapp.repository.config.ConfigRepository
 import com.example.moviesapp.repository.tv.TvSeriesRepository
 import com.example.moviesapp.ui.screens.destinations.SeasonDetailsScreenDestination
@@ -32,18 +29,19 @@ class SeasonDetailsViewModel @Inject constructor(
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
     private val seasonDetails: MutableStateFlow<SeasonDetails?> = MutableStateFlow(null)
-
+    private val aggregatedCredits: MutableStateFlow<AggregatedCredits?> = MutableStateFlow(null)
     private val episodesStills: MutableStateFlow<Map<Int, List<Image>>> =
         MutableStateFlow(emptyMap())
 
     private val videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
 
     val uiState: StateFlow<SeasonDetailsScreenUiState> = combine(
-        seasonDetails, episodesStills, videos, error
-    ) { details, stills, videos, error ->
+        seasonDetails, aggregatedCredits, episodesStills, videos, error
+    ) { details, credits, stills, videos, error ->
         SeasonDetailsScreenUiState(
             startRoute = navArgs.startRoute,
             seasonDetails = details,
+            aggregatedCredits = credits,
             videos = videos,
             episodeCount = details?.episodes?.count(),
             episodeStills = stills,
@@ -78,6 +76,12 @@ class SeasonDetailsViewModel @Inject constructor(
                     }
                 }
 
+                getSeasonCredits(
+                    tvSeriesId = navArgs.tvSeriesId,
+                    seasonNumber = navArgs.seasonNumber,
+                    deviceLanguage = deviceLanguage
+                )
+
                 getSeasonVideos(
                     tvSeriesId = navArgs.tvSeriesId,
                     seasonNumber = navArgs.seasonNumber,
@@ -109,16 +113,45 @@ class SeasonDetailsViewModel @Inject constructor(
                             }
                         }
                     }
+                }
 
-                    response.onFailure {
-                        onFailure(this)
-                    }
+                response.onFailure {
+                    onFailure(this)
+                }
 
-                    response.onException {
-                        onError(this)
+                response.onException {
+                    onError(this)
+                }
+            }
+        }
+    }
+
+    private fun getSeasonCredits(
+        tvSeriesId: Int,
+        seasonNumber: Int,
+        deviceLanguage: DeviceLanguage
+    ) {
+        tvSeriesRepository.seasonCredits(
+            tvSeriesId = tvSeriesId,
+            seasonNumber = seasonNumber,
+            isoCode = deviceLanguage.languageCode
+        ).request { response ->
+            response.onSuccess {
+                data?.let { credits ->
+                    viewModelScope.launch {
+                        aggregatedCredits.emit(credits)
                     }
                 }
             }
+
+            response.onFailure {
+                onFailure(this)
+            }
+
+            response.onException {
+                onError(this)
+            }
+
         }
     }
 
@@ -143,16 +176,15 @@ class SeasonDetailsViewModel @Inject constructor(
 
                     videos.emit(data ?: emptyList())
                 }
+            }
 
-                response.onFailure {
-                    onFailure(this)
-                }
+            response.onFailure {
+                onFailure(this)
+            }
 
-                response.onException {
-                    onError(this)
-                }
+            response.onException {
+                onError(this)
             }
         }
     }
-
 }

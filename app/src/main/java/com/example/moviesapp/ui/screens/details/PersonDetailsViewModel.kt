@@ -31,7 +31,6 @@ class PersonDetailsViewModel @Inject constructor(
     private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
 
     private val personDetails: MutableStateFlow<PersonDetails?> = MutableStateFlow(null)
-
     private val combinedCredits: MutableStateFlow<CombinedCredits?> = MutableStateFlow(null)
 
     private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
