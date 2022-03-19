@@ -93,9 +93,7 @@ class ConfigDataSource @Inject constructor(
                     val config = data
                     _config.emit(config)
                 }
-            }
-
-            response.onException {
+            }.onException {
                 FirebaseCrashlytics.getInstance().recordException(exception)
             }
         }
@@ -110,9 +108,7 @@ class ConfigDataSource @Inject constructor(
 
                                 _movieGenres.emit(movieGenres ?: emptyList())
                             }
-                        }
-
-                        response.onException {
+                        }.onException {
                             FirebaseCrashlytics.getInstance().recordException(exception)
                         }
                     }
@@ -125,9 +121,7 @@ class ConfigDataSource @Inject constructor(
 
                                 _tvSeriesGenres.emit(tvSeriesGenres ?: emptyList())
                             }
-                        }
-
-                        response.onException {
+                        }.onException {
                             FirebaseCrashlytics.getInstance().recordException(exception)
                         }
                     }
@@ -144,9 +138,7 @@ class ConfigDataSource @Inject constructor(
 
                             _movieWatchProviders.emit(watchProviders ?: emptyList())
                         }
-                    }
-
-                    response.onException {
+                    }.onException {
                         FirebaseCrashlytics.getInstance().recordException(exception)
                     }
                 }
@@ -163,9 +155,7 @@ class ConfigDataSource @Inject constructor(
 
                             _tvSeriesWatchProviders.emit(watchProviders ?: emptyList())
                         }
-                    }
-
-                    response.onException {
+                    }.onException {
                         FirebaseCrashlytics.getInstance().recordException(exception)
                     }
                 }

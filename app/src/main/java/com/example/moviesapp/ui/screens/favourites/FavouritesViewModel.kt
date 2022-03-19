@@ -2,6 +2,7 @@ package com.example.moviesapp.ui.screens.favourites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.moviesapp.model.FavouriteType
 import com.example.moviesapp.repository.favourites.FavouritesRepository
@@ -24,7 +25,7 @@ class FavouritesViewModel @Inject constructor(
         val favourites = when (type) {
             FavouriteType.Movie -> favouritesRepository.favouriteMovies()
             FavouriteType.TvSeries -> favouritesRepository.favouritesTvSeries()
-        }.mapLatest { data -> data.map { tvSeries -> tvSeries } }
+        }.mapLatest { data -> data.map { tvSeries -> tvSeries } }.cachedIn(viewModelScope)
 
         FavouritesScreenUiState(
             selectedFavouriteType = type,

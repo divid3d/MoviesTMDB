@@ -66,13 +66,9 @@ class PersonDetailsViewModel @Inject constructor(
                         viewModelScope.launch {
                             personDetails.emit(data)
                         }
-                    }
-
-                    response.onFailure {
+                    }.onFailure {
                         onFailure(this)
-                    }
-
-                    response.onException {
+                    }.onException {
                         onError(this)
                     }
                 }
@@ -100,13 +96,9 @@ class PersonDetailsViewModel @Inject constructor(
                     viewModelScope.launch {
                         combinedCredits.emit(data)
                     }
-                }
-
-                response.onFailure {
+                }.onFailure {
                     onFailure(this)
-                }
-
-                response.onException {
+                }.onException {
                     onError(this)
                 }
             }
@@ -123,13 +115,9 @@ class PersonDetailsViewModel @Inject constructor(
                     viewModelScope.launch {
                         _externalIds.emit(data)
                     }
-                }
-
-                response.onFailure {
+                }.onFailure {
                     onFailure(this)
-                }
-
-                response.onException {
+                }.onException {
                     onError(this)
                 }
             }

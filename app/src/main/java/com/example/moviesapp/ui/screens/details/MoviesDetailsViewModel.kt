@@ -2,6 +2,7 @@ package com.example.moviesapp.ui.screens.details
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
@@ -92,18 +93,18 @@ class MoviesDetailsViewModel @Inject constructor(
             similar = movieRepository.similarMovies(
                 movieId = navArgs.movieId,
                 deviceLanguage = deviceLanguage
-            ),
+            ).cachedIn(viewModelScope),
             recommendations = movieRepository.moviesRecommendations(
                 movieId = navArgs.movieId,
                 deviceLanguage = deviceLanguage
-            ),
+            ).cachedIn(viewModelScope),
             directorMovies = if (mainDirector != null) {
                 DirectorMovies(
                     directorName = mainDirector.name,
                     movies = movieRepository.moviesOfDirector(
                         directorId = mainDirector.id,
                         deviceLanguage = deviceLanguage
-                    )
+                    ).cachedIn(viewModelScope)
                 )
             } else DirectorMovies.default
         )
@@ -210,13 +211,9 @@ class MoviesDetailsViewModel @Inject constructor(
                         )
                     }
                 }
-            }
-
-            response.onFailure {
+            }.onFailure {
                 onFailure(this)
-            }
-
-            response.onException {
+            }.onException {
                 onError(this)
             }
         }
@@ -231,13 +228,9 @@ class MoviesDetailsViewModel @Inject constructor(
                 viewModelScope.launch {
                     credits.emit(data)
                 }
-            }
-
-            response.onFailure {
+            }.onFailure {
                 onFailure(this)
-            }
-
-            response.onException {
+            }.onException {
                 onError(this)
             }
         }
@@ -249,13 +242,9 @@ class MoviesDetailsViewModel @Inject constructor(
                 viewModelScope.launch {
                     movieBackdrops.emit(data?.backdrops ?: emptyList())
                 }
-            }
-
-            response.onFailure {
+            }.onFailure {
                 onFailure(this)
-            }
-
-            response.onException {
+            }.onException {
                 onError(this)
             }
         }
@@ -267,13 +256,9 @@ class MoviesDetailsViewModel @Inject constructor(
                 viewModelScope.launch {
                     reviewsCount.emit(data?.totalResults ?: 0)
                 }
-            }
-
-            response.onFailure {
+            }.onFailure {
                 onFailure(this)
-            }
-
-            response.onException {
+            }.onException {
                 onError(this)
             }
         }
@@ -300,13 +285,9 @@ class MoviesDetailsViewModel @Inject constructor(
                         movieCollection.emit(collection)
                     }
                 }
-            }
-
-            response.onFailure {
+            }.onFailure {
                 onFailure(this)
-            }
-
-            response.onException {
+            }.onException {
                 onError(this)
             }
         }
@@ -323,13 +304,9 @@ class MoviesDetailsViewModel @Inject constructor(
 
                     watchProviders.emit(providers)
                 }
-            }
-
-            response.onFailure {
+            }.onFailure {
                 onFailure(this)
-            }
-
-            response.onException {
+            }.onException {
                 onError(this)
             }
         }
@@ -344,13 +321,9 @@ class MoviesDetailsViewModel @Inject constructor(
                     viewModelScope.launch {
                         _externalIds.emit(data)
                     }
-                }
-
-                response.onFailure {
+                }.onFailure {
                     onFailure(this)
-                }
-
-                response.onException {
+                }.onException {
                     onError(this)
                 }
             }
@@ -375,13 +348,9 @@ class MoviesDetailsViewModel @Inject constructor(
 
                         videos.emit(data ?: emptyList())
                     }
-                }
-
-                response.onFailure {
+                }.onFailure {
                     onFailure(this)
-                }
-
-                response.onException {
+                }.onException {
                     onError(this)
                 }
             }

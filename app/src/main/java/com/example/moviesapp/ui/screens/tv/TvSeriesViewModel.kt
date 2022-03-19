@@ -3,6 +3,7 @@ package com.example.moviesapp.ui.screens.tv
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.filter
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.TvSeries
@@ -32,11 +33,15 @@ class TvSeriesViewModel @Inject constructor(
                 onTheAir = tvSeriesRepository.onTheAirTvSeries(deviceLanguage)
                     .mapLatest { pagingData ->
                         pagingData.filterCompleteInfo()
-                    },
-                discover = tvSeriesRepository.discoverTvSeries(deviceLanguage),
-                topRated = tvSeriesRepository.topRatedTvSeries(deviceLanguage),
-                trending = tvSeriesRepository.trendingTvSeries(deviceLanguage),
+                    }.cachedIn(viewModelScope),
+                discover = tvSeriesRepository.discoverTvSeries(deviceLanguage)
+                    .cachedIn(viewModelScope),
+                topRated = tvSeriesRepository.topRatedTvSeries(deviceLanguage)
+                    .cachedIn(viewModelScope),
+                trending = tvSeriesRepository.trendingTvSeries(deviceLanguage)
+                    .cachedIn(viewModelScope),
                 airingToday = tvSeriesRepository.airingTodayTvSeries(deviceLanguage)
+                    .cachedIn(viewModelScope)
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), TvSeriesState.default)
 

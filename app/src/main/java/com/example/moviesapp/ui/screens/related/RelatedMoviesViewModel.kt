@@ -2,6 +2,7 @@ package com.example.moviesapp.ui.screens.related
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.RelationType
@@ -41,7 +42,7 @@ class RelatedMoviesViewModel @Inject constructor(
                         deviceLanguage = deviceLanguage
                     )
                 }
-            }
+            }.cachedIn(viewModelScope)
 
             RelatedMoviesScreenUiState(
                 relationType = navArgs.type,

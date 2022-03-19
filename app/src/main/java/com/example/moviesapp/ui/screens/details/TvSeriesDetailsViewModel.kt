@@ -2,6 +2,7 @@ package com.example.moviesapp.ui.screens.details
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
@@ -84,11 +85,11 @@ class TvSeriesDetailsViewModel @Inject constructor(
                 similar = tvSeriesRepository.similarTvSeries(
                     tvSeriesId = navArgs.tvSeriesId,
                     deviceLanguage = deviceLanguage
-                ),
+                ).cachedIn(viewModelScope),
                 recommendations = tvSeriesRepository.tvSeriesRecommendations(
                     tvSeriesId = navArgs.tvSeriesId,
                     deviceLanguage = deviceLanguage
-                )
+                ).cachedIn(viewModelScope)
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), AssociatedTvSeries.default)
 
@@ -161,13 +162,9 @@ class TvSeriesDetailsViewModel @Inject constructor(
                         getNextEpisodeDaysRemaining(date)
                     }
                 }
-            }
-
-            response.onFailure {
+            }.onFailure {
                 onFailure(this)
-            }
-
-            response.onException {
+            }.onException {
                 onError(this)
             }
         }
@@ -179,13 +176,9 @@ class TvSeriesDetailsViewModel @Inject constructor(
                 viewModelScope.launch {
                     tvSeriesBackdrops.emit(data?.backdrops ?: emptyList())
                 }
-            }
-
-            response.onFailure {
+            }.onFailure {
                 onFailure(this)
-            }
-
-            response.onException {
+            }.onException {
                 onError(this)
             }
         }
@@ -197,13 +190,9 @@ class TvSeriesDetailsViewModel @Inject constructor(
                 viewModelScope.launch {
                     reviewsCount.emit(data?.totalResults ?: 0)
                 }
-            }
-
-            response.onFailure {
+            }.onFailure {
                 onFailure(this)
-            }
-
-            response.onException {
+            }.onException {
                 onError(this)
             }
         }
@@ -220,13 +209,9 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
                     watchProviders.emit(providers)
                 }
-            }
-
-            response.onFailure {
+            }.onFailure {
                 onFailure(this)
-            }
-
-            response.onException {
+            }.onException {
                 onError(this)
             }
         }
@@ -241,13 +226,9 @@ class TvSeriesDetailsViewModel @Inject constructor(
                     viewModelScope.launch {
                         _externalIds.emit(data)
                     }
-                }
-
-                response.onFailure {
+                }.onFailure {
                     onFailure(this)
-                }
-
-                response.onException {
+                }.onException {
                     onError(this)
                 }
             }
@@ -271,13 +252,9 @@ class TvSeriesDetailsViewModel @Inject constructor(
 
                         videos.emit(data ?: emptyList())
                     }
-                }
-
-                response.onFailure {
+                }.onFailure {
                     onFailure(this)
-                }
-
-                response.onException {
+                }.onException {
                     onError(this)
                 }
             }

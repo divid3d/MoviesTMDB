@@ -3,6 +3,7 @@ package com.example.moviesapp.ui.screens.discover
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.example.moviesapp.model.*
 import com.example.moviesapp.repository.config.ConfigRepository
 import com.example.moviesapp.repository.tv.TvSeriesRepository
@@ -53,7 +54,7 @@ class DiscoverTvSeriesViewModel @Inject constructor(
             onlyWithScore = filterState.showOnlyWithScore,
             onlyWithOverview = filterState.showOnlyWithOverview,
             airDateRange = filterState.airDateRange
-        )
+        ).cachedIn(viewModelScope)
 
         DiscoverTvSeriesScreenUiState(
             sortInfo = sortInfo,

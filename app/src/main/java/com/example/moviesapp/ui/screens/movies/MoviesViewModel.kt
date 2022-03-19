@@ -3,6 +3,7 @@ package com.example.moviesapp.ui.screens.movies
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.filter
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Movie
@@ -28,13 +29,13 @@ class MoviesViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     private val moviesState: StateFlow<MoviesState> = deviceLanguage.mapLatest { deviceLanguage ->
         MoviesState(
-            discover = movieRepository.discoverMovies(deviceLanguage),
-            upcoming = movieRepository.upcomingMovies(deviceLanguage),
-            trending = movieRepository.trendingMovies(deviceLanguage),
-            topRated = movieRepository.topRatedMovies(deviceLanguage),
             nowPlaying = movieRepository.nowPlayingMovies(deviceLanguage).mapLatest { pagingDate ->
                 pagingDate.filterCompleteInfo()
-            }
+            }.cachedIn(viewModelScope),
+            discover = movieRepository.discoverMovies(deviceLanguage).cachedIn(viewModelScope),
+            upcoming = movieRepository.upcomingMovies(deviceLanguage).cachedIn(viewModelScope),
+            trending = movieRepository.trendingMovies(deviceLanguage).cachedIn(viewModelScope),
+            topRated = movieRepository.topRatedMovies(deviceLanguage).cachedIn(viewModelScope),
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), MoviesState.default)
 

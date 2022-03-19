@@ -2,6 +2,7 @@ package com.example.moviesapp.ui.screens.reviews
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.model.MediaType
 import com.example.moviesapp.repository.movie.MovieRepository
@@ -27,7 +28,7 @@ class ReviewsViewModel @Inject constructor(
                 MediaType.Movie -> movieRepository.movieReviews(navArgs.mediaId)
                 MediaType.Tv -> tvSeriesRepository.tvSeriesReviews(navArgs.mediaId)
                 else -> emptyFlow()
-            }
+            }.cachedIn(viewModelScope)
         )
     ).stateIn(viewModelScope, SharingStarted.Eagerly, ReviewsScreenUiState.default)
 }

@@ -3,6 +3,7 @@ package com.example.moviesapp.ui.screens.browse
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.MovieType
@@ -47,7 +48,7 @@ class BrowseMoviesViewModel @Inject constructor(
             MovieType.Favourite -> favouritesRepository.favouriteMovies()
             MovieType.RecentlyBrowsed -> recentlyBrowsedRepository.recentlyBrowsedMovies()
             MovieType.Trending -> movieRepository.trendingMovies(deviceLanguage)
-        }.mapLatest { data -> data.map { movie -> movie } }
+        }.mapLatest { data -> data.map { movie -> movie } }.cachedIn(viewModelScope)
 
         BrowseMoviesScreenUiState(
             selectedMovieType = navArgs.movieType,

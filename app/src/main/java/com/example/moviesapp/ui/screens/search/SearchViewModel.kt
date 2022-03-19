@@ -34,6 +34,7 @@ class SearchViewModel @Inject constructor(
         deviceLanguage.mapLatest { deviceLanguage ->
             movieRepository.popularMovies(deviceLanguage)
         }.flattenMerge().cachedIn(viewModelScope)
+
     private val voiceSearchAvailable: Flow<Boolean> = configRepository.getSpeechToTextAvailable()
     private val queryState: MutableStateFlow<QueryState> = MutableStateFlow(QueryState.default)
     private val suggestions: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
@@ -115,7 +116,7 @@ class SearchViewModel @Inject constructor(
                         query = query,
                         deviceLanguage = deviceLanguage
                     )
-                }.flattenMerge()
+                }.flattenMerge().cachedIn(viewModelScope)
 
                 searchState.emit(SearchState.ValidQuery)
                 resultState.emit(ResultState.Search(response))

@@ -65,13 +65,9 @@ class SeasonDetailsViewModel @Inject constructor(
                         viewModelScope.launch {
                             seasonDetails.emit(data)
                         }
-                    }
-
-                    response.onFailure {
+                    }.onFailure {
                         onFailure(this)
-                    }
-
-                    response.onException {
+                    }.onException {
                         onError(this)
                     }
                 }
@@ -113,13 +109,9 @@ class SeasonDetailsViewModel @Inject constructor(
                             }
                         }
                     }
-                }
-
-                response.onFailure {
+                }.onFailure {
                     onFailure(this)
-                }
-
-                response.onException {
+                }.onException {
                     onError(this)
                 }
             }
@@ -142,16 +134,11 @@ class SeasonDetailsViewModel @Inject constructor(
                         aggregatedCredits.emit(credits)
                     }
                 }
-            }
-
-            response.onFailure {
+            }.onFailure {
                 onFailure(this)
-            }
-
-            response.onException {
+            }.onException {
                 onError(this)
             }
-
         }
     }
 
@@ -176,13 +163,9 @@ class SeasonDetailsViewModel @Inject constructor(
 
                     videos.emit(data ?: emptyList())
                 }
-            }
-
-            response.onFailure {
+            }.onFailure {
                 onFailure(this)
-            }
-
-            response.onException {
+            }.onException {
                 onError(this)
             }
         }
