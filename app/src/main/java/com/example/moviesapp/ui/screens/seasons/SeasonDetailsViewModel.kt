@@ -10,9 +10,10 @@ import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
 import com.example.moviesapp.repository.tv.TvSeriesRepository
 import com.example.moviesapp.ui.screens.destinations.SeasonDetailsScreenDestination
-import com.example.moviesapp.use_case.GetDeviceLanguageUseCase
+import com.example.moviesapp.use_case.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +21,10 @@ import javax.inject.Inject
 @HiltViewModel
 class SeasonDetailsViewModel @Inject constructor(
     private val getDeviceLanguageUseCase: GetDeviceLanguageUseCase,
-    private val tvSeriesRepository: TvSeriesRepository,
+    private val getSeasonDetailsUseCase: GetSeasonDetailsUseCase,
+    private val getSeasonsVideosUseCase: GetSeasonsVideosUseCase,
+    private val getSeasonCreditsUseCase: GetSeasonCreditsUseCase,
+    private val getEpisodeStillsUseCase: GetEpisodeStillsUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
@@ -54,14 +58,14 @@ class SeasonDetailsViewModel @Inject constructor(
     )
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             deviceLanguage.collectLatest { deviceLanguage ->
-                tvSeriesRepository.seasonDetails(
-                    tvSeriesId = navArgs.tvSeriesId,
-                    seasonNumber = navArgs.seasonNumber,
-                    deviceLanguage = deviceLanguage
-                ).request { response ->
-                    response.onSuccess {
+                launch {
+                    getSeasonDetailsUseCase(
+                        tvSeriesId = navArgs.tvSeriesId,
+                        seasonNumber = navArgs.seasonNumber,
+                        deviceLanguage = deviceLanguage
+                    ).onSuccess {
                         viewModelScope.launch {
                             seasonDetails.emit(data)
                         }
@@ -72,17 +76,21 @@ class SeasonDetailsViewModel @Inject constructor(
                     }
                 }
 
-                getSeasonCredits(
-                    tvSeriesId = navArgs.tvSeriesId,
-                    seasonNumber = navArgs.seasonNumber,
-                    deviceLanguage = deviceLanguage
-                )
+                launch {
+                    getSeasonCredits(
+                        tvSeriesId = navArgs.tvSeriesId,
+                        seasonNumber = navArgs.seasonNumber,
+                        deviceLanguage = deviceLanguage
+                    )
+                }
 
-                getSeasonVideos(
-                    tvSeriesId = navArgs.tvSeriesId,
-                    seasonNumber = navArgs.seasonNumber,
-                    deviceLanguage = deviceLanguage
-                )
+                launch {
+                    getSeasonVideos(
+                        tvSeriesId = navArgs.tvSeriesId,
+                        seasonNumber = navArgs.seasonNumber,
+                        deviceLanguage = deviceLanguage
+                    )
+                }
             }
         }
     }
@@ -92,82 +100,67 @@ class SeasonDetailsViewModel @Inject constructor(
             return
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            tvSeriesRepository.episodeImages(
+        viewModelScope.launch {
+            getEpisodeStillsUseCase(
                 tvSeriesId = navArgs.tvSeriesId,
                 seasonNumber = navArgs.seasonNumber,
                 episodeNumber = episodeNumber
-            ).request { response ->
-                response.onSuccess {
-                    viewModelScope.launch {
-                        data?.stills.let { stills ->
-                            episodesStills.collectLatest { current ->
-                                val updatedStills = current.toMutableMap().apply {
-                                    put(episodeNumber, stills ?: emptyList())
-                                }
-                                episodesStills.emit(updatedStills)
-                            }
+            ).onSuccess {
+                viewModelScope.launch {
+                    episodesStills.collectLatest { current ->
+                        val updatedStills = current.toMutableMap().apply {
+                            put(episodeNumber, data ?: emptyList())
                         }
+                        episodesStills.emit(updatedStills)
                     }
-                }.onFailure {
-                    onFailure(this)
-                }.onException {
-                    onError(this)
                 }
+            }.onFailure {
+                onFailure(this)
+            }.onException {
+                onError(this)
             }
         }
     }
 
-    private fun getSeasonCredits(
+    private suspend fun getSeasonCredits(
         tvSeriesId: Int,
         seasonNumber: Int,
         deviceLanguage: DeviceLanguage
     ) {
-        tvSeriesRepository.seasonCredits(
+        getSeasonCreditsUseCase(
             tvSeriesId = tvSeriesId,
             seasonNumber = seasonNumber,
-            isoCode = deviceLanguage.languageCode
-        ).request { response ->
-            response.onSuccess {
-                data?.let { credits ->
-                    viewModelScope.launch {
-                        aggregatedCredits.emit(credits)
-                    }
+            deviceLanguage = deviceLanguage
+        ).onSuccess {
+            data?.let { credits ->
+                viewModelScope.launch {
+                    aggregatedCredits.emit(credits)
                 }
-            }.onFailure {
-                onFailure(this)
-            }.onException {
-                onError(this)
             }
+        }.onFailure {
+            onFailure(this)
+        }.onException {
+            onError(this)
         }
     }
 
-    private fun getSeasonVideos(
+    private suspend fun getSeasonVideos(
         tvSeriesId: Int,
         seasonNumber: Int,
         deviceLanguage: DeviceLanguage
     ) {
-        tvSeriesRepository.seasonVideos(
+        getSeasonsVideosUseCase(
             tvSeriesId = tvSeriesId,
-            seasonNumber = seasonNumber
-        ).request { response ->
-            response.onSuccess {
-                viewModelScope.launch {
-                    val data = data?.results?.sortedWith(
-                        compareBy<Video> { video ->
-                            video.language == deviceLanguage.languageCode
-                        }.thenByDescending { video ->
-                            video.publishedAt
-                        }
-                    )
-
-                    videos.emit(data ?: emptyList())
-                }
-            }.onFailure {
-                onFailure(this)
-            }.onException {
-                onError(this)
+            seasonNumber = seasonNumber,
+            deviceLanguage = deviceLanguage
+        ).onSuccess {
+            viewModelScope.launch {
+                videos.emit(data ?: emptyList())
             }
+        }.onFailure {
+            onFailure(this)
+        }.onException {
+            onError(this)
         }
     }
 }
