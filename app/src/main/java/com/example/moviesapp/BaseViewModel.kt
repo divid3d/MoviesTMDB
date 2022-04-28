@@ -9,10 +9,11 @@ import kotlinx.coroutines.launch
 
 open class BaseViewModel : ViewModel() {
     private val _error: MutableSharedFlow<String?> = MutableSharedFlow(replay = 0)
-    val error: StateFlow<String?> =
-        _error.asSharedFlow().stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+    val error: StateFlow<String?> = _error.asSharedFlow().stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(10), null
+    )
 
-    fun <T> onError(response: ApiResponse.Exception<T>) {
+    protected fun <T> onError(response: ApiResponse.Exception<T>) {
         FirebaseCrashlytics.getInstance().recordException(response.exception)
 
         viewModelScope.launch {
@@ -20,7 +21,7 @@ open class BaseViewModel : ViewModel() {
         }
     }
 
-    fun <T> onFailure(response: ApiResponse.Failure<T>) {
+    protected fun <T> onFailure(response: ApiResponse.Failure<T>) {
         viewModelScope.launch {
             _error.emit(response.apiError.statusMessage)
         }

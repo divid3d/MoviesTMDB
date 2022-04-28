@@ -309,7 +309,7 @@ fun SeasonDetailsContent(
                         MaterialTheme.spacing.default
                     }
 
-                    var expanded by rememberSaveable(key = episode.id.toString()) {
+                    var expanded by rememberSaveable(episode.id.toString()) {
                         mutableStateOf(false)
                     }
 

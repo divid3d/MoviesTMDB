@@ -1,12 +1,15 @@
 package com.example.moviesapp.ui.screens.discover
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.example.moviesapp.model.*
-import com.example.moviesapp.repository.config.ConfigRepository
-import com.example.moviesapp.repository.movie.MovieRepository
+import com.example.moviesapp.model.DeviceLanguage
+import com.example.moviesapp.model.SortOrder
+import com.example.moviesapp.model.SortType
+import com.example.moviesapp.use_case.GetAllMoviesWatchProvidersUseCase
+import com.example.moviesapp.use_case.GetDeviceLanguageUseCase
+import com.example.moviesapp.use_case.GetDiscoverMoviesUseCase
+import com.example.moviesapp.use_case.GetMovieGenresUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -16,14 +19,15 @@ import javax.inject.Inject
 @FlowPreview
 @HiltViewModel
 class DiscoverMoviesViewModel @Inject constructor(
-    private val movieRepository: MovieRepository,
-    private val configRepository: ConfigRepository,
-    private val savedStateHandle: SavedStateHandle
+    private val getDeviceLanguageUseCase: GetDeviceLanguageUseCase,
+    private val getMovieGenresUseCase: GetMovieGenresUseCase,
+    private val getAllMoviesWatchProvidersUseCase: GetAllMoviesWatchProvidersUseCase,
+    private val getDiscoverMoviesUseCase: GetDiscoverMoviesUseCase
 ) : ViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
-    private val availableMovieGenres = configRepository.getMovieGenres()
-    private val availableWatchProviders = configRepository.getAllMoviesWatchProviders()
+    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCase()
+    private val availableMovieGenres = getMovieGenresUseCase()
+    private val availableWatchProviders = getAllMoviesWatchProvidersUseCase()
 
     private val sortInfo: MutableStateFlow<SortInfo> = MutableStateFlow(SortInfo.default)
 
@@ -43,17 +47,10 @@ class DiscoverMoviesViewModel @Inject constructor(
     val uiState: StateFlow<DiscoverMoviesScreenUiState> = combine(
         deviceLanguage, sortInfo, filterState
     ) { deviceLanguage, sortInfo, filterState ->
-        val movies = movieRepository.discoverMovies(
-            deviceLanguage = deviceLanguage,
-            sortType = sortInfo.sortType,
-            sortOrder = sortInfo.sortOrder,
-            genresParam = GenresParam(filterState.selectedGenres),
-            watchProvidersParam = WatchProvidersParam(filterState.selectedWatchProviders),
-            voteRange = filterState.voteRange.current,
-            onlyWithPosters = filterState.showOnlyWithPoster,
-            onlyWithScore = filterState.showOnlyWithScore,
-            onlyWithOverview = filterState.showOnlyWithOverview,
-            releaseDateRange = filterState.releaseDateRange
+        val movies = getDiscoverMoviesUseCase(
+            sortInfo = sortInfo,
+            filterState = filterState,
+            deviceLanguage = deviceLanguage
         ).cachedIn(viewModelScope)
 
         DiscoverMoviesScreenUiState(

@@ -8,9 +8,7 @@ import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Movie
 import com.example.moviesapp.model.SearchQuery
 import com.example.moviesapp.model.SearchResult
-import com.example.moviesapp.repository.config.ConfigRepository
-import com.example.moviesapp.repository.movie.MovieRepository
-import com.example.moviesapp.repository.search.SearchRepository
+import com.example.moviesapp.use_case.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -21,21 +19,24 @@ import kotlin.time.Duration.Companion.milliseconds
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val configRepository: ConfigRepository,
-    private val movieRepository: MovieRepository,
-    private val searchRepository: SearchRepository
+    private val getDeviceLanguageUseCase: GetDeviceLanguageUseCase,
+    private val getSpeechToTextAvailableUseCase: GetSpeechToTextAvailableUseCase,
+    private val mediaSearchQueriesUseCase: MediaSearchQueriesUseCase,
+    private val mediaAddSearchQueryUseCase: MediaAddSearchQueryUseCase,
+    private val getMediaMultiSearchUseCase: GetMediaMultiSearchUseCase,
+    private val getPopularMoviesUseCase: GetPopularMoviesUseCase
 ) : BaseViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
+    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCase()
     private val queryDelay = 500.milliseconds
     private val minQueryLength = 3
 
     private val popularMovies: Flow<PagingData<Movie>> =
         deviceLanguage.mapLatest { deviceLanguage ->
-            movieRepository.popularMovies(deviceLanguage)
+            getPopularMoviesUseCase(deviceLanguage)
         }.flattenMerge().cachedIn(viewModelScope)
 
-    private val voiceSearchAvailable: Flow<Boolean> = configRepository.getSpeechToTextAvailable()
+    private val voiceSearchAvailable: Flow<Boolean> = getSpeechToTextAvailableUseCase()
     private val queryState: MutableStateFlow<QueryState> = MutableStateFlow(QueryState.default)
     private val suggestions: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
     private val searchState: MutableStateFlow<SearchState> =
@@ -78,7 +79,7 @@ class SearchViewModel @Inject constructor(
                 }
 
                 else -> {
-                    val querySuggestions = searchRepository.searchQueries(queryText)
+                    val querySuggestions = mediaSearchQueriesUseCase(queryText)
                     suggestions.emit(querySuggestions)
 
                     queryJob = createQueryJob(queryText).apply {
@@ -100,7 +101,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun addQuerySuggestion(searchQuery: SearchQuery) {
-        searchRepository.addSearchQuery(searchQuery)
+        mediaAddSearchQueryUseCase(searchQuery)
     }
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
@@ -111,15 +112,15 @@ class SearchViewModel @Inject constructor(
 
                 queryLoading.emit(true)
 
-                val response = deviceLanguage.mapLatest { deviceLanguage ->
-                    searchRepository.multiSearch(
+                val searchResults = deviceLanguage.mapLatest { deviceLanguage ->
+                    getMediaMultiSearchUseCase(
                         query = query,
                         deviceLanguage = deviceLanguage
                     )
                 }.flattenMerge().cachedIn(viewModelScope)
 
                 searchState.emit(SearchState.ValidQuery)
-                resultState.emit(ResultState.Search(response))
+                resultState.emit(ResultState.Search(searchResults))
             } catch (_: CancellationException) {
 
             } finally {

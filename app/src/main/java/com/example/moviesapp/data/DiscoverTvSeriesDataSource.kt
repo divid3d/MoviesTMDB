@@ -24,8 +24,8 @@ class DiscoverTvSeriesDataSource(
     private val airDateRange: DateRange
 ) : PagingSource<Int, TvSeries>() {
 
-    private val fromAirDate = airDateRange.from?.let { date -> DateParam(date) }
-    private val toAirDate = airDateRange.to?.let { date -> DateParam(date) }
+    private val fromAirDate = airDateRange.from?.let (::DateParam)
+    private val toAirDate = airDateRange.to?.let (::DateParam)
     private val sortTypeParam = sortType.toSortTypeParam(sortOrder)
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TvSeries> {

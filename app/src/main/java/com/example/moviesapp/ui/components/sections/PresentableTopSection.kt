@@ -238,7 +238,7 @@ fun PresentableTopSection(
                     .defaultMinSize(
                         minHeight = MaterialTheme.sizes.presentableItemBig.height + MaterialTheme.spacing.medium + MaterialTheme.spacing.medium
                     ),
-                count = state.itemCount,
+                count = kotlin.math.max(state.itemCount, 1),
                 state = pagerState
             ) { page ->
                 Row(
@@ -246,7 +246,12 @@ fun PresentableTopSection(
                         .fillMaxWidth()
                         .padding(MaterialTheme.spacing.medium)
                 ) {
-                    val presentable = state[page]
+                    val presentable = try {
+                        state[page]
+                    } catch (e: IndexOutOfBoundsException) {
+                        null
+                    }
+
                     val presentableItemState = presentable?.let {
                         DetailPresentableItemState.Result(it)
                     } ?: DetailPresentableItemState.Loading

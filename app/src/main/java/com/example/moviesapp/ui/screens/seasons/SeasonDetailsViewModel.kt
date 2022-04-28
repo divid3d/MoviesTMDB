@@ -8,9 +8,9 @@ import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
 import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
-import com.example.moviesapp.repository.config.ConfigRepository
 import com.example.moviesapp.repository.tv.TvSeriesRepository
 import com.example.moviesapp.ui.screens.destinations.SeasonDetailsScreenDestination
+import com.example.moviesapp.use_case.GetDeviceLanguageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -19,14 +19,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SeasonDetailsViewModel @Inject constructor(
-    private val configRepository: ConfigRepository,
+    private val getDeviceLanguageUseCase: GetDeviceLanguageUseCase,
     private val tvSeriesRepository: TvSeriesRepository,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
     private val navArgs: SeasonDetailsScreenArgs =
         SeasonDetailsScreenDestination.argsFrom(savedStateHandle)
-    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
+    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCase()
 
     private val seasonDetails: MutableStateFlow<SeasonDetails?> = MutableStateFlow(null)
     private val aggregatedCredits: MutableStateFlow<AggregatedCredits?> = MutableStateFlow(null)
