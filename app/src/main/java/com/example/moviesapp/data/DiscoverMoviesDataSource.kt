@@ -24,8 +24,8 @@ class DiscoverMoviesDataSource(
     private val releaseDateRange: DateRange
 ) : PagingSource<Int, Movie>() {
 
-    private val fromReleaseDate = releaseDateRange.from?.let { date -> DateParam(date) }
-    private val toReleaseDate = releaseDateRange.to?.let { date -> DateParam(date) }
+    private val fromReleaseDate = releaseDateRange.from?.let (::DateParam)
+    private val toReleaseDate = releaseDateRange.to?.let (::DateParam)
     private val sortTypeParam = sortType.toSortTypeParam(sortOrder)
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {

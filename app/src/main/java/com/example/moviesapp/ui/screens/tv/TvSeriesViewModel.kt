@@ -2,15 +2,9 @@ package com.example.moviesapp.ui.screens.tv
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.filter
 import com.example.moviesapp.model.DeviceLanguage
-import com.example.moviesapp.model.TvSeries
-import com.example.moviesapp.repository.browsed.RecentlyBrowsedRepository
-import com.example.moviesapp.repository.config.ConfigRepository
-import com.example.moviesapp.repository.favourites.FavouritesRepository
-import com.example.moviesapp.repository.tv.TvSeriesRepository
+import com.example.moviesapp.use_case.interfaces.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -19,28 +13,30 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class TvSeriesViewModel @Inject constructor(
-    private val configRepository: ConfigRepository,
-    private val tvSeriesRepository: TvSeriesRepository,
-    private val favouritesRepository: FavouritesRepository,
-    private val recentlyBrowsedRepository: RecentlyBrowsedRepository
+    private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
+    private val getOnTheAirTvSeriesUseCase: GetOnTheAirTvSeriesUseCase,
+    private val getDiscoverAllTvSeriesUseCaseImpl: GetDiscoverAllTvSeriesUseCase,
+    private val getTopRatedTvSeriesUseCase: GetTopRatedTvSeriesUseCase,
+    private val getTrendingTvSeriesUseCase: GetTrendingTvSeriesUseCase,
+    private val getAiringTodayTvSeriesUseCaseImpl: GetAiringTodayTvSeriesUseCase,
+    private val getFavouriteTvSeriesUseCase: GetFavouritesTvSeriesUseCase,
+    private val getRecentlyBrowsedTvSeriesUseCase: GetRecentlyBrowsedTvSeriesUseCase
 ) : ViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
+    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCaseImpl()
 
     private val tvSeriesState: StateFlow<TvSeriesState> =
         deviceLanguage.mapLatest { deviceLanguage ->
             TvSeriesState(
-                onTheAir = tvSeriesRepository.onTheAirTvSeries(deviceLanguage)
-                    .mapLatest { pagingData ->
-                        pagingData.filterCompleteInfo()
-                    }.cachedIn(viewModelScope),
-                discover = tvSeriesRepository.discoverTvSeries(deviceLanguage)
+                onTheAir = getOnTheAirTvSeriesUseCase(deviceLanguage, true)
                     .cachedIn(viewModelScope),
-                topRated = tvSeriesRepository.topRatedTvSeries(deviceLanguage)
+                discover = getDiscoverAllTvSeriesUseCaseImpl(deviceLanguage)
                     .cachedIn(viewModelScope),
-                trending = tvSeriesRepository.trendingTvSeries(deviceLanguage)
+                topRated = getTopRatedTvSeriesUseCase(deviceLanguage)
                     .cachedIn(viewModelScope),
-                airingToday = tvSeriesRepository.airingTodayTvSeries(deviceLanguage)
+                trending = getTrendingTvSeriesUseCase(deviceLanguage)
+                    .cachedIn(viewModelScope),
+                airingToday = getAiringTodayTvSeriesUseCaseImpl(deviceLanguage)
                     .cachedIn(viewModelScope)
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), TvSeriesState.default)
@@ -48,19 +44,9 @@ class TvSeriesViewModel @Inject constructor(
     val uiState: StateFlow<TvScreenUiState> = tvSeriesState.mapLatest { tvSeriesState ->
         TvScreenUiState(
             tvSeriesState = tvSeriesState,
-            favourites = favouritesRepository.favouritesTvSeries(),
-            recentlyBrowsed = recentlyBrowsedRepository.recentlyBrowsedTvSeries()
+            favourites = getFavouriteTvSeriesUseCase(),
+            recentlyBrowsed = getRecentlyBrowsedTvSeriesUseCase()
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, TvScreenUiState.default)
 
-    private fun PagingData<TvSeries>.filterCompleteInfo(): PagingData<TvSeries> {
-        return filter { tvSeries ->
-            tvSeries.run {
-                !backdropPath.isNullOrEmpty() &&
-                        !posterPath.isNullOrEmpty() &&
-                        title.isNotEmpty() &&
-                        overview.isNotEmpty()
-            }
-        }
-    }
 }

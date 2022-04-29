@@ -48,7 +48,6 @@ import com.example.moviesapp.ui.components.others.rememberTmdbImagePainter
 import com.example.moviesapp.ui.theme.Size
 import com.example.moviesapp.ui.theme.sizes
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
@@ -238,7 +237,7 @@ fun PresentableTopSection(
                     .defaultMinSize(
                         minHeight = MaterialTheme.sizes.presentableItemBig.height + MaterialTheme.spacing.medium + MaterialTheme.spacing.medium
                     ),
-                count = state.itemCount,
+                count = kotlin.math.max(state.itemCount, 1),
                 state = pagerState
             ) { page ->
                 Row(
@@ -246,7 +245,12 @@ fun PresentableTopSection(
                         .fillMaxWidth()
                         .padding(MaterialTheme.spacing.medium)
                 ) {
-                    val presentable = state[page]
+                    val presentable = try {
+                        state[page]
+                    } catch (e: IndexOutOfBoundsException) {
+                        null
+                    }
+
                     val presentableItemState = presentable?.let {
                         DetailPresentableItemState.Result(it)
                     } ?: DetailPresentableItemState.Loading

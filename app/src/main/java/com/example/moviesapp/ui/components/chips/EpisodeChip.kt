@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,10 +36,16 @@ fun EpisodeChip(
     episode: Episode,
     modifier: Modifier = Modifier,
     expanded: Boolean = false,
+    enabled: Boolean = true,
     stills: List<Image>? = null,
     onClick: () -> Unit = {}
 ) {
     val iconRotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
+    val borderColor by animateColorAsState(
+        targetValue = if (enabled) {
+            MaterialTheme.colors.primary.copy(0.5f)
+        } else Color.Gray
+    )
 
     //Stills equal to null means request is in progress
     val hasAdditionalContent by derivedStateOf {
@@ -48,9 +55,12 @@ fun EpisodeChip(
     }
 
     Card(
-        modifier = modifier.clickable { onClick() },
+        modifier = modifier.clickable(
+            enabled = enabled,
+            onClick = { onClick.invoke() }
+        ),
         shape = MaterialTheme.shapes.small,
-        border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.primary.copy(0.5f)),
+        border = BorderStroke(width = 1.dp, color = borderColor),
         backgroundColor = MaterialTheme.colors.surface
     ) {
         Column(
@@ -83,12 +93,14 @@ fun EpisodeChip(
                     }
                 }
                 Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
-                Icon(
-                    modifier = Modifier.rotate(iconRotation),
-                    imageVector = Icons.Filled.KeyboardArrowDown,
-                    tint = MaterialTheme.colors.primary,
-                    contentDescription = if (expanded) "collapse" else "expand"
-                )
+                AnimatedVisibility(visible = enabled) {
+                    Icon(
+                        modifier = Modifier.rotate(iconRotation),
+                        imageVector = Icons.Filled.KeyboardArrowDown,
+                        tint = MaterialTheme.colors.primary,
+                        contentDescription = if (expanded) "collapse" else "expand"
+                    )
+                }
             }
 
             AnimatedVisibility(

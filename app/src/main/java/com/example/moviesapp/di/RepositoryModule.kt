@@ -16,6 +16,8 @@ import com.example.moviesapp.repository.person.PersonRepository
 import com.example.moviesapp.repository.person.PersonRepositoryImpl
 import com.example.moviesapp.repository.search.SearchRepository
 import com.example.moviesapp.repository.search.SearchRepositoryImpl
+import com.example.moviesapp.repository.season.SeasonRepository
+import com.example.moviesapp.repository.season.SeasonRepositoryImpl
 import com.example.moviesapp.repository.tv.TvSeriesRepository
 import com.example.moviesapp.repository.tv.TvSeriesRepositoryImpl
 import dagger.Module
@@ -111,5 +113,13 @@ object RepositoryModule {
         externalScope = externalScope,
         apiHelper = apiHelper,
         searchQueryDao = searchQueryDao
+    )
+
+    @Singleton
+    @Provides
+    fun provideSeasonRepository(
+        apiHelper: TmdbApiHelper,
+    ): SeasonRepository = SeasonRepositoryImpl(
+        apiHelper = apiHelper
     )
 }

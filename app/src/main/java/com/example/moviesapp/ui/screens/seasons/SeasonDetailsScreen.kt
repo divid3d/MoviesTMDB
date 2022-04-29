@@ -45,7 +45,6 @@ import com.example.moviesapp.ui.screens.destinations.PersonDetailsScreenDestinat
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyle
@@ -309,7 +308,7 @@ fun SeasonDetailsContent(
                         MaterialTheme.spacing.default
                     }
 
-                    var expanded by rememberSaveable(key = episode.id.toString()) {
+                    var expanded by rememberSaveable(episode.id.toString()) {
                         mutableStateOf(false)
                     }
 
@@ -326,7 +325,8 @@ fun SeasonDetailsContent(
                             .padding(bottom = bottomPadding),
                         episode = episode,
                         stills = stills,
-                        expanded = expanded
+                        expanded = expanded,
+                        enabled = episode.isReleased()
                     ) {
                         expanded = !expanded
                         if (expanded) {
@@ -337,7 +337,11 @@ fun SeasonDetailsContent(
             }
 
             item {
-                Spacer(modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.large))
+                Spacer(
+                    modifier = Modifier.windowInsetsBottomHeight(
+                        insets = WindowInsets(bottom = MaterialTheme.spacing.large)
+                    )
+                )
             }
         }
 

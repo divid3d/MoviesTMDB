@@ -3,9 +3,8 @@ package com.example.moviesapp.ui.screens.favourites
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.example.moviesapp.model.FavouriteType
-import com.example.moviesapp.repository.favourites.FavouritesRepository
+import com.example.moviesapp.use_case.interfaces.GetFavouritesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -15,17 +14,14 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class FavouritesViewModel @Inject constructor(
-    private val favouritesRepository: FavouritesRepository
+    private val getFavouritesUseCaseImpl: GetFavouritesUseCase
 ) : ViewModel() {
 
     private val _selectedFavouriteType: MutableStateFlow<FavouriteType> =
         MutableStateFlow(FavouriteType.Movie)
 
     val uiState: StateFlow<FavouritesScreenUiState> = _selectedFavouriteType.mapLatest { type ->
-        val favourites = when (type) {
-            FavouriteType.Movie -> favouritesRepository.favouriteMovies()
-            FavouriteType.TvSeries -> favouritesRepository.favouritesTvSeries()
-        }.mapLatest { data -> data.map { tvSeries -> tvSeries } }.cachedIn(viewModelScope)
+        val favourites = getFavouritesUseCaseImpl(type).cachedIn(viewModelScope)
 
         FavouritesScreenUiState(
             selectedFavouriteType = type,

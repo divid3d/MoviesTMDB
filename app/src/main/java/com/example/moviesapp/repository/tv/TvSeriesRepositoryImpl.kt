@@ -143,29 +143,10 @@ class TvSeriesRepositoryImpl(
     ): Call<TvSeriesDetails> =
         apiHelper.getTvSeriesDetails(tvSeriesId, deviceLanguage.languageCode)
 
-    override fun getTvSeason(
-        tvSeriesId: Int,
-        seasonNumber: Int,
-        deviceLanguage: DeviceLanguage
-    ): Call<TvSeasonsResponse> =
-        apiHelper.getTvSeasons(tvSeriesId, seasonNumber, deviceLanguage.languageCode)
 
     override fun tvSeriesImages(
         tvSeriesId: Int
     ): Call<ImagesResponse> = apiHelper.getTvSeriesImages(tvSeriesId)
-
-    override fun seasonDetails(
-        tvSeriesId: Int,
-        seasonNumber: Int,
-        deviceLanguage: DeviceLanguage
-    ): Call<SeasonDetails> =
-        apiHelper.getSeasonDetails(tvSeriesId, seasonNumber, deviceLanguage.languageCode)
-
-    override fun episodeImages(
-        tvSeriesId: Int,
-        seasonNumber: Int,
-        episodeNumber: Int
-    ): Call<ImagesResponse> = apiHelper.getEpisodeImages(tvSeriesId, seasonNumber, episodeNumber)
 
     override fun tvSeriesReviews(tvSeriesId: Int): Flow<PagingData<Review>> =
         Pager(
@@ -190,14 +171,4 @@ class TvSeriesRepositoryImpl(
         tvSeriesId: Int,
         isoCode: String
     ): Call<VideosResponse> = apiHelper.getTvSeriesVideos(tvSeriesId, isoCode)
-
-    override fun seasonVideos(
-        tvSeriesId: Int,
-        seasonNumber: Int,
-        isoCode: String
-    ): Call<VideosResponse> = apiHelper.getSeasonVideos(tvSeriesId, seasonNumber, isoCode)
-
-    override fun seasonCredits(tvSeriesId: Int, seasonNumber: Int, isoCode: String) =
-        apiHelper.getSeasonCredits(tvSeriesId, seasonNumber, isoCode)
-
 }

@@ -41,8 +41,6 @@ import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.discover.components.FilterTvSeriesModalBottomSheetContent
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyle
@@ -233,7 +231,9 @@ fun DiscoverTvSeriesScreenContent(
                     })
 
                 Crossfade(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .navigationBarsPadding(),
                     targetState = !tvSeries.isEmpty()
                 ) { hasFilterResults ->
                     if (hasFilterResults) {
@@ -280,7 +280,8 @@ fun DiscoverTvSeriesScreenContent(
                 FilterFloatingButton(
                     modifier = Modifier
                         .padding(MaterialTheme.spacing.medium)
-                        .navigationBarsWithImePadding(),
+                        .navigationBarsPadding()
+                        .imePadding(),
                     onClick = {
                         coroutineScope.launch {
                             if (sheetState.isVisible) {

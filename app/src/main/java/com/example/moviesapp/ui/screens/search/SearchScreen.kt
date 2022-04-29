@@ -31,7 +31,6 @@ import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestin
 import com.example.moviesapp.ui.screens.search.components.QueryTextField
 import com.example.moviesapp.ui.screens.search.components.SearchEmptyState
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.insets.statusBarsPadding
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import java.util.*

@@ -4,10 +4,7 @@ import android.os.Parcelable
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -193,7 +190,9 @@ fun BrowseTvSeriesScreenContent(
         )
 
         PresentableGridSection(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding(),
             contentPadding = PaddingValues(
                 top = MaterialTheme.spacing.medium,
                 start = MaterialTheme.spacing.small,

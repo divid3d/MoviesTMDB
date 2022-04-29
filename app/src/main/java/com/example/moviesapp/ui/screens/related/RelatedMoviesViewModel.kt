@@ -5,10 +5,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.model.DeviceLanguage
-import com.example.moviesapp.model.RelationType
-import com.example.moviesapp.repository.config.ConfigRepository
-import com.example.moviesapp.repository.movie.MovieRepository
 import com.example.moviesapp.ui.screens.destinations.RelatedMoviesScreenDestination
+import com.example.moviesapp.use_case.interfaces.GetDeviceLanguageUseCase
+import com.example.moviesapp.use_case.interfaces.GetRelatedMoviesOfTypeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -17,32 +16,22 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class RelatedMoviesViewModel @Inject constructor(
-    private val configRepository: ConfigRepository,
-    private val movieRepository: MovieRepository,
+    private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
+    private val getRelatedMoviesOfTypeUseCase: GetRelatedMoviesOfTypeUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
     private val navArgs: RelatedMoviesScreenArgs =
         RelatedMoviesScreenDestination.argsFrom(savedStateHandle)
-    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
+    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCaseImpl()
 
     val uiState: StateFlow<RelatedMoviesScreenUiState> =
         deviceLanguage.mapLatest { deviceLanguage ->
-            val movies = when (navArgs.type) {
-                RelationType.Similar -> {
-                    movieRepository.similarMovies(
-                        movieId = navArgs.movieId,
-                        deviceLanguage = deviceLanguage
-                    )
-                }
-
-                RelationType.Recommended -> {
-                    movieRepository.moviesRecommendations(
-                        movieId = navArgs.movieId,
-                        deviceLanguage = deviceLanguage
-                    )
-                }
-            }.cachedIn(viewModelScope)
+            val movies = getRelatedMoviesOfTypeUseCase(
+                movieId = navArgs.movieId,
+                type = navArgs.type,
+                deviceLanguage = deviceLanguage
+            ).cachedIn(viewModelScope)
 
             RelatedMoviesScreenUiState(
                 relationType = navArgs.type,

@@ -7,16 +7,17 @@ import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
-import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
-import com.example.moviesapp.repository.browsed.RecentlyBrowsedRepository
-import com.example.moviesapp.repository.config.ConfigRepository
-import com.example.moviesapp.repository.favourites.FavouritesRepository
-import com.example.moviesapp.repository.movie.MovieRepository
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.use_case.LikeMovieUseCaseImpl
+import com.example.moviesapp.use_case.UnlikeMovieUseCaseImpl
+import com.example.moviesapp.use_case.interfaces.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.minutes
@@ -25,25 +26,35 @@ import kotlin.time.Duration.Companion.seconds
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class MoviesDetailsViewModel @Inject constructor(
-    private val configRepository: ConfigRepository,
-    private val movieRepository: MovieRepository,
-    private val favouritesRepository: FavouritesRepository,
-    private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
+    private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
+    private val getRelatedMoviesUseCase: GetRelatedMoviesOfTypeUseCase,
+    private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
+    private val getMovieBackdropsUseCase: GetMovieBackdropsUseCase,
+    private val getMovieExternalIdsUseCase: GetMovieExternalIdsUseCase,
+    private val getMovieWatchProvidersUseCase: GetMovieWatchProvidersUseCase,
+    private val getMovieReviewsCountUseCase: GetMovieReviewsCountUseCase,
+    private val getMovieCreditsUseCase: GetMovieCreditsUseCase,
+    private val getMoviesVideosUseCase: GetMovieVideosUseCase,
+    private val getMovieCollectionUseCase: GetMovieCollectionUseCase,
+    private val getOtherDirectorMoviesUseCase: GetOtherDirectorMoviesUseCase,
+    private val getFavouriteMoviesIdsUseCaseImpl: GetFavouriteMoviesIdsUseCase,
+    private val addRecentlyBrowsedMovieUseCase: AddRecentlyBrowsedMovieUseCase,
+    private val unlikeMovieUseCase: UnlikeMovieUseCaseImpl,
+    private val likeMovieUseCaseImpl: LikeMovieUseCaseImpl,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
     private val navArgs: MovieDetailsScreenArgs =
         MovieDetailsScreenDestination.argsFrom(savedStateHandle)
-    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
-    private val favouritesMoviesIdsFlow: Flow<List<Int>> =
-        favouritesRepository.getFavouritesMoviesIds()
+    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCaseImpl()
+    private val favouritesMoviesIdsFlow: Flow<List<Int>> = getFavouriteMoviesIdsUseCaseImpl()
 
     private val watchAtTime: MutableStateFlow<Date?> = MutableStateFlow(null)
     private val _movieDetails: MutableStateFlow<MovieDetails?> = MutableStateFlow(null)
     private val movieDetails: StateFlow<MovieDetails?> =
         _movieDetails.onEach { movieDetails ->
             movieDetails?.let { details ->
-                recentlyBrowsedRepository.addRecentlyBrowsedMovie(details)
+                addRecentlyBrowsedMovieUseCase(details)
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
@@ -61,13 +72,7 @@ class MoviesDetailsViewModel @Inject constructor(
         navArgs.movieId in favouriteIds
     }
 
-    private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val externalIds: StateFlow<List<ExternalId>?> =
-        _externalIds.filterNotNull().mapLatest { externalIds ->
-            externalIds.toExternalIdList(type = ExternalContentType.Movie)
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+    private val externalIds: MutableStateFlow<List<ExternalId>?> = MutableStateFlow(null)
 
     private val additionalInfo: StateFlow<AdditionalMovieDetailsInfo> = combine(
         isFavourite, watchAtTime, watchProviders, credits, reviewsCount
@@ -90,12 +95,14 @@ class MoviesDetailsViewModel @Inject constructor(
     ) { deviceLanguage, collection, otherDirectorMovies ->
         AssociatedMovies(
             collection = collection,
-            similar = movieRepository.similarMovies(
+            similar = getRelatedMoviesUseCase(
                 movieId = navArgs.movieId,
+                type = RelationType.Similar,
                 deviceLanguage = deviceLanguage
             ).cachedIn(viewModelScope),
-            recommendations = movieRepository.moviesRecommendations(
+            recommendations = getRelatedMoviesUseCase(
                 movieId = navArgs.movieId,
+                type = RelationType.Recommended,
                 deviceLanguage = deviceLanguage
             ).cachedIn(viewModelScope),
             directorMovies = otherDirectorMovies
@@ -132,11 +139,31 @@ class MoviesDetailsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            val movieId = navArgs.movieId
+
+            launch {
+                getMovieBackdrops(movieId)
+            }
+            launch {
+                getExternalIds(movieId)
+            }
+            launch {
+                getMovieReview(movieId)
+            }
+
             deviceLanguage.collectLatest { deviceLanguage ->
-                getMovieInfo(
-                    movieId = navArgs.movieId,
-                    deviceLanguage = deviceLanguage
-                )
+                launch {
+                    getMovieDetails(movieId, deviceLanguage)
+                }
+                launch {
+                    getWatchProviders(movieId, deviceLanguage)
+                }
+                launch {
+                    getMovieCredits(movieId, deviceLanguage)
+                }
+                launch {
+                    getMovieVideos(movieId, deviceLanguage)
+                }
             }
         }
 
@@ -169,57 +196,44 @@ class MoviesDetailsViewModel @Inject constructor(
     }
 
     fun onLikeClick(movieDetails: MovieDetails) {
-        favouritesRepository.likeMovie(movieDetails)
+        likeMovieUseCaseImpl(movieDetails)
     }
 
     fun onUnlikeClick(movieDetails: MovieDetails) {
-        favouritesRepository.unlikeMovie(movieDetails)
+        unlikeMovieUseCase(movieDetails)
     }
 
-    private fun getMovieInfo(movieId: Int, deviceLanguage: DeviceLanguage) {
-        getMovieDetails(movieId, deviceLanguage)
-        getMovieImages(movieId)
-        getExternalIds(movieId)
-        getWatchProviders(movieId, deviceLanguage)
-        getMovieCredits(movieId, deviceLanguage)
-        getMovieReview(movieId)
-        getMovieVideos(movieId, deviceLanguage)
-    }
-
-    private fun getMovieDetails(movieId: Int, deviceLanguage: DeviceLanguage) {
-        movieRepository.movieDetails(
+    private suspend fun getMovieDetails(movieId: Int, deviceLanguage: DeviceLanguage) {
+        getMovieDetailsUseCase(
             movieId = movieId,
-            isoCode = deviceLanguage.languageCode
-        ).request { response ->
-            response.onSuccess {
-                viewModelScope.launch {
-                    val movieDetails = data
-                    _movieDetails.emit(movieDetails)
+            deviceLanguage = deviceLanguage
+        ).onSuccess {
+            viewModelScope.launch {
+                val movieDetails = data
+                _movieDetails.emit(movieDetails)
 
-                    data?.collection?.id?.let { collectionId ->
-                        getMovieCollection(
-                            collectionId = collectionId,
-                            deviceLanguage = deviceLanguage
-                        )
-                    }
+                data?.collection?.id?.let { collectionId ->
+                    getMovieCollection(
+                        collectionId = collectionId,
+                        deviceLanguage = deviceLanguage
+                    )
                 }
-            }.onFailure {
-                onFailure(this)
-            }.onException {
-                onError(this)
             }
+        }.onFailure {
+            onFailure(this)
+        }.onException {
+            onError(this)
         }
     }
 
-    private fun getMovieCredits(movieId: Int, deviceLanguage: DeviceLanguage) {
-        movieRepository.movieCredits(
+    private suspend fun getMovieCredits(movieId: Int, deviceLanguage: DeviceLanguage) {
+        getMovieCreditsUseCase(
             movieId = movieId,
-            isoCode = deviceLanguage.languageCode
-        ).request { response ->
-            response.onSuccess {
-                viewModelScope.launch {
-                    credits.emit(data)
-                }
+            deviceLanguage = deviceLanguage
+        ).onSuccess {
+            viewModelScope.launch {
+                credits.emit(data)
+
                 val directors = data?.crew?.filter { member -> member.job == "Director" }
                 val mainDirector = if (directors?.count() == 1) directors.first() else null
 
@@ -229,147 +243,111 @@ class MoviesDetailsViewModel @Inject constructor(
                         deviceLanguage = deviceLanguage
                     )
                 }
-            }.onFailure {
-                onFailure(this)
-            }.onException {
-                onError(this)
             }
+        }.onFailure {
+            onFailure(this)
+        }.onException {
+            onError(this)
         }
     }
 
-    private fun getMovieImages(movieId: Int) {
-        movieRepository.movieImages(movieId).request { response ->
-            response.onSuccess {
-                viewModelScope.launch {
-                    movieBackdrops.emit(data?.backdrops ?: emptyList())
-                }
-            }.onFailure {
-                onFailure(this)
-            }.onException {
-                onError(this)
+    private suspend fun getMovieBackdrops(movieId: Int) {
+        getMovieBackdropsUseCase(movieId).onSuccess {
+            viewModelScope.launch {
+                movieBackdrops.emit(data ?: emptyList())
             }
+        }.onFailure {
+            onFailure(this)
+        }.onException {
+            onError(this)
         }
     }
 
-    private fun getMovieReview(movieId: Int) {
-        movieRepository.movieReview(movieId).request { response ->
-            response.onSuccess {
-                viewModelScope.launch {
-                    reviewsCount.emit(data?.totalResults ?: 0)
-                }
-            }.onFailure {
-                onFailure(this)
-            }.onException {
-                onError(this)
+    private suspend fun getMovieReview(movieId: Int) {
+        getMovieReviewsCountUseCase(movieId).onSuccess {
+            viewModelScope.launch {
+                reviewsCount.emit(data ?: 0)
             }
+        }.onFailure {
+            onFailure(this)
+        }.onException {
+            onError(this)
         }
     }
 
-    private fun getMovieCollection(collectionId: Int, deviceLanguage: DeviceLanguage) {
-        movieRepository.collection(
+    private suspend fun getMovieCollection(collectionId: Int, deviceLanguage: DeviceLanguage) {
+        getMovieCollectionUseCase(
             collectionId = collectionId,
-            isoCode = deviceLanguage.languageCode
-        ).request { response ->
-            response.onSuccess {
-                viewModelScope.launch {
-                    val collectionResponse = data
-
-                    collectionResponse?.let { response ->
-                        val name = response.name
-                        val parts = response.parts
-
-                        val collection = MovieCollection(
-                            name = name,
-                            parts = parts
-                        )
-
-                        movieCollection.emit(collection)
-                    }
-                }
-            }.onFailure {
-                onFailure(this)
-            }.onException {
-                onError(this)
+            deviceLanguage = deviceLanguage
+        ).onSuccess {
+            viewModelScope.launch {
+                movieCollection.emit(data)
             }
+        }.onFailure {
+            onFailure(this)
+        }.onException {
+            onError(this)
         }
     }
 
-    private fun getWatchProviders(movieId: Int, deviceLanguage: DeviceLanguage) {
-        movieRepository.watchProviders(
+    private suspend fun getWatchProviders(movieId: Int, deviceLanguage: DeviceLanguage) {
+        getMovieWatchProvidersUseCase(
             movieId = movieId,
-        ).request { response ->
-            response.onSuccess {
-                viewModelScope.launch {
-                    val results = data?.results
-                    val providers = results?.getOrElse(deviceLanguage.region) { null }
-
-                    watchProviders.emit(providers)
-                }
-            }.onFailure {
-                onFailure(this)
-            }.onException {
-                onError(this)
+            deviceLanguage = deviceLanguage
+        ).onSuccess {
+            viewModelScope.launch {
+                watchProviders.emit(data)
             }
+        }.onFailure {
+            onFailure(this)
+        }.onException {
+            onError(this)
         }
     }
 
-    private fun getExternalIds(movieId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            movieRepository.getExternalIds(
-                movieId = movieId
-            ).request { response ->
-                response.onSuccess {
-                    viewModelScope.launch {
-                        _externalIds.emit(data)
-                    }
-                }.onFailure {
-                    onFailure(this)
-                }.onException {
-                    onError(this)
-                }
+    private suspend fun getExternalIds(movieId: Int) {
+        getMovieExternalIdsUseCase(
+            movieId = movieId
+        ).onSuccess {
+            viewModelScope.launch {
+                externalIds.emit(data)
             }
+        }.onFailure {
+            onFailure(this)
+        }.onException {
+            onError(this)
         }
     }
 
-    private fun getMovieVideos(movieId: Int, deviceLanguage: DeviceLanguage) {
-        viewModelScope.launch(Dispatchers.IO) {
-            movieRepository.getMovieVideos(
-                movieId = movieId,
-                isoCode = deviceLanguage.languageCode
-            ).request { response ->
-                response.onSuccess {
-                    viewModelScope.launch {
-                        val data = data?.results?.sortedWith(
-                            compareBy<Video> { video ->
-                                video.language == deviceLanguage.languageCode
-                            }.thenByDescending { video ->
-                                video.publishedAt
-                            }
-                        )
-
-                        videos.emit(data ?: emptyList())
-                    }
-                }.onFailure {
-                    onFailure(this)
-                }.onException {
-                    onError(this)
-                }
+    private suspend fun getMovieVideos(movieId: Int, deviceLanguage: DeviceLanguage) {
+        getMoviesVideosUseCase(
+            movieId = movieId,
+            deviceLanguage = deviceLanguage
+        ).onSuccess {
+            viewModelScope.launch {
+                videos.emit(data ?: emptyList())
             }
+        }.onFailure {
+            onFailure(this)
+        }.onException {
+            onError(this)
         }
     }
 
-    private fun getOtherDirectorMovies(mainDirector: CrewMember, deviceLanguage: DeviceLanguage) {
+    private suspend fun getOtherDirectorMovies(
+        mainDirector: CrewMember,
+        deviceLanguage: DeviceLanguage
+    ) {
+        val movies = getOtherDirectorMoviesUseCase(
+            mainDirector = mainDirector,
+            deviceLanguage = deviceLanguage
+        ).cachedIn(viewModelScope)
+
         val directorMovies = DirectorMovies(
             directorName = mainDirector.name,
-            movies = movieRepository.moviesOfDirector(
-                directorId = mainDirector.id,
-                deviceLanguage = deviceLanguage
-            ).cachedIn(viewModelScope)
+            movies = movies
         )
 
-        viewModelScope.launch {
-            otherDirectorMovies.emit(directorMovies)
-        }
+        otherDirectorMovies.emit(directorMovies)
     }
-
 }

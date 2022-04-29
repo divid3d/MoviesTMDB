@@ -4,51 +4,42 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.example.moviesapp.model.DeviceLanguage
-import com.example.moviesapp.model.TvSeriesType
-import com.example.moviesapp.repository.browsed.RecentlyBrowsedRepository
-import com.example.moviesapp.repository.config.ConfigRepository
-import com.example.moviesapp.repository.favourites.FavouritesRepository
-import com.example.moviesapp.repository.tv.TvSeriesRepository
 import com.example.moviesapp.ui.screens.destinations.BrowseTvSeriesScreenDestination
+import com.example.moviesapp.use_case.GetTvSeriesOfTypeUseCaseImpl
+import com.example.moviesapp.use_case.interfaces.ClearRecentlyBrowsedMoviesUseCase
+import com.example.moviesapp.use_case.interfaces.GetDeviceLanguageUseCase
+import com.example.moviesapp.use_case.interfaces.GetFavouriteTvSeriesCountUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @FlowPreview
 @HiltViewModel
 class BrowseTvSeriesViewModel @Inject constructor(
-    private val tvSeriesRepository: TvSeriesRepository,
-    private val configRepository: ConfigRepository,
-    private val favouritesRepository: FavouritesRepository,
-    private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
+    private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
+    private val getFavouriteTvSeriesCountUseCaseImpl: GetFavouriteTvSeriesCountUseCase,
+    private val getTvSeriesOfTypeUseCase: GetTvSeriesOfTypeUseCaseImpl,
+    private val clearRecentlyBrowsedTvSeriesUseCase: ClearRecentlyBrowsedMoviesUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
+    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCaseImpl()
 
     private val navArgs: BrowseTvSeriesScreenArgs =
         BrowseTvSeriesScreenDestination.argsFrom(savedStateHandle)
 
-    private val favouriteTvSeriesCount: StateFlow<Int> =
-        favouritesRepository.getFavouriteTvSeriesCount()
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), 0)
+    private val favouriteTvSeriesCount: StateFlow<Int> = getFavouriteTvSeriesCountUseCaseImpl()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), 0)
 
     val uiState: StateFlow<BrowseTvSeriesScreenUiState> = combine(
         deviceLanguage, favouriteTvSeriesCount
     ) { deviceLanguage, favouriteTvSeriesCount ->
-        val tvSeries = when (navArgs.tvSeriesType) {
-            TvSeriesType.OnTheAir -> tvSeriesRepository.onTheAirTvSeries(deviceLanguage)
-            TvSeriesType.TopRated -> tvSeriesRepository.topRatedTvSeries(deviceLanguage)
-            TvSeriesType.AiringToday -> tvSeriesRepository.airingTodayTvSeries(deviceLanguage)
-            TvSeriesType.Trending -> tvSeriesRepository.trendingTvSeries(deviceLanguage)
-            TvSeriesType.Favourite -> favouritesRepository.favouritesTvSeries()
-            TvSeriesType.RecentlyBrowsed -> recentlyBrowsedRepository.recentlyBrowsedTvSeries()
-        }.mapLatest { data -> data.map { tvSeries -> tvSeries } }.cachedIn(viewModelScope)
+        val tvSeries = getTvSeriesOfTypeUseCase(
+            type = navArgs.tvSeriesType,
+            deviceLanguage = deviceLanguage
+        ).cachedIn(viewModelScope)
 
         BrowseTvSeriesScreenUiState(
             selectedTvSeriesType = navArgs.tvSeriesType,
@@ -61,7 +52,5 @@ class BrowseTvSeriesViewModel @Inject constructor(
         BrowseTvSeriesScreenUiState.getDefault(navArgs.tvSeriesType)
     )
 
-    fun onClearClicked() {
-        recentlyBrowsedRepository.clearRecentlyBrowsedTvSeries()
-    }
+    fun onClearClicked() = clearRecentlyBrowsedTvSeriesUseCase()
 }

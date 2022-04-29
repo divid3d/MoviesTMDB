@@ -1,9 +1,8 @@
 package com.example.moviesapp.ui.components.sections
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.*
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideIn
-import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -26,10 +25,11 @@ import com.example.moviesapp.other.isScrollingTowardsStart
 import com.example.moviesapp.other.items
 import com.example.moviesapp.ui.components.buttons.ScrollToTop
 import com.example.moviesapp.ui.components.items.PresentableItem
+import com.example.moviesapp.ui.components.others.gridVerticalScrollBar
 import com.example.moviesapp.ui.theme.spacing
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun PresentableGridSection(
     state: LazyPagingItems<out Presentable>,
@@ -57,7 +57,9 @@ fun PresentableGridSection(
 
     Box(modifier = modifier) {
         LazyVerticalGrid(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .gridVerticalScrollBar(gridState),
             state = gridState,
             contentPadding = contentPadding,
             columns = GridCells.Fixed(3),
@@ -97,9 +99,10 @@ fun PresentableGridSection(
             enter = slideIn(
                 animationSpec = tween(),
                 initialOffset = { size -> IntOffset(size.width, 0) }),
-            exit = slideOut(
-                animationSpec = tween(),
-                targetOffset = { size -> IntOffset(size.width, 0) }),
+            exit = fadeOut(animationSpec = spring()) + scaleOut(
+                animationSpec = spring(),
+                targetScale = 0.3f
+            )
         ) {
             ScrollToTop(
                 onClick = onScrollToStartClick

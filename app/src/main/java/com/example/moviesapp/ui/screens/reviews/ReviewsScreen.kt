@@ -135,7 +135,9 @@ fun ReviewsScreenContent(
 
         ReviewsList(
             reviews = reviewsLazyItems,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding(),
             contentPadding = PaddingValues(
                 top = MaterialTheme.spacing.medium,
                 start = MaterialTheme.spacing.medium,
