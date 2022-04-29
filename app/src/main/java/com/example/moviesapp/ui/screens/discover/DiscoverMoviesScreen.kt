@@ -232,7 +232,9 @@ fun DiscoverMoviesScreenContent(
                     })
 
                 Crossfade(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .navigationBarsPadding(),
                     targetState = !movies.isEmpty()
                 ) { hasFilterResults ->
                     if (hasFilterResults) {

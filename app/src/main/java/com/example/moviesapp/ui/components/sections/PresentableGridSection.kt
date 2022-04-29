@@ -25,6 +25,7 @@ import com.example.moviesapp.other.isScrollingTowardsStart
 import com.example.moviesapp.other.items
 import com.example.moviesapp.ui.components.buttons.ScrollToTop
 import com.example.moviesapp.ui.components.items.PresentableItem
+import com.example.moviesapp.ui.components.others.gridVerticalScrollBar
 import com.example.moviesapp.ui.theme.spacing
 import kotlinx.coroutines.launch
 
@@ -56,7 +57,9 @@ fun PresentableGridSection(
 
     Box(modifier = modifier) {
         LazyVerticalGrid(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .gridVerticalScrollBar(gridState),
             state = gridState,
             contentPadding = contentPadding,
             columns = GridCells.Fixed(3),

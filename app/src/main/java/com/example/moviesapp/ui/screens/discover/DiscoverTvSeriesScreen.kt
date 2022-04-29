@@ -231,7 +231,9 @@ fun DiscoverTvSeriesScreenContent(
                     })
 
                 Crossfade(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .navigationBarsPadding(),
                     targetState = !tvSeries.isEmpty()
                 ) { hasFilterResults ->
                     if (hasFilterResults) {
