@@ -3,6 +3,8 @@ package com.example.moviesapp.ui.components.lists
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -16,6 +18,7 @@ import com.example.moviesapp.model.Review
 import com.example.moviesapp.other.hasItems
 import com.example.moviesapp.ui.components.items.ReviewItem
 import com.example.moviesapp.ui.components.items.ReviewItemPlaceholder
+import com.example.moviesapp.ui.components.others.listVerticalScrollBar
 import com.example.moviesapp.ui.theme.spacing
 
 
@@ -51,12 +54,13 @@ fun ReviewsList(
 private fun ReviewsListResult(
     reviews: LazyPagingItems<Review>,
     modifier: Modifier = Modifier,
+    state: LazyListState = rememberLazyListState(),
     contentPadding: PaddingValues = PaddingValues(),
     arrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(MaterialTheme.spacing.large)
-
 ) {
     LazyColumn(
-        modifier = modifier,
+        modifier = modifier.listVerticalScrollBar(state),
+        state = state,
         contentPadding = contentPadding,
         verticalArrangement = arrangement
     ) {
