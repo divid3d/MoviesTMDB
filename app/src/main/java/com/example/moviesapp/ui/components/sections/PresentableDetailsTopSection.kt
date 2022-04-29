@@ -23,7 +23,6 @@ import com.example.moviesapp.ui.components.items.DetailPresentableItem
 import com.example.moviesapp.ui.components.others.AnimatedBackdrops
 import com.example.moviesapp.ui.theme.sizes
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.insets.statusBarsPadding
 
 @Composable
 fun PresentableDetailsTopSection(

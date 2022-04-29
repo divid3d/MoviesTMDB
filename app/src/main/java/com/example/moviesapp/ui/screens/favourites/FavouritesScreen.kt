@@ -18,7 +18,6 @@ import com.example.moviesapp.ui.components.sections.PresentableGridSection
 import com.example.moviesapp.ui.components.selectors.FavouriteTypeSelector
 import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.insets.statusBarsPadding
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 

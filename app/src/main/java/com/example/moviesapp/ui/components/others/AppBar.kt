@@ -14,7 +14,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.insets.statusBarsPadding
 
 @Composable
 fun AppBar(

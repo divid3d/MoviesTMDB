@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -38,8 +39,6 @@ import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.theme.Black500
 import com.example.moviesapp.ui.theme.MoviesAppTheme
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -162,44 +161,42 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
-                    ProvideWindowInsets {
-                        Scaffold(
-                            scaffoldState = rememberScaffoldState(snackbarHostState = snackBarHostState),
-                            bottomBar = {
-                                BottomBar(
-                                    modifier = Modifier.navigationBarsPadding(),
-                                    currentRoute = currentRoute,
-                                    backQueueRoutes = backQueueRoutes,
-                                    visible = showBottomBar
-                                ) { route ->
-                                    navController.safeNavigate(
-                                        route = route,
-                                        onSameRouteSelected = { sameRoute ->
-                                            mainViewModel.onSameRouteSelected(sameRoute)
-                                        }
-                                    )
-                                }
-                            }
-                        ) { innerPadding ->
-                            Surface(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(
-                                        bottom = if (showBottomBar) {
-                                            innerPadding.calculateBottomPadding()
-                                        } else MaterialTheme.spacing.default
-                                    ),
-                                color = MaterialTheme.colors.background
-                            ) {
-                                DestinationsNavHost(
-                                    navGraph = NavGraphs.root,
-                                    engine = navHostEngine,
-                                    navController = navController,
-                                    dependenciesContainerBuilder = {
-                                        dependency(mainViewModel)
+                    Scaffold(
+                        scaffoldState = rememberScaffoldState(snackbarHostState = snackBarHostState),
+                        bottomBar = {
+                            BottomBar(
+                                modifier = Modifier.navigationBarsPadding(),
+                                currentRoute = currentRoute,
+                                backQueueRoutes = backQueueRoutes,
+                                visible = showBottomBar
+                            ) { route ->
+                                navController.safeNavigate(
+                                    route = route,
+                                    onSameRouteSelected = { sameRoute ->
+                                        mainViewModel.onSameRouteSelected(sameRoute)
                                     }
                                 )
                             }
+                        }
+                    ) { innerPadding ->
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(
+                                    bottom = if (showBottomBar) {
+                                        innerPadding.calculateBottomPadding()
+                                    } else MaterialTheme.spacing.default
+                                ),
+                            color = MaterialTheme.colors.background
+                        ) {
+                            DestinationsNavHost(
+                                navGraph = NavGraphs.root,
+                                engine = navHostEngine,
+                                navController = navController,
+                                dependenciesContainerBuilder = {
+                                    dependency(mainViewModel)
+                                }
+                            )
                         }
                     }
                 }

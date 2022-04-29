@@ -48,7 +48,6 @@ import com.example.moviesapp.ui.components.others.rememberTmdbImagePainter
 import com.example.moviesapp.ui.theme.Size
 import com.example.moviesapp.ui.theme.sizes
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.calculateCurrentOffsetForPage

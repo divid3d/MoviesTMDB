@@ -38,7 +38,6 @@ import com.example.moviesapp.ui.screens.details.components.TvSeriesDetailsInfoSe
 import com.example.moviesapp.ui.screens.details.components.TvSeriesDetailsTopContent
 import com.example.moviesapp.ui.theme.Black300
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyle
@@ -476,7 +475,9 @@ fun TvSeriesDetailsScreenContent(
             }
 
             Spacer(
-                modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.medium)
+                modifier = Modifier.windowInsetsBottomHeight(
+                    insets = WindowInsets(bottom = MaterialTheme.spacing.medium)
+                )
             )
         }
 

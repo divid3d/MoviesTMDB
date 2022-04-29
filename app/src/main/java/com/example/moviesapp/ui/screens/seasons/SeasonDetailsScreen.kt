@@ -45,7 +45,6 @@ import com.example.moviesapp.ui.screens.destinations.PersonDetailsScreenDestinat
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.theme.spacing
-import com.google.accompanist.insets.navigationBarsHeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyle
@@ -337,7 +336,11 @@ fun SeasonDetailsContent(
             }
 
             item {
-                Spacer(modifier = Modifier.navigationBarsHeight(additional = MaterialTheme.spacing.large))
+                Spacer(
+                    modifier = Modifier.windowInsetsBottomHeight(
+                        insets = WindowInsets(bottom = MaterialTheme.spacing.large)
+                    )
+                )
             }
         }
 
