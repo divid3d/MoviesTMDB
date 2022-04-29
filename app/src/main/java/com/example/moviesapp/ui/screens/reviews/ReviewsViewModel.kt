@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.ui.screens.destinations.ReviewsScreenDestination
-import com.example.moviesapp.use_case.GetMediaTypeReviewsUseCase
+import com.example.moviesapp.use_case.interfaces.GetMediaTypeReviewsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ReviewsViewModel @Inject constructor(
-    private val getMediaTypeReviewsUseCase: GetMediaTypeReviewsUseCase,
+    private val getMediaTypeReviewsUseCaseImpl: GetMediaTypeReviewsUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
@@ -24,7 +24,7 @@ class ReviewsViewModel @Inject constructor(
     val uiState: StateFlow<ReviewsScreenUiState> = MutableStateFlow(
         ReviewsScreenUiState(
             startRoute = navArgs.startRoute,
-            reviews = getMediaTypeReviewsUseCase(
+            reviews = getMediaTypeReviewsUseCaseImpl(
                 mediaId = navArgs.mediaId,
                 type = navArgs.type
             ).cachedIn(viewModelScope)

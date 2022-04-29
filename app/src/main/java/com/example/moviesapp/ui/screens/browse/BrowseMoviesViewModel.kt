@@ -6,28 +6,27 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.ui.screens.destinations.BrowseMoviesScreenDestination
-import com.example.moviesapp.use_case.ClearRecentlyBrowsedMoviesUseCase
-import com.example.moviesapp.use_case.GetDeviceLanguageUseCase
-import com.example.moviesapp.use_case.GetFavouritesMovieCountUseCase
-import com.example.moviesapp.use_case.GetMoviesOfTypeUseCase
+import com.example.moviesapp.use_case.interfaces.ClearRecentlyBrowsedMoviesUseCase
+import com.example.moviesapp.use_case.interfaces.GetDeviceLanguageUseCase
+import com.example.moviesapp.use_case.interfaces.GetFavouritesMovieCountUseCase
+import com.example.moviesapp.use_case.interfaces.GetMoviesOfTypeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @FlowPreview
 @HiltViewModel
 class BrowseMoviesViewModel @Inject constructor(
-    private val getDeviceLanguageUseCase: GetDeviceLanguageUseCase,
+    private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
     private val getMoviesOfTypeUseCase: GetMoviesOfTypeUseCase,
     private val getFavouritesMoviesCountUseCase: GetFavouritesMovieCountUseCase,
-    private val getClearRecentlyBrowsedMoviesUseCase: ClearRecentlyBrowsedMoviesUseCase,
+    private val getClearRecentlyBrowsedMoviesUseCaseImpl: ClearRecentlyBrowsedMoviesUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCase()
+    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCaseImpl()
 
     private val navArgs: BrowseMoviesScreenArgs =
         BrowseMoviesScreenDestination.argsFrom(savedStateHandle)
@@ -54,5 +53,5 @@ class BrowseMoviesViewModel @Inject constructor(
         BrowseMoviesScreenUiState.getDefault(navArgs.movieType)
     )
 
-    fun onClearClicked() = getClearRecentlyBrowsedMoviesUseCase()
+    fun onClearClicked() = getClearRecentlyBrowsedMoviesUseCaseImpl()
 }

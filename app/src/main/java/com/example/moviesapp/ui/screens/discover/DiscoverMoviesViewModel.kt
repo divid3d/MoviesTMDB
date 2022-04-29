@@ -6,10 +6,10 @@ import androidx.paging.cachedIn
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.SortOrder
 import com.example.moviesapp.model.SortType
-import com.example.moviesapp.use_case.GetAllMoviesWatchProvidersUseCase
-import com.example.moviesapp.use_case.GetDeviceLanguageUseCase
-import com.example.moviesapp.use_case.GetDiscoverMoviesUseCase
-import com.example.moviesapp.use_case.GetMovieGenresUseCase
+import com.example.moviesapp.use_case.interfaces.GetAllMoviesWatchProvidersUseCase
+import com.example.moviesapp.use_case.interfaces.GetDeviceLanguageUseCase
+import com.example.moviesapp.use_case.interfaces.GetDiscoverMoviesUseCase
+import com.example.moviesapp.use_case.interfaces.GetMovieGenresUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -19,13 +19,13 @@ import javax.inject.Inject
 @FlowPreview
 @HiltViewModel
 class DiscoverMoviesViewModel @Inject constructor(
-    private val getDeviceLanguageUseCase: GetDeviceLanguageUseCase,
+    private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
     private val getMovieGenresUseCase: GetMovieGenresUseCase,
     private val getAllMoviesWatchProvidersUseCase: GetAllMoviesWatchProvidersUseCase,
-    private val getDiscoverMoviesUseCase: GetDiscoverMoviesUseCase
+    private val getDiscoverMoviesUseCaseImpl: GetDiscoverMoviesUseCase
 ) : ViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCase()
+    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCaseImpl()
     private val availableMovieGenres = getMovieGenresUseCase()
     private val availableWatchProviders = getAllMoviesWatchProvidersUseCase()
 
@@ -47,7 +47,7 @@ class DiscoverMoviesViewModel @Inject constructor(
     val uiState: StateFlow<DiscoverMoviesScreenUiState> = combine(
         deviceLanguage, sortInfo, filterState
     ) { deviceLanguage, sortInfo, filterState ->
-        val movies = getDiscoverMoviesUseCase(
+        val movies = getDiscoverMoviesUseCaseImpl(
             sortInfo = sortInfo,
             filterState = filterState,
             deviceLanguage = deviceLanguage

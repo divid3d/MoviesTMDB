@@ -8,7 +8,7 @@ import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Movie
 import com.example.moviesapp.model.SearchQuery
 import com.example.moviesapp.model.SearchResult
-import com.example.moviesapp.use_case.*
+import com.example.moviesapp.use_case.interfaces.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -19,7 +19,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val getDeviceLanguageUseCase: GetDeviceLanguageUseCase,
+    private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
     private val getSpeechToTextAvailableUseCase: GetSpeechToTextAvailableUseCase,
     private val mediaSearchQueriesUseCase: MediaSearchQueriesUseCase,
     private val mediaAddSearchQueryUseCase: MediaAddSearchQueryUseCase,
@@ -27,7 +27,7 @@ class SearchViewModel @Inject constructor(
     private val getPopularMoviesUseCase: GetPopularMoviesUseCase
 ) : BaseViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCase()
+    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCaseImpl()
     private val queryDelay = 500.milliseconds
     private val minQueryLength = 3
 

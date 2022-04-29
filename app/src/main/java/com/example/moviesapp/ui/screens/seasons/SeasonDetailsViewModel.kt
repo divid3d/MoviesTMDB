@@ -6,31 +6,27 @@ import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
-import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
-import com.example.moviesapp.repository.tv.TvSeriesRepository
 import com.example.moviesapp.ui.screens.destinations.SeasonDetailsScreenDestination
-import com.example.moviesapp.use_case.*
+import com.example.moviesapp.use_case.interfaces.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SeasonDetailsViewModel @Inject constructor(
-    private val getDeviceLanguageUseCase: GetDeviceLanguageUseCase,
+    private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
     private val getSeasonDetailsUseCase: GetSeasonDetailsUseCase,
-    private val getSeasonsVideosUseCase: GetSeasonsVideosUseCase,
+    private val getSeasonsVideosUseCaseImpl: GetSeasonsVideosUseCase,
     private val getSeasonCreditsUseCase: GetSeasonCreditsUseCase,
-    private val getEpisodeStillsUseCase: GetEpisodeStillsUseCase,
+    private val getEpisodeStillsUseCaseImpl: GetEpisodeStillsUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
     private val navArgs: SeasonDetailsScreenArgs =
         SeasonDetailsScreenDestination.argsFrom(savedStateHandle)
-    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCase()
+    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCaseImpl()
 
     private val seasonDetails: MutableStateFlow<SeasonDetails?> = MutableStateFlow(null)
     private val aggregatedCredits: MutableStateFlow<AggregatedCredits?> = MutableStateFlow(null)
@@ -101,7 +97,7 @@ class SeasonDetailsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            getEpisodeStillsUseCase(
+            getEpisodeStillsUseCaseImpl(
                 tvSeriesId = navArgs.tvSeriesId,
                 seasonNumber = navArgs.seasonNumber,
                 episodeNumber = episodeNumber
@@ -149,7 +145,7 @@ class SeasonDetailsViewModel @Inject constructor(
         seasonNumber: Int,
         deviceLanguage: DeviceLanguage
     ) {
-        getSeasonsVideosUseCase(
+        getSeasonsVideosUseCaseImpl(
             tvSeriesId = tvSeriesId,
             seasonNumber = seasonNumber,
             deviceLanguage = deviceLanguage

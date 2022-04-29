@@ -1,16 +1,15 @@
 package com.example.moviesapp.ui.screens.discover
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.SortOrder
 import com.example.moviesapp.model.SortType
-import com.example.moviesapp.use_case.GetAllTvSeriesWatchProvidersUseCase
-import com.example.moviesapp.use_case.GetDeviceLanguageUseCase
-import com.example.moviesapp.use_case.GetDiscoverTvSeriesUseCase
-import com.example.moviesapp.use_case.GetTvSeriesGenresUseCase
+import com.example.moviesapp.use_case.interfaces.GetAllTvSeriesWatchProvidersUseCase
+import com.example.moviesapp.use_case.interfaces.GetDeviceLanguageUseCase
+import com.example.moviesapp.use_case.interfaces.GetDiscoverTvSeriesUseCase
+import com.example.moviesapp.use_case.interfaces.GetTvSeriesGenresUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -20,15 +19,15 @@ import javax.inject.Inject
 @FlowPreview
 @HiltViewModel
 class DiscoverTvSeriesViewModel @Inject constructor(
-    private val getDeviceLanguageUseCase: GetDeviceLanguageUseCase,
+    private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
     private val getTvSeriesGenresUseCase: GetTvSeriesGenresUseCase,
-    private val getAllTvSeriesWatchProvidersUseCase: GetAllTvSeriesWatchProvidersUseCase,
-    private val getDiscoverTvSeriesUseCase: GetDiscoverTvSeriesUseCase
+    private val getAllTvSeriesWatchProvidersUseCaseImpl: GetAllTvSeriesWatchProvidersUseCase,
+    private val getDiscoverTvSeriesUseCaseImpl: GetDiscoverTvSeriesUseCase
 ) : ViewModel() {
 
-    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCase()
+    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCaseImpl()
     private val availableTvSeriesGenres = getTvSeriesGenresUseCase()
-    private val availableWatchProviders = getAllTvSeriesWatchProvidersUseCase()
+    private val availableWatchProviders = getAllTvSeriesWatchProvidersUseCaseImpl()
 
     private val sortInfo: MutableStateFlow<SortInfo> = MutableStateFlow(SortInfo.default)
 
@@ -48,7 +47,7 @@ class DiscoverTvSeriesViewModel @Inject constructor(
     val uiState: StateFlow<DiscoverTvSeriesScreenUiState> = combine(
         deviceLanguage, sortInfo, filterState
     ) { deviceLanguage, sortInfo, filterState ->
-        val tvSeries = getDiscoverTvSeriesUseCase(
+        val tvSeries = getDiscoverTvSeriesUseCaseImpl(
             sortInfo = sortInfo,
             filterState = filterState,
             deviceLanguage = deviceLanguage

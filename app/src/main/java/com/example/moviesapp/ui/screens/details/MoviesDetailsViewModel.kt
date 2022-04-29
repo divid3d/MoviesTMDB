@@ -7,24 +7,26 @@ import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
-import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
-import com.example.moviesapp.repository.movie.MovieRepository
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
-import com.example.moviesapp.use_case.*
+import com.example.moviesapp.use_case.LikeMovieUseCaseImpl
+import com.example.moviesapp.use_case.UnlikeMovieUseCaseImpl
+import com.example.moviesapp.use_case.interfaces.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
-import kotlin.reflect.typeOf
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class MoviesDetailsViewModel @Inject constructor(
-    private val getDeviceLanguageUseCase: GetDeviceLanguageUseCase,
+    private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
     private val getRelatedMoviesUseCase: GetRelatedMoviesOfTypeUseCase,
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
     private val getMovieBackdropsUseCase: GetMovieBackdropsUseCase,
@@ -35,17 +37,17 @@ class MoviesDetailsViewModel @Inject constructor(
     private val getMoviesVideosUseCase: GetMovieVideosUseCase,
     private val getMovieCollectionUseCase: GetMovieCollectionUseCase,
     private val getOtherDirectorMoviesUseCase: GetOtherDirectorMoviesUseCase,
-    private val getFavouriteMoviesIdsUseCase: GetFavouriteMoviesIdsUseCase,
+    private val getFavouriteMoviesIdsUseCaseImpl: GetFavouriteMoviesIdsUseCase,
     private val addRecentlyBrowsedMovieUseCase: AddRecentlyBrowsedMovieUseCase,
-    private val unlikeMovieUseCase: UnlikeMovieUseCase,
-    private val likeMovieUseCase: LikeMovieUseCase,
+    private val unlikeMovieUseCase: UnlikeMovieUseCaseImpl,
+    private val likeMovieUseCaseImpl: LikeMovieUseCaseImpl,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
     private val navArgs: MovieDetailsScreenArgs =
         MovieDetailsScreenDestination.argsFrom(savedStateHandle)
-    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCase()
-    private val favouritesMoviesIdsFlow: Flow<List<Int>> = getFavouriteMoviesIdsUseCase()
+    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCaseImpl()
+    private val favouritesMoviesIdsFlow: Flow<List<Int>> = getFavouriteMoviesIdsUseCaseImpl()
 
     private val watchAtTime: MutableStateFlow<Date?> = MutableStateFlow(null)
     private val _movieDetails: MutableStateFlow<MovieDetails?> = MutableStateFlow(null)
@@ -194,7 +196,7 @@ class MoviesDetailsViewModel @Inject constructor(
     }
 
     fun onLikeClick(movieDetails: MovieDetails) {
-        likeMovieUseCase(movieDetails)
+        likeMovieUseCaseImpl(movieDetails)
     }
 
     fun onUnlikeClick(movieDetails: MovieDetails) {
