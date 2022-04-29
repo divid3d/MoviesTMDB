@@ -1,8 +1,11 @@
 package com.example.moviesapp.ui.components.sections
 
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideIn
-import androidx.compose.animation.slideOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -35,6 +38,7 @@ import com.example.moviesapp.ui.components.texts.SectionLabel
 import com.example.moviesapp.ui.theme.spacing
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun PresentableSection(
     title: String,
@@ -149,9 +153,10 @@ fun PresentableSection(
                     enter = slideIn(
                         animationSpec = tween(),
                         initialOffset = { size -> IntOffset(-size.width, 0) }),
-                    exit = slideOut(
-                        animationSpec = tween(),
-                        targetOffset = { size -> IntOffset(-size.width, 0) }),
+                    exit = fadeOut(animationSpec = spring()) + scaleOut(
+                        animationSpec = spring(),
+                        targetScale = 0.3f
+                    ),
                 ) {
                     ScrollToStartButton(
                         onClick = onScrollToStartClick
