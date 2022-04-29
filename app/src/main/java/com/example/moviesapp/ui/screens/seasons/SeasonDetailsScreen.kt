@@ -325,7 +325,8 @@ fun SeasonDetailsContent(
                             .padding(bottom = bottomPadding),
                         episode = episode,
                         stills = stills,
-                        expanded = expanded
+                        expanded = expanded,
+                        enabled = episode.isReleased()
                     ) {
                         expanded = !expanded
                         if (expanded) {

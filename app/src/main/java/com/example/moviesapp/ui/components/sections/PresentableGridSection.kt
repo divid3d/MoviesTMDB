@@ -99,7 +99,7 @@ fun PresentableGridSection(
             exit = fadeOut(animationSpec = spring()) + scaleOut(
                 animationSpec = spring(),
                 targetScale = 0.3f
-            ),
+            )
         ) {
             ScrollToTop(
                 onClick = onScrollToStartClick

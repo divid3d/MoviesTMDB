@@ -3,6 +3,7 @@ package com.example.moviesapp.model
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @JsonClass(generateAdapter = true)
 data class Episode(
@@ -32,4 +33,14 @@ data class Episode(
 
     @Json(name = "vote_count")
     val voteCount: Int
-)
+){
+    fun isReleased(): Boolean  {
+        if(airDate == null){
+            return false
+        }
+
+        val timeDiff = Calendar.getInstance().timeInMillis - airDate.time
+
+        return TimeUnit.MILLISECONDS.toDays(timeDiff) >= 0
+    }
+}
