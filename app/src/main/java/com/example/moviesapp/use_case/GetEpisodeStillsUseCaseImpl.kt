@@ -3,19 +3,19 @@ package com.example.moviesapp.use_case
 import com.example.moviesapp.api.ApiResponse
 import com.example.moviesapp.api.awaitApiResponse
 import com.example.moviesapp.model.Image
-import com.example.moviesapp.repository.tv.TvSeriesRepository
+import com.example.moviesapp.repository.season.SeasonRepository
 import com.example.moviesapp.use_case.interfaces.GetEpisodeStillsUseCase
 import javax.inject.Inject
 
 class GetEpisodeStillsUseCaseImpl @Inject constructor(
-    private val tvSeriesRepository: TvSeriesRepository
+    private val seasonRepository: SeasonRepository
 ) : GetEpisodeStillsUseCase {
     override suspend operator fun invoke(
         tvSeriesId: Int,
         seasonNumber: Int,
         episodeNumber: Int
     ): ApiResponse<List<Image>> {
-        val response = tvSeriesRepository.episodeImages(
+        val response = seasonRepository.episodeImages(
             tvSeriesId = tvSeriesId,
             seasonNumber = seasonNumber,
             episodeNumber = episodeNumber

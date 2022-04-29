@@ -5,6 +5,7 @@ import com.example.moviesapp.repository.config.ConfigRepository
 import com.example.moviesapp.repository.favourites.FavouritesRepository
 import com.example.moviesapp.repository.movie.MovieRepository
 import com.example.moviesapp.repository.search.SearchRepository
+import com.example.moviesapp.repository.season.SeasonRepository
 import com.example.moviesapp.repository.tv.TvSeriesRepository
 import com.example.moviesapp.use_case.*
 import com.example.moviesapp.use_case.interfaces.*
@@ -82,9 +83,9 @@ object UseCaseModule {
 
     @Provides
     fun provideGetEpisodeStillsUseCase(
-        tvSeriesRepository: TvSeriesRepository
+        seasonRepository: SeasonRepository
     ): GetEpisodeStillsUseCase {
-        return GetEpisodeStillsUseCaseImpl(tvSeriesRepository)
+        return GetEpisodeStillsUseCaseImpl(seasonRepository)
     }
 
     @Provides
@@ -284,23 +285,23 @@ object UseCaseModule {
 
     @Provides
     fun provideGetSeasonCreditsUseCase(
-        tvSeriesRepository: TvSeriesRepository
+        seasonRepository: SeasonRepository
     ): GetSeasonCreditsUseCase {
-        return GetSeasonCreditsUseCaseImpl(tvSeriesRepository)
+        return GetSeasonCreditsUseCaseImpl(seasonRepository)
     }
 
     @Provides
     fun provideGetSeasonDetailsUseCase(
-        tvSeriesRepository: TvSeriesRepository
+        seasonRepository: SeasonRepository
     ): GetSeasonDetailsUseCase {
-        return GetSeasonDetailsUseCaseImpl(tvSeriesRepository)
+        return GetSeasonDetailsUseCaseImpl(seasonRepository)
     }
 
     @Provides
     fun provideGetSeasonVideosUseCase(
-        tvSeriesRepository: TvSeriesRepository
+        seasonRepository: SeasonRepository
     ): GetSeasonsVideosUseCase {
-        return GetSeasonsVideosUseCaseImpl(tvSeriesRepository)
+        return GetSeasonsVideosUseCaseImpl(seasonRepository)
     }
 
     @Provides

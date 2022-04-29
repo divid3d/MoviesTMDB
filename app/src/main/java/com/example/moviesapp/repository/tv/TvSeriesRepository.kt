@@ -54,26 +54,8 @@ interface TvSeriesRepository {
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
     ): Call<TvSeriesDetails>
 
-    fun getTvSeason(
-        tvSeriesId: Int,
-        seasonNumber: Int,
-        deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Call<TvSeasonsResponse>
-
     fun tvSeriesImages(
         tvSeriesId: Int
-    ): Call<ImagesResponse>
-
-    fun seasonDetails(
-        tvSeriesId: Int,
-        seasonNumber: Int,
-        deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Call<SeasonDetails>
-
-    fun episodeImages(
-        tvSeriesId: Int,
-        seasonNumber: Int,
-        episodeNumber: Int
     ): Call<ImagesResponse>
 
     fun tvSeriesReviews(tvSeriesId: Int): Flow<PagingData<Review>>
@@ -88,17 +70,4 @@ interface TvSeriesRepository {
         tvSeriesId: Int,
         isoCode: String = DeviceLanguage.default.languageCode
     ): Call<VideosResponse>
-
-    fun seasonVideos(
-        tvSeriesId: Int,
-        seasonNumber: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
-    ): Call<VideosResponse>
-
-    fun seasonCredits(
-        tvSeriesId: Int,
-        seasonNumber: Int,
-        isoCode: String = DeviceLanguage.default.languageCode
-    ): Call<AggregatedCredits>
-
 }

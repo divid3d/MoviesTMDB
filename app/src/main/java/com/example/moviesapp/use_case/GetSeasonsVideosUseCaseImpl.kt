@@ -4,19 +4,19 @@ import com.example.moviesapp.api.ApiResponse
 import com.example.moviesapp.api.awaitApiResponse
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Video
-import com.example.moviesapp.repository.tv.TvSeriesRepository
+import com.example.moviesapp.repository.season.SeasonRepository
 import com.example.moviesapp.use_case.interfaces.GetSeasonsVideosUseCase
 import javax.inject.Inject
 
 class GetSeasonsVideosUseCaseImpl @Inject constructor(
-    private val tvSeriesRepository: TvSeriesRepository
+    private val seasonRepository: SeasonRepository
 ) : GetSeasonsVideosUseCase {
     override suspend operator fun invoke(
         tvSeriesId: Int,
         seasonNumber: Int,
         deviceLanguage: DeviceLanguage
     ): ApiResponse<List<Video>> {
-        val response = tvSeriesRepository.seasonVideos(
+        val response = seasonRepository.seasonVideos(
             tvSeriesId = tvSeriesId,
             seasonNumber = seasonNumber
         ).awaitApiResponse()
