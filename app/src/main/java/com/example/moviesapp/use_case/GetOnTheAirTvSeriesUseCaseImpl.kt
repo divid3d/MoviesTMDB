@@ -17,12 +17,10 @@ class GetOnTheAirTvSeriesUseCaseImpl @Inject constructor(
 ) : GetOnTheAirTvSeriesUseCase {
     override operator fun invoke(
         deviceLanguage: DeviceLanguage,
-        filter: Boolean
+        filtered: Boolean
     ): Flow<PagingData<TvSeries>> {
-        return tvSeriesRepository.onTheAirTvSeries(deviceLanguage).apply {
-            if (filter) {
-                mapLatest { data -> data.filterCompleteInfo() }
-            }
+        return tvSeriesRepository.onTheAirTvSeries(deviceLanguage).mapLatest { data ->
+            if (filtered) data.filterCompleteInfo() else data
         }
     }
 

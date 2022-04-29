@@ -19,10 +19,8 @@ class GetNowPlayingMoviesUseCaseImpl @Inject constructor(
         deviceLanguage: DeviceLanguage,
         filtered: Boolean
     ): Flow<PagingData<Movie>> {
-        return movieRepository.nowPlayingMovies(deviceLanguage).apply {
-            if (filtered) {
-                mapLatest { pagingData -> pagingData.filterCompleteInfo() }
-            }
+        return movieRepository.nowPlayingMovies(deviceLanguage).mapLatest { data ->
+            if (filtered) data.filterCompleteInfo() else data
         }
     }
 

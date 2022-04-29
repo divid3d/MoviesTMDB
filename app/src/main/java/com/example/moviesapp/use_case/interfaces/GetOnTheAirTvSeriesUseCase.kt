@@ -8,6 +8,6 @@ import kotlinx.coroutines.flow.Flow
 interface GetOnTheAirTvSeriesUseCase {
     operator fun invoke(
         deviceLanguage: DeviceLanguage,
-        filter: Boolean = false
+        filtered: Boolean = false
     ): Flow<PagingData<TvSeries>>
 }
