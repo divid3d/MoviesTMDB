@@ -12,20 +12,19 @@ import com.example.moviesapp.other.Converters
         TvSeriesFavourite::class,
         RecentlyBrowsedMovie::class,
         RecentlyBrowsedTvSeries::class,
-        SearchQuery::class
+        SearchQuery::class,
+        MovieEntity::class,
+        MoviesRemoteKeys::class
     ],
     version = 1
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
-
     abstract fun favouritesMoviesDao(): FavouritesMoviesDao
-
     abstract fun favouritesTvSeriesDao(): FavouritesTvSeriesDao
-
     abstract fun recentlyBrowsedMovies(): RecentlyBrowsedMoviesDao
-
     abstract fun recentlyBrowsedTvSeries(): RecentlyBrowsedTvSeriesDao
-
     abstract fun searchQueryDao(): SearchQueryDao
+    abstract fun movieDao(): MoviesDao
+    abstract fun moviesRemoteKeysDao(): MoviesRemoteKeysDao
 }

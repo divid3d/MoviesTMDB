@@ -47,4 +47,8 @@ object DatabaseModule {
     @Provides
     fun provideSearchQueryDao(database: AppDatabase): SearchQueryDao =
         database.searchQueryDao()
+
+    @Singleton
+    @Provides
+    fun provideMoviesDao(database: AppDatabase): MoviesDao = database.movieDao()
 }
