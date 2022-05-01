@@ -4,6 +4,7 @@ import com.example.moviesapp.repository.browsed.RecentlyBrowsedRepository
 import com.example.moviesapp.repository.config.ConfigRepository
 import com.example.moviesapp.repository.favourites.FavouritesRepository
 import com.example.moviesapp.repository.movie.MovieRepository
+import com.example.moviesapp.repository.person.PersonRepository
 import com.example.moviesapp.repository.search.SearchRepository
 import com.example.moviesapp.repository.season.SeasonRepository
 import com.example.moviesapp.repository.tv.TvSeriesRepository
@@ -407,5 +408,26 @@ object UseCaseModule {
         configRepository: ConfigRepository
     ): GetAllTvSeriesWatchProvidersUseCase {
         return GetAllTvSeriesWatchProvidersUseCaseImpl(configRepository)
+    }
+
+    @Provides
+    fun providesGetPersonDetailsUseCase(
+        personRepository: PersonRepository
+    ): GetPersonDetailsUseCase {
+        return GetPersonDetailsUseCaseImpl(personRepository)
+    }
+
+    @Provides
+    fun getCombinedCreditsUseCase(
+        personRepository: PersonRepository
+    ): GetCombinedCreditsUseCase {
+        return GetCombinedCreditsUseCaseImpl(personRepository)
+    }
+
+    @Provides
+    fun getPersonExternalIdsUseCase(
+        personRepository: PersonRepository
+    ): GetPersonExternalIdsUseCase {
+        return GetPersonExternalIdsUseCaseImpl(personRepository)
     }
 }
