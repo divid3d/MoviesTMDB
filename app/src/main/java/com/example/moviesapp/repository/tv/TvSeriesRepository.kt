@@ -21,23 +21,23 @@ interface TvSeriesRepository {
 
     fun topRatedTvSeries(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<TvSeries>>
+    ): Flow<PagingData<TvSeriesEntity>>
 
     fun onTheAirTvSeries(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<TvSeries>>
+    ): Flow<PagingData<TvSeriesDetailEntity>>
 
     fun trendingTvSeries(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<TvSeries>>
+    ): Flow<PagingData<TvSeriesEntity>>
 
     fun popularTvSeries(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<TvSeries>>
+    ): Flow<PagingData<TvSeriesEntity>>
 
     fun airingTodayTvSeries(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<TvSeries>>
+    ): Flow<PagingData<TvSeriesEntity>>
 
     fun similarTvSeries(
         tvSeriesId: Int,

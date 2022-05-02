@@ -141,6 +141,8 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
 
+    implementation 'androidx.room:room-paging:2.5.0-alpha01'
+
     // Import the BoM for the Firebase platform
     implementation platform("com.google.firebase:firebase-bom:$firebase_bom_version")
 

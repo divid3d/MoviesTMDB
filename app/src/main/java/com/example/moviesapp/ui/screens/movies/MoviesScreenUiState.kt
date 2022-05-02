@@ -2,8 +2,9 @@ package com.example.moviesapp.ui.screens.movies
 
 import androidx.compose.runtime.Stable
 import androidx.paging.PagingData
-import com.example.moviesapp.model.Movie
+import com.example.moviesapp.model.DetailPresentable
 import com.example.moviesapp.model.MovieFavourite
+import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.RecentlyBrowsedMovie
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -25,11 +26,11 @@ data class MovieScreenUiState(
 
 @Stable
 data class MoviesState(
-    val discover: Flow<PagingData<Movie>>,
-    val upcoming: Flow<PagingData<Movie>>,
-    val topRated: Flow<PagingData<Movie>>,
-    val trending: Flow<PagingData<Movie>>,
-    val nowPlaying: Flow<PagingData<Movie>>
+    val discover: Flow<PagingData<Presentable>>,
+    val upcoming: Flow<PagingData<Presentable>>,
+    val topRated: Flow<PagingData<Presentable>>,
+    val trending: Flow<PagingData<Presentable>>,
+    val nowPlaying: Flow<PagingData<DetailPresentable>>
 ) {
     companion object {
         val default: MoviesState = MoviesState(

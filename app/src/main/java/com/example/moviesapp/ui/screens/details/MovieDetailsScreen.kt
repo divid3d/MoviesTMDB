@@ -3,7 +3,7 @@ package com.example.moviesapp.ui.screens.details
 import android.os.Parcelable
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -342,28 +343,24 @@ fun MovieDetailsScreenContent(
                 onShareClicked = onShareClicked
             )
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = uiState.additionalMovieDetailsInfo.watchProviders
-            ) { providers ->
-                if (providers != null) {
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = uiState.additionalMovieDetailsInfo.watchProviders != null
+            ) {
+                if (uiState.additionalMovieDetailsInfo.watchProviders != null) {
                     WatchProvidersSection(
                         modifier = Modifier.fillMaxWidth(),
-                        watchProviders = providers,
+                        watchProviders = uiState.additionalMovieDetailsInfo.watchProviders,
                         title = stringResource(R.string.available_at)
                     )
                 }
             }
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = uiState.additionalMovieDetailsInfo.credits?.cast
-            ) { cast ->
-                cast.ifNotNullAndEmpty { members ->
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = !uiState.additionalMovieDetailsInfo.credits?.cast.isNullOrEmpty()
+            ) {
+                uiState.additionalMovieDetailsInfo.credits?.cast?.ifNotNullAndEmpty { members ->
                     MemberSection(
                         modifier = Modifier.fillMaxWidth(),
                         title = stringResource(R.string.movie_details_cast),
@@ -374,13 +371,11 @@ fun MovieDetailsScreenContent(
                 }
             }
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = uiState.additionalMovieDetailsInfo.credits?.crew
-            ) { crew ->
-                crew.ifNotNullAndEmpty { members ->
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = !uiState.additionalMovieDetailsInfo.credits?.crew.isNullOrEmpty()
+            ) {
+                uiState.additionalMovieDetailsInfo.credits?.crew.ifNotNullAndEmpty { members ->
                     MemberSection(
                         modifier = Modifier.fillMaxWidth(),
                         title = stringResource(R.string.movie_details_crew),
@@ -391,12 +386,12 @@ fun MovieDetailsScreenContent(
                 }
             }
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = uiState.associatedMovies.collection
-            ) { movieCollection ->
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = uiState.associatedMovies.collection?.run { parts.isNotEmpty() } == true
+            ) {
+                val movieCollection = uiState.associatedMovies.collection
+
                 if (movieCollection != null && movieCollection.parts.isNotEmpty()) {
                     PresentableListSection(
                         modifier = Modifier
@@ -568,4 +563,33 @@ fun MovieDetailsScreenContent(
             }
         )
     }
+}
+
+@Composable
+fun AnimatedContentContainer(
+    modifier: Modifier = Modifier,
+    visible: Boolean,
+    content: @Composable BoxScope.() -> Unit = {}
+) {
+    val visibleState = remember { MutableTransitionState(false) }
+    visibleState.targetState = visible
+
+    val transition = updateTransition(visibleState, label = "visibility transition")
+    val alpha by transition.animateFloat(
+        transitionSpec = {
+            if (false isTransitioningTo true) {
+                tween(delayMillis = 300)
+            } else {
+                spring()
+            }
+        },
+        label = "alpha transition"
+    ) { isVisible -> if (isVisible) 1f else 0f }
+
+
+    Box(
+        modifier = modifier
+            .alpha(alpha)
+            .animateContentSize(tween(300)), content = content
+    )
 }

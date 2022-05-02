@@ -5,7 +5,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.model.DeviceLanguage
-import com.example.moviesapp.model.Movie
+import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.SearchQuery
 import com.example.moviesapp.model.SearchResult
 import com.example.moviesapp.use_case.interfaces.*
@@ -31,7 +31,7 @@ class SearchViewModel @Inject constructor(
     private val queryDelay = 500.milliseconds
     private val minQueryLength = 3
 
-    private val popularMovies: Flow<PagingData<Movie>> =
+    private val popularMovies: Flow<PagingData<Presentable>> =
         deviceLanguage.mapLatest { deviceLanguage ->
             getPopularMoviesUseCase(deviceLanguage)
         }.flattenMerge().cachedIn(viewModelScope)
@@ -144,7 +144,7 @@ sealed class SearchState {
 }
 
 sealed class ResultState {
-    data class Default(val popular: Flow<PagingData<Movie>> = emptyFlow()) : ResultState()
+    data class Default(val popular: Flow<PagingData<Presentable>> = emptyFlow()) : ResultState()
     data class Search(val result: Flow<PagingData<SearchResult>>) : ResultState()
 }
 

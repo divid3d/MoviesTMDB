@@ -12,15 +12,19 @@ import java.io.IOException
 
 class TvSeriesDetailsResponseDataSource(
     private val tvSeriesId: Int,
-    private val language: String = DeviceLanguage.default.languageCode,
-    private val region: String = DeviceLanguage.default.region,
+    private val deviceLanguage: DeviceLanguage,
     private inline val apiHelperMethod: suspend (Int, Int, String, String) -> TvSeriesResponse
 ) : PagingSource<Int, TvSeries>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TvSeries> {
         return try {
             val nextPage = params.key ?: 1
-            val movieResponse = apiHelperMethod(tvSeriesId, nextPage, language, region)
+            val movieResponse = apiHelperMethod(
+                tvSeriesId,
+                nextPage,
+                deviceLanguage.languageCode,
+                deviceLanguage.region
+            )
 
             val currentPage = movieResponse.page
             val totalPages = movieResponse.totalPages

@@ -53,9 +53,7 @@ class MoviesDetailsViewModel @Inject constructor(
     private val _movieDetails: MutableStateFlow<MovieDetails?> = MutableStateFlow(null)
     private val movieDetails: StateFlow<MovieDetails?> =
         _movieDetails.onEach { movieDetails ->
-            movieDetails?.let { details ->
-                addRecentlyBrowsedMovieUseCase(details)
-            }
+            movieDetails?.let(addRecentlyBrowsedMovieUseCase::invoke)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     private val credits: MutableStateFlow<Credits?> = MutableStateFlow(null)
@@ -67,11 +65,9 @@ class MoviesDetailsViewModel @Inject constructor(
     private val watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
     private val videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
     private val reviewsCount: MutableStateFlow<Int> = MutableStateFlow(0)
-
     private val isFavourite: Flow<Boolean> = favouritesMoviesIdsFlow.mapLatest { favouriteIds ->
         navArgs.movieId in favouriteIds
     }
-
     private val externalIds: MutableStateFlow<List<ExternalId>?> = MutableStateFlow(null)
 
     private val additionalInfo: StateFlow<AdditionalMovieDetailsInfo> = combine(
@@ -138,6 +134,10 @@ class MoviesDetailsViewModel @Inject constructor(
 
 
     init {
+        getMovieInfo()
+    }
+
+    private fun getMovieInfo() {
         viewModelScope.launch {
             val movieId = navArgs.movieId
 

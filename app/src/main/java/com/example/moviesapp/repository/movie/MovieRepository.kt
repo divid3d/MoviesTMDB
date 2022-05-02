@@ -21,23 +21,23 @@ interface MovieRepository {
 
     fun popularMovies(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<Movie>>
+    ): Flow<PagingData<MovieEntity>>
 
     fun upcomingMovies(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<Movie>>
+    ): Flow<PagingData<MovieEntity>>
 
     fun trendingMovies(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<Movie>>
+    ): Flow<PagingData<MovieEntity>>
 
     fun topRatedMovies(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<Movie>>
+    ): Flow<PagingData<MovieEntity>>
 
     fun nowPlayingMovies(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<Movie>>
+    ): Flow<PagingData<MovieDetailEntity>>
 
     fun similarMovies(
         movieId: Int,

@@ -2,8 +2,10 @@ package com.example.moviesapp.use_case
 
 import androidx.paging.PagingData
 import androidx.paging.filter
+import androidx.paging.map
+import com.example.moviesapp.model.DetailPresentable
 import com.example.moviesapp.model.DeviceLanguage
-import com.example.moviesapp.model.TvSeries
+import com.example.moviesapp.model.TvSeriesDetailEntity
 import com.example.moviesapp.repository.tv.TvSeriesRepository
 import com.example.moviesapp.use_case.interfaces.GetOnTheAirTvSeriesUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,13 +20,13 @@ class GetOnTheAirTvSeriesUseCaseImpl @Inject constructor(
     override operator fun invoke(
         deviceLanguage: DeviceLanguage,
         filtered: Boolean
-    ): Flow<PagingData<TvSeries>> {
+    ): Flow<PagingData<DetailPresentable>> {
         return tvSeriesRepository.onTheAirTvSeries(deviceLanguage).mapLatest { data ->
             if (filtered) data.filterCompleteInfo() else data
-        }
+        }.mapLatest { data -> data.map { it } }
     }
 
-    private fun PagingData<TvSeries>.filterCompleteInfo(): PagingData<TvSeries> {
+    private fun PagingData<TvSeriesDetailEntity>.filterCompleteInfo(): PagingData<TvSeriesDetailEntity> {
         return filter { tvSeries ->
             tvSeries.run {
                 !backdropPath.isNullOrEmpty() &&
