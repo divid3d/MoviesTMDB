@@ -35,7 +35,10 @@ class TvSeriesRemoteMediator(
 
     override suspend fun initialize(): InitializeAction {
         val remoteKey = appDatabase.withTransaction {
-            tvSeriesRemoteKeysDao.getRemoteKey(type)
+            tvSeriesRemoteKeysDao.getRemoteKey(
+                type = type,
+                language = deviceLanguage.languageCode
+            )
         } ?: return InitializeAction.LAUNCH_INITIAL_REFRESH
 
         val cacheTimeout = TimeUnit.HOURS.convert(1, TimeUnit.MILLISECONDS)
@@ -59,7 +62,10 @@ class TvSeriesRemoteMediator(
                 }
                 LoadType.APPEND -> {
                     val remoteKey = appDatabase.withTransaction {
-                        tvSeriesRemoteKeysDao.getRemoteKey(type)
+                        tvSeriesRemoteKeysDao.getRemoteKey(
+                            type = type,
+                            language = deviceLanguage.languageCode
+                        )
                     } ?: return MediatorResult.Success(true)
 
                     if (remoteKey.nextPage == null) {
@@ -74,8 +80,14 @@ class TvSeriesRemoteMediator(
 
             appDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    tvSeriesDao.deleteTvSeriesOfType(type)
-                    tvSeriesRemoteKeysDao.deleteRemoteKeysOfType(type)
+                    tvSeriesDao.deleteTvSeriesOfType(
+                        type = type,
+                        language = deviceLanguage.languageCode
+                    )
+                    tvSeriesRemoteKeysDao.deleteRemoteKeysOfType(
+                        type = type,
+                        language = deviceLanguage.languageCode
+                    )
                 }
 
                 val nextPage = if (result.tvSeries.isNotEmpty()) {
@@ -88,12 +100,14 @@ class TvSeriesRemoteMediator(
                         type = type,
                         title = tvSeries.title,
                         originalName = tvSeries.originalName,
-                        posterPath = tvSeries.posterPath
+                        posterPath = tvSeries.posterPath,
+                        language = deviceLanguage.languageCode
                     )
                 }
 
                 tvSeriesRemoteKeysDao.insertKey(
                     TvSeriesRemoteKeys(
+                        language = deviceLanguage.languageCode,
                         type = type,
                         nextPage = nextPage,
                         lastUpdated = System.currentTimeMillis()

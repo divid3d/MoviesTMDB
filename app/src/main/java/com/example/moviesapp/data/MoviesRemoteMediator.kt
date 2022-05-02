@@ -35,7 +35,10 @@ class MoviesRemoteMediator(
 
     override suspend fun initialize(): InitializeAction {
         val remoteKey = appDatabase.withTransaction {
-            remoteKeysDao.getRemoteKey(type)
+            remoteKeysDao.getRemoteKey(
+                type = type,
+                language = deviceLanguage.languageCode
+            )
         } ?: return InitializeAction.LAUNCH_INITIAL_REFRESH
 
         val cacheTimeout = TimeUnit.HOURS.convert(1, TimeUnit.MILLISECONDS)
@@ -59,7 +62,10 @@ class MoviesRemoteMediator(
                 }
                 LoadType.APPEND -> {
                     val remoteKey = appDatabase.withTransaction {
-                        remoteKeysDao.getRemoteKey(type)
+                        remoteKeysDao.getRemoteKey(
+                            type = type,
+                            language = deviceLanguage.languageCode
+                        )
                     } ?: return MediatorResult.Success(true)
 
                     if (remoteKey.nextPage == null) {
@@ -74,8 +80,14 @@ class MoviesRemoteMediator(
 
             appDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    movieCacheDao.deleteMoviesOfType(type)
-                    remoteKeysDao.deleteRemoteKeysOfType(type)
+                    movieCacheDao.deleteMoviesOfType(
+                        type = type,
+                        language = deviceLanguage.languageCode
+                    )
+                    remoteKeysDao.deleteRemoteKeysOfType(
+                        type = type,
+                        language = deviceLanguage.languageCode
+                    )
                 }
 
                 val nextPage = if (result.movies.isNotEmpty()) {
@@ -88,12 +100,14 @@ class MoviesRemoteMediator(
                         type = type,
                         title = movie.title,
                         originalTitle = movie.originalTitle,
-                        posterPath = movie.posterPath
+                        posterPath = movie.posterPath,
+                        language = deviceLanguage.languageCode
                     )
                 }
 
                 remoteKeysDao.insertKey(
                     MoviesRemoteKeys(
+                        language = deviceLanguage.languageCode,
                         type = type,
                         nextPage = nextPage,
                         lastUpdated = System.currentTimeMillis()

@@ -62,7 +62,10 @@ class MovieRepositoryImpl(
                 type = MovieEntityType.Popular
             ),
             pagingSourceFactory = {
-                appDatabase.movieDao().getAllMovies(MovieEntityType.Popular)
+                appDatabase.movieDao().getAllMovies(
+                    type = MovieEntityType.Popular,
+                    language = deviceLanguage.languageCode
+                )
             }
         ).flow.flowOn(defaultDispatcher)
 
@@ -76,7 +79,10 @@ class MovieRepositoryImpl(
                 type = MovieEntityType.Upcoming
             ),
             pagingSourceFactory = {
-                appDatabase.movieDao().getAllMovies(MovieEntityType.Upcoming)
+                appDatabase.movieDao().getAllMovies(
+                    type = MovieEntityType.Upcoming,
+                    language = deviceLanguage.languageCode
+                )
             }
         ).flow.flowOn(defaultDispatcher)
 
@@ -90,7 +96,10 @@ class MovieRepositoryImpl(
                 type = MovieEntityType.Trending
             ),
             pagingSourceFactory = {
-                appDatabase.movieDao().getAllMovies(MovieEntityType.Trending)
+                appDatabase.movieDao().getAllMovies(
+                    type = MovieEntityType.Trending,
+                    language = deviceLanguage.languageCode
+                )
             }
         ).flow.flowOn(defaultDispatcher)
 
@@ -104,7 +113,10 @@ class MovieRepositoryImpl(
                 type = MovieEntityType.TopRated
             ),
             pagingSourceFactory = {
-                appDatabase.movieDao().getAllMovies(MovieEntityType.TopRated)
+                appDatabase.movieDao().getAllMovies(
+                    type = MovieEntityType.TopRated,
+                    language = deviceLanguage.languageCode
+                )
             }
         ).flow.flowOn(defaultDispatcher)
 
@@ -117,7 +129,7 @@ class MovieRepositoryImpl(
                 appDatabase = appDatabase
             ),
             pagingSourceFactory = {
-                appDatabase.moviesDetailsDao().getAllMovies()
+                appDatabase.moviesDetailsDao().getAllMovies(language = deviceLanguage.languageCode)
             }
         ).flow.flowOn(defaultDispatcher)
 

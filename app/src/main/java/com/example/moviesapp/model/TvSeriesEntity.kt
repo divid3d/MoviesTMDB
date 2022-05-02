@@ -2,9 +2,10 @@ package com.example.moviesapp.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(indices = [Index(value = ["type", "language"])])
 data class TvSeriesEntity(
     override val id: Int,
 
@@ -17,6 +18,8 @@ data class TvSeriesEntity(
 
     @ColumnInfo(name = "original_name")
     val originalName: String?,
+
+    val language: String
 ) : Presentable {
     @PrimaryKey(autoGenerate = true)
     var entityId: Int = 0

@@ -28,7 +28,7 @@ class MoviesDetailsRemoteMediator(
 
     override suspend fun initialize(): InitializeAction {
         val remoteKey = appDatabase.withTransaction {
-            movieDetailsRemoteKeysDao.getRemoteKey()
+            movieDetailsRemoteKeysDao.getRemoteKey(deviceLanguage.languageCode)
         } ?: return InitializeAction.LAUNCH_INITIAL_REFRESH
 
         val cacheTimeout = TimeUnit.HOURS.convert(1, TimeUnit.MILLISECONDS)
@@ -52,7 +52,7 @@ class MoviesDetailsRemoteMediator(
                 }
                 LoadType.APPEND -> {
                     val remoteKey = appDatabase.withTransaction {
-                        movieDetailsRemoteKeysDao.getRemoteKey()
+                        movieDetailsRemoteKeysDao.getRemoteKey(deviceLanguage.languageCode)
                     } ?: return MediatorResult.Success(true)
 
                     if (remoteKey.nextPage == null) {
@@ -71,8 +71,8 @@ class MoviesDetailsRemoteMediator(
 
             appDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    movieDetailsDao.deleteMovieDetails()
-                    movieDetailsRemoteKeysDao.deleteKeys()
+                    movieDetailsDao.deleteMovieDetails(deviceLanguage.languageCode)
+                    movieDetailsRemoteKeysDao.deleteKeys(deviceLanguage.languageCode)
                 }
 
                 val nextPage = if (result.movies.isNotEmpty()) {
@@ -89,12 +89,14 @@ class MoviesDetailsRemoteMediator(
                         overview = movie.overview,
                         adult = movie.adult,
                         voteAverage = movie.voteAverage,
-                        voteCount = movie.voteCount
+                        voteCount = movie.voteCount,
+                        language = deviceLanguage.languageCode
                     )
                 }
 
                 movieDetailsRemoteKeysDao.insertKey(
                     MovieDetailsRemoteKey(
+                        language = deviceLanguage.languageCode,
                         nextPage = nextPage,
                         lastUpdated = System.currentTimeMillis()
                     )

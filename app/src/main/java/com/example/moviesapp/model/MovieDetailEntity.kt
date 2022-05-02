@@ -2,9 +2,10 @@ package com.example.moviesapp.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(indices = [Index(value = ["language"])])
 data class MovieDetailEntity(
     override val id: Int,
 
@@ -26,6 +27,8 @@ data class MovieDetailEntity(
     override val voteAverage: Float,
 
     override val voteCount: Int,
+
+    val language: String
 ) : DetailPresentable {
     @PrimaryKey(autoGenerate = true)
     var entityId: Int = 0

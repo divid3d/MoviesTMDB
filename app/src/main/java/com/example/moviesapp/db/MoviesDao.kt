@@ -9,13 +9,13 @@ import com.example.moviesapp.other.MovieEntityTypeConverters
 @TypeConverters(MovieEntityTypeConverters::class)
 @Dao
 interface MoviesDao {
-    @Query("SELECT * FROM MovieEntity WHERE type=:type")
-    fun getAllMovies(type: MovieEntityType): PagingSource<Int, MovieEntity>
+    @Query("SELECT * FROM MovieEntity WHERE type=:type AND language=:language")
+    fun getAllMovies(type: MovieEntityType, language: String): PagingSource<Int, MovieEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addMovies(movies: List<MovieEntity>)
 
-    @Query("DELETE FROM MovieEntity WHERE type=:type")
-    suspend fun deleteMoviesOfType(type: MovieEntityType)
+    @Query("DELETE FROM MovieEntity WHERE type=:type AND language=:language")
+    suspend fun deleteMoviesOfType(type: MovieEntityType, language: String)
 }
 

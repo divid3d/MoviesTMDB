@@ -9,13 +9,16 @@ import com.example.moviesapp.other.TvSeriesEntityTypeConverters
 @TypeConverters(TvSeriesEntityTypeConverters::class)
 @Dao
 interface TvSeriesDao {
-    @Query("SELECT * FROM TvSeriesEntity WHERE type=:type")
-    fun getAllTvSeries(type: TvSeriesEntityType): PagingSource<Int, TvSeriesEntity>
+    @Query("SELECT * FROM TvSeriesEntity WHERE type=:type AND language=:language")
+    fun getAllTvSeries(
+        type: TvSeriesEntityType,
+        language: String
+    ): PagingSource<Int, TvSeriesEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addTvSeries(movies: List<TvSeriesEntity>)
 
-    @Query("DELETE FROM TvSeriesEntity WHERE type=:type")
-    suspend fun deleteTvSeriesOfType(type: TvSeriesEntityType)
+    @Query("DELETE FROM TvSeriesEntity WHERE type=:type AND language=:language")
+    suspend fun deleteTvSeriesOfType(type: TvSeriesEntityType, language: String)
 }
 

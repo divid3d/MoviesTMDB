@@ -7,12 +7,12 @@ import com.example.moviesapp.other.MovieEntityTypeConverters
 @TypeConverters(MovieEntityTypeConverters::class)
 @Dao
 interface MoviesDetailsRemoteKeysDao {
-    @Query("SELECT * FROM MovieDetailsRemoteKey LIMIT 1")
-    suspend fun getRemoteKey(): MovieDetailsRemoteKey?
+    @Query("SELECT * FROM MovieDetailsRemoteKey WHERE language=:language LIMIT 1")
+    suspend fun getRemoteKey(language: String): MovieDetailsRemoteKey?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertKey(remoteKey: MovieDetailsRemoteKey)
 
-    @Query("DELETE FROM MovieDetailsRemoteKey")
-    suspend fun deleteKeys()
+    @Query("DELETE FROM MovieDetailsRemoteKey WHERE language=:language")
+    suspend fun deleteKeys(language: String)
 }

@@ -8,13 +8,13 @@ import com.example.moviesapp.other.MovieEntityTypeConverters
 @TypeConverters(MovieEntityTypeConverters::class)
 @Dao
 interface TvSeriesDetailsDao {
-    @Query("SELECT * FROM TvSeriesDetailEntity")
-    fun getAllTvSeries(): PagingSource<Int, TvSeriesDetailEntity>
+    @Query("SELECT * FROM TvSeriesDetailEntity WHERE language=:language")
+    fun getAllTvSeries(language: String): PagingSource<Int, TvSeriesDetailEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addTvSeries(movies: List<TvSeriesDetailEntity>)
 
-    @Query("DELETE FROM TvSeriesDetailEntity")
-    suspend fun deleteAllTvSeries()
+    @Query("DELETE FROM TvSeriesDetailEntity WHERE language=:language")
+    suspend fun deleteAllTvSeries(language: String)
 }
 

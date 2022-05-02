@@ -62,7 +62,10 @@ class TvSeriesRepositoryImpl(
                 type = TvSeriesEntityType.TopRated
             ),
             pagingSourceFactory = {
-                appDatabase.tvSeriesDao().getAllTvSeries(TvSeriesEntityType.TopRated)
+                appDatabase.tvSeriesDao().getAllTvSeries(
+                    type = TvSeriesEntityType.TopRated,
+                    language = deviceLanguage.languageCode
+                )
             }
         ).flow.flowOn(defaultDispatcher)
 
@@ -75,7 +78,7 @@ class TvSeriesRepositoryImpl(
                 appDatabase = appDatabase,
             ),
             pagingSourceFactory = {
-                appDatabase.tvSeriesDetailsDao().getAllTvSeries()
+                appDatabase.tvSeriesDetailsDao().getAllTvSeries(deviceLanguage.languageCode)
             }
         ).flow.flowOn(defaultDispatcher)
 
@@ -89,7 +92,10 @@ class TvSeriesRepositoryImpl(
                 type = TvSeriesEntityType.Trending
             ),
             pagingSourceFactory = {
-                appDatabase.tvSeriesDao().getAllTvSeries(TvSeriesEntityType.Trending)
+                appDatabase.tvSeriesDao().getAllTvSeries(
+                    type = TvSeriesEntityType.Trending,
+                    language = deviceLanguage.languageCode
+                )
             }
         ).flow.flowOn(defaultDispatcher)
 
@@ -103,7 +109,10 @@ class TvSeriesRepositoryImpl(
                 type = TvSeriesEntityType.Popular
             ),
             pagingSourceFactory = {
-                appDatabase.tvSeriesDao().getAllTvSeries(TvSeriesEntityType.Popular)
+                appDatabase.tvSeriesDao().getAllTvSeries(
+                    type = TvSeriesEntityType.Popular,
+                    language = deviceLanguage.languageCode
+                )
             }
         ).flow.flowOn(defaultDispatcher)
 
@@ -117,7 +126,10 @@ class TvSeriesRepositoryImpl(
                 type = TvSeriesEntityType.AiringToday
             ),
             pagingSourceFactory = {
-                appDatabase.tvSeriesDao().getAllTvSeries(TvSeriesEntityType.AiringToday)
+                appDatabase.tvSeriesDao().getAllTvSeries(
+                    type = TvSeriesEntityType.AiringToday,
+                    language = deviceLanguage.languageCode
+                )
             }
         ).flow.flowOn(defaultDispatcher)
 
@@ -154,7 +166,6 @@ class TvSeriesRepositoryImpl(
         deviceLanguage: DeviceLanguage
     ): Call<TvSeriesDetails> =
         apiHelper.getTvSeriesDetails(tvSeriesId, deviceLanguage.languageCode)
-
 
     override fun tvSeriesImages(
         tvSeriesId: Int

@@ -28,7 +28,7 @@ class TvSeriesDetailsRemoteMediator(
 
     override suspend fun initialize(): InitializeAction {
         val remoteKey = appDatabase.withTransaction {
-            tvSeriesDetailsRemoteKeysDao.getRemoteKey()
+            tvSeriesDetailsRemoteKeysDao.getRemoteKey(deviceLanguage.languageCode)
         } ?: return InitializeAction.LAUNCH_INITIAL_REFRESH
 
         val cacheTimeout = TimeUnit.HOURS.convert(1, TimeUnit.MILLISECONDS)
@@ -52,7 +52,7 @@ class TvSeriesDetailsRemoteMediator(
                 }
                 LoadType.APPEND -> {
                     val remoteKey = appDatabase.withTransaction {
-                        tvSeriesDetailsRemoteKeysDao.getRemoteKey()
+                        tvSeriesDetailsRemoteKeysDao.getRemoteKey(deviceLanguage.languageCode)
                     } ?: return MediatorResult.Success(true)
 
                     if (remoteKey.nextPage == null) {
@@ -71,8 +71,8 @@ class TvSeriesDetailsRemoteMediator(
 
             appDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    tvSeriesDetailsDao.deleteAllTvSeries()
-                    tvSeriesDetailsRemoteKeysDao.deleteKeys()
+                    tvSeriesDetailsDao.deleteAllTvSeries(deviceLanguage.languageCode)
+                    tvSeriesDetailsRemoteKeysDao.deleteKeys(deviceLanguage.languageCode)
                 }
 
                 val nextPage = if (result.tvSeries.isNotEmpty()) {
@@ -89,12 +89,14 @@ class TvSeriesDetailsRemoteMediator(
                         overview = tvSeries.overview,
                         adult = tvSeries.adult,
                         voteAverage = tvSeries.voteAverage,
-                        voteCount = tvSeries.voteCount
+                        voteCount = tvSeries.voteCount,
+                        language = deviceLanguage.languageCode
                     )
                 }
 
                 tvSeriesDetailsRemoteKeysDao.insertKey(
                     TvSeriesDetailsRemoteKey(
+                        language = deviceLanguage.languageCode,
                         nextPage = nextPage,
                         lastUpdated = System.currentTimeMillis()
                     )
