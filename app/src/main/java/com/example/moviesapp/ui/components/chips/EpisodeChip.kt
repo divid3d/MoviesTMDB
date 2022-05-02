@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -88,8 +89,38 @@ fun EpisodeChip(
                         Text(
                             text = date.formatted(),
                             fontWeight = FontWeight.Light,
-                            fontSize = 12.sp
+                            fontSize = 12.sp,
                         )
+                    }
+
+                    if (episode.voteCount != 0) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_baseline_star_rate_24),
+                                    contentDescription = "rating",
+                                    tint = Color.Yellow,
+                                    modifier = Modifier.size(16.dp)
+                                )
+
+                                Text(
+                                    text = stringResource(
+                                        R.string.rating,
+                                        episode.voteAverage,
+                                        10
+                                    ),
+                                    fontSize = 12.sp
+                                )
+                            }
+
+                            Text(
+                                text = stringResource(R.string.vote_count, episode.voteCount),
+                                fontSize = 12.sp
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
@@ -143,5 +174,4 @@ fun EpisodeChip(
             }
         }
     }
-
 }

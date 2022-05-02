@@ -11,6 +11,8 @@
     <string name="next_episode_tomorrow_text">Nowy odcinek jutro</string>
     <string name="next_episode_days_text" formatted="true">Nowy odcinek za %d dni</string>
 
+    <string name="vote_count" formatted="true">(%d głosów)</string>
+
     <string name="exit_dialog_info">Czy na pewno chcesz opuścić aplikację?</string>
     <string name="exit_dialog_confirm_button_label">Potwierdź</string>
     <string name="exit_dialog_cancel_button_label">Anuluj</string>
