@@ -4,9 +4,9 @@ import androidx.paging.PagingSource
 import androidx.room.*
 import com.example.moviesapp.model.MovieEntity
 import com.example.moviesapp.model.MovieEntityType
-import com.example.moviesapp.other.Converters
+import com.example.moviesapp.other.MovieEntityTypeConverters
 
-@TypeConverters(Converters::class)
+@TypeConverters(MovieEntityTypeConverters::class)
 @Dao
 interface MoviesDao {
     @Query("SELECT * FROM MovieEntity WHERE type=:type")

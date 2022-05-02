@@ -21,7 +21,7 @@ interface TvSeriesRepository {
 
     fun topRatedTvSeries(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<TvSeries>>
+    ): Flow<PagingData<TvSeriesEntity>>
 
     fun onTheAirTvSeries(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
@@ -29,15 +29,15 @@ interface TvSeriesRepository {
 
     fun trendingTvSeries(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<TvSeries>>
+    ): Flow<PagingData<TvSeriesEntity>>
 
     fun popularTvSeries(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<TvSeries>>
+    ): Flow<PagingData<TvSeriesEntity>>
 
     fun airingTodayTvSeries(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<TvSeries>>
+    ): Flow<PagingData<TvSeriesEntity>>
 
     fun similarTvSeries(
         tvSeriesId: Int,

@@ -2,6 +2,7 @@ package com.example.moviesapp.ui.screens.tv
 
 import androidx.compose.runtime.Stable
 import androidx.paging.PagingData
+import com.example.moviesapp.model.Presentable
 import com.example.moviesapp.model.RecentlyBrowsedTvSeries
 import com.example.moviesapp.model.TvSeries
 import com.example.moviesapp.model.TvSeriesFavourite
@@ -26,9 +27,9 @@ data class TvScreenUiState(
 data class TvSeriesState(
     val onTheAir: Flow<PagingData<TvSeries>>,
     val discover: Flow<PagingData<TvSeries>>,
-    val topRated: Flow<PagingData<TvSeries>>,
-    val trending: Flow<PagingData<TvSeries>>,
-    val airingToday: Flow<PagingData<TvSeries>>
+    val topRated: Flow<PagingData<Presentable>>,
+    val trending: Flow<PagingData<Presentable>>,
+    val airingToday: Flow<PagingData<Presentable>>
 ) {
     companion object {
         val default: TvSeriesState = TvSeriesState(

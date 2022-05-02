@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.moviesapp.model.*
-import com.example.moviesapp.other.Converters
+import com.example.moviesapp.other.DateConverters
 
 @Database(
     entities = [
@@ -14,11 +14,13 @@ import com.example.moviesapp.other.Converters
         RecentlyBrowsedTvSeries::class,
         SearchQuery::class,
         MovieEntity::class,
-        MoviesRemoteKeys::class
+        MoviesRemoteKeys::class,
+        TvSeriesEntity::class,
+        TvSeriesRemoteKeys::class
     ],
     version = 1
 )
-@TypeConverters(Converters::class)
+@TypeConverters(DateConverters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun favouritesMoviesDao(): FavouritesMoviesDao
     abstract fun favouritesTvSeriesDao(): FavouritesTvSeriesDao
@@ -27,4 +29,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun searchQueryDao(): SearchQueryDao
     abstract fun movieDao(): MoviesDao
     abstract fun moviesRemoteKeysDao(): MoviesRemoteKeysDao
+    abstract fun tvSeriesDao(): TvSeriesDao
+    abstract fun tvSeriesRemoteKeysDao(): TvSeriesRemoteKeysDao
 }

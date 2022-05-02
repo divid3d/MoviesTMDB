@@ -63,8 +63,9 @@ object RepositoryModule {
     @Provides
     fun provideTvSeriesRepository(
         dispatcher: CoroutineDispatcher,
-        apiHelper: TmdbApiHelper
-    ): TvSeriesRepository = TvSeriesRepositoryImpl(dispatcher, apiHelper)
+        apiHelper: TmdbApiHelper,
+        appDatabase: AppDatabase
+    ): TvSeriesRepository = TvSeriesRepositoryImpl(dispatcher, apiHelper, appDatabase)
 
     @Singleton
     @Provides

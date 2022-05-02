@@ -3,9 +3,9 @@ package com.example.moviesapp.db
 import androidx.room.*
 import com.example.moviesapp.model.MovieEntityType
 import com.example.moviesapp.model.MoviesRemoteKeys
-import com.example.moviesapp.other.Converters
+import com.example.moviesapp.other.MovieEntityTypeConverters
 
-@TypeConverters(Converters::class)
+@TypeConverters(MovieEntityTypeConverters::class)
 @Dao
 interface MoviesRemoteKeysDao {
     @Query("SELECT * FROM MoviesRemoteKeys WHERE type=:type")

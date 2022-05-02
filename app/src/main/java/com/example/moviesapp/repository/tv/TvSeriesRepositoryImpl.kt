@@ -1,13 +1,12 @@
 package com.example.moviesapp.repository.tv
 
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.moviesapp.api.TmdbApiHelper
-import com.example.moviesapp.data.DiscoverTvSeriesDataSource
-import com.example.moviesapp.data.ReviewsDataSource
-import com.example.moviesapp.data.TvSeriesDetailsResponseDataSource
-import com.example.moviesapp.data.TvSeriesResponseDataSource
+import com.example.moviesapp.data.*
+import com.example.moviesapp.db.AppDatabase
 import com.example.moviesapp.model.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -17,9 +16,11 @@ import retrofit2.Call
 import javax.inject.Singleton
 
 @Singleton
+@OptIn(ExperimentalPagingApi::class)
 class TvSeriesRepositoryImpl(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val apiHelper: TmdbApiHelper
+    private val apiHelper: TmdbApiHelper,
+    private val appDatabase: AppDatabase
 ) : TvSeriesRepository {
     override fun discoverTvSeries(
         deviceLanguage: DeviceLanguage,
@@ -52,16 +53,20 @@ class TvSeriesRepositoryImpl(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    override fun topRatedTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeries>> =
+    override fun topRatedTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeriesEntity>> =
         Pager(
-            PagingConfig(pageSize = 20)
-        ) {
-            TvSeriesResponseDataSource(
+            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            remoteMediator = TvSeriesRemoteMediator(
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getTopRatedTvSeries
-            )
-        }.flow.flowOn(defaultDispatcher)
+                apiHelper = apiHelper,
+                appDatabase = appDatabase,
+                type = TvSeriesEntityType.TopRated
+            ),
+            pagingSourceFactory = {
+                appDatabase.tvSeriesDao().getAllTvSeries(TvSeriesEntityType.TopRated)
+            }
+        ).flow.flowOn(defaultDispatcher)
 
     override fun onTheAirTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeries>> =
         Pager(
@@ -74,38 +79,50 @@ class TvSeriesRepositoryImpl(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    override fun trendingTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeries>> =
+    override fun trendingTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeriesEntity>> =
         Pager(
-            PagingConfig(pageSize = 20)
-        ) {
-            TvSeriesResponseDataSource(
+            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            remoteMediator = TvSeriesRemoteMediator(
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getTrendingTvSeries
-            )
-        }.flow.flowOn(defaultDispatcher)
+                apiHelper = apiHelper,
+                appDatabase = appDatabase,
+                type = TvSeriesEntityType.Trending
+            ),
+            pagingSourceFactory = {
+                appDatabase.tvSeriesDao().getAllTvSeries(TvSeriesEntityType.Trending)
+            }
+        ).flow.flowOn(defaultDispatcher)
 
-    override fun popularTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeries>> =
+    override fun popularTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeriesEntity>> =
         Pager(
-            PagingConfig(pageSize = 20)
-        ) {
-            TvSeriesResponseDataSource(
+            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            remoteMediator = TvSeriesRemoteMediator(
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getPopularTvSeries
-            )
-        }.flow.flowOn(defaultDispatcher)
+                apiHelper = apiHelper,
+                appDatabase = appDatabase,
+                type = TvSeriesEntityType.Popular
+            ),
+            pagingSourceFactory = {
+                appDatabase.tvSeriesDao().getAllTvSeries(TvSeriesEntityType.Popular)
+            }
+        ).flow.flowOn(defaultDispatcher)
 
-    override fun airingTodayTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeries>> =
+    override fun airingTodayTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeriesEntity>> =
         Pager(
-            PagingConfig(pageSize = 20)
-        ) {
-            TvSeriesResponseDataSource(
+            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            remoteMediator = TvSeriesRemoteMediator(
                 language = deviceLanguage.languageCode,
                 region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getAiringTodayTvSeries
-            )
-        }.flow.flowOn(defaultDispatcher)
+                apiHelper = apiHelper,
+                appDatabase = appDatabase,
+                type = TvSeriesEntityType.AiringToday
+            ),
+            pagingSourceFactory = {
+                appDatabase.tvSeriesDao().getAllTvSeries(TvSeriesEntityType.AiringToday)
+            }
+        ).flow.flowOn(defaultDispatcher)
 
     override fun similarTvSeries(
         tvSeriesId: Int,
