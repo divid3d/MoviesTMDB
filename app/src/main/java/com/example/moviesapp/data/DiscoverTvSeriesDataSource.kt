@@ -11,8 +11,7 @@ import java.io.IOException
 
 class DiscoverTvSeriesDataSource(
     private val apiHelper: TmdbApiHelper,
-    private val language: String = DeviceLanguage.default.languageCode,
-    private val region: String = DeviceLanguage.default.region,
+    private val deviceLanguage: DeviceLanguage,
     private val sortType: SortType = SortType.Popularity,
     private val sortOrder: SortOrder = SortOrder.Desc,
     private val genresParam: GenresParam = GenresParam(genres = emptyList()),
@@ -34,8 +33,8 @@ class DiscoverTvSeriesDataSource(
 
             val tvSeriesResponse = apiHelper.discoverTvSeries(
                 page = nextPage,
-                isoCode = language,
-                region = region,
+                isoCode = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
                 sortTypeParam = sortTypeParam,
                 genresParam = genresParam,
                 watchProvidersParam = watchProvidersParam,

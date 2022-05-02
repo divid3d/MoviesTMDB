@@ -54,4 +54,20 @@ object DatabaseModule {
     @Provides
     fun provideTvSeriesRemoteKeysDao(database: AppDatabase): TvSeriesRemoteKeysDao =
         database.tvSeriesRemoteKeysDao()
+
+    @Provides
+    fun provideMovieDetailsDao(database: AppDatabase): MoviesDetailsDao =
+        database.moviesDetailsDao()
+
+    @Provides
+    fun provideMovieDetailsRemoteKeysDao(database: AppDatabase): MoviesRemoteKeysDao =
+        database.moviesRemoteKeysDao()
+
+    @Provides
+    fun provideTvSeriesDetailsDao(database: AppDatabase): TvSeriesDetailsDao =
+        database.tvSeriesDetailsDao()
+
+    @Provides
+    fun provideTbSeriesDetailsRemoteKeysDao(database: AppDatabase): TvSeriesDetailsRemoteKeysDao =
+        database.tvSeriesDetailsRemoteKeys()
 }

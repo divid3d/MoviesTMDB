@@ -37,7 +37,7 @@ interface MovieRepository {
 
     fun nowPlayingMovies(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<Movie>>
+    ): Flow<PagingData<MovieDetailEntity>>
 
     fun similarMovies(
         movieId: Int,

@@ -2,8 +2,11 @@ package com.example.moviesapp.use_case
 
 import androidx.paging.PagingData
 import androidx.paging.filter
+import androidx.paging.map
+import com.example.moviesapp.model.DetailPresentable
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Movie
+import com.example.moviesapp.model.MovieDetailEntity
 import com.example.moviesapp.repository.movie.MovieRepository
 import com.example.moviesapp.use_case.interfaces.GetNowPlayingMoviesUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,13 +21,13 @@ class GetNowPlayingMoviesUseCaseImpl @Inject constructor(
     override operator fun invoke(
         deviceLanguage: DeviceLanguage,
         filtered: Boolean
-    ): Flow<PagingData<Movie>> {
+    ): Flow<PagingData<DetailPresentable>> {
         return movieRepository.nowPlayingMovies(deviceLanguage).mapLatest { data ->
             if (filtered) data.filterCompleteInfo() else data
-        }
+        }.mapLatest { data -> data.map { it } }
     }
 
-    private fun PagingData<Movie>.filterCompleteInfo(): PagingData<Movie> {
+    private fun PagingData<MovieDetailEntity>.filterCompleteInfo(): PagingData<MovieDetailEntity> {
         return filter { tvSeries ->
             tvSeries.run {
                 !backdropPath.isNullOrEmpty() &&

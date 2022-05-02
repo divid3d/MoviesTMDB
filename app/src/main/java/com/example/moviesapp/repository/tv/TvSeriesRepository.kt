@@ -25,7 +25,7 @@ interface TvSeriesRepository {
 
     fun onTheAirTvSeries(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default
-    ): Flow<PagingData<TvSeries>>
+    ): Flow<PagingData<TvSeriesDetailEntity>>
 
     fun trendingTvSeries(
         deviceLanguage: DeviceLanguage = DeviceLanguage.default

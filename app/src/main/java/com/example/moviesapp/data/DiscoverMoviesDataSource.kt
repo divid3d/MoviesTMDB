@@ -11,8 +11,7 @@ import java.io.IOException
 
 class DiscoverMoviesDataSource(
     private val apiHelper: TmdbApiHelper,
-    private val language: String = DeviceLanguage.default.languageCode,
-    private val region: String = DeviceLanguage.default.region,
+    private val deviceLanguage: DeviceLanguage,
     private val sortType: SortType = SortType.Popularity,
     private val sortOrder: SortOrder = SortOrder.Desc,
     private val genresParam: GenresParam = GenresParam(genres = emptyList()),
@@ -24,8 +23,8 @@ class DiscoverMoviesDataSource(
     private val releaseDateRange: DateRange
 ) : PagingSource<Int, Movie>() {
 
-    private val fromReleaseDate = releaseDateRange.from?.let (::DateParam)
-    private val toReleaseDate = releaseDateRange.to?.let (::DateParam)
+    private val fromReleaseDate = releaseDateRange.from?.let(::DateParam)
+    private val toReleaseDate = releaseDateRange.to?.let(::DateParam)
     private val sortTypeParam = sortType.toSortTypeParam(sortOrder)
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
@@ -34,8 +33,8 @@ class DiscoverMoviesDataSource(
 
             val movieResponse = apiHelper.discoverMovies(
                 page = nextPage,
-                isoCode = language,
-                region = region,
+                isoCode = deviceLanguage.languageCode,
+                region = deviceLanguage.region,
                 sortTypeParam = sortTypeParam,
                 genresParam = genresParam,
                 watchProvidersParam = watchProvidersParam,

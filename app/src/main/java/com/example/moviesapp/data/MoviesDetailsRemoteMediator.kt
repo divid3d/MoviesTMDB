@@ -7,7 +7,9 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.db.AppDatabase
-import com.example.moviesapp.model.*
+import com.example.moviesapp.model.DeviceLanguage
+import com.example.moviesapp.model.MovieDetailEntity
+import com.example.moviesapp.model.MovieDetailsRemoteKey
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.squareup.moshi.JsonDataException
 import retrofit2.HttpException
@@ -15,27 +17,18 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalPagingApi::class)
-class MoviesRemoteMediator(
+class MoviesDetailsRemoteMediator(
     private val deviceLanguage: DeviceLanguage,
-    private val type: MovieEntityType,
     private val apiHelper: TmdbApiHelper,
     private val appDatabase: AppDatabase
-) : RemoteMediator<Int, MovieEntity>() {
+) : RemoteMediator<Int, MovieDetailEntity>() {
 
-    private val movieCacheDao = appDatabase.movieDao()
-    private val remoteKeysDao = appDatabase.moviesRemoteKeysDao()
-
-    private val apiHelperMethod: suspend (Int, String, String) -> MoviesResponse = when (type) {
-        MovieEntityType.TopRated -> apiHelper::getTopRatedMovies
-        MovieEntityType.Discover -> apiHelper::discoverMovies
-        MovieEntityType.Trending -> apiHelper::getTrendingMovies
-        MovieEntityType.Upcoming -> apiHelper::getUpcomingMovies
-        MovieEntityType.Popular -> apiHelper::getPopularMovies
-    }
+    private val movieDetailsDao = appDatabase.moviesDetailsDao()
+    private val movieDetailsRemoteKeysDao = appDatabase.moviesDetailsRemoteKeys()
 
     override suspend fun initialize(): InitializeAction {
         val remoteKey = appDatabase.withTransaction {
-            remoteKeysDao.getRemoteKey(type)
+            movieDetailsRemoteKeysDao.getRemoteKey()
         } ?: return InitializeAction.LAUNCH_INITIAL_REFRESH
 
         val cacheTimeout = TimeUnit.HOURS.convert(1, TimeUnit.MILLISECONDS)
@@ -49,7 +42,7 @@ class MoviesRemoteMediator(
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, MovieEntity>
+        state: PagingState<Int, MovieDetailEntity>
     ): MediatorResult {
         return try {
             val page = when (loadType) {
@@ -59,7 +52,7 @@ class MoviesRemoteMediator(
                 }
                 LoadType.APPEND -> {
                     val remoteKey = appDatabase.withTransaction {
-                        remoteKeysDao.getRemoteKey(type)
+                        movieDetailsRemoteKeysDao.getRemoteKey()
                     } ?: return MediatorResult.Success(true)
 
                     if (remoteKey.nextPage == null) {
@@ -70,36 +63,43 @@ class MoviesRemoteMediator(
                 }
             }
 
-            val result = apiHelperMethod(page, deviceLanguage.languageCode, deviceLanguage.region)
+            val result = apiHelper.getNowPlayingMovies(
+                page = page,
+                isoCode = deviceLanguage.languageCode,
+                region = deviceLanguage.region
+            )
 
             appDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    movieCacheDao.deleteMoviesOfType(type)
-                    remoteKeysDao.deleteRemoteKeysOfType(type)
+                    movieDetailsDao.deleteMovieDetails()
+                    movieDetailsRemoteKeysDao.deleteKeys()
                 }
 
                 val nextPage = if (result.movies.isNotEmpty()) {
                     page + 1
                 } else null
 
-                val movieEntities = result.movies.map { movie ->
-                    MovieEntity(
+                val movieDetailsEntities = result.movies.map { movie ->
+                    MovieDetailEntity(
                         id = movie.id,
-                        type = type,
                         title = movie.title,
                         originalTitle = movie.originalTitle,
-                        posterPath = movie.posterPath
+                        posterPath = movie.posterPath,
+                        backdropPath = movie.backdropPath,
+                        overview = movie.overview,
+                        adult = movie.adult,
+                        voteAverage = movie.voteAverage,
+                        voteCount = movie.voteCount
                     )
                 }
 
-                remoteKeysDao.insertKey(
-                    MoviesRemoteKeys(
-                        type = type,
+                movieDetailsRemoteKeysDao.insertKey(
+                    MovieDetailsRemoteKey(
                         nextPage = nextPage,
                         lastUpdated = System.currentTimeMillis()
                     )
                 )
-                movieCacheDao.addMovies(movieEntities)
+                movieDetailsDao.addMovies(movieDetailsEntities)
             }
 
             MediatorResult.Success(

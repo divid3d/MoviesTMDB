@@ -16,8 +16,7 @@ import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalPagingApi::class)
 class TvSeriesRemoteMediator(
-    private val language: String = DeviceLanguage.default.languageCode,
-    private val region: String = DeviceLanguage.default.region,
+    private val deviceLanguage: DeviceLanguage,
     private val type: TvSeriesEntityType,
     private val apiHelper: TmdbApiHelper,
     private val appDatabase: AppDatabase
@@ -31,6 +30,7 @@ class TvSeriesRemoteMediator(
         TvSeriesEntityType.TopRated -> apiHelper::getTopRatedTvSeries
         TvSeriesEntityType.Trending -> apiHelper::getTrendingTvSeries
         TvSeriesEntityType.Popular -> apiHelper::getPopularTvSeries
+        TvSeriesEntityType.Discover -> apiHelper::discoverTvSeries
     }
 
     override suspend fun initialize(): InitializeAction {
@@ -70,7 +70,7 @@ class TvSeriesRemoteMediator(
                 }
             }
 
-            val result = apiHelperMethod(page, language, region)
+            val result = apiHelperMethod(page, deviceLanguage.languageCode, deviceLanguage.region)
 
             appDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {

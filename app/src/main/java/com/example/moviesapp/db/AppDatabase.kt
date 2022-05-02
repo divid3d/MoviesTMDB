@@ -16,7 +16,11 @@ import com.example.moviesapp.other.DateConverters
         MovieEntity::class,
         MoviesRemoteKeys::class,
         TvSeriesEntity::class,
-        TvSeriesRemoteKeys::class
+        TvSeriesRemoteKeys::class,
+        MovieDetailEntity::class,
+        MovieDetailsRemoteKey::class,
+        TvSeriesDetailEntity::class,
+        TvSeriesDetailsRemoteKey::class
     ],
     version = 1
 )
@@ -31,4 +35,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun moviesRemoteKeysDao(): MoviesRemoteKeysDao
     abstract fun tvSeriesDao(): TvSeriesDao
     abstract fun tvSeriesRemoteKeysDao(): TvSeriesRemoteKeysDao
+    abstract fun moviesDetailsDao(): MoviesDetailsDao
+    abstract fun moviesDetailsRemoteKeys(): MoviesDetailsRemoteKeysDao
+    abstract fun tvSeriesDetailsDao(): TvSeriesDetailsDao
+    abstract fun tvSeriesDetailsRemoteKeys(): TvSeriesDetailsRemoteKeysDao
 }

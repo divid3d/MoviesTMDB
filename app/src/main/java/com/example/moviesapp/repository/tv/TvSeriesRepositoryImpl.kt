@@ -39,8 +39,7 @@ class TvSeriesRepositoryImpl(
         ) {
             DiscoverTvSeriesDataSource(
                 apiHelper = apiHelper,
-                language = deviceLanguage.languageCode,
-                region = deviceLanguage.region,
+                deviceLanguage = deviceLanguage,
                 sortType = sortType,
                 sortOrder = sortOrder,
                 genresParam = genresParam,
@@ -57,8 +56,7 @@ class TvSeriesRepositoryImpl(
         Pager(
             config = PagingConfig(pageSize = 20, initialLoadSize = 40),
             remoteMediator = TvSeriesRemoteMediator(
-                language = deviceLanguage.languageCode,
-                region = deviceLanguage.region,
+                deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
                 appDatabase = appDatabase,
                 type = TvSeriesEntityType.TopRated
@@ -68,23 +66,24 @@ class TvSeriesRepositoryImpl(
             }
         ).flow.flowOn(defaultDispatcher)
 
-    override fun onTheAirTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeries>> =
+    override fun onTheAirTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeriesDetailEntity>> =
         Pager(
-            PagingConfig(pageSize = 20)
-        ) {
-            TvSeriesResponseDataSource(
-                language = deviceLanguage.languageCode,
-                region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getOnTheAirTvSeries
-            )
-        }.flow.flowOn(defaultDispatcher)
+            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            remoteMediator = TvSeriesDetailsRemoteMediator(
+                deviceLanguage = deviceLanguage,
+                apiHelper = apiHelper,
+                appDatabase = appDatabase,
+            ),
+            pagingSourceFactory = {
+                appDatabase.tvSeriesDetailsDao().getAllTvSeries()
+            }
+        ).flow.flowOn(defaultDispatcher)
 
     override fun trendingTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeriesEntity>> =
         Pager(
             config = PagingConfig(pageSize = 20, initialLoadSize = 40),
             remoteMediator = TvSeriesRemoteMediator(
-                language = deviceLanguage.languageCode,
-                region = deviceLanguage.region,
+                deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
                 appDatabase = appDatabase,
                 type = TvSeriesEntityType.Trending
@@ -98,8 +97,7 @@ class TvSeriesRepositoryImpl(
         Pager(
             config = PagingConfig(pageSize = 20, initialLoadSize = 40),
             remoteMediator = TvSeriesRemoteMediator(
-                language = deviceLanguage.languageCode,
-                region = deviceLanguage.region,
+                deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
                 appDatabase = appDatabase,
                 type = TvSeriesEntityType.Popular
@@ -113,8 +111,7 @@ class TvSeriesRepositoryImpl(
         Pager(
             config = PagingConfig(pageSize = 20, initialLoadSize = 40),
             remoteMediator = TvSeriesRemoteMediator(
-                language = deviceLanguage.languageCode,
-                region = deviceLanguage.region,
+                deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
                 appDatabase = appDatabase,
                 type = TvSeriesEntityType.AiringToday
@@ -133,8 +130,7 @@ class TvSeriesRepositoryImpl(
         ) {
             TvSeriesDetailsResponseDataSource(
                 tvSeriesId = tvSeriesId,
-                language = deviceLanguage.languageCode,
-                region = deviceLanguage.region,
+                deviceLanguage = deviceLanguage,
                 apiHelperMethod = apiHelper::getSimilarTvSeries
             )
         }.flow.flowOn(defaultDispatcher)
@@ -148,8 +144,7 @@ class TvSeriesRepositoryImpl(
         ) {
             TvSeriesDetailsResponseDataSource(
                 tvSeriesId = tvSeriesId,
-                language = deviceLanguage.languageCode,
-                region = deviceLanguage.region,
+                deviceLanguage = deviceLanguage,
                 apiHelperMethod = apiHelper::getTvSeriesRecommendations
             )
         }.flow.flowOn(defaultDispatcher)

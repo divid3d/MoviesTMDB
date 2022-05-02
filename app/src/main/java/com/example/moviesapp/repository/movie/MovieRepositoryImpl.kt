@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.flowOn
 import retrofit2.Call
 import javax.inject.Singleton
 
+@OptIn(ExperimentalPagingApi::class)
 @Singleton
 class MovieRepositoryImpl(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -38,8 +39,7 @@ class MovieRepositoryImpl(
         ) {
             DiscoverMoviesDataSource(
                 apiHelper = apiHelper,
-                language = deviceLanguage.languageCode,
-                region = deviceLanguage.region,
+                deviceLanguage = deviceLanguage,
                 sortType = sortType,
                 sortOrder = sortOrder,
                 genresParam = genresParam,
@@ -52,13 +52,11 @@ class MovieRepositoryImpl(
             )
         }.flow.flowOn(defaultDispatcher)
 
-    @OptIn(ExperimentalPagingApi::class)
     override fun popularMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<MovieEntity>> =
         Pager(
             config = PagingConfig(pageSize = 20, initialLoadSize = 40),
             remoteMediator = MoviesRemoteMediator(
-                language = deviceLanguage.languageCode,
-                region = deviceLanguage.region,
+                deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
                 appDatabase = appDatabase,
                 type = MovieEntityType.Popular
@@ -68,13 +66,11 @@ class MovieRepositoryImpl(
             }
         ).flow.flowOn(defaultDispatcher)
 
-    @OptIn(ExperimentalPagingApi::class)
     override fun upcomingMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<MovieEntity>> =
         Pager(
             config = PagingConfig(pageSize = 20, initialLoadSize = 40),
             remoteMediator = MoviesRemoteMediator(
-                language = deviceLanguage.languageCode,
-                region = deviceLanguage.region,
+                deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
                 appDatabase = appDatabase,
                 type = MovieEntityType.Upcoming
@@ -84,13 +80,11 @@ class MovieRepositoryImpl(
             }
         ).flow.flowOn(defaultDispatcher)
 
-    @OptIn(ExperimentalPagingApi::class)
     override fun trendingMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<MovieEntity>> =
         Pager(
             config = PagingConfig(pageSize = 20, initialLoadSize = 40),
             remoteMediator = MoviesRemoteMediator(
-                language = deviceLanguage.languageCode,
-                region = deviceLanguage.region,
+                deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
                 appDatabase = appDatabase,
                 type = MovieEntityType.Trending
@@ -100,13 +94,11 @@ class MovieRepositoryImpl(
             }
         ).flow.flowOn(defaultDispatcher)
 
-    @OptIn(ExperimentalPagingApi::class)
     override fun topRatedMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<MovieEntity>> =
         Pager(
             config = PagingConfig(pageSize = 20, initialLoadSize = 40),
             remoteMediator = MoviesRemoteMediator(
-                language = deviceLanguage.languageCode,
-                region = deviceLanguage.region,
+                deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
                 appDatabase = appDatabase,
                 type = MovieEntityType.TopRated
@@ -116,16 +108,18 @@ class MovieRepositoryImpl(
             }
         ).flow.flowOn(defaultDispatcher)
 
-    override fun nowPlayingMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<Movie>> =
+    override fun nowPlayingMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<MovieDetailEntity>> =
         Pager(
-            PagingConfig(pageSize = 20)
-        ) {
-            MovieResponseDataSource(
-                language = deviceLanguage.languageCode,
-                region = deviceLanguage.region,
-                apiHelperMethod = apiHelper::getNowPlayingMovies
-            )
-        }.flow.flowOn(defaultDispatcher)
+            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            remoteMediator = MoviesDetailsRemoteMediator(
+                deviceLanguage = deviceLanguage,
+                apiHelper = apiHelper,
+                appDatabase = appDatabase
+            ),
+            pagingSourceFactory = {
+                appDatabase.moviesDetailsDao().getAllMovies()
+            }
+        ).flow.flowOn(defaultDispatcher)
 
     override fun similarMovies(
         movieId: Int,

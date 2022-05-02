@@ -24,5 +24,5 @@ data class TvSeriesEntity(
 
 
 enum class TvSeriesEntityType {
-    Trending, TopRated, AiringToday, Popular
+    Trending, TopRated, AiringToday, Popular, Discover
 }
