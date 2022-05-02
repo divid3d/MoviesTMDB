@@ -58,6 +58,10 @@ class PersonDetailsViewModel @Inject constructor(
     )
 
     init {
+        getPersonInfo()
+    }
+
+    private fun getPersonInfo() {
         viewModelScope.launch {
             deviceLanguage.collectLatest { deviceLanguage ->
                 launch {

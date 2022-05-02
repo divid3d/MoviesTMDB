@@ -418,16 +418,91 @@ object UseCaseModule {
     }
 
     @Provides
-    fun getCombinedCreditsUseCase(
+    fun providesGetCombinedCreditsUseCase(
         personRepository: PersonRepository
     ): GetCombinedCreditsUseCase {
         return GetCombinedCreditsUseCaseImpl(personRepository)
     }
 
     @Provides
-    fun getPersonExternalIdsUseCase(
+    fun providesGetPersonExternalIdsUseCase(
         personRepository: PersonRepository
     ): GetPersonExternalIdsUseCase {
         return GetPersonExternalIdsUseCaseImpl(personRepository)
+    }
+
+    @Provides
+    fun providesGetTvSeriesDetailsUseCase(
+        tvSeriesRepository: TvSeriesRepository
+    ): GetTvSeriesDetailsUseCase {
+        return GetTvSeriesDetailsUseCaseImpl(tvSeriesRepository)
+    }
+
+    @Provides
+    fun providesGetNextEpisodeDaysRemainingUseCase(): GetNextEpisodeDaysRemainingUseCase {
+        return GetNextEpisodeDaysRemainingUseCaseImpl()
+    }
+
+    @Provides
+    fun providesGetTvSeriesExternalIdsUseCase(
+        tvSeriesRepository: TvSeriesRepository
+    ): GetTvSeriesExternalIdsUseCase {
+        return GetTvSeriesExternalIdsUseCaseImpl(tvSeriesRepository)
+    }
+
+    @Provides
+    fun providesGetTvSeriesImagesUseCase(
+        tvSeriesRepository: TvSeriesRepository
+    ): GetTvSeriesImagesUseCase {
+        return GetTvSeriesImagesUseCaseImpl(tvSeriesRepository)
+    }
+
+    @Provides
+    fun providesGetTvSeriesReviewsCountUseCase(
+        tvSeriesRepository: TvSeriesRepository,
+    ): GetTvSeriesReviewsCountUseCase {
+        return GetTvSeriesReviewsCountUseCaseImpl(tvSeriesRepository)
+    }
+
+    @Provides
+    fun providesGetTvSeriesVideosUseCase(
+        tvSeriesRepository: TvSeriesRepository
+    ): GetTvSeriesVideosUseCase {
+        return GetTvSeriesVideosUseCaseImpl(tvSeriesRepository)
+    }
+
+    @Provides
+    fun providesGetTvSeriesWatchProvidersUseCase(
+        tvSeriesRepository: TvSeriesRepository
+    ): GetTvSeriesWatchProvidersUseCase {
+        return GetTvSeriesWatchProvidersUseCaseImpl(tvSeriesRepository)
+    }
+
+    @Provides
+    fun providesAddRecentlyBrowsedTvSeriesUseCase(
+        recentlyBrowsedRepository: RecentlyBrowsedRepository
+    ): AddRecentlyBrowsedTvSeriesUseCase {
+        return AddRecentlyBrowsedTvSeriesUseCaseImpl(recentlyBrowsedRepository)
+    }
+
+    @Provides
+    fun providesGetFavouritesTvSeriesIdsUseCase(
+        favouritesRepository: FavouritesRepository
+    ): GetFavouriteTvSeriesIdsUseCase {
+        return GetFavouriteTvSeriesIdsUseCaseImpl(favouritesRepository)
+    }
+
+    @Provides
+    fun providesLikeTvSeriesUseCase(
+        favouritesRepository: FavouritesRepository
+    ): LikeTvSeriesUseCase {
+        return LikeTvSeriesUseCaseImpl(favouritesRepository)
+    }
+
+    @Provides
+    fun providesUnlikeTvSeriesUseCase(
+        favouritesRepository: FavouritesRepository
+    ): UnlikeTvSeriesUseCase {
+        return UnlikeTvSeriesUseCaseImpl(favouritesRepository)
     }
 }

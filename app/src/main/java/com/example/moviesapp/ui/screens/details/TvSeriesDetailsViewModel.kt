@@ -7,45 +7,44 @@ import com.example.moviesapp.BaseViewModel
 import com.example.moviesapp.api.onException
 import com.example.moviesapp.api.onFailure
 import com.example.moviesapp.api.onSuccess
-import com.example.moviesapp.api.request
 import com.example.moviesapp.model.*
-import com.example.moviesapp.repository.browsed.RecentlyBrowsedRepository
-import com.example.moviesapp.repository.config.ConfigRepository
-import com.example.moviesapp.repository.favourites.FavouritesRepository
-import com.example.moviesapp.repository.tv.TvSeriesRepository
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
+import com.example.moviesapp.use_case.interfaces.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class TvSeriesDetailsViewModel @Inject constructor(
-    private val configRepository: ConfigRepository,
-    private val tvSeriesRepository: TvSeriesRepository,
-    private val favouritesRepository: FavouritesRepository,
-    private val recentlyBrowsedRepository: RecentlyBrowsedRepository,
+    private val getDeviceLanguageUseCase: GetDeviceLanguageUseCase,
+    private val addRecentlyBrowsedTvSeriesUseCase: AddRecentlyBrowsedTvSeriesUseCase,
+    private val getFavouriteTvSeriesIdsUseCase: GetFavouriteTvSeriesIdsUseCase,
+    private val getRelatedTvSeriesOfTypeUseCase: GetRelatedTvSeriesOfTypeUseCase,
+    private val getTvSeriesDetailsUseCase: GetTvSeriesDetailsUseCase,
+    private val getNextEpisodeDaysRemainingUseCase: GetNextEpisodeDaysRemainingUseCase,
+    private val getTvSeriesExternalIdsUseCase: GetTvSeriesExternalIdsUseCase,
+    private val getTvSeriesImagesUseCase: GetTvSeriesImagesUseCase,
+    private val getTvSeriesReviewsCountUseCase: GetTvSeriesReviewsCountUseCase,
+    private val getTvSeriesVideosUseCase: GetTvSeriesVideosUseCase,
+    private val getTvSeriesWatchProvidersUseCase: GetTvSeriesWatchProvidersUseCase,
+    private val likeTvSeriesUseCase: LikeTvSeriesUseCase,
+    private val unlikeTvSeriesUseCase: UnlikeTvSeriesUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
     private val navArgs: TvSeriesDetailsScreenArgs =
         TvSeriesDetailsScreenDestination.argsFrom(savedStateHandle)
 
-    private val deviceLanguage: Flow<DeviceLanguage> = configRepository.getDeviceLanguage()
-    private val favouriteTvSeriesIds: Flow<List<Int>> =
-        favouritesRepository.getFavouriteTvSeriesIds()
+    private val deviceLanguage: Flow<DeviceLanguage> = getDeviceLanguageUseCase()
+    private val favouriteTvSeriesIds: Flow<List<Int>> = getFavouriteTvSeriesIdsUseCase()
 
     private val _tvSeriesDetails: MutableStateFlow<TvSeriesDetails?> = MutableStateFlow(null)
     private val tvSeriesDetails: StateFlow<TvSeriesDetails?> =
         _tvSeriesDetails.onEach { tvSeriesDetails ->
-            tvSeriesDetails?.let { details ->
-                recentlyBrowsedRepository.addRecentlyBrowsedTvSeries(details)
-            }
+            tvSeriesDetails?.let(addRecentlyBrowsedTvSeriesUseCase::invoke)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
 
     private val tvSeriesBackdrops: MutableStateFlow<List<Image>> = MutableStateFlow(emptyList())
@@ -58,11 +57,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
         navArgs.tvSeriesId in favouriteIds
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), false)
 
-    private val _externalIds: MutableStateFlow<ExternalIds?> = MutableStateFlow(null)
-    val externalIds: StateFlow<List<ExternalId>?> =
-        _externalIds.filterNotNull().mapLatest { externalIds ->
-            externalIds.toExternalIdList(type = ExternalContentType.Tv)
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10), null)
+    private val externalIds: MutableStateFlow<List<ExternalId>?> = MutableStateFlow(null)
 
     private val additionalInfo: StateFlow<AdditionalTvSeriesDetailsInfo> = combine(
         isFavourite, nextEpisodeDaysRemaining, watchProviders, reviewsCount
@@ -82,12 +77,14 @@ class TvSeriesDetailsViewModel @Inject constructor(
     private val associatedTvSeries: StateFlow<AssociatedTvSeries> =
         deviceLanguage.mapLatest { deviceLanguage ->
             AssociatedTvSeries(
-                similar = tvSeriesRepository.similarTvSeries(
+                similar = getRelatedTvSeriesOfTypeUseCase(
                     tvSeriesId = navArgs.tvSeriesId,
+                    type = RelationType.Similar,
                     deviceLanguage = deviceLanguage
                 ).cachedIn(viewModelScope),
-                recommendations = tvSeriesRepository.tvSeriesRecommendations(
+                recommendations = getRelatedTvSeriesOfTypeUseCase(
                     tvSeriesId = navArgs.tvSeriesId,
+                    type = RelationType.Recommended,
                     deviceLanguage = deviceLanguage
                 ).cachedIn(viewModelScope)
             )
@@ -121,151 +118,146 @@ class TvSeriesDetailsViewModel @Inject constructor(
     )
 
     init {
-        viewModelScope.launch {
-            deviceLanguage.collectLatest { deviceLanguage ->
-                getTvSeriesInfo(
-                    tvSeriesId = navArgs.tvSeriesId,
-                    deviceLanguage = deviceLanguage
-                )
-            }
-        }
+        getTvSeriesInfo()
     }
 
     fun onLikeClick(tvSeriesDetails: TvSeriesDetails) {
-        favouritesRepository.likeTvSeries(tvSeriesDetails)
+        likeTvSeriesUseCase(tvSeriesDetails)
     }
 
     fun onUnlikeClick(tvSeriesDetails: TvSeriesDetails) {
-        favouritesRepository.unlikeTvSeries(tvSeriesDetails)
+        unlikeTvSeriesUseCase(tvSeriesDetails)
     }
 
-    private fun getTvSeriesInfo(tvSeriesId: Int, deviceLanguage: DeviceLanguage) {
-        getTvSeriesDetails(tvSeriesId, deviceLanguage)
-        getMovieImages(tvSeriesId)
-        getExternalIds(tvSeriesId)
-        getWatchProviders(tvSeriesId, deviceLanguage)
-        getTvSeriesVideos(tvSeriesId, deviceLanguage)
-        getTvSeriesReview(tvSeriesId)
+    private fun getTvSeriesInfo() {
+        val tvSeriesId = navArgs.tvSeriesId
+
+        viewModelScope.launch {
+            launch {
+                getTvSeriesImages(tvSeriesId)
+            }
+
+            launch {
+                getExternalIds(tvSeriesId)
+            }
+
+            launch {
+                getTvSeriesReviewsCount(tvSeriesId)
+            }
+
+            deviceLanguage.collectLatest { deviceLanguage ->
+                launch {
+                    getTvSeriesDetails(
+                        tvSeriesId = tvSeriesId,
+                        deviceLanguage = deviceLanguage
+                    )
+                }
+
+                launch {
+                    getWatchProviders(
+                        tvSeriesId = tvSeriesId,
+                        deviceLanguage = deviceLanguage
+                    )
+                }
+
+                launch {
+                    getTvSeriesVideos(
+                        tvSeriesId = tvSeriesId,
+                        deviceLanguage = deviceLanguage
+                    )
+                }
+            }
+        }
     }
 
-    private fun getTvSeriesDetails(tvSeriesId: Int, deviceLanguage: DeviceLanguage) {
-        tvSeriesRepository.getTvSeriesDetails(
+    private suspend fun getTvSeriesDetails(tvSeriesId: Int, deviceLanguage: DeviceLanguage) {
+        getTvSeriesDetailsUseCase(
             tvSeriesId = tvSeriesId,
             deviceLanguage = deviceLanguage
-        ).request { response ->
-            response.onSuccess {
-                viewModelScope.launch {
-                    val tvSeriesDetails = data
-                    _tvSeriesDetails.emit(tvSeriesDetails)
+        ).onSuccess {
+            viewModelScope.launch {
+                val tvSeriesDetails = data
+                _tvSeriesDetails.emit(tvSeriesDetails)
 
-                    tvSeriesDetails?.nextEpisodeToAir?.airDate?.let { date ->
-                        getNextEpisodeDaysRemaining(date)
-                    }
+                tvSeriesDetails?.nextEpisodeToAir?.airDate?.let { date ->
+                    val daysRemaining = getNextEpisodeDaysRemainingUseCase(date)
+                    nextEpisodeDaysRemaining.emit(daysRemaining)
+                }
+            }
+        }.onFailure {
+            onFailure(this)
+        }.onException {
+            onError(this)
+        }
+    }
+
+    private suspend fun getTvSeriesImages(tvSeriesId: Int) {
+        getTvSeriesImagesUseCase(tvSeriesId)
+            .onSuccess {
+                viewModelScope.launch {
+                    tvSeriesBackdrops.emit(data ?: emptyList())
                 }
             }.onFailure {
                 onFailure(this)
             }.onException {
                 onError(this)
             }
-        }
     }
 
-    private fun getMovieImages(tvSeriesId: Int) {
-        tvSeriesRepository.tvSeriesImages(tvSeriesId).request { response ->
-            response.onSuccess {
+    private suspend fun getTvSeriesReviewsCount(tvSeriesId: Int) {
+        getTvSeriesReviewsCountUseCase(tvSeriesId)
+            .onSuccess {
                 viewModelScope.launch {
-                    tvSeriesBackdrops.emit(data?.backdrops ?: emptyList())
+                    reviewsCount.emit(data ?: 0)
                 }
             }.onFailure {
                 onFailure(this)
             }.onException {
                 onError(this)
             }
-        }
     }
 
-    private fun getTvSeriesReview(tvSeriesId: Int) {
-        tvSeriesRepository.tvSeriesReview(tvSeriesId).request { response ->
-            response.onSuccess {
-                viewModelScope.launch {
-                    reviewsCount.emit(data?.totalResults ?: 0)
-                }
-            }.onFailure {
-                onFailure(this)
-            }.onException {
-                onError(this)
+    private suspend fun getWatchProviders(tvSeriesId: Int, deviceLanguage: DeviceLanguage) {
+        getTvSeriesWatchProvidersUseCase(
+            tvSeriesId = tvSeriesId,
+            deviceLanguage = deviceLanguage
+        ).onSuccess {
+            viewModelScope.launch {
+                watchProviders.emit(data)
             }
+        }.onFailure {
+            onFailure(this)
+        }.onException {
+            onError(this)
         }
     }
 
-    private fun getWatchProviders(tvSeriesId: Int, deviceLanguage: DeviceLanguage) {
-        tvSeriesRepository.watchProviders(
+    private suspend fun getExternalIds(tvSeriesId: Int) {
+        getTvSeriesExternalIdsUseCase(
             tvSeriesId = tvSeriesId
-        ).request { response ->
-            response.onSuccess {
-                viewModelScope.launch {
-                    val results = data?.results
-                    val providers = results?.getOrElse(deviceLanguage.region) { null }
-
-                    watchProviders.emit(providers)
-                }
-            }.onFailure {
-                onFailure(this)
-            }.onException {
-                onError(this)
+        ).onSuccess {
+            viewModelScope.launch {
+                externalIds.emit(data)
             }
+        }.onFailure {
+            onFailure(this)
+        }.onException {
+            onError(this)
         }
     }
 
-    private fun getExternalIds(tvSeriesId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            tvSeriesRepository.getExternalIds(
-                tvSeriesId = tvSeriesId
-            ).request { response ->
-                response.onSuccess {
-                    viewModelScope.launch {
-                        _externalIds.emit(data)
-                    }
-                }.onFailure {
-                    onFailure(this)
-                }.onException {
-                    onError(this)
-                }
+    private suspend fun getTvSeriesVideos(tvSeriesId: Int, deviceLanguage: DeviceLanguage) {
+        getTvSeriesVideosUseCase(
+            tvSeriesId = tvSeriesId,
+            deviceLanguage = deviceLanguage
+        ).onSuccess {
+            viewModelScope.launch {
+                videos.emit(data ?: emptyList())
             }
+        }.onFailure {
+            onFailure(this)
+        }.onException {
+            onError(this)
         }
     }
-
-    private fun getTvSeriesVideos(tvSeriesId: Int, deviceLanguage: DeviceLanguage) {
-        viewModelScope.launch(Dispatchers.IO) {
-            tvSeriesRepository.tvSeriesVideos(
-                tvSeriesId = tvSeriesId,
-                isoCode = deviceLanguage.languageCode
-            ).request { response ->
-                response.onSuccess {
-                    viewModelScope.launch {
-                        val data = data?.results?.sortedWith(
-                            compareBy(
-                                { video -> video.official },
-                                { video -> video.publishedAt }
-                            )
-                        )
-
-                        videos.emit(data ?: emptyList())
-                    }
-                }.onFailure {
-                    onFailure(this)
-                }.onException {
-                    onError(this)
-                }
-            }
-        }
-    }
-
-    private suspend fun getNextEpisodeDaysRemaining(nextEpisodeAirDate: Date) {
-        val millionSeconds = nextEpisodeAirDate.time - Calendar.getInstance().timeInMillis
-        val daysDiff = TimeUnit.MILLISECONDS.toDays(millionSeconds)
-
-        nextEpisodeDaysRemaining.emit(if (daysDiff < 0) 0 else daysDiff)
-    }
-
 }
