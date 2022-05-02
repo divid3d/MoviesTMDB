@@ -65,11 +65,9 @@ class MoviesDetailsViewModel @Inject constructor(
     private val watchProviders: MutableStateFlow<WatchProviders?> = MutableStateFlow(null)
     private val videos: MutableStateFlow<List<Video>?> = MutableStateFlow(null)
     private val reviewsCount: MutableStateFlow<Int> = MutableStateFlow(0)
-
     private val isFavourite: Flow<Boolean> = favouritesMoviesIdsFlow.mapLatest { favouriteIds ->
         navArgs.movieId in favouriteIds
     }
-
     private val externalIds: MutableStateFlow<List<ExternalId>?> = MutableStateFlow(null)
 
     private val additionalInfo: StateFlow<AdditionalMovieDetailsInfo> = combine(
