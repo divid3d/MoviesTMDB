@@ -5,7 +5,7 @@ buildscript {
         hilt_version = "2.40.1"
         room_version = "2.4.2"
         okhttp_version = "4.9.3"
-        retrofit_version = "2.7.2"
+        retrofit_version = "2.9.0"
         hilt_navigation_compose_version = "1.0.0"
         paging_compose_version = "1.0.0-alpha14"
         moshi_version = "1.13.0"
@@ -48,7 +48,7 @@ buildscript {
         //ASM8 error when up to date
         classpath 'com.google.firebase:perf-plugin:1.4.1'
         //Firebase init random crash at newer
-        classpath 'com.google.gms:google-services:4.3.10'
+        classpath 'com.google.gms:google-services:4.3.4'
     }
 }
 
