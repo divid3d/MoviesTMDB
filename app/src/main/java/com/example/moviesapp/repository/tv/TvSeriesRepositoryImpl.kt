@@ -54,7 +54,7 @@ class TvSeriesRepositoryImpl(
 
     override fun topRatedTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeriesEntity>> =
         Pager(
-            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            config = PagingConfig(pageSize = 20),
             remoteMediator = TvSeriesRemoteMediator(
                 deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
@@ -71,7 +71,7 @@ class TvSeriesRepositoryImpl(
 
     override fun onTheAirTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeriesDetailEntity>> =
         Pager(
-            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            config = PagingConfig(pageSize = 20),
             remoteMediator = TvSeriesDetailsRemoteMediator(
                 deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
@@ -84,7 +84,7 @@ class TvSeriesRepositoryImpl(
 
     override fun trendingTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeriesEntity>> =
         Pager(
-            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            config = PagingConfig(pageSize = 20),
             remoteMediator = TvSeriesRemoteMediator(
                 deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
@@ -101,7 +101,7 @@ class TvSeriesRepositoryImpl(
 
     override fun popularTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeriesEntity>> =
         Pager(
-            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            config = PagingConfig(pageSize = 20),
             remoteMediator = TvSeriesRemoteMediator(
                 deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
@@ -118,7 +118,7 @@ class TvSeriesRepositoryImpl(
 
     override fun airingTodayTvSeries(deviceLanguage: DeviceLanguage): Flow<PagingData<TvSeriesEntity>> =
         Pager(
-            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            config = PagingConfig(pageSize = 20),
             remoteMediator = TvSeriesRemoteMediator(
                 deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,

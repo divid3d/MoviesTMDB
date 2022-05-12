@@ -54,7 +54,7 @@ class MovieRepositoryImpl(
 
     override fun popularMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<MovieEntity>> =
         Pager(
-            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            config = PagingConfig(pageSize = 20),
             remoteMediator = MoviesRemoteMediator(
                 deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
@@ -71,7 +71,7 @@ class MovieRepositoryImpl(
 
     override fun upcomingMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<MovieEntity>> =
         Pager(
-            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            config = PagingConfig(pageSize = 20),
             remoteMediator = MoviesRemoteMediator(
                 deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
@@ -88,7 +88,7 @@ class MovieRepositoryImpl(
 
     override fun trendingMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<MovieEntity>> =
         Pager(
-            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            config = PagingConfig(pageSize = 20),
             remoteMediator = MoviesRemoteMediator(
                 deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
@@ -105,7 +105,7 @@ class MovieRepositoryImpl(
 
     override fun topRatedMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<MovieEntity>> =
         Pager(
-            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            config = PagingConfig(pageSize = 20),
             remoteMediator = MoviesRemoteMediator(
                 deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,
@@ -122,7 +122,7 @@ class MovieRepositoryImpl(
 
     override fun nowPlayingMovies(deviceLanguage: DeviceLanguage): Flow<PagingData<MovieDetailEntity>> =
         Pager(
-            config = PagingConfig(pageSize = 20, initialLoadSize = 40),
+            config = PagingConfig(pageSize = 20),
             remoteMediator = MoviesDetailsRemoteMediator(
                 deviceLanguage = deviceLanguage,
                 apiHelper = apiHelper,

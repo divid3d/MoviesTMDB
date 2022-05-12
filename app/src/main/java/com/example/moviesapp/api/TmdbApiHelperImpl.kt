@@ -3,7 +3,9 @@ package com.example.moviesapp.api
 import com.example.moviesapp.model.*
 import retrofit2.Call
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class TmdbApiHelperImpl @Inject constructor(
     private val tmdbApi: TmdbApi
 ) : TmdbApiHelper {

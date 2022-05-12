@@ -15,7 +15,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'dagger.hilt.android.plugin'
-    id 'com.google.devtools.ksp' version "1.6.10-1.0.2"
+    id 'com.google.devtools.ksp' version "1.6.21-1.0.5"
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
     id 'com.google.firebase.crashlytics'
@@ -25,12 +25,12 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 32
 
     defaultConfig {
         applicationId "com.example.moviesapp"
         minSdk 21
-        targetSdk 31
+        targetSdk 32
         versionCode 110
         versionName "1.1.0"
 
