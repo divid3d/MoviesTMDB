@@ -13,12 +13,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import retrofit2.Call
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @OptIn(ExperimentalPagingApi::class)
 @Singleton
-class MovieRepositoryImpl(
-    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
+class MovieRepositoryImpl @Inject constructor(
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
     private val apiHelper: TmdbApiHelper,
     private val appDatabase: AppDatabase
 ) : MovieRepository {

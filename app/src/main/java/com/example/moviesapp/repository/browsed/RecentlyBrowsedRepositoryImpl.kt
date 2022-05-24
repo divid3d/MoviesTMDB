@@ -16,12 +16,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RecentlyBrowsedRepositoryImpl(
+class RecentlyBrowsedRepositoryImpl @Inject constructor(
     private val externalScope: CoroutineScope,
-    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
     private val recentlyBrowsedMoviesDao: RecentlyBrowsedMoviesDao,
     private val recentlyBrowsedTvSeriesDao: RecentlyBrowsedTvSeriesDao
 ) : RecentlyBrowsedRepository {

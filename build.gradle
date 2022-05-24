@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        compose_version = '1.2.0-beta01'
+        compose_version = '1.2.0-beta02'
         accompanist_version = '0.24.7-alpha'
         hilt_version = "2.40.1"
         room_version = "2.4.2"
@@ -14,8 +14,8 @@ buildscript {
         firebase_bom_version = "29.1.0"
         coil_compose_version = "1.4.0"
         palette_version = "1.0.0"
-        splashscreen_version = "1.0.0-beta02"
-        constraint_layout_compose_version = "1.0.0"
+        splashscreen_version = "1.0.0-rc01"
+        constraint_layout_compose_version = "1.0.1"
         lifecyclea_runtime_version = "2.4.1"
         activity_compose_version = "1.4.0"
         lottie_compose_version = "5.0.3"

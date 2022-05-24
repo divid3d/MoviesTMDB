@@ -6,8 +6,9 @@ import com.example.moviesapp.model.Genre
 import com.example.moviesapp.model.ProviderSource
 import com.example.moviesapp.other.ImageUrlParser
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class ConfigRepositoryImpl(
+class ConfigRepositoryImpl @Inject constructor(
     private val configDataSource: ConfigDataSource
 ) : ConfigRepository {
     override fun isInitialised(): Flow<Boolean> = configDataSource.isInitialized

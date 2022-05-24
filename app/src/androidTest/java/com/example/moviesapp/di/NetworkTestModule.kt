@@ -3,7 +3,6 @@ package com.example.moviesapp.di
 import com.example.moviesapp.BuildConfig
 import com.example.moviesapp.api.ApiParams
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
@@ -19,7 +18,7 @@ import kotlin.time.toJavaDuration
 object NetworkTestModule {
 
     @Singleton
-    @Provides
+    @Binds
     @Named("test_okhttp")
     fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
         .apply {

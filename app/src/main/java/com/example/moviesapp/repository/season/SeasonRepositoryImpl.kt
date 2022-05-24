@@ -3,10 +3,11 @@ package com.example.moviesapp.repository.season
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.model.*
 import retrofit2.Call
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SeasonRepositoryImpl(
+class SeasonRepositoryImpl @Inject constructor(
     private val apiHelper: TmdbApiHelper
 ) : SeasonRepository {
     override fun getTvSeason(

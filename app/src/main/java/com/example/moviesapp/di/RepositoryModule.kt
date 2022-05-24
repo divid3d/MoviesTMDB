@@ -3,7 +3,6 @@ package com.example.moviesapp.di
 import android.content.Context
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.data.ConfigDataSource
-import com.example.moviesapp.db.*
 import com.example.moviesapp.repository.browsed.RecentlyBrowsedRepository
 import com.example.moviesapp.repository.browsed.RecentlyBrowsedRepositoryImpl
 import com.example.moviesapp.repository.config.ConfigRepository
@@ -20,6 +19,7 @@ import com.example.moviesapp.repository.season.SeasonRepository
 import com.example.moviesapp.repository.season.SeasonRepositoryImpl
 import com.example.moviesapp.repository.tv.TvSeriesRepository
 import com.example.moviesapp.repository.tv.TvSeriesRepositoryImpl
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,82 +46,39 @@ object RepositoryModule {
         apiHelper = apiHelper
     )
 
-    @Singleton
-    @Provides
-    fun provideConfigRepository(configDataSource: ConfigDataSource): ConfigRepository =
-        ConfigRepositoryImpl(configDataSource)
+    @Module
+    @InstallIn(SingletonComponent::class)
+    interface RepositoryBinds {
+        @Binds
+        @Singleton
+        fun provideConfigRepository(impl: ConfigRepositoryImpl): ConfigRepository
 
-    @Singleton
-    @Provides
-    fun provideMovieRepository(
-        dispatcher: CoroutineDispatcher,
-        apiHelper: TmdbApiHelper,
-        appDatabase: AppDatabase
-    ): MovieRepository = MovieRepositoryImpl(dispatcher, apiHelper, appDatabase)
+        @Binds
+        @Singleton
+        fun bindMovieRepository(impl: MovieRepositoryImpl): MovieRepository
 
-    @Singleton
-    @Provides
-    fun provideTvSeriesRepository(
-        dispatcher: CoroutineDispatcher,
-        apiHelper: TmdbApiHelper,
-        appDatabase: AppDatabase
-    ): TvSeriesRepository = TvSeriesRepositoryImpl(dispatcher, apiHelper, appDatabase)
+        @Binds
+        @Singleton
+        fun bindTvSeriesRepository(impl: TvSeriesRepositoryImpl): TvSeriesRepository
 
-    @Singleton
-    @Provides
-    fun provideBrowsedRepository(
-        externalScope: CoroutineScope,
-        dispatcher: CoroutineDispatcher,
-        recentlyBrowsedMoviesDao: RecentlyBrowsedMoviesDao,
-        recentlyBrowseTvSeriesDao: RecentlyBrowsedTvSeriesDao
-    ): RecentlyBrowsedRepository = RecentlyBrowsedRepositoryImpl(
-        externalScope = externalScope,
-        defaultDispatcher = dispatcher,
-        recentlyBrowsedMoviesDao = recentlyBrowsedMoviesDao,
-        recentlyBrowsedTvSeriesDao = recentlyBrowseTvSeriesDao
-    )
+        @Binds
+        @Singleton
+        fun bindsBrowsedRepository(impl: RecentlyBrowsedRepositoryImpl): RecentlyBrowsedRepository
 
-    @Singleton
-    @Provides
-    fun provideFavouritesRepository(
-        externalScope: CoroutineScope,
-        dispatcher: CoroutineDispatcher,
-        favouritesMoviesDao: FavouritesMoviesDao,
-        favouritesTvSeriesDao: FavouritesTvSeriesDao
-    ): FavouritesRepository = FavouritesRepositoryImpl(
-        externalScope = externalScope,
-        defaultDispatcher = dispatcher,
-        favouritesMoviesDao = favouritesMoviesDao,
-        favouritesTvSeriesDao = favouritesTvSeriesDao
-    )
+        @Binds
+        @Singleton
+        fun bindFavouritesRepository(impl: FavouritesRepositoryImpl): FavouritesRepository
 
-    @Singleton
-    @Provides
-    fun providePersonRepository(
-        apiHelper: TmdbApiHelper
-    ): PersonRepository = PersonRepositoryImpl(
-        apiHelper = apiHelper
-    )
+        @Binds
+        @Singleton
+        fun bindPersonRepository(impl: PersonRepositoryImpl): PersonRepository
 
-    @Singleton
-    @Provides
-    fun provideSearchRepository(
-        externalScope: CoroutineScope,
-        dispatcher: CoroutineDispatcher,
-        apiHelper: TmdbApiHelper,
-        searchQueryDao: SearchQueryDao
-    ): SearchRepository = SearchRepositoryImpl(
-        defaultDispatcher = dispatcher,
-        externalScope = externalScope,
-        apiHelper = apiHelper,
-        searchQueryDao = searchQueryDao
-    )
+        @Binds
+        @Singleton
+        fun bindSearchRepository(impl: SearchRepositoryImpl): SearchRepository
 
-    @Singleton
-    @Provides
-    fun provideSeasonRepository(
-        apiHelper: TmdbApiHelper,
-    ): SeasonRepository = SeasonRepositoryImpl(
-        apiHelper = apiHelper
-    )
+        @Binds
+        @Singleton
+        fun bindSeasonRepository(impl: SeasonRepositoryImpl): SeasonRepository
+    }
 }

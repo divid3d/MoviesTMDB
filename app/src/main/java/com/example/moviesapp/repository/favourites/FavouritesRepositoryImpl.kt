@@ -16,12 +16,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class FavouritesRepositoryImpl(
+class FavouritesRepositoryImpl @Inject constructor(
     private val externalScope: CoroutineScope,
-    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
     private val favouritesMoviesDao: FavouritesMoviesDao,
     private val favouritesTvSeriesDao: FavouritesTvSeriesDao
 ) : FavouritesRepository {
