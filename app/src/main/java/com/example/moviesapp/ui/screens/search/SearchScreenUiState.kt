@@ -4,7 +4,7 @@ import androidx.compose.runtime.Stable
 
 @Stable
 data class SearchScreenUiState(
-    val voiceSearchAvailable: Boolean,
+    val searchOptionsState: SearchOptionsState,
     val query: String?,
     val suggestions: List<String>,
     val searchState: SearchState,
@@ -13,12 +13,25 @@ data class SearchScreenUiState(
 ) {
     companion object {
         val default: SearchScreenUiState = SearchScreenUiState(
-            voiceSearchAvailable = false,
+            searchOptionsState = SearchOptionsState.default,
             query = null,
             suggestions = emptyList(),
             searchState = SearchState.EmptyQuery,
             resultState = ResultState.Default(),
             queryLoading = false
+        )
+    }
+}
+
+@Stable
+data class SearchOptionsState(
+    val voiceSearchAvailable: Boolean,
+    val cameraSearchAvailable: Boolean
+) {
+    companion object {
+        val default: SearchOptionsState = SearchOptionsState(
+            voiceSearchAvailable = false,
+            cameraSearchAvailable = false
         )
     }
 }

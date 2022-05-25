@@ -7,6 +7,9 @@
     <string name="snack_bar_network_connected_label">Connected to network</string>
     <string name="snack_bar_network_disconnected_label">Network connection lost</string>
 
+    <string name="camera_permission_rationale_info">In order to use the functionality, it is necessary to grant the appropriate permission</string>
+    <string name="camera_permission_rationale_request_permission_button_label">Grant permission</string>
+
     <string name="next_episode_today_text">New episode today</string>
     <string name="next_episode_tomorrow_text">New episode tomorrow</string>
     <string name="next_episode_days_text" formatted="true">New episode in %d days</string>
@@ -209,5 +212,11 @@
     <string name="movie_provider_type_stream_label">Stream</string>
 
     <string name="episode_chip_no_info_text">No additional info</string>
+
+    <string name="scanner_reject_button_label">Reject</string>
+    <string name="scanner_accept_button_label">Accept</string>
+    <string name="scanner_error_info_no_text">No text has been recognized</string>
+    <string name="scanner_error_info_to_short_text">Scanned text is to short</string>
+    <string name="scanner_error_info_to_long_text">Scanned text is to long</string>
 
 </resources>

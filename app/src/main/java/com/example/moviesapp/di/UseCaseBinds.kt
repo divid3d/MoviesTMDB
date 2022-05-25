@@ -211,6 +211,11 @@ interface UseCaseBinds {
     ): GetSpeechToTextAvailableUseCase
 
     @Binds
+    fun provideCameraAvailableUseCase(
+        impl: GetCameraAvailableUseCaseImpl
+    ): GetCameraAvailableUseCase
+
+    @Binds
     fun provideGetTopRatedMoviesUseCase(
         impl: GetTopRatedMoviesUseCaseImpl
     ): GetTopRatedMoviesUseCase
@@ -339,4 +344,9 @@ interface UseCaseBinds {
     fun providesUnlikeTvSeriesUseCase(
         impl: UnlikeTvSeriesUseCaseImpl
     ): UnlikeTvSeriesUseCase
+
+    @Binds
+    fun providesScanBitmapForTextUseCase(
+        impl: ScanBitmapForTextUseCaseImpl
+    ): ScanBitmapForTextUseCase
 }

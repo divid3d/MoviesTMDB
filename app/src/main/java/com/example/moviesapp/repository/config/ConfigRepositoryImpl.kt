@@ -17,6 +17,8 @@ class ConfigRepositoryImpl @Inject constructor(
 
     override fun getSpeechToTextAvailable(): Flow<Boolean> = configDataSource.speechToTextAvailable
 
+    override fun getCameraAvailable(): Flow<Boolean> = configDataSource.hasCamera
+
     override fun getDeviceLanguage(): Flow<DeviceLanguage> = configDataSource.deviceLanguage
 
     override fun getImageUrlParser(): Flow<ImageUrlParser?> = configDataSource.imageUrlParser
