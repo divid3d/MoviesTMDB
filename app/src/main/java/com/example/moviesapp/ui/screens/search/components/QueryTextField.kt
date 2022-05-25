@@ -1,7 +1,6 @@
 package com.example.moviesapp.ui.screens.search.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
@@ -37,11 +36,13 @@ fun QueryTextField(
     loading: Boolean = false,
     showClearButton: Boolean = false,
     voiceSearchAvailable: Boolean = false,
+    cameraSearchAvailable: Boolean = false,
     info: @Composable () -> Unit = {},
     onQueryChange: (String) -> Unit = {},
     onQueryClear: () -> Unit = {},
     onKeyboardSearchClicked: (KeyboardActionScope.() -> Unit)? = null,
     onVoiceSearchClick: () -> Unit = {},
+    onCameraSearchClick: () -> Unit = {},
     onSuggestionClick: (String) -> Unit = {}
 ) {
     var hasFocus by remember { mutableStateOf(false) }
@@ -78,17 +79,16 @@ fun QueryTextField(
                         ) {
                             CircularProgressIndicator()
                         }
-                        Crossfade(
-                            targetState = showClearButton
-                        ) { show ->
-                            if (show) {
-                                IconButton(onClick = onQueryClear) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Clear,
-                                        contentDescription = "clear"
-                                    )
-                                }
-                            } else {
+
+                        if (showClearButton) {
+                            IconButton(onClick = onQueryClear) {
+                                Icon(
+                                    imageVector = Icons.Filled.Clear,
+                                    contentDescription = "clear"
+                                )
+                            }
+                        } else {
+                            Row {
                                 if (voiceSearchAvailable) {
                                     IconButton(onClick = onVoiceSearchClick) {
                                         Image(
@@ -98,9 +98,18 @@ fun QueryTextField(
                                         )
                                     }
                                 }
+
+                                if (cameraSearchAvailable) {
+                                    IconButton(onClick = onCameraSearchClick) {
+                                        Image(
+                                            painter = painterResource(R.drawable.ic_baseline_camera_alt_24),
+                                            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
+                                            contentDescription = "camera search"
+                                        )
+                                    }
+                                }
                             }
                         }
-
                     }
                 },
                 keyboardActions = KeyboardActions(

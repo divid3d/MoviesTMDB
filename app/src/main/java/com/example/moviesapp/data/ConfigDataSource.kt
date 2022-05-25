@@ -3,6 +3,7 @@ package com.example.moviesapp.data
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.speech.RecognizerIntent
 import com.example.moviesapp.api.TmdbApiHelper
 import com.example.moviesapp.api.onException
@@ -27,7 +28,7 @@ class ConfigDataSource @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val externalScope: CoroutineScope,
-    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
     private val apiHelper: TmdbApiHelper
 ) {
     private val _config: MutableStateFlow<Config?> = MutableStateFlow(null)
@@ -41,7 +42,13 @@ class ConfigDataSource @Inject constructor(
         )
 
         emit(activities.isNotEmpty())
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(defaultDispatcher)
+
+    val hasCamera: Flow<Boolean> = flow {
+        val packageManager = context.packageManager
+        val hasCamera = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
+        emit(hasCamera)
+    }
 
     private val _deviceLanguage: MutableStateFlow<DeviceLanguage> =
         MutableStateFlow(getCurrentDeviceLanguage())

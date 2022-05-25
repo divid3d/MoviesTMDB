@@ -13,6 +13,8 @@ interface ConfigRepository {
 
     fun getSpeechToTextAvailable(): Flow<Boolean>
 
+    fun getCameraAvailable(): Flow<Boolean>
+
     fun getDeviceLanguage(): Flow<DeviceLanguage>
 
     fun getImageUrlParser(): Flow<ImageUrlParser?>

@@ -26,6 +26,7 @@ import com.example.moviesapp.other.isNotEmpty
 import com.example.moviesapp.ui.components.sections.PresentableGridSection
 import com.example.moviesapp.ui.components.sections.SearchGridSection
 import com.example.moviesapp.ui.screens.destinations.MovieDetailsScreenDestination
+import com.example.moviesapp.ui.screens.destinations.ScannerScreenDestination
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
 import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestination
 import com.example.moviesapp.ui.screens.search.components.QueryTextField
@@ -33,6 +34,8 @@ import com.example.moviesapp.ui.screens.search.components.SearchEmptyState
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.NavResult
+import com.ramcosta.composedestinations.result.ResultRecipient
 import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -40,7 +43,8 @@ import java.util.*
 @Composable
 fun AnimatedVisibilityScope.SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    resultRecipient: ResultRecipient<ScannerScreenDestination, String>
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -48,6 +52,9 @@ fun AnimatedVisibilityScope.SearchScreen(
     val onQueryCleared: () -> Unit = viewModel::onQueryClear
     val onAddSearchQuerySuggestion: (SearchQuery) -> Unit = viewModel::addQuerySuggestion
 
+    val onCameraClicked = {
+        navigator.navigate(ScannerScreenDestination)
+    }
     val onResultClicked: (id: Int, type: MediaType) -> Unit = { id, type ->
         val destination = when (type) {
             MediaType.Movie -> {
@@ -87,11 +94,21 @@ fun AnimatedVisibilityScope.SearchScreen(
     }
     val onQuerySuggestionSelected: (String) -> Unit = viewModel::onQuerySuggestionSelected
 
+    resultRecipient.onNavResult { result ->
+        when (result) {
+            is NavResult.Value -> {
+                viewModel.onQueryChange(result.value)
+            }
+            else -> Unit
+        }
+    }
+
     SearchScreenContent(
         uiState = uiState,
         onQueryChanged = onQueryChanged,
         onQueryCleared = onQueryCleared,
         onResultClicked = onResultClicked,
+        onCameraClicked = onCameraClicked,
         onMovieClicked = onMovieClicked,
         onQuerySuggestionSelected = onQuerySuggestionSelected
     )
@@ -104,6 +121,7 @@ fun SearchScreenContent(
     onQueryChanged: (query: String) -> Unit,
     onQueryCleared: () -> Unit,
     onResultClicked: (id: Int, type: MediaType) -> Unit,
+    onCameraClicked: () -> Unit = {},
     onMovieClicked: (Int) -> Unit,
     onQuerySuggestionSelected: (String) -> Unit
 ) {
@@ -132,7 +150,8 @@ fun SearchScreenContent(
                 .animateContentSize(),
             query = uiState.query,
             suggestions = uiState.suggestions,
-            voiceSearchAvailable = uiState.voiceSearchAvailable,
+            voiceSearchAvailable = uiState.searchOptionsState.voiceSearchAvailable,
+            cameraSearchAvailable = uiState.searchOptionsState.cameraSearchAvailable,
             loading = uiState.queryLoading,
             showClearButton = uiState.searchState !is SearchState.EmptyQuery,
             focusRequester = queryTextFieldFocusRequester,
@@ -159,6 +178,7 @@ fun SearchScreenContent(
             onVoiceSearchClick = {
                 speechToTextLauncher.launch(null)
             },
+            onCameraSearchClick = onCameraClicked,
             onSuggestionClick = { suggestion ->
                 clearFocus()
                 onQuerySuggestionSelected(suggestion)

@@ -18,7 +18,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -38,6 +37,7 @@ import com.example.moviesapp.ui.screens.destinations.*
 import com.example.moviesapp.ui.screens.details.components.MovieDetailsInfoSection
 import com.example.moviesapp.ui.screens.details.components.MovieDetailsTopContent
 import com.example.moviesapp.ui.theme.Black300
+import com.example.moviesapp.ui.theme.Black700
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -526,7 +526,7 @@ fun MovieDetailsScreenContent(
         AppBar(
             modifier = Modifier.align(Alignment.TopCenter),
             title = stringResource(R.string.movie_details_label),
-            backgroundColor = Color.Black.copy(0.7f),
+            backgroundColor = Black700,
             scrollState = scrollState,
             transparentScrollValueLimit = topSectionScrollLimitValue,
             action = {

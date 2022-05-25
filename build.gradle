@@ -21,6 +21,9 @@ buildscript {
         lottie_compose_version = "5.0.3"
         timber_version = "5.0.1"
         chucker_version = "3.5.2"
+        camera_version = "1.2.0-alpha01"
+        camera_lifecycle_version = "1.0.2"
+        mlkit_text_recognition_version = "16.0.0-beta4"
 
         //Instrumentation Tests
         coroutines_test_version = "1.6.0"

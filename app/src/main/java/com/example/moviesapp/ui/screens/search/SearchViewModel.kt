@@ -21,6 +21,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class SearchViewModel @Inject constructor(
     private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
     private val getSpeechToTextAvailableUseCase: GetSpeechToTextAvailableUseCase,
+    private val getCameraAvailableUseCase: GetCameraAvailableUseCase,
     private val mediaSearchQueriesUseCase: MediaSearchQueriesUseCase,
     private val mediaAddSearchQueryUseCase: MediaAddSearchQueryUseCase,
     private val getMediaMultiSearchUseCase: GetMediaMultiSearchUseCase,
@@ -37,6 +38,8 @@ class SearchViewModel @Inject constructor(
         }.flattenMerge().cachedIn(viewModelScope)
 
     private val voiceSearchAvailable: Flow<Boolean> = getSpeechToTextAvailableUseCase()
+    private val cameraAvailable: Flow<Boolean> = getCameraAvailableUseCase()
+
     private val queryState: MutableStateFlow<QueryState> = MutableStateFlow(QueryState.default)
     private val suggestions: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
     private val searchState: MutableStateFlow<SearchState> =
@@ -45,13 +48,22 @@ class SearchViewModel @Inject constructor(
         MutableStateFlow(ResultState.Default(popularMovies))
     private val queryLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
+    private val searchOptionState: StateFlow<SearchOptionsState> = combine(
+        voiceSearchAvailable, cameraAvailable
+    ) { voiceSearchAvailable, cameraAvailable ->
+        SearchOptionsState(
+            voiceSearchAvailable = voiceSearchAvailable,
+            cameraSearchAvailable = cameraAvailable
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, SearchOptionsState.default)
+
     private var queryJob: Job? = null
 
     val uiState: StateFlow<SearchScreenUiState> = combine(
-        voiceSearchAvailable, queryState, suggestions, searchState, resultState
-    ) { voiceSearchAvailable, queryState, suggestions, searchState, resultState ->
+        searchOptionState, queryState, suggestions, searchState, resultState
+    ) { searchOptionsState, queryState, suggestions, searchState, resultState ->
         SearchScreenUiState(
-            voiceSearchAvailable = voiceSearchAvailable,
+            searchOptionsState = searchOptionsState,
             query = queryState.query,
             suggestions = suggestions,
             searchState = searchState,
