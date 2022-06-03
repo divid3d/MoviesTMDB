@@ -187,7 +187,9 @@ fun ScannerScreenContent(
                 }
                 is PermissionStatus.Denied -> {
                     Column(
-                        modifier = Modifier.padding(MaterialTheme.spacing.medium),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(MaterialTheme.spacing.medium),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {

@@ -28,9 +28,13 @@ import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.R
 import com.example.moviesapp.model.*
-import com.example.moviesapp.other.*
+import com.example.moviesapp.other.hasItems
+import com.example.moviesapp.other.openExternalId
+import com.example.moviesapp.other.openVideo
+import com.example.moviesapp.other.shareImdb
 import com.example.moviesapp.ui.components.buttons.LikeButton
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
+import com.example.moviesapp.ui.components.others.AnimatedContentContainer
 import com.example.moviesapp.ui.components.others.AppBar
 import com.example.moviesapp.ui.components.sections.*
 import com.example.moviesapp.ui.screens.destinations.*
@@ -347,123 +351,101 @@ fun TvSeriesDetailsScreenContent(
                 onShareClicked = onShareClicked
             )
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = uiState.additionalTvSeriesDetailsInfo.watchProviders
-            ) { providers ->
-                if (providers != null) {
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = uiState.additionalTvSeriesDetailsInfo.watchProviders != null
+            ) {
+                if (uiState.additionalTvSeriesDetailsInfo.watchProviders != null) {
                     WatchProvidersSection(
                         modifier = Modifier.fillMaxWidth(),
-                        watchProviders = providers,
+                        watchProviders = uiState.additionalTvSeriesDetailsInfo.watchProviders,
                         title = stringResource(R.string.available_at)
                     )
                 }
             }
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = uiState.tvSeriesDetails?.creators
-            ) { creators ->
-                creators.ifNotNullAndEmpty { members ->
-                    MemberSection(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.tv_series_details_creators),
-                        members = members,
-                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                        onMemberClick = onCreatorClicked
-                    )
-                }
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = !uiState.tvSeriesDetails?.creators.isNullOrEmpty()
+            ) {
+                MemberSection(
+                    modifier = Modifier.fillMaxWidth(),
+                    title = stringResource(R.string.tv_series_details_creators),
+                    members = uiState.tvSeriesDetails?.creators ?: emptyList(),
+                    contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                    onMemberClick = onCreatorClicked
+                )
             }
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = uiState.tvSeriesDetails?.seasons
-            ) { seasons ->
-                seasons.ifNotNullAndEmpty { value ->
-                    SeasonsSection(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colors.surface)
-                            .padding(vertical = MaterialTheme.spacing.small),
-                        title = stringResource(R.string.tv_series_details_seasons),
-                        seasons = value,
-                        onSeasonClick = onSeasonClicked
-                    )
-                }
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = !uiState.tvSeriesDetails?.seasons.isNullOrEmpty()
+            ) {
+                SeasonsSection(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colors.surface)
+                        .padding(vertical = MaterialTheme.spacing.small),
+                    title = stringResource(R.string.tv_series_details_seasons),
+                    seasons = uiState.tvSeriesDetails?.seasons ?: emptyList(),
+                    onSeasonClick = onSeasonClicked
+                )
             }
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = recommendations
-            ) { recommendations ->
-                if (recommendations.hasItems()) {
-                    PresentableSection(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.tv_series_details_recommendations),
-                        state = recommendations,
-                        showLoadingAtRefresh = false,
-                        onMoreClick = onRecommendationsMoreClicked,
-                        onPresentableClick = { tvSeriesId ->
-                            if (tvSeriesId != uiState.tvSeriesDetails?.id) {
-                                onTvSeriesClicked(tvSeriesId)
-                            } else {
-                                scrollToStart()
-                            }
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = recommendations.hasItems()
+            ) {
+                PresentableSection(
+                    modifier = Modifier.fillMaxWidth(),
+                    title = stringResource(R.string.tv_series_details_recommendations),
+                    state = recommendations,
+                    showLoadingAtRefresh = false,
+                    onMoreClick = onRecommendationsMoreClicked,
+                    onPresentableClick = { tvSeriesId ->
+                        if (tvSeriesId != uiState.tvSeriesDetails?.id) {
+                            onTvSeriesClicked(tvSeriesId)
+                        } else {
+                            scrollToStart()
                         }
-                    )
-                }
+                    }
+                )
             }
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = similar
-            ) { similar ->
-                if (similar.hasItems()) {
-                    PresentableSection(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.tv_series_details_similar),
-                        state = similar,
-                        showLoadingAtRefresh = false,
-                        onMoreClick = onSimilarMoreClicked,
-                        onPresentableClick = { tvSeriesId ->
-                            if (tvSeriesId != uiState.tvSeriesDetails?.id) {
-                                onTvSeriesClicked(tvSeriesId)
-                            } else {
-                                scrollToStart()
-                            }
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = similar.hasItems()
+            ) {
+                PresentableSection(
+                    modifier = Modifier.fillMaxWidth(),
+                    title = stringResource(R.string.tv_series_details_similar),
+                    state = similar,
+                    showLoadingAtRefresh = false,
+                    onMoreClick = onSimilarMoreClicked,
+                    onPresentableClick = { tvSeriesId ->
+                        if (tvSeriesId != uiState.tvSeriesDetails?.id) {
+                            onTvSeriesClicked(tvSeriesId)
+                        } else {
+                            scrollToStart()
                         }
-                    )
-                }
+                    }
+                )
             }
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = uiState.associatedContent.videos
-            ) { videos ->
-                videos.ifNotNullAndEmpty { value ->
-                    VideosSection(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.tv_series_details_videos),
-                        videos = value,
-                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                        onVideoClicked = onVideoClicked
-                    )
-                }
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = !uiState.associatedContent.videos.isNullOrEmpty()
+            ) {
+                VideosSection(
+                    modifier = Modifier.fillMaxWidth(),
+                    title = stringResource(R.string.tv_series_details_videos),
+                    videos = uiState.associatedContent.videos ?: emptyList(),
+                    contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                    onVideoClicked = onVideoClicked
+                )
             }
 
-            AnimatedVisibility(
+            AnimatedContentContainer(
                 modifier = Modifier.fillMaxWidth(),
                 visible = uiState.additionalTvSeriesDetailsInfo.reviewsCount > 0
             ) {

@@ -33,10 +33,9 @@ class TextRecognitionHelperImpl @Inject constructor() : TextRecognitionHelper() 
         rotation: Float,
         roi: ROI?
     ): Flow<ScanState> = callbackFlow {
-        val processedBitmap = preprocessBitmap(bitmap, rotation, roi)
-
         trySend(ScanState.Loading)
 
+        val processedBitmap = preprocessBitmap(bitmap, rotation, roi)
         val onCompleteTaskListener = OnCompleteListener<Text> {
             if (it.isSuccessful) {
                 val text = it.result?.text?.let { text ->

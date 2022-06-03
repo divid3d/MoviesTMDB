@@ -3,7 +3,7 @@ package com.example.moviesapp.ui.screens.details
 import android.os.Parcelable
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -17,7 +17,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -31,6 +30,7 @@ import com.example.moviesapp.model.*
 import com.example.moviesapp.other.*
 import com.example.moviesapp.ui.components.buttons.LikeButton
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
+import com.example.moviesapp.ui.components.others.AnimatedContentContainer
 import com.example.moviesapp.ui.components.others.AppBar
 import com.example.moviesapp.ui.components.sections.*
 import com.example.moviesapp.ui.screens.destinations.*
@@ -412,100 +412,84 @@ fun MovieDetailsScreenContent(
                 }
             }
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = otherDirectorMovies
-            ) { otherDirectorMovies ->
-                if (otherDirectorMovies.hasItems()) {
-                    PresentableSection(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(
-                            id = R.string.movie_details_director_movies,
-                            uiState.associatedMovies.directorMovies.directorName
-                        ),
-                        state = otherDirectorMovies,
-                        showLoadingAtRefresh = false,
-                        showMoreButton = false,
-                        onMoreClick = onSimilarMoreClicked,
-                        onPresentableClick = { movieId ->
-                            if (movieId != uiState.movieDetails?.id) {
-                                onMovieClicked(movieId)
-                            } else {
-                                scrollToStart()
-                            }
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = otherDirectorMovies.hasItems()
+            ) {
+                PresentableSection(
+                    modifier = Modifier.fillMaxWidth(),
+                    title = stringResource(
+                        id = R.string.movie_details_director_movies,
+                        uiState.associatedMovies.directorMovies.directorName
+                    ),
+                    state = otherDirectorMovies,
+                    showLoadingAtRefresh = false,
+                    showMoreButton = false,
+                    onMoreClick = onSimilarMoreClicked,
+                    onPresentableClick = { movieId ->
+                        if (movieId != uiState.movieDetails?.id) {
+                            onMovieClicked(movieId)
+                        } else {
+                            scrollToStart()
                         }
-                    )
-                }
+                    }
+                )
             }
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = moviesRecommendationState
-            ) { movieRecommendation ->
-                if (movieRecommendation.hasItems()) {
-                    PresentableSection(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.movie_details_recommendations),
-                        state = movieRecommendation,
-                        showLoadingAtRefresh = false,
-                        onMoreClick = onRecommendationsMoreClicked,
-                        onPresentableClick = { movieId ->
-                            if (movieId != uiState.movieDetails?.id) {
-                                onMovieClicked(movieId)
-                            } else {
-                                scrollToStart()
-                            }
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = moviesRecommendationState.hasItems()
+            ) {
+                PresentableSection(
+                    modifier = Modifier.fillMaxWidth(),
+                    title = stringResource(R.string.movie_details_recommendations),
+                    state = moviesRecommendationState,
+                    showLoadingAtRefresh = false,
+                    onMoreClick = onRecommendationsMoreClicked,
+                    onPresentableClick = { movieId ->
+                        if (movieId != uiState.movieDetails?.id) {
+                            onMovieClicked(movieId)
+                        } else {
+                            scrollToStart()
                         }
-                    )
-                }
+                    }
+                )
             }
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = similarMoviesState
-            ) { similarMovies ->
-                if (similarMovies.hasItems()) {
-                    PresentableSection(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.movie_details_similar),
-                        state = similarMovies,
-                        showLoadingAtRefresh = false,
-                        onMoreClick = onSimilarMoreClicked,
-                        onPresentableClick = { movieId ->
-                            if (movieId != uiState.movieDetails?.id) {
-                                onMovieClicked(movieId)
-                            } else {
-                                scrollToStart()
-                            }
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = similarMoviesState.hasItems()
+            ) {
+                PresentableSection(
+                    modifier = Modifier.fillMaxWidth(),
+                    title = stringResource(R.string.movie_details_similar),
+                    state = similarMoviesState,
+                    showLoadingAtRefresh = false,
+                    onMoreClick = onSimilarMoreClicked,
+                    onPresentableClick = { movieId ->
+                        if (movieId != uiState.movieDetails?.id) {
+                            onMovieClicked(movieId)
+                        } else {
+                            scrollToStart()
                         }
-                    )
-                }
+                    }
+                )
             }
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = uiState.associatedContent.videos
-            ) { videos ->
-                videos.ifNotNullAndEmpty { value ->
-                    VideosSection(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.season_details_videos_label),
-                        videos = value,
-                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                        onVideoClicked = onVideoClicked
-                    )
-                }
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = !uiState.associatedContent.videos.isNullOrEmpty()
+            ) {
+                VideosSection(
+                    modifier = Modifier.fillMaxWidth(),
+                    title = stringResource(R.string.season_details_videos_label),
+                    videos = uiState.associatedContent.videos ?: emptyList(),
+                    contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                    onVideoClicked = onVideoClicked
+                )
             }
 
-            AnimatedVisibility(
+            AnimatedContentContainer(
                 modifier = Modifier.fillMaxWidth(),
                 visible = uiState.additionalMovieDetailsInfo.reviewsCount > 0
             ) {
@@ -565,31 +549,3 @@ fun MovieDetailsScreenContent(
     }
 }
 
-@Composable
-fun AnimatedContentContainer(
-    modifier: Modifier = Modifier,
-    visible: Boolean,
-    content: @Composable BoxScope.() -> Unit = {}
-) {
-    val visibleState = remember { MutableTransitionState(false) }
-    visibleState.targetState = visible
-
-    val transition = updateTransition(visibleState, label = "visibility transition")
-    val alpha by transition.animateFloat(
-        transitionSpec = {
-            if (false isTransitioningTo true) {
-                tween(delayMillis = 300)
-            } else {
-                spring()
-            }
-        },
-        label = "alpha transition"
-    ) { isVisible -> if (isVisible) 1f else 0f }
-
-
-    Box(
-        modifier = modifier
-            .alpha(alpha)
-            .animateContentSize(tween(300)), content = content
-    )
-}

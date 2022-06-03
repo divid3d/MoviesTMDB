@@ -28,9 +28,9 @@ import androidx.navigation.NavBackStackEntry
 import com.example.moviesapp.R
 import com.example.moviesapp.model.ExternalId
 import com.example.moviesapp.model.MediaType
-import com.example.moviesapp.other.ifNotNullAndEmpty
 import com.example.moviesapp.other.openExternalId
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
+import com.example.moviesapp.ui.components.others.AnimatedContentContainer
 import com.example.moviesapp.ui.components.others.AppBar
 import com.example.moviesapp.ui.components.sections.ExternalIdsSection
 import com.example.moviesapp.ui.screens.destinations.*
@@ -240,37 +240,28 @@ fun PersonDetailsScreenContent(
                 personDetails = uiState.details
             )
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = uiState.credits?.cast
-            ) { cast ->
-                cast.ifNotNullAndEmpty { members ->
-                    CreditsList(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.person_details_screen_cast),
-                        credits = members,
-                        onCreditsClick = onMediaClicked
-                    )
-
-                }
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = !uiState.credits?.cast.isNullOrEmpty()
+            ) {
+                CreditsList(
+                    modifier = Modifier.fillMaxWidth(),
+                    title = stringResource(R.string.person_details_screen_cast),
+                    credits = uiState.credits?.cast ?: emptyList(),
+                    onCreditsClick = onMediaClicked
+                )
             }
 
-            Crossfade(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                targetState = uiState.credits?.crew
-            ) { crew ->
-                crew.ifNotNullAndEmpty { members ->
-                    CreditsList(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(R.string.person_details_screen_crew),
-                        credits = members,
-                        onCreditsClick = onMediaClicked
-                    )
-                }
+            AnimatedContentContainer(
+                modifier = Modifier.fillMaxWidth(),
+                visible = !uiState.credits?.crew.isNullOrEmpty()
+            ) {
+                CreditsList(
+                    modifier = Modifier.fillMaxWidth(),
+                    title = stringResource(R.string.person_details_screen_crew),
+                    credits = uiState.credits?.crew ?: emptyList(),
+                    onCreditsClick = onMediaClicked
+                )
             }
 
             Spacer(

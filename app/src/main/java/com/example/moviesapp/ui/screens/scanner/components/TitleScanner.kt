@@ -60,6 +60,7 @@ fun TitleScanner(
             typeface = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.resources.getFont(R.font.lato_black)
             } else ResourcesCompat.getFont(context, R.font.lato_black)
+            textAlign = Paint.Align.CENTER
         }
     }
     var roi: ROI? = remember { null }
@@ -121,8 +122,8 @@ fun TitleScanner(
                         with(it.nativeCanvas) {
                             drawText(
                                 text,
-                                rect.left,
-                                rect.bottom + 8.dp.toPx() + errorTextSize / 2,
+                                rect.center.x,
+                                rect.bottom + 16.dp.toPx() + errorTextSize / 2,
                                 errorTextPainter
                             )
                         }

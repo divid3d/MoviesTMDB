@@ -10,7 +10,7 @@ buildscript {
         paging_compose_version = "1.0.0-alpha14"
         moshi_version = "1.13.0"
         leak_canary_version = "2.8.1"
-        compose_destinations_version = "1.5.5-beta"
+        compose_destinations_version = "1.5.8-beta"
         firebase_bom_version = "29.1.0"
         coil_compose_version = "1.4.0"
         palette_version = "1.0.0"
@@ -45,19 +45,19 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.40.1'
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.1'
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.17.1"
         //ASM8 error when up to date
         classpath 'com.google.firebase:perf-plugin:1.4.1'
         //Firebase init random crash at newer
-        classpath 'com.google.gms:google-services:4.3.4'
+        classpath 'com.google.gms:google-services:4.3.10'
     }
 }
 
 plugins {
-    id 'com.android.application' version '7.2.0' apply false
-    id 'com.android.library' version '7.2.0' apply false
+    id 'com.android.application' version '7.2.1' apply false
+    id 'com.android.library' version '7.2.1' apply false
     id 'org.jetbrains.kotlin.android' version '1.6.21' apply false
 }
 task clean(type: Delete) {
