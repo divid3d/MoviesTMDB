@@ -31,6 +31,7 @@ fun PresentableScoreItem(
     score: Float,
     modifier: Modifier = Modifier,
     scoreRange: ClosedFloatingPointRange<Float> = 0f..10f,
+    animationEnabled: Boolean = true,
     strokeWidth: Dp = 3.dp
 ) {
     val progress = score / scoreRange.run { endInclusive - start }
@@ -39,8 +40,12 @@ fun PresentableScoreItem(
 
     val percent = (progress * 100).toInt()
 
-    LaunchedEffect(progress) {
-        animatedProgress.animateTo(progress, animationSpec = tween(durationMillis = 700))
+    LaunchedEffect(progress, animationEnabled) {
+        if (animationEnabled) {
+            animatedProgress.animateTo(progress, animationSpec = tween(durationMillis = 700))
+        } else {
+            animatedProgress.snapTo(progress)
+        }
     }
 
     val indicatorColor by animateColorAsState(

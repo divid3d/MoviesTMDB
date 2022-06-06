@@ -2,7 +2,10 @@ package com.example.moviesapp.ui.screens.seasons
 
 import android.os.Parcelable
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -29,10 +32,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import com.example.moviesapp.R
 import com.example.moviesapp.other.formatted
-import com.example.moviesapp.other.ifNotNullAndEmpty
 import com.example.moviesapp.other.openVideo
 import com.example.moviesapp.ui.components.chips.EpisodeChip
 import com.example.moviesapp.ui.components.dialogs.ErrorDialog
+import com.example.moviesapp.ui.components.others.AnimatedContentContainer
 import com.example.moviesapp.ui.components.others.AppBar
 import com.example.moviesapp.ui.components.sections.MemberSection
 import com.example.moviesapp.ui.components.sections.PresentableDetailsTopSection
@@ -191,29 +194,28 @@ fun SeasonDetailsContent(
             }
 
             item {
-                Crossfade(
+                AnimatedContentContainer(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = MaterialTheme.spacing.medium)
-                        .animateContentSize(),
-                    targetState = uiState.seasonDetails
-                ) { details ->
-                    if (details != null) {
+                        .padding(top = MaterialTheme.spacing.medium),
+                    visible = uiState.seasonDetails != null
+                ) {
+                    if (uiState.seasonDetails != null) {
                         Column(
                             modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium),
                             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                         ) {
                             Text(
-                                text = details.name,
+                                text = uiState.seasonDetails.name,
                                 color = Color.White,
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold
                             )
 
-                            if (details.overview.isNotBlank()) {
+                            if (uiState.seasonDetails.overview.isNotBlank()) {
                                 ExpandableText(
                                     modifier = Modifier.fillMaxSize(),
-                                    text = details.overview
+                                    text = uiState.seasonDetails.overview
                                 )
                             }
                         }
@@ -222,65 +224,56 @@ fun SeasonDetailsContent(
             }
 
             item {
-                Crossfade(
+                AnimatedContentContainer(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = MaterialTheme.spacing.medium)
-                        .animateContentSize(),
-                    targetState = uiState.aggregatedCredits?.cast
-                ) { cast ->
-                    cast.ifNotNullAndEmpty { members ->
-                        MemberSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.season_details_cast_label),
-                            members = members,
-                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                            onMemberClick = onMemberClicked
-                        )
-                    }
+                        .padding(top = MaterialTheme.spacing.medium),
+                    visible = !uiState.aggregatedCredits?.cast.isNullOrEmpty()
+                ) {
+                    MemberSection(
+                        modifier = Modifier.fillMaxWidth(),
+                        title = stringResource(R.string.season_details_cast_label),
+                        members = uiState.aggregatedCredits?.cast ?: emptyList(),
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                        onMemberClick = onMemberClicked
+                    )
                 }
             }
 
             item {
-                Crossfade(
+                AnimatedContentContainer(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = MaterialTheme.spacing.medium)
-                        .animateContentSize(),
-                    targetState = uiState.aggregatedCredits?.crew
-                ) { cast ->
-                    cast.ifNotNullAndEmpty { members ->
-                        MemberSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.season_details_crew_label),
-                            members = members,
-                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
-                            onMemberClick = onMemberClicked
-                        )
-                    }
+                        .padding(top = MaterialTheme.spacing.medium),
+                    visible = !uiState.aggregatedCredits?.crew.isNullOrEmpty()
+                ) {
+                    MemberSection(
+                        modifier = Modifier.fillMaxWidth(),
+                        title = stringResource(R.string.season_details_crew_label),
+                        members = uiState.aggregatedCredits?.crew ?: emptyList(),
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium),
+                        onMemberClick = onMemberClicked
+                    )
                 }
             }
 
             item {
-                Crossfade(
+                AnimatedContentContainer(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = MaterialTheme.spacing.medium)
-                        .animateContentSize(),
-                    targetState = uiState.videos
-                ) { videos ->
-                    videos.ifNotNullAndEmpty { value ->
-                        VideosSection(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.tv_series_details_videos),
-                            videos = value,
-                            contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
-                        ) { video ->
-                            openVideo(
-                                context = context,
-                                video = video
-                            )
-                        }
+                        .padding(top = MaterialTheme.spacing.medium),
+                    visible = !uiState.videos.isNullOrEmpty()
+                ) {
+                    VideosSection(
+                        modifier = Modifier.fillMaxWidth(),
+                        title = stringResource(R.string.tv_series_details_videos),
+                        videos = uiState.videos ?: emptyList(),
+                        contentPadding = PaddingValues(horizontal = MaterialTheme.spacing.medium)
+                    ) { video ->
+                        openVideo(
+                            context = context,
+                            video = video
+                        )
                     }
                 }
             }

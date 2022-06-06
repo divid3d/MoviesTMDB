@@ -128,7 +128,10 @@ fun ReviewItem(
                 }
 
                 score?.let { score ->
-                    PresentableScoreItem(score = score)
+                    PresentableScoreItem(
+                        score = score,
+                        animationEnabled = false
+                    )
                 }
             }
 

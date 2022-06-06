@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -61,7 +62,7 @@ fun DateRangeSelector(
         DateChip(
             modifier = Modifier
                 .constrainAs(fromDateChip) {
-                    top.linkTo(fromLabel.bottom)
+                    top.linkTo(fromLabel.bottom, margin = 4.dp)
                     linkTo(
                         start = parent.start,
                         end = arrowIcon.start,
@@ -79,7 +80,7 @@ fun DateRangeSelector(
         DateChip(
             modifier = Modifier
                 .constrainAs(toDateChip) {
-                    top.linkTo(toLabel.bottom)
+                    top.linkTo(toLabel.bottom, margin = 4.dp)
                     linkTo(
                         start = arrowIcon.end,
                         end = parent.end,
@@ -145,10 +146,7 @@ fun DateChip(
                 color = MaterialTheme.colors.primary.copy(0.5f),
                 shape = MaterialTheme.shapes.small
             )
-            .padding(
-                horizontal = MaterialTheme.spacing.medium,
-                vertical = MaterialTheme.spacing.small
-            ),
+            .padding(MaterialTheme.spacing.small),
         contentAlignment = Alignment.Center
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -158,7 +156,6 @@ fun DateChip(
             )
             Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
             Text(
-                modifier = Modifier.weight(1f),
                 text = initialDate?.formatted()
                     ?: stringResource(R.string.date_range_selector_select_hint),
                 fontSize = 12.sp,
@@ -166,6 +163,7 @@ fun DateChip(
                 overflow = TextOverflow.Ellipsis,
                 color = if (initialDate != null) Color.White else Color.White.copy(0.5f)
             )
+            Spacer(modifier = Modifier.weight(1f))
             AnimatedVisibility(
                 visible = initialDate != null,
                 enter = fadeIn() + scaleIn(),
