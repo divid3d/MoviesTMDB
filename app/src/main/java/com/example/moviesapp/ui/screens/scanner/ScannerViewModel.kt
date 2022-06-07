@@ -3,7 +3,7 @@ package com.example.moviesapp.ui.screens.scanner
 import android.graphics.Bitmap
 import androidx.lifecycle.viewModelScope
 import com.example.moviesapp.BaseViewModel
-import com.example.moviesapp.other.ROI
+import com.example.moviesapp.other.Roi
 import com.example.moviesapp.other.TextRecognitionHelper
 import com.example.moviesapp.use_case.interfaces.ScanBitmapForTextUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,7 +42,7 @@ class ScannerViewModel @Inject constructor(
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, ScannerScreenUiState.default)
 
-    fun onBitmapCaptured(bitmap: Bitmap, rotation: Float, roi: ROI?) {
+    fun onBitmapCaptured(bitmap: Bitmap, rotation: Float, roi: Roi?) {
         viewModelScope.launch(Dispatchers.IO) {
             scanBitmapForTextUseCase(bitmap, rotation, roi).collect { state ->
                 scanState.emit(state)

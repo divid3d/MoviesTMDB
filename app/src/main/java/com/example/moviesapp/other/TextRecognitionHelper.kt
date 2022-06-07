@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
 abstract class TextRecognitionHelper {
-    abstract fun scanTextFromBitmap(bitmap: Bitmap, rotation: Float, roi: ROI?): Flow<ScanState>
+    abstract fun scanTextFromBitmap(bitmap: Bitmap, rotation: Float, roi: Roi?): Flow<ScanState>
 
     sealed class ScanState {
         object Idle : ScanState()
@@ -31,7 +31,7 @@ class TextRecognitionHelperImpl @Inject constructor() : TextRecognitionHelper() 
     override fun scanTextFromBitmap(
         bitmap: Bitmap,
         rotation: Float,
-        roi: ROI?
+        roi: Roi?
     ): Flow<ScanState> = callbackFlow {
         trySend(ScanState.Loading)
 
@@ -76,7 +76,7 @@ class TextRecognitionHelperImpl @Inject constructor() : TextRecognitionHelper() 
     private fun preprocessBitmap(
         bitmap: Bitmap,
         rotation: Float,
-        roi: ROI?
+        roi: Roi?
     ): Bitmap {
         val rotatedBitmap = bitmap.rotate(rotation)
         return roi?.let { rotatedBitmap.getRoi(it) } ?: rotatedBitmap

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.example.moviesapp.R
-import com.example.moviesapp.other.ROI
+import com.example.moviesapp.other.Roi
 import com.example.moviesapp.other.toBitmap
 import com.example.moviesapp.ui.theme.Black700
 import com.example.moviesapp.ui.theme.spacing
@@ -35,7 +35,7 @@ fun TitleScanner(
     modifier: Modifier = Modifier,
     isScanningInProgress: Boolean = false,
     errorText: String? = null,
-    onBitmapCaptured: (image: Bitmap, rotation: Float, roi: ROI?) -> Unit,
+    onBitmapCaptured: (image: Bitmap, rotation: Float, roi: Roi?) -> Unit,
 ) {
     val context = LocalContext.current
     val imageCapture = remember {
@@ -63,7 +63,7 @@ fun TitleScanner(
             textAlign = Paint.Align.CENTER
         }
     }
-    var roi: ROI? = remember { null }
+    var roi: Roi? = remember { null }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Box(modifier = modifier.aspectRatio(3f / 4f)) {
@@ -89,7 +89,7 @@ fun TitleScanner(
                     size = Size(rectWidth, rectHeight)
                 )
 
-                roi = ROI(
+                roi = Roi(
                     left = rect.left / size.width,
                     top = rect.top / size.height,
                     width = rect.width / size.width,

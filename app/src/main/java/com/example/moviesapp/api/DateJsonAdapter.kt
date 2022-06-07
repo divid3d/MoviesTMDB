@@ -1,4 +1,4 @@
-package com.example.moviesapp.di
+package com.example.moviesapp.api
 
 import android.annotation.SuppressLint
 import com.squareup.moshi.*

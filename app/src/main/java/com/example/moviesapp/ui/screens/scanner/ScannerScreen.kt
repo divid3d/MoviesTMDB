@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import com.example.moviesapp.R
-import com.example.moviesapp.other.ROI
+import com.example.moviesapp.other.Roi
 import com.example.moviesapp.ui.components.others.AppBar
 import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
 import com.example.moviesapp.ui.screens.scanner.components.ScanResultModalBottomSheetContent
@@ -114,7 +114,7 @@ fun AnimatedVisibilityScope.ScannerScreen(
 fun ScannerScreenContent(
     uiState: ScannerScreenUiState,
     onBackClicked: () -> Unit = {},
-    onBitmapCaptured: (Bitmap, Float, ROI?) -> Unit,
+    onBitmapCaptured: (Bitmap, Float, Roi?) -> Unit,
     onAcceptClicked: () -> Unit = {}
 ) {
     val coroutineScope = rememberCoroutineScope()

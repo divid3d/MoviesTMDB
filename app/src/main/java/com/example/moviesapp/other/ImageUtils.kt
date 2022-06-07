@@ -10,7 +10,7 @@ import java.nio.ByteBuffer
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-data class ROI(
+data class Roi(
     val left: Float,
     val top: Float,
     val width: Float,
@@ -18,7 +18,7 @@ data class ROI(
 )
 
 
-fun Bitmap.getRoi(roi: ROI): Bitmap {
+fun Bitmap.getRoi(roi: Roi): Bitmap {
     return Bitmap.createBitmap(
         this,
         (roi.left * width).toInt(),

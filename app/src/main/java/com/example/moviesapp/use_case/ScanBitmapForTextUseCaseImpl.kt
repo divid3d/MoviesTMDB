@@ -1,7 +1,7 @@
 package com.example.moviesapp.use_case
 
 import android.graphics.Bitmap
-import com.example.moviesapp.other.ROI
+import com.example.moviesapp.other.Roi
 import com.example.moviesapp.other.TextRecognitionHelper
 import com.example.moviesapp.use_case.interfaces.ScanBitmapForTextUseCase
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +13,7 @@ class ScanBitmapForTextUseCaseImpl @Inject constructor(
     override fun invoke(
         bitmap: Bitmap,
         rotation: Float,
-        roi: ROI?
+        roi: Roi?
     ): Flow<TextRecognitionHelper.ScanState> {
         return textRecognitionHelper.scanTextFromBitmap(bitmap, rotation, roi)
     }

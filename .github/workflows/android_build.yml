@@ -40,7 +40,7 @@ jobs:
           arch: x86_64
           profile: Nexus 6
           script: ./gradlew connectedCheck -PfirebasePerformanceInstrumentationEnabled=false
-            
+
   build:
 
     runs-on: ubuntu-latest
@@ -80,12 +80,22 @@ jobs:
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
-      - uses: actions/upload-artifact@master
+      - name: Upload apk
+        uses: actions/upload-artifact@master
         with:
           name: release.apk
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
 
-      - uses: actions/upload-artifact@master
+      - name: Upload mapping
+        uses: actions/upload-artifact@master
         with:
           name: mapping.txt
           path: app/build/outputs/mapping/release/mapping.txt
+
+      - name: Upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: testers
+          file: ${{steps.sign_app.outputs.signedReleaseFile}}

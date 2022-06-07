@@ -5,10 +5,7 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
 import com.example.moviesapp.BuildConfig
-import com.example.moviesapp.api.ApiParams
-import com.example.moviesapp.api.TmdbApi
-import com.example.moviesapp.api.TmdbApiHelper
-import com.example.moviesapp.api.TmdbApiHelperImpl
+import com.example.moviesapp.api.*
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
