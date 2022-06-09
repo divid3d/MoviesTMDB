@@ -22,7 +22,7 @@ import com.example.moviesapp.ui.components.others.VoteRangeSlider
 import com.example.moviesapp.ui.components.sections.ExpandableSection
 import com.example.moviesapp.ui.components.selectors.DateRangeSelector
 import com.example.moviesapp.ui.components.selectors.GenresSelector
-import com.example.moviesapp.ui.screens.discover.MovieFilterState
+import com.example.moviesapp.ui.screens.discover.movies.MovieFilterState
 import com.example.moviesapp.ui.theme.Charcoal
 import com.example.moviesapp.ui.theme.spacing
 

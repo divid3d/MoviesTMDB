@@ -14,7 +14,7 @@ import com.example.moviesapp.ui.components.items.ErrorPresentableItem
 import com.example.moviesapp.ui.components.items.LoadingPresentableItem
 import com.example.moviesapp.ui.components.items.NoPhotoPresentableItem
 import com.example.moviesapp.ui.components.others.TmdbImage
-import com.example.moviesapp.ui.screens.details.PersonDetailsState
+import com.example.moviesapp.ui.screens.details.person.PersonDetailsState
 import com.example.moviesapp.ui.theme.Size
 import com.example.moviesapp.ui.theme.sizes
 

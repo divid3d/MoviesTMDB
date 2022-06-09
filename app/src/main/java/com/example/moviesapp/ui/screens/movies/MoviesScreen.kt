@@ -18,12 +18,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviesapp.MainViewModel
 import com.example.moviesapp.R
 import com.example.moviesapp.model.MovieType
+import com.example.moviesapp.other.isAnyRefreshing
 import com.example.moviesapp.other.isNotEmpty
+import com.example.moviesapp.other.refreshAll
 import com.example.moviesapp.ui.components.dialogs.ExitDialog
 import com.example.moviesapp.ui.components.sections.PresentableSection
 import com.example.moviesapp.ui.components.sections.PresentableTopSection
@@ -136,9 +137,7 @@ fun MoviesScreenContent(
             topRatedLazyItems,
             trendingLazyItems,
             nowPlayingLazyItems
-        ).any { lazyPagingItems ->
-            lazyPagingItems.itemCount > 0 && lazyPagingItems.loadState.refresh is LoadState.Loading
-        }
+        ).isAnyRefreshing()
     }
 
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing)
@@ -150,7 +149,7 @@ fun MoviesScreenContent(
             topRatedLazyItems,
             trendingLazyItems,
             nowPlayingLazyItems
-        ).forEach { lazyPagingItems -> lazyPagingItems.refresh() }
+        ).refreshAll()
     }
 
     LaunchedEffect(isRefreshing) {

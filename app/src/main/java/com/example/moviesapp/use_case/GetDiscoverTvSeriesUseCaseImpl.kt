@@ -6,8 +6,8 @@ import com.example.moviesapp.model.GenresParam
 import com.example.moviesapp.model.TvSeries
 import com.example.moviesapp.model.WatchProvidersParam
 import com.example.moviesapp.repository.tv.TvSeriesRepository
-import com.example.moviesapp.ui.screens.discover.SortInfo
-import com.example.moviesapp.ui.screens.discover.TvSeriesFilterState
+import com.example.moviesapp.ui.screens.discover.movies.SortInfo
+import com.example.moviesapp.ui.screens.discover.tvseries.TvSeriesFilterState
 import com.example.moviesapp.use_case.interfaces.GetDiscoverTvSeriesUseCase
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

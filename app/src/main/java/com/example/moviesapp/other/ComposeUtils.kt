@@ -168,4 +168,12 @@ fun partiallyAnnotatedString(
     }
 }
 
+fun Iterable<LazyPagingItems<*>>.isAnyRefreshing(): Boolean {
+    return any { it.itemCount > 0 && it.loadState.refresh is LoadState.Loading }
+}
+
+fun Iterable<LazyPagingItems<*>>.refreshAll() {
+    return forEach { it.refresh() }
+}
+
 

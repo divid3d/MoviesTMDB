@@ -24,6 +24,7 @@ data class TvScreenUiState(
     }
 }
 
+@Stable
 data class TvSeriesState(
     val onTheAir: Flow<PagingData<DetailPresentable>>,
     val discover: Flow<PagingData<Presentable>>,

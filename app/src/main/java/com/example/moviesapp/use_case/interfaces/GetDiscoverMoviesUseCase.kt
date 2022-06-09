@@ -3,8 +3,8 @@ package com.example.moviesapp.use_case.interfaces
 import androidx.paging.PagingData
 import com.example.moviesapp.model.DeviceLanguage
 import com.example.moviesapp.model.Movie
-import com.example.moviesapp.ui.screens.discover.MovieFilterState
-import com.example.moviesapp.ui.screens.discover.SortInfo
+import com.example.moviesapp.ui.screens.discover.movies.MovieFilterState
+import com.example.moviesapp.ui.screens.discover.movies.SortInfo
 import kotlinx.coroutines.flow.Flow
 
 interface GetDiscoverMoviesUseCase {
