@@ -129,7 +129,7 @@ fun LazyPagingItems<*>.isEmpty(): Boolean {
 fun LazyPagingItems<*>.isNotEmpty(): Boolean = !isEmpty()
 
 inline fun <T> List<T>?.ifNotNullAndEmpty(scope: (List<T>) -> Unit) {
-    if (!this.isNullOrEmpty()) {
+    if (!isNullOrEmpty()) {
         scope(this)
     }
 }

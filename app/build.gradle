@@ -173,8 +173,8 @@ dependencies {
     implementation "androidx.core:core-splashscreen:$splashscreen_version"
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation "androidx.constraintlayout:constraintlayout-compose:$constraint_layout_compose_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecyclea_runtime_version"
-    implementation "androidx.activity:activity-compose:$activity_compose_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime_version"
+    implementation "androidx.activity:activity-compose:1.6.0-alpha03"
     implementation "com.airbnb.android:lottie-compose:$lottie_compose_version"
     implementation "com.jakewharton.timber:timber:$timber_version"
 

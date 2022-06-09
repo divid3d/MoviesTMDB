@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.scanner.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -14,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.moviesapp.R
 import com.example.moviesapp.ui.screens.scanner.ScanResult
+import com.example.moviesapp.ui.theme.Charcoal
 import com.example.moviesapp.ui.theme.spacing
 
 @Composable
@@ -52,33 +54,28 @@ fun ScanResultModalBottomSheetContent(
 
         Text(text = scannedText, fontSize = 32.sp, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
-        Row(
-            modifier = Modifier.padding(MaterialTheme.spacing.medium),
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Charcoal)
+                .padding(vertical = MaterialTheme.spacing.medium),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
         ) {
-            OutlinedButton(
-                modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.primary
-                ),
-                onClick = onRejectClicked
-            ) {
-                Text(
-                    text = stringResource(R.string.scanner_reject_button_label),
-                    color = Color.White
-                )
-            }
-            OutlinedButton(
-                modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.primary
-                ),
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = MaterialTheme.spacing.medium),
                 onClick = onAcceptClicked
             ) {
-                Text(
-                    text = stringResource(R.string.scanner_accept_button_label),
-                    color = Color.White
-                )
+                Text(text = stringResource(R.string.scanner_accept_button_label))
+            }
+            OutlinedButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = MaterialTheme.spacing.medium),
+                onClick = onRejectClicked
+            ) {
+                Text(text = stringResource(R.string.scanner_reject_button_label))
             }
         }
     }

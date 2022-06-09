@@ -317,6 +317,14 @@ fun FilterMoviesModalBottomSheetContent(
                 .padding(vertical = MaterialTheme.spacing.medium),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
         ) {
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = MaterialTheme.spacing.medium),
+                enabled = enableSaveButton,
+                onClick = { onSaveFilterClick(currentFilterState) }) {
+                Text(text = stringResource(R.string.movie_filter_bottom_sheet_save_button_label))
+            }
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -325,14 +333,6 @@ fun FilterMoviesModalBottomSheetContent(
                     currentFilterState = currentFilterState.clear()
                 }) {
                 Text(text = stringResource(R.string.movie_filter_bottom_sheet_clear_button_label))
-            }
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = MaterialTheme.spacing.medium),
-                enabled = enableSaveButton,
-                onClick = { onSaveFilterClick(currentFilterState) }) {
-                Text(text = stringResource(R.string.movie_filter_bottom_sheet_save_button_label))
             }
         }
     }

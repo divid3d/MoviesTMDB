@@ -162,7 +162,9 @@ fun ScannerScreenContent(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetContent = {
             ScanResultModalBottomSheetContent(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding(),
                 scanResult = uiState.scanResult,
                 onCloseClick = onCloseBottomSheetClick,
                 onRejectClicked = onCloseBottomSheetClick,

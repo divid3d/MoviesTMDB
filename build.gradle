@@ -1,40 +1,40 @@
 buildscript {
     ext {
         compose_version = '1.2.0-beta03'
-        accompanist_version = '0.24.7-alpha'
-        hilt_version = "2.40.1"
+        accompanist_version = '0.24.10-beta'
+        hilt_version = '2.42'
         room_version = "2.5.0-alpha02"
-        okhttp_version = "4.9.3"
+        okhttp_version = '5.0.0-alpha.8'
         retrofit_version = "2.9.0"
-        hilt_navigation_compose_version = "1.0.0"
-        paging_compose_version = "1.0.0-alpha15"
-        moshi_version = "1.13.0"
-        leak_canary_version = "2.8.1"
-        compose_destinations_version = "1.5.9-beta"
-        firebase_bom_version = "29.1.0"
-        coil_compose_version = "1.4.0"
-        palette_version = "1.0.0"
-        splashscreen_version = "1.0.0-rc01"
-        constraint_layout_compose_version = "1.0.1"
-        lifecyclea_runtime_version = "2.4.1"
-        activity_compose_version = "1.4.0"
-        lottie_compose_version = "5.0.3"
-        timber_version = "5.0.1"
-        chucker_version = "3.5.2"
-        camera_version = "1.2.0-alpha02"
-        camera_lifecycle_version = "1.2.0-alpha02"
-        mlkit_text_recognition_version = "16.0.0-beta4"
+        hilt_navigation_compose_version = '1.0.0'
+        paging_compose_version = '1.0.0-alpha15'
+        moshi_version = '1.13.0'
+        leak_canary_version = '2.9.1'
+        compose_destinations_version = '1.5.9-beta'
+        firebase_bom_version = '30.1.0'
+        coil_compose_version = '1.4.0'
+        palette_version = '1.0.0'
+        splashscreen_version = '1.0.0-rc01'
+        constraint_layout_compose_version = '1.0.1'
+        lifecycle_runtime_version = '2.5.0-rc01'
+        activity_compose_version = '1.4.0'
+        lottie_compose_version = '5.2.0'
+        timber_version = '5.0.1'
+        chucker_version = '3.5.2'
+        camera_version = '1.2.0-alpha02'
+        camera_lifecycle_version = '1.2.0-alpha02'
+        mlkit_text_recognition_version = '16.0.0-beta4'
 
         //Instrumentation Tests
-        coroutines_test_version = "1.6.0"
+        coroutines_test_version = '1.6.2'
         core_testing_version = "2.1.0"
         truth_version = "1.1.3"
-        mockito_version = "4.3.1"
-        hilt_android_testing_version = "2.38.1"
-        espresso_version = "3.4.0"
+        mockito_version = '4.6.1'
+        hilt_android_testing_version = '2.42'
+        espresso_version = '3.4.0'
 
         //Unit Test
-        mock_webserver_vesion = "4.9.3"
+        mock_webserver_vesion = '5.0.0-alpha.8'
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
@@ -47,7 +47,7 @@ buildscript {
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.1'
-        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.17.1"
+        classpath 'io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.17.1'
         //ASM8 error when up to date
         classpath 'com.google.firebase:perf-plugin:1.4.1'
         //Firebase init random crash at newer
