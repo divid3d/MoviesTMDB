@@ -48,7 +48,7 @@ fun ResultPresentableItem(
                 imagePath = presentable.posterPath,
                 imageType = ImageUrlParser.ImageType.Poster
             ) {
-                size(OriginalSize)
+                size(coil.size.Size.ORIGINAL)
                 scale(Scale.FILL)
                 crossfade(true)
             }

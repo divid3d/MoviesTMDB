@@ -40,7 +40,7 @@ fun StillBrowser(
                 imageType = ImageUrlParser.ImageType.Still,
                 contentScale = ContentScale.FillWidth
             ) {
-                size(OriginalSize)
+                size(coil.size.Size.ORIGINAL)
                 scale(Scale.FIT)
                 crossfade(true)
             }

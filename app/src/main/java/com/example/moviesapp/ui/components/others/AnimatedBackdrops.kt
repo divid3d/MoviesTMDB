@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import coil.compose.AsyncImage
 import coil.size.OriginalSize
 import coil.size.Scale
-import coil.transform.BlurTransformation
 import com.example.moviesapp.other.ImageUrlParser
 import com.example.moviesapp.other.getMaxSizeInt
 
@@ -25,8 +25,6 @@ fun AnimatedBackdrops(
     paths: List<String>,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-
     var currentBackdropPathIndex by remember {
         mutableStateOf(0)
     }
@@ -48,14 +46,14 @@ fun AnimatedBackdrops(
                 type = ImageUrlParser.ImageType.Backdrop,
                 preferredSize = Size(maxWidth, maxHeight),
                 builder = {
-                    size(OriginalSize)
+                    size(coil.size.Size.ORIGINAL)
                     scale(Scale.FILL)
                     transformations(
-                        BlurTransformation(
-                            context = context,
-                            radius = 18f,
-                            sampling = 6f
-                        )
+//                        BlurTransformation(
+//                            context = context,
+//                            radius = 18f,
+//                            sampling = 6f
+//                        )
                     )
                 }
             )

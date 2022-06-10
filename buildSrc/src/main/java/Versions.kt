@@ -14,12 +14,12 @@ object Versions {
     const val leakCanary = "2.9.1"
     const val composeDestinations = "1.5.9-beta"
     const val firebaseBom = "30.1.0"
-    const val coilCompose = "1.4.0"
+    const val coilCompose = "2.1.0"
     const val palette = "1.0.0"
     const val splashscreen = "1.0.0-rc01"
     const val constraintLayoutCompose = "1.0.1"
     const val lifecycleRuntime = "2.5.0-rc01"
-    const val activityCompose = "1.4.0"
+    const val activityCompose = "1.6.0-alpha03"
     const val lottieCompose = "5.2.0"
     const val timber = "5.0.1"
     const val chucker = "3.5.2"
@@ -37,5 +37,7 @@ object Versions {
 
     //Unit Test
     const val mockWebserver = "5.0.0-alpha.8"
+    const val jUnit = "4.13.2"
+    const val testExtJUnit = "1.1.3"
 }
 

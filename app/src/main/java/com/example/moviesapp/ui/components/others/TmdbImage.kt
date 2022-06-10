@@ -8,9 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import coil.compose.ImagePainter
-import coil.compose.LocalImageLoader
-import coil.compose.rememberImagePainter
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.*
 import coil.request.ImageRequest
 import com.example.moviesapp.LocalImageUrlParser
 import com.example.moviesapp.other.ImageUrlParser
@@ -23,9 +22,8 @@ inline fun rememberTmdbImagePainter(
     type: ImageUrlParser.ImageType,
     preferredSize: Size,
     strategy: ImageUrlParser.MatchingStrategy = ImageUrlParser.MatchingStrategy.FirstBiggerWidth,
-    onExecute: ImagePainter.ExecuteCallback = ImagePainter.ExecuteCallback.Default,
     builder: ImageRequest.Builder.() -> Unit = {},
-): ImagePainter {
+): AsyncImagePainter {
     val imageUrlParser = LocalImageUrlParser.current
 
     val imageUrl = imageUrlParser?.getImageUrl(
@@ -35,7 +33,13 @@ inline fun rememberTmdbImagePainter(
         strategy = strategy
     )
 
-    return rememberImagePainter(imageUrl, LocalImageLoader.current, onExecute, builder)
+    return rememberAsyncImagePainter(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(imageUrl)
+            .apply {
+                builder(this)
+            }.build()
+    )
 }
 
 @Composable

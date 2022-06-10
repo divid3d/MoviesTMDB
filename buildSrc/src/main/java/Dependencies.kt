@@ -11,8 +11,8 @@ object Dependencies {
     val coreTesting by lazy { "androidx.arch.core:core-testing:${Versions.coreTesting}" }
     val mockito by lazy { "org.mockito:mockito-core:${Versions.mockito}" }
     val mockWebServer by lazy { "com.squareup.okhttp3:mockwebserver:${Versions.mockWebserver}" }
-    val espresso by lazy {"androidx.test.espresso:espresso-core:${Versions.espresso}"}
-    val leakCanary by lazy {"com.squareup.leakcanary:leakcanary-android:${Versions.leakCanary}"}
+    val espresso by lazy { "androidx.test.espresso:espresso-core:${Versions.espresso}" }
+    val leakCanary by lazy { "com.squareup.leakcanary:leakcanary-android:${Versions.leakCanary}" }
 
     object ComposeDestinations {
         val animationCore by lazy { "io.github.raamcosta.compose-destinations:animations-core:${Versions.composeDestinations}" }
@@ -22,17 +22,17 @@ object Dependencies {
     object Room {
         val ktx by lazy { "androidx.room:room-ktx:${Versions.room}" }
         val compiler by lazy { "androidx.room:room-compiler:${Versions.room}" }
-        val paging by lazy { "androidx.room:room-paging:2.5.0-alpha02" }
+        val paging by lazy { "androidx.room:room-paging:${Versions.room}" }
     }
 
     object Compose {
         val ui by lazy { "androidx.compose.ui:ui:${Versions.compose}" }
         val material by lazy { "androidx.compose.material:material:${Versions.compose}" }
         val uiTooling by lazy { "androidx.compose.ui:ui-tooling-preview:${Versions.compose}" }
-        val activity by lazy { "androidx.activity:activity-compose:1.6.0-alpha03" }
+        val activity by lazy { "androidx.activity:activity-compose:${Versions.activityCompose}" }
         val lottie by lazy { "com.airbnb.android:lottie-compose:${Versions.lottieCompose}" }
         val constraintLayout by lazy { "androidx.constraintlayout:constraintlayout-compose:${Versions.constraintLayoutCompose}" }
-        val uiTest by lazy {"androidx.compose.ui:ui-test-junit4:${Versions.compose}"}
+        val uiTest by lazy { "androidx.compose.ui:ui-test-junit4:${Versions.compose}" }
     }
 
     object Accompanist {
@@ -88,12 +88,12 @@ object Dependencies {
     }
 
     object JUnit {
-        val testExt by lazy { "androidx.test.ext:junit:1.1.3" }
-        val jUnit by lazy { "junit:junit:4.13.2" }
+        val testExt by lazy { "androidx.test.ext:junit:${Versions.jUnit}" }
+        val jUnit by lazy { "junit:junit:${Versions.testExtJUnit}" }
     }
 
-    object Chucker{
-        val chucker by lazy {"com.github.chuckerteam.chucker:library:${Versions.chucker}"}
-        val noOp by lazy {"com.github.chuckerteam.chucker:library-no-op:${Versions.chucker}"}
+    object Chucker {
+        val chucker by lazy { "com.github.chuckerteam.chucker:library:${Versions.chucker}" }
+        val noOp by lazy { "com.github.chuckerteam.chucker:library-no-op:${Versions.chucker}" }
     }
 }

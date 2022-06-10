@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import coil.ImageLoader
+import coil.ImageLoaderFactory
 import coil.compose.LocalImageLoader
 import com.example.moviesapp.data.ConfigDataSource
 import com.example.moviesapp.model.SnackBarEvent
@@ -142,10 +143,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            CompositionLocalProvider(
-                LocalImageLoader provides ImageLoader(context),
-                LocalImageUrlParser provides imageUrlParser
-            ) {
+            CompositionLocalProvider(LocalImageUrlParser provides imageUrlParser) {
                 MoviesAppTheme {
                     val navigationBarColor = MaterialTheme.colors.surface
 

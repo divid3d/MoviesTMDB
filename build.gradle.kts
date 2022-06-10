@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.42")
+        classpath("com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt}")
         classpath("com.google.firebase:firebase-crashlytics-gradle:2.8.1")
         classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.17.1")
         //ASM8 error when up to date

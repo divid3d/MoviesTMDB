@@ -7,6 +7,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -48,13 +49,12 @@ fun PresentableDetailsTopSection(
 
     val ratio = if (currentScrollValue != null && scrollValueLimit != null) {
         (currentScrollValue / scrollValueLimit).coerceIn(0f, 1f)
-    } else {
-        0f
-    }
+    } else 0f
 
     Box(modifier = modifier.clip(RectangleShape)) {
         AnimatedBackdrops(
             modifier = Modifier
+                .blur(8.dp)
                 .matchParentSize()
                 .graphicsLayer {
                     clip = true

@@ -61,7 +61,7 @@ fun CreditsItem(
                         imagePath = posterPath,
                         imageType = ImageUrlParser.ImageType.Profile
                     ) {
-                        size(OriginalSize)
+                        size(coil.size.Size.ORIGINAL)
                         scale(Scale.FILL)
                         crossfade(true)
                     }

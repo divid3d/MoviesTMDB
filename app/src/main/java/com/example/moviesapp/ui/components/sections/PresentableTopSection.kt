@@ -18,13 +18,13 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.lerp
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,9 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.paging.compose.LazyPagingItems
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.ImagePainter
-import coil.transform.BlurTransformation
+import coil.compose.AsyncImagePainter
 import com.example.moviesapp.R
 import com.example.moviesapp.model.DetailPresentable
 import com.example.moviesapp.model.DetailPresentableItemState
@@ -54,7 +52,7 @@ import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import com.google.accompanist.pager.rememberPagerState
 import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalCoilApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun PresentableTopSection(
     title: String,
@@ -66,7 +64,6 @@ fun PresentableTopSection(
     onPresentableClick: (Int) -> Unit = {},
     onMoreClick: () -> Unit = {}
 ) {
-    val context = LocalContext.current
     val density = LocalDensity.current
 
     val pagerState = rememberPagerState()
@@ -113,20 +110,14 @@ fun PresentableTopSection(
                     type = ImageUrlParser.ImageType.Backdrop,
                     preferredSize = android.util.Size(maxWidth, maxHeight),
                     builder = {
-                        transformations(
-                            BlurTransformation(
-                                context = context,
-                                radius = 16f,
-                                sampling = 6f
-                            )
-                        )
+                        allowHardware(false)
                     }
                 )
 
                 val backgroundPainterState = backgroundPainter.state
 
                 LaunchedEffect(backgroundPainterState) {
-                    if (backgroundPainterState is ImagePainter.State.Success) {
+                    if (backgroundPainterState is AsyncImagePainter.State.Success) {
                         isDark = backgroundPainterState.result.drawable.toBitmap().run { isDark() }
 
                         backdropScale.animateTo(
@@ -152,6 +143,7 @@ fun PresentableTopSection(
 
                 Image(
                     modifier = Modifier
+                        .blur(8.dp)
                         .fillMaxSize()
                         .scale(backdropScale.value)
                         .background(

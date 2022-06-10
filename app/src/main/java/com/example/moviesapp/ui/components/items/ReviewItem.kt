@@ -16,15 +16,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import coil.size.OriginalSize
 import coil.size.Scale
+import coil.size.Size
 import coil.transform.CircleCropTransformation
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Review
@@ -70,14 +74,14 @@ fun ReviewItem(
                     Box {
                         Image(
                             modifier = Modifier.size(48.dp),
-                            painter = rememberImagePainter(
-                                data = avatarUrl,
-                                builder = {
-                                    size(OriginalSize)
-                                    scale(Scale.FILL)
-                                    transformations(CircleCropTransformation())
-                                    crossfade(true)
-                                }
+                            painter = rememberAsyncImagePainter(
+                                ImageRequest.Builder(LocalContext.current).data(data = avatarUrl)
+                                    .apply(block = fun ImageRequest.Builder.() {
+                                        size(Size.ORIGINAL)
+                                        scale(Scale.FILL)
+                                        transformations(CircleCropTransformation())
+                                        crossfade(true)
+                                    }).build()
                             ),
                             contentDescription = null,
                             contentScale = ContentScale.FillBounds

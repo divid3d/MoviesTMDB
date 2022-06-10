@@ -1,6 +1,7 @@
 package com.example.moviesapp.other
 
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.palette.graphics.Palette
@@ -16,7 +17,6 @@ fun Palette.Swatch.getPerceptiveLuminance(): Float {
     val r: Int = android.graphics.Color.red(rgb)
     val g: Int = android.graphics.Color.green(rgb)
     val b: Int = android.graphics.Color.blue(rgb)
-
 
     return ((0.299f * r) + (0.587f * g) + (0.114f * b)) / 255f
 }
