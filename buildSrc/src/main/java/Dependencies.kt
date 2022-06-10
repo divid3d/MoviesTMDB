@@ -88,8 +88,8 @@ object Dependencies {
     }
 
     object JUnit {
-        val testExt by lazy { "androidx.test.ext:junit:${Versions.jUnit}" }
-        val jUnit by lazy { "junit:junit:${Versions.testExtJUnit}" }
+        val testExt by lazy { "androidx.test.ext:junit:${Versions.testExtJUnit}" }
+        val jUnit by lazy { "junit:junit:${Versions.jUnit}" }
     }
 
     object Chucker {
