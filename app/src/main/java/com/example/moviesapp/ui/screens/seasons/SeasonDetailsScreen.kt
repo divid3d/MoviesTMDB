@@ -352,16 +352,12 @@ fun SeasonDetailsContent(
                 }
             },
             trailing = {
-                Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
-                    IconButton(
-                        onClick = onCloseClicked
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = "close",
-                            tint = MaterialTheme.colors.primary
-                        )
-                    }
+                IconButton(onClick = onCloseClicked) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = "close",
+                        tint = MaterialTheme.colors.primary
+                    )
                 }
             }
         )

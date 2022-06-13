@@ -109,7 +109,7 @@ fun AnimatedVisibilityScope.TvSeriesDetailsScreen(
             val destination = ReviewsScreenDestination(
                 startRoute = uiState.startRoute,
                 mediaId = tvSeriesId,
-                type = MediaType.Movie
+                type = MediaType.Tv
             )
 
             navigator.navigate(destination)
@@ -418,7 +418,7 @@ fun TvSeriesDetailsScreenContent(
                 }
             },
             trailing = {
-                Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
+                Row {
                     LikeButton(
                         isFavourite = uiState.additionalTvSeriesDetailsInfo.isFavourite,
                         onClick = {
@@ -429,9 +429,7 @@ fun TvSeriesDetailsScreenContent(
                             }
                         }
                     )
-                    IconButton(
-                        onClick = onCloseClicked
-                    ) {
+                    IconButton(onClick = onCloseClicked) {
                         Icon(
                             imageVector = Icons.Filled.Close,
                             contentDescription = "close",

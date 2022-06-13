@@ -154,10 +154,9 @@ fun DiscoverMoviesScreenContent(
                                 tint = MaterialTheme.colors.primary
                             )
                         }
-                    }, trailing = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                    },
+                    trailing = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             IconButton(
                                 modifier = Modifier.rotate(orderIconRotation),
                                 onClick = {

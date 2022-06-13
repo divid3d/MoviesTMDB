@@ -12,7 +12,7 @@ object Versions {
     const val pagingCompose = "1.0.0-alpha15"
     const val moshi = "1.13.0"
     const val leakCanary = "2.9.1"
-    const val composeDestinations = "1.5.9-beta"
+    const val composeDestinations = "1.5.10-beta"
     const val firebaseBom = "30.1.0"
     const val coilCompose = "2.1.0"
     const val palette = "1.0.0"

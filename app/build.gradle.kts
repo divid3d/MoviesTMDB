@@ -32,7 +32,7 @@ class ApplicationVariantOutputFilenameAction : Action<ApplicationVariant> {
 
         return listOfNotNull(
             "app",
-            variant.buildType,
+            variant.buildType.name,
             variant.versionName,
             currentDate
         ).joinToString(separator = "_", postfix = ".apk")

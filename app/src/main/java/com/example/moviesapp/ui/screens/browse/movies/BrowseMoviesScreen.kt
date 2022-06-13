@@ -128,10 +128,7 @@ fun BrowseMoviesScreenContent(
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {
-                    IconButton(
-                        modifier = Modifier.padding(end = MaterialTheme.spacing.medium),
-                        onClick = showDialog
-                    ) {
+                    IconButton(onClick = showDialog) {
                         Icon(
                             imageVector = Icons.Filled.Delete,
                             contentDescription = "clear recent",

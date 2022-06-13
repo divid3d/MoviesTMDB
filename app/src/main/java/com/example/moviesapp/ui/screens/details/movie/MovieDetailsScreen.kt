@@ -466,7 +466,7 @@ fun MovieDetailsScreenContent(
                 }
             },
             trailing = {
-                Row(modifier = Modifier.padding(end = MaterialTheme.spacing.small)) {
+                Row {
                     LikeButton(
                         isFavourite = uiState.additionalMovieDetailsInfo.isFavourite,
                         onClick = {
@@ -477,9 +477,7 @@ fun MovieDetailsScreenContent(
                             }
                         }
                     )
-                    IconButton(
-                        onClick = onCloseClicked
-                    ) {
+                    IconButton(onClick = onCloseClicked) {
                         Icon(
                             imageVector = Icons.Filled.Close,
                             contentDescription = "close",
