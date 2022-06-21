@@ -24,8 +24,8 @@ object Versions {
     const val palette = "1.0.0"
     const val splashscreen = "1.0.0-rc01"
     const val constraintLayoutCompose = "1.1.0-alpha02"
-    const val lifecycleRuntime = "2.5.0-rc01"
-    const val activityCompose = "1.5.0-rc01"
+    const val lifecycleRuntime = "2.5.0-rc02"
+    const val activityCompose = "1.6.0-alpha05"
     const val lottieCompose = "5.2.0"
     const val timber = "5.0.1"
     const val chucker = "3.5.2"
@@ -34,7 +34,7 @@ object Versions {
     const val mlKitTextRecognition = "16.0.0-beta4"
 
     //Instrumentation Tests
-    const val coroutinesTest = "1.6.2"
+    const val coroutinesTest = "1.6.3"
     const val coreTesting = "2.1.0"
     const val truth = "1.1.3"
     const val mockito = "4.6.1"
