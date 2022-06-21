@@ -9,7 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil.size.OriginalSize
 import coil.size.Scale
 import com.example.moviesapp.model.Image
 import com.example.moviesapp.other.ImageUrlParser

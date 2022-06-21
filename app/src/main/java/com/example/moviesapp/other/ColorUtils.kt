@@ -1,7 +1,6 @@
 package com.example.moviesapp.other
 
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.palette.graphics.Palette

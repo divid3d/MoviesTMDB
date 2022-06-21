@@ -3,7 +3,7 @@ object Dependencies {
     val coilCompose by lazy { "io.coil-kt:coil-compose:${Versions.coilCompose}" }
     val palette by lazy { "androidx.palette:palette-ktx:${Versions.palette}" }
     val splashScreen by lazy { "androidx.core:core-splashscreen:${Versions.splashscreen}" }
-    val core by lazy { "androidx.core:core-ktx:1.8.0" }
+    val core by lazy { "androidx.core:core-ktx:1.9.0-alpha05" }
     val lifecycleRuntime by lazy { "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycleRuntime}" }
     val timber by lazy { "com.jakewharton.timber:timber:${Versions.timber}" }
     val coroutinesTest by lazy { "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutinesTest}" }

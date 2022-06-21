@@ -1,12 +1,7 @@
 package com.example.moviesapp.ui.screens.seasons
 
-import android.os.Parcelable
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
 import com.example.moviesapp.R
 import com.example.moviesapp.other.formatted
 import com.example.moviesapp.other.openVideo
@@ -43,49 +37,10 @@ import com.example.moviesapp.ui.components.sections.VideosSection
 import com.example.moviesapp.ui.components.texts.ExpandableText
 import com.example.moviesapp.ui.components.texts.LabeledText
 import com.example.moviesapp.ui.components.texts.SectionLabel
-import com.example.moviesapp.ui.screens.destinations.FavouritesScreenDestination
 import com.example.moviesapp.ui.screens.destinations.PersonDetailsScreenDestination
-import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
-import com.example.moviesapp.ui.screens.destinations.TvScreenDestination
 import com.example.moviesapp.ui.theme.spacing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.spec.DestinationStyle
-import kotlinx.parcelize.Parcelize
-
-@OptIn(ExperimentalAnimationApi::class)
-object SeasonDetailsScreenTransitions : DestinationStyle.Animated {
-    override fun AnimatedContentScope<NavBackStackEntry>.exitTransition(): ExitTransition? {
-        return when (targetState.destination.route) {
-            TvScreenDestination.route,
-            FavouritesScreenDestination.route,
-            SearchScreenDestination.route -> slideOutOfContainer(
-                towards = AnimatedContentScope.SlideDirection.Down,
-                animationSpec = tween(300)
-            )
-            else -> null
-        }
-    }
-
-    override fun AnimatedContentScope<NavBackStackEntry>.popExitTransition(): ExitTransition? {
-        return when (targetState.destination.route) {
-            TvScreenDestination.route,
-            FavouritesScreenDestination.route,
-            SearchScreenDestination.route -> slideOutOfContainer(
-                towards = AnimatedContentScope.SlideDirection.Down,
-                animationSpec = tween(300)
-            )
-            else -> null
-        }
-    }
-}
-
-@Parcelize
-data class SeasonDetailsScreenArgs(
-    val tvSeriesId: Int,
-    val seasonNumber: Int,
-    val startRoute: String
-) : Parcelable
 
 @Destination(
     navArgsDelegate = SeasonDetailsScreenArgs::class,

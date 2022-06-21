@@ -13,9 +13,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import coil.compose.AsyncImage
-import coil.size.OriginalSize
 import coil.size.Scale
 import com.example.moviesapp.other.ImageUrlParser
 import com.example.moviesapp.other.getMaxSizeInt

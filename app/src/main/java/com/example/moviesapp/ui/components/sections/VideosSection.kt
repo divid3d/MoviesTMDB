@@ -17,9 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
-import coil.size.OriginalSize
 import coil.size.Scale
 import com.example.moviesapp.R
 import com.example.moviesapp.model.Video

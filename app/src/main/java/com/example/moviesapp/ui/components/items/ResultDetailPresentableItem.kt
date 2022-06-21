@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
-import coil.size.OriginalSize
 import coil.size.Scale
 import com.example.moviesapp.model.DetailPresentable
 import com.example.moviesapp.other.ImageUrlParser

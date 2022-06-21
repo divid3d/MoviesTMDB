@@ -6,19 +6,20 @@ buildscript {
 
     dependencies {
         classpath("com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt}")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.8.1")
-        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.17.1")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:${Versions.firebaseCrashlytics}")
         //ASM8 error when up to date
-        classpath("com.google.firebase:perf-plugin:1.4.1")
+        classpath("com.google.firebase:perf-plugin:${Versions.firebasePerf}")
         //Firebase init random crash at newer
-        classpath("com.google.gms:google-services:4.3.4")
+        classpath("com.google.gms:google-services:${Versions.googleServices}")
+        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:${Versions.detect}")
     }
 }
 
 plugins {
-    id("com.android.application") version "7.2.1" apply false
-    id("com.android.library") version "7.2.1" apply false
-    id("org.jetbrains.kotlin.android") version Versions.kotlinVersion apply false
+    id("com.android.application") version Versions.android apply false
+    id("com.android.library") version Versions.android apply false
+    id("org.jetbrains.kotlin.android") version Versions.kotlin apply false
+    id("com.github.ben-manes.versions") version Versions.gradleVersions
 }
 
 tasks {

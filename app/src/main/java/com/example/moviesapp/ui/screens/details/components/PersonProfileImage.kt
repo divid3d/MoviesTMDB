@@ -7,7 +7,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import coil.size.OriginalSize
 import coil.size.Scale
 import com.example.moviesapp.other.ImageUrlParser
 import com.example.moviesapp.ui.components.items.ErrorPresentableItem

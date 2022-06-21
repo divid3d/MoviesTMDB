@@ -9,7 +9,7 @@ fun getApiKey(): String {
     return gradleLocalProperties(rootDir).getProperty("TMDB_API_KEY")
 }
 
-class ApplicationVariantOutputFilenameAction : Action<ApplicationVariant> {
+private class ApplicationVariantOutputFilenameAction : Action<ApplicationVariant> {
     override fun execute(variant: ApplicationVariant) {
         val fileName = getVariantFileOutputName(variant)
         variant.outputs.all(VariantOutputAction(fileName))
@@ -43,7 +43,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("dagger.hilt.android.plugin")
-    id("com.google.devtools.ksp") version Versions.devtoolsVersion
+    id("com.google.devtools.ksp") version Versions.devTools
     id("kotlin-kapt")
     id("kotlin-parcelize")
     id("com.google.firebase.crashlytics")

@@ -1,8 +1,8 @@
 package com.example.moviesapp.ui.screens.scanner
 
 import android.graphics.Bitmap
-import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,11 +17,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
 import com.example.moviesapp.R
 import com.example.moviesapp.other.Roi
 import com.example.moviesapp.ui.components.others.AppBar
-import com.example.moviesapp.ui.screens.destinations.SearchScreenDestination
 import com.example.moviesapp.ui.screens.scanner.components.ScanResultModalBottomSheetContent
 import com.example.moviesapp.ui.screens.scanner.components.TitleScanner
 import com.example.moviesapp.ui.theme.Black500
@@ -33,51 +31,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
-import com.ramcosta.composedestinations.spec.DestinationStyle
 import kotlinx.coroutines.launch
-
-@OptIn(ExperimentalAnimationApi::class)
-object ScannerScreenTransitions : DestinationStyle.Animated {
-    override fun AnimatedContentScope<NavBackStackEntry>.enterTransition(): EnterTransition? {
-        return when (initialState.destination.route) {
-            SearchScreenDestination.route -> slideIntoContainer(
-                towards = AnimatedContentScope.SlideDirection.Up,
-                animationSpec = tween(300)
-            )
-            else -> null
-        }
-    }
-
-    override fun AnimatedContentScope<NavBackStackEntry>.popEnterTransition(): EnterTransition? {
-        return when (initialState.destination.route) {
-            SearchScreenDestination.route -> slideIntoContainer(
-                towards = AnimatedContentScope.SlideDirection.Up,
-                animationSpec = tween(300)
-            )
-            else -> null
-        }
-    }
-
-    override fun AnimatedContentScope<NavBackStackEntry>.exitTransition(): ExitTransition? {
-        return when (targetState.destination.route) {
-            SearchScreenDestination.route -> slideOutOfContainer(
-                towards = AnimatedContentScope.SlideDirection.Down,
-                animationSpec = tween(300)
-            )
-            else -> null
-        }
-    }
-
-    override fun AnimatedContentScope<NavBackStackEntry>.popExitTransition(): ExitTransition? {
-        return when (targetState.destination.route) {
-            SearchScreenDestination.route -> slideOutOfContainer(
-                towards = AnimatedContentScope.SlideDirection.Down,
-                animationSpec = tween(300)
-            )
-            else -> null
-        }
-    }
-}
 
 @Destination(
     style = ScannerScreenTransitions::class

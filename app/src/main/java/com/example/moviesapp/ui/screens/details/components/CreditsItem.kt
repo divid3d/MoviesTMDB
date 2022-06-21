@@ -20,7 +20,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.size.OriginalSize
 import coil.size.Scale
 import com.example.moviesapp.R
 import com.example.moviesapp.other.ImageUrlParser

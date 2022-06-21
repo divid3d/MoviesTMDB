@@ -16,7 +16,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -24,9 +23,6 @@ import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import coil.ImageLoader
-import coil.ImageLoaderFactory
-import coil.compose.LocalImageLoader
 import com.example.moviesapp.data.ConfigDataSource
 import com.example.moviesapp.model.SnackBarEvent
 import com.example.moviesapp.other.ImageUrlParser
@@ -78,7 +74,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             val mainViewModel: MainViewModel = hiltViewModel(this)
 
-            val context = LocalContext.current
             val lifecycleOwner = LocalLifecycleOwner.current
 
             val keyboardController = LocalSoftwareKeyboardController.current
