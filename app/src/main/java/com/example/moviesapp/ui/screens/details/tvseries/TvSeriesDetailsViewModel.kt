@@ -12,14 +12,17 @@ import com.example.moviesapp.ui.screens.destinations.TvSeriesDetailsScreenDestin
 import com.example.moviesapp.ui.screens.details.movie.AssociatedContent
 import com.example.moviesapp.use_case.interfaces.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class TvSeriesDetailsViewModel @Inject constructor(
+    private val defaultDispatcher: CoroutineDispatcher,
     private val getDeviceLanguageUseCase: GetDeviceLanguageUseCase,
     private val addRecentlyBrowsedTvSeriesUseCase: AddRecentlyBrowsedTvSeriesUseCase,
     private val getFavouriteTvSeriesIdsUseCase: GetFavouriteTvSeriesIdsUseCase,
@@ -133,39 +136,41 @@ class TvSeriesDetailsViewModel @Inject constructor(
     private fun getTvSeriesInfo() {
         val tvSeriesId = navArgs.tvSeriesId
 
-        viewModelScope.launch {
-            launch {
-                getTvSeriesImages(tvSeriesId)
-            }
-
-            launch {
-                getExternalIds(tvSeriesId)
-            }
-
-            launch {
-                getTvSeriesReviewsCount(tvSeriesId)
-            }
-
-            deviceLanguage.collectLatest { deviceLanguage ->
+        viewModelScope.launch(defaultDispatcher) {
+            supervisorScope {
                 launch {
-                    getTvSeriesDetails(
-                        tvSeriesId = tvSeriesId,
-                        deviceLanguage = deviceLanguage
-                    )
+                    getTvSeriesImages(tvSeriesId)
                 }
 
                 launch {
-                    getWatchProviders(
-                        tvSeriesId = tvSeriesId,
-                        deviceLanguage = deviceLanguage
-                    )
+                    getExternalIds(tvSeriesId)
                 }
 
                 launch {
-                    getTvSeriesVideos(
-                        tvSeriesId = tvSeriesId,
-                        deviceLanguage = deviceLanguage
-                    )
+                    getTvSeriesReviewsCount(tvSeriesId)
+                }
+
+                deviceLanguage.collectLatest { deviceLanguage ->
+                    launch {
+                        getTvSeriesDetails(
+                            tvSeriesId = tvSeriesId,
+                            deviceLanguage = deviceLanguage
+                        )
+                    }
+
+                    launch {
+                        getWatchProviders(
+                            tvSeriesId = tvSeriesId,
+                            deviceLanguage = deviceLanguage
+                        )
+                    }
+
+                    launch {
+                        getTvSeriesVideos(
+                            tvSeriesId = tvSeriesId,
+                            deviceLanguage = deviceLanguage
+                        )
+                    }
                 }
             }
         }
@@ -176,7 +181,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
             tvSeriesId = tvSeriesId,
             deviceLanguage = deviceLanguage
         ).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 val tvSeriesDetails = data
                 _tvSeriesDetails.emit(tvSeriesDetails)
 
@@ -195,7 +200,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
     private suspend fun getTvSeriesImages(tvSeriesId: Int) {
         getTvSeriesImagesUseCase(tvSeriesId)
             .onSuccess {
-                viewModelScope.launch {
+                viewModelScope.launch(defaultDispatcher) {
                     tvSeriesBackdrops.emit(data ?: emptyList())
                 }
             }.onFailure {
@@ -208,7 +213,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
     private suspend fun getTvSeriesReviewsCount(tvSeriesId: Int) {
         getTvSeriesReviewsCountUseCase(tvSeriesId)
             .onSuccess {
-                viewModelScope.launch {
+                viewModelScope.launch(defaultDispatcher) {
                     reviewsCount.emit(data ?: 0)
                 }
             }.onFailure {
@@ -223,7 +228,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
             tvSeriesId = tvSeriesId,
             deviceLanguage = deviceLanguage
         ).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 watchProviders.emit(data)
             }
         }.onFailure {
@@ -237,7 +242,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
         getTvSeriesExternalIdsUseCase(
             tvSeriesId = tvSeriesId
         ).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 externalIds.emit(data)
             }
         }.onFailure {
@@ -252,7 +257,7 @@ class TvSeriesDetailsViewModel @Inject constructor(
             tvSeriesId = tvSeriesId,
             deviceLanguage = deviceLanguage
         ).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 videos.emit(data ?: emptyList())
             }
         }.onFailure {

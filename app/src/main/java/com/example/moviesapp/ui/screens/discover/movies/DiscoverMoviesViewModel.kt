@@ -11,6 +11,7 @@ import com.example.moviesapp.use_case.interfaces.GetDeviceLanguageUseCase
 import com.example.moviesapp.use_case.interfaces.GetDiscoverMoviesUseCase
 import com.example.moviesapp.use_case.interfaces.GetMovieGenresUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -19,6 +20,7 @@ import javax.inject.Inject
 @FlowPreview
 @HiltViewModel
 class DiscoverMoviesViewModel @Inject constructor(
+    private val defaultDispatcher: CoroutineDispatcher,
     private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
     private val getMovieGenresUseCase: GetMovieGenresUseCase,
     private val getAllMoviesWatchProvidersUseCase: GetAllMoviesWatchProvidersUseCase,
@@ -65,7 +67,7 @@ class DiscoverMoviesViewModel @Inject constructor(
     )
 
     fun onSortTypeChange(sortType: SortType) {
-        viewModelScope.launch {
+        viewModelScope.launch(defaultDispatcher) {
             val currentSortInfo = sortInfo.value
 
             sortInfo.emit(currentSortInfo.copy(sortType = sortType))
@@ -73,7 +75,7 @@ class DiscoverMoviesViewModel @Inject constructor(
     }
 
     fun onSortOrderChange(sortOrder: SortOrder) {
-        viewModelScope.launch {
+        viewModelScope.launch(defaultDispatcher) {
             val currentSortInfo = sortInfo.value
 
             sortInfo.emit(currentSortInfo.copy(sortOrder = sortOrder))
@@ -81,7 +83,7 @@ class DiscoverMoviesViewModel @Inject constructor(
     }
 
     fun onFilterStateChange(state: MovieFilterState) {
-        viewModelScope.launch {
+        viewModelScope.launch(defaultDispatcher) {
             _filterState.emit(state)
         }
     }

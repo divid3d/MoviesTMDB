@@ -19,6 +19,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
+    private val defaultDispatcher: CoroutineDispatcher,
     private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
     private val getSpeechToTextAvailableUseCase: GetSpeechToTextAvailableUseCase,
     private val getCameraAvailableUseCase: GetCameraAvailableUseCase,
@@ -73,7 +74,7 @@ class SearchViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, SearchScreenUiState.default)
 
     fun onQueryChange(queryText: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(defaultDispatcher) {
             queryState.emit(queryState.value.copy(query = queryText))
 
             queryJob?.cancel()
@@ -118,7 +119,7 @@ class SearchViewModel @Inject constructor(
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     private fun createQueryJob(query: String): Job {
-        return viewModelScope.launch(Dispatchers.IO) {
+        return viewModelScope.launch(defaultDispatcher) {
             try {
                 delay(queryDelay)
 

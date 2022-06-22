@@ -10,12 +10,15 @@ import com.example.moviesapp.model.*
 import com.example.moviesapp.ui.screens.destinations.SeasonDetailsScreenDestination
 import com.example.moviesapp.use_case.interfaces.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 
 @HiltViewModel
 class SeasonDetailsViewModel @Inject constructor(
+    private val defaultDispatcher: CoroutineDispatcher,
     private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
     private val getSeasonDetailsUseCase: GetSeasonDetailsUseCase,
     private val getSeasonsVideosUseCaseImpl: GetSeasonsVideosUseCase,
@@ -54,38 +57,40 @@ class SeasonDetailsViewModel @Inject constructor(
     )
 
     init {
-        viewModelScope.launch {
-            deviceLanguage.collectLatest { deviceLanguage ->
-                launch {
-                    getSeasonDetailsUseCase(
-                        tvSeriesId = navArgs.tvSeriesId,
-                        seasonNumber = navArgs.seasonNumber,
-                        deviceLanguage = deviceLanguage
-                    ).onSuccess {
-                        viewModelScope.launch {
-                            seasonDetails.emit(data)
+        viewModelScope.launch(defaultDispatcher) {
+            supervisorScope {
+                deviceLanguage.collectLatest { deviceLanguage ->
+                    launch {
+                        getSeasonDetailsUseCase(
+                            tvSeriesId = navArgs.tvSeriesId,
+                            seasonNumber = navArgs.seasonNumber,
+                            deviceLanguage = deviceLanguage
+                        ).onSuccess {
+                            viewModelScope.launch {
+                                seasonDetails.emit(data)
+                            }
+                        }.onFailure {
+                            onFailure(this)
+                        }.onException {
+                            onError(this)
                         }
-                    }.onFailure {
-                        onFailure(this)
-                    }.onException {
-                        onError(this)
                     }
-                }
 
-                launch {
-                    getSeasonCredits(
-                        tvSeriesId = navArgs.tvSeriesId,
-                        seasonNumber = navArgs.seasonNumber,
-                        deviceLanguage = deviceLanguage
-                    )
-                }
+                    launch {
+                        getSeasonCredits(
+                            tvSeriesId = navArgs.tvSeriesId,
+                            seasonNumber = navArgs.seasonNumber,
+                            deviceLanguage = deviceLanguage
+                        )
+                    }
 
-                launch {
-                    getSeasonVideos(
-                        tvSeriesId = navArgs.tvSeriesId,
-                        seasonNumber = navArgs.seasonNumber,
-                        deviceLanguage = deviceLanguage
-                    )
+                    launch {
+                        getSeasonVideos(
+                            tvSeriesId = navArgs.tvSeriesId,
+                            seasonNumber = navArgs.seasonNumber,
+                            deviceLanguage = deviceLanguage
+                        )
+                    }
                 }
             }
         }
@@ -96,13 +101,13 @@ class SeasonDetailsViewModel @Inject constructor(
             return
         }
 
-        viewModelScope.launch {
+        viewModelScope.launch(defaultDispatcher) {
             getEpisodeStillsUseCaseImpl(
                 tvSeriesId = navArgs.tvSeriesId,
                 seasonNumber = navArgs.seasonNumber,
                 episodeNumber = episodeNumber
             ).onSuccess {
-                viewModelScope.launch {
+                viewModelScope.launch(defaultDispatcher) {
                     episodesStills.collectLatest { current ->
                         val updatedStills = current.toMutableMap().apply {
                             put(episodeNumber, data ?: emptyList())
@@ -150,7 +155,7 @@ class SeasonDetailsViewModel @Inject constructor(
             seasonNumber = seasonNumber,
             deviceLanguage = deviceLanguage
         ).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 videos.emit(data ?: emptyList())
             }
         }.onFailure {

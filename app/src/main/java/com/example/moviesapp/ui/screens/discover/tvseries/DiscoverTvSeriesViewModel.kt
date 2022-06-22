@@ -1,5 +1,6 @@
 package com.example.moviesapp.ui.screens.discover.tvseries
 
+import androidx.compose.foundation.lazy.layout.getDefaultLazyLayoutKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -12,6 +13,7 @@ import com.example.moviesapp.use_case.interfaces.GetDeviceLanguageUseCase
 import com.example.moviesapp.use_case.interfaces.GetDiscoverTvSeriesUseCase
 import com.example.moviesapp.use_case.interfaces.GetTvSeriesGenresUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -20,6 +22,7 @@ import javax.inject.Inject
 @FlowPreview
 @HiltViewModel
 class DiscoverTvSeriesViewModel @Inject constructor(
+    private val defaultDispatcher: CoroutineDispatcher,
     private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
     private val getTvSeriesGenresUseCase: GetTvSeriesGenresUseCase,
     private val getAllTvSeriesWatchProvidersUseCaseImpl: GetAllTvSeriesWatchProvidersUseCase,
@@ -66,7 +69,7 @@ class DiscoverTvSeriesViewModel @Inject constructor(
     )
 
     fun onSortTypeChange(sortType: SortType) {
-        viewModelScope.launch {
+        viewModelScope.launch(defaultDispatcher) {
             val currentSortInfo = sortInfo.value
 
             sortInfo.emit(currentSortInfo.copy(sortType = sortType))
@@ -74,7 +77,7 @@ class DiscoverTvSeriesViewModel @Inject constructor(
     }
 
     fun onSortOrderChange(sortOrder: SortOrder) {
-        viewModelScope.launch {
+        viewModelScope.launch(defaultDispatcher) {
             val currentSortInfo = sortInfo.value
 
             sortInfo.emit(currentSortInfo.copy(sortOrder = sortOrder))
@@ -82,7 +85,7 @@ class DiscoverTvSeriesViewModel @Inject constructor(
     }
 
     fun onFilterStateChange(state: TvSeriesFilterState) {
-        viewModelScope.launch {
+        viewModelScope.launch(defaultDispatcher) {
             _filterState.emit(state)
         }
     }

@@ -13,14 +13,17 @@ import com.example.moviesapp.use_case.interfaces.GetDeviceLanguageUseCase
 import com.example.moviesapp.use_case.interfaces.GetPersonDetailsUseCase
 import com.example.moviesapp.use_case.interfaces.GetPersonExternalIdsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class PersonDetailsViewModel @Inject constructor(
+    private val defaultDispatcher: CoroutineDispatcher,
     private val getDeviceLanguageUseCase: GetDeviceLanguageUseCase,
     private val getPersonDetailsUseCase: GetPersonDetailsUseCase,
     private val getCombinedCreditsUseCase: GetCombinedCreditsUseCase,
@@ -62,27 +65,29 @@ class PersonDetailsViewModel @Inject constructor(
     }
 
     private fun getPersonInfo() {
-        viewModelScope.launch {
-            deviceLanguage.collectLatest { deviceLanguage ->
-                launch {
-                    getPersonDetails(
-                        personId = navArgs.personId,
-                        deviceLanguage = deviceLanguage
-                    )
-                }
+        viewModelScope.launch(defaultDispatcher) {
+            supervisorScope {
+                deviceLanguage.collectLatest { deviceLanguage ->
+                    launch {
+                        getPersonDetails(
+                            personId = navArgs.personId,
+                            deviceLanguage = deviceLanguage
+                        )
+                    }
 
-                launch {
-                    getCombinedCredits(
-                        personId = navArgs.personId,
-                        deviceLanguage = deviceLanguage
-                    )
-                }
+                    launch {
+                        getCombinedCredits(
+                            personId = navArgs.personId,
+                            deviceLanguage = deviceLanguage
+                        )
+                    }
 
-                launch {
-                    getExternalIds(
-                        personId = navArgs.personId,
-                        deviceLanguage = deviceLanguage
-                    )
+                    launch {
+                        getExternalIds(
+                            personId = navArgs.personId,
+                            deviceLanguage = deviceLanguage
+                        )
+                    }
                 }
             }
         }
@@ -92,7 +97,7 @@ class PersonDetailsViewModel @Inject constructor(
         getPersonDetailsUseCase(
             personId = personId, deviceLanguage = deviceLanguage
         ).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 personDetails.emit(data)
             }
         }.onFailure {
@@ -108,7 +113,7 @@ class PersonDetailsViewModel @Inject constructor(
             personId = personId,
             deviceLanguage = deviceLanguage
         ).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 combinedCredits.emit(data)
             }
         }.onFailure {
@@ -123,7 +128,7 @@ class PersonDetailsViewModel @Inject constructor(
             personId = personId,
             deviceLanguage = deviceLanguage
         ).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 _externalIds.emit(data)
             }
         }.onFailure {

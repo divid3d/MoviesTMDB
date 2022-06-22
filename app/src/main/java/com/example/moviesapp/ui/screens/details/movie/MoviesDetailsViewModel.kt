@@ -13,11 +13,8 @@ import com.example.moviesapp.use_case.LikeMovieUseCaseImpl
 import com.example.moviesapp.use_case.UnlikeMovieUseCaseImpl
 import com.example.moviesapp.use_case.interfaces.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.minutes
@@ -26,6 +23,7 @@ import kotlin.time.Duration.Companion.seconds
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class MoviesDetailsViewModel @Inject constructor(
+    private val defaultDispatcher: CoroutineDispatcher,
     private val getDeviceLanguageUseCaseImpl: GetDeviceLanguageUseCase,
     private val getRelatedMoviesUseCase: GetRelatedMoviesOfTypeUseCase,
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
@@ -138,31 +136,33 @@ class MoviesDetailsViewModel @Inject constructor(
     }
 
     private fun getMovieInfo() {
-        viewModelScope.launch {
-            val movieId = navArgs.movieId
+        val movieId = navArgs.movieId
 
-            launch {
-                getMovieBackdrops(movieId)
-            }
-            launch {
-                getExternalIds(movieId)
-            }
-            launch {
-                getMovieReview(movieId)
-            }
+        viewModelScope.launch(defaultDispatcher) {
+            supervisorScope {
+                launch {
+                    getMovieBackdrops(movieId)
+                }
+                launch {
+                    getExternalIds(movieId)
+                }
+                launch {
+                    getMovieReview(movieId)
+                }
 
-            deviceLanguage.collectLatest { deviceLanguage ->
-                launch {
-                    getMovieDetails(movieId, deviceLanguage)
-                }
-                launch {
-                    getWatchProviders(movieId, deviceLanguage)
-                }
-                launch {
-                    getMovieCredits(movieId, deviceLanguage)
-                }
-                launch {
-                    getMovieVideos(movieId, deviceLanguage)
+                deviceLanguage.collectLatest { deviceLanguage ->
+                    launch {
+                        getMovieDetails(movieId, deviceLanguage)
+                    }
+                    launch {
+                        getWatchProviders(movieId, deviceLanguage)
+                    }
+                    launch {
+                        getMovieCredits(movieId, deviceLanguage)
+                    }
+                    launch {
+                        getMovieVideos(movieId, deviceLanguage)
+                    }
                 }
             }
         }
@@ -171,7 +171,7 @@ class MoviesDetailsViewModel @Inject constructor(
     }
 
     private fun startRefreshingWatchAtTime() {
-        viewModelScope.launch {
+        viewModelScope.launch(defaultDispatcher) {
             _movieDetails.collectLatest { details ->
                 while (isActive) {
                     details?.runtime?.let { runtime ->
@@ -208,7 +208,7 @@ class MoviesDetailsViewModel @Inject constructor(
             movieId = movieId,
             deviceLanguage = deviceLanguage
         ).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 val movieDetails = data
                 _movieDetails.emit(movieDetails)
 
@@ -231,7 +231,7 @@ class MoviesDetailsViewModel @Inject constructor(
             movieId = movieId,
             deviceLanguage = deviceLanguage
         ).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 credits.emit(data)
 
                 val directors = data?.crew?.filter { member -> member.job == "Director" }
@@ -253,7 +253,7 @@ class MoviesDetailsViewModel @Inject constructor(
 
     private suspend fun getMovieBackdrops(movieId: Int) {
         getMovieBackdropsUseCase(movieId).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 movieBackdrops.emit(data ?: emptyList())
             }
         }.onFailure {
@@ -265,7 +265,7 @@ class MoviesDetailsViewModel @Inject constructor(
 
     private suspend fun getMovieReview(movieId: Int) {
         getMovieReviewsCountUseCase(movieId).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 reviewsCount.emit(data ?: 0)
             }
         }.onFailure {
@@ -280,7 +280,7 @@ class MoviesDetailsViewModel @Inject constructor(
             collectionId = collectionId,
             deviceLanguage = deviceLanguage
         ).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 movieCollection.emit(data)
             }
         }.onFailure {
@@ -295,7 +295,7 @@ class MoviesDetailsViewModel @Inject constructor(
             movieId = movieId,
             deviceLanguage = deviceLanguage
         ).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 watchProviders.emit(data)
             }
         }.onFailure {
@@ -309,7 +309,7 @@ class MoviesDetailsViewModel @Inject constructor(
         getMovieExternalIdsUseCase(
             movieId = movieId
         ).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 externalIds.emit(data)
             }
         }.onFailure {
@@ -324,7 +324,7 @@ class MoviesDetailsViewModel @Inject constructor(
             movieId = movieId,
             deviceLanguage = deviceLanguage
         ).onSuccess {
-            viewModelScope.launch {
+            viewModelScope.launch(defaultDispatcher) {
                 videos.emit(data ?: emptyList())
             }
         }.onFailure {

@@ -6,6 +6,7 @@ import androidx.paging.cachedIn
 import com.example.moviesapp.model.FavouriteType
 import com.example.moviesapp.use_case.interfaces.GetFavouritesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -14,6 +15,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class FavouritesViewModel @Inject constructor(
+    private val defaultDispatcher: CoroutineDispatcher,
     private val getFavouritesUseCaseImpl: GetFavouritesUseCase
 ) : ViewModel() {
 
@@ -30,7 +32,7 @@ class FavouritesViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, FavouritesScreenUiState.default)
 
     fun onFavouriteTypeSelected(type: FavouriteType) {
-        viewModelScope.launch {
+        viewModelScope.launch(defaultDispatcher) {
             _selectedFavouriteType.emit(type)
         }
     }
